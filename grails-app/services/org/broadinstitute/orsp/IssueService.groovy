@@ -21,6 +21,7 @@ class IssueService implements UserInfo {
     NotifyService notifyService
     IssueReviewService issueReviewService
     StorageProviderService storageProviderService
+    OrganizationService organizationService
 
     Collection<String> singleValuedPropertyKeys = [
             IssueExtraProperty.ACCURATE,

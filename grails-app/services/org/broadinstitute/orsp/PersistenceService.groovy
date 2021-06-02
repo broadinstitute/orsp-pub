@@ -53,4 +53,12 @@ class PersistenceService {
         consentCollectionLink?.delete(flush: true)
     }
 
+    Organization saveOrganization(Organization organization) {
+        organization.save(flush: true)
+    }
+
+    void deleteOrganization(Organization organization) {
+        organization?.delete(flush: true)
+    }
+
 }

@@ -48,6 +48,7 @@ class ProjectController extends AuthenticatedController {
                 }
             }
             notifyService.projectCreation(issue)
+            organizationService.organizationsMatch(issue)
             issue.status = 201
             render([message: issue] as JSON)
         } catch (Exception e) {

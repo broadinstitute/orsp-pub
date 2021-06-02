@@ -318,6 +318,35 @@ export const User = {
   
 };
 
+export const Organization = {
+
+  getAllOrganizations(query) {
+    return axios.get(UrlConstants.getAllOrganizationsUrl, {
+      params: {
+        draw: 1,
+        start: query.start,
+        length: query.length,
+        orderColumn: query.orderColumn,
+        sortDirection: query.sortDirection,
+        searchValue: query.searchValue
+      }
+    })
+  },
+
+  editOrganization(organizationId, name) {
+    return axios.put(UrlConstants.editOrganizationUrl, {id: organizationId, name: name});
+  },
+
+  addOrganization(name) {
+    return axios.post(UrlConstants.addOrganizationUrl, { name: name});
+  },
+
+  deleteOrganization(organizationId) {
+    return axios.delete(UrlConstants.deleteOrganizationUrl, { params: {id: organizationId }});
+  }
+  
+};
+
 export const Review = {
 
   deleteSuggestions(projectKey, type) {

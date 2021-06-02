@@ -76,6 +76,10 @@ export const UrlConstants = {
   getAllUsersUrl: context + '/api/get-users',
   dataUseLetterUrl: context + '/api/data-use-letter',
   saveDataUseLetterUrl: context + '/api/data-use-letter/pdf',
+  editOrganizationUrl: context + '/api/edit-organization',
+  deleteOrganizationUrl: context + '/api/delete-organization',
+  addOrganizationUrl: context + '/api/add-organization',
+  getAllOrganizationsUrl: context + '/api/get-organizations',
  
   infoLinkUrl: context + '/api/info-link',
   showRestrictionsUrl: context + '/api/dur',
@@ -113,6 +117,7 @@ export const UrlConstants = {
   sampleCollectionReportUrl: context + "/report/sampleCollections",
   metricsReportUrl: context + "/report/aahrppMetrics",
   rolesManagementUrl: context + "/user/rolesManagement",
+  organizationsUrl: context + "/admin/organizations",
   projectUrl:  context + "/project/pages"
 };
 

@@ -91,6 +91,12 @@ class UrlMappings {
         '/api/user/authenticated/download-document'(controller: 'authenticated', action: 'downloadDocument')
         '/api/user/authenticated'(controller: 'authenticated', action: 'isCurrentUserAdmin')
 
+        // Organizations/Companies end points
+        '/api/delete-organization'(controller: 'organization', action: 'deleteOrganization', method: 'DELETE')
+        '/api/edit-organization'(controller: 'organization', action: 'editOrganization', method: 'PUT')
+        '/api/add-organization'(controller: 'organization', action: 'addOrganization', method: 'POST')
+        '/api/get-organizations'(controller: 'organization', action: 'getOrganizations', method: 'GET')
+
         // Search end points
         '/search/matching-users'(controller: 'search', action: 'getMatchingUsers')
         '/search/project-key/autocomplete'(controller: 'search', action: 'projectKeyAutocomplete')
