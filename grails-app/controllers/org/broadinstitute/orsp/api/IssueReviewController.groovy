@@ -25,6 +25,7 @@ class IssueReviewController extends AuthenticatedController {
                 handleNotFound("Project key does not exist")
             } else {
                 issueReviewService.create(issueReview, getUser())
+                organizationService.organizationsMatch(issueReview)
                 persistenceService.saveEvent(issueReview.projectKey, getUser()?.displayName, "Edits Added", EventType.SUBMIT_EDITS)
                 transitionService.handleIntake(issue, [])
                 response.status = 201

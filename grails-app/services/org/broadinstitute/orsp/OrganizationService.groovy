@@ -2,6 +2,8 @@ package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
+import org.grails.web.json.JSONArray
+
 import java.sql.SQLException
 import java.util.stream.Collectors
 
@@ -94,6 +96,23 @@ class OrganizationService {
         if (!org.isEmpty()) {
             String matches = org.stream().map({ o -> o.name }).collect(Collectors.joining(", "))
             notifyService.notifyOrganizationsMatch(issue.projectKey, matches)
+        }
+    }
+
+    void organizationsMatch(IssueReview issueReview) {
+        JSONArray fundings = issueReview.getFunding()
+
+        List<Organization> org = queryService.getOrganizations()
+        org.retainAll() {o ->
+            String organizationName = o.name.toLowerCase()
+            fundings["future"]["sponsor"]?.any { s -> String
+                s.toString().toLowerCase().contains(organizationName)
+            } || issueReview.getDescription().toLowerCase().contains(organizationName) || issueReview.getProjectTitle().toLowerCase().contains(organizationName)
+        }
+
+        if (!org.isEmpty()) {
+            String matches = org.stream().map({ o -> o.name }).collect(Collectors.joining(", "))
+            notifyService.notifyOrganizationsMatch(issueReview.projectKey, matches)
         }
     }
 }

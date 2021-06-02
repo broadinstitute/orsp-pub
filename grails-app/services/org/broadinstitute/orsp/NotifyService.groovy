@@ -71,6 +71,10 @@ class NotifyService implements SendgridSupport, Status {
         notifyConfiguration.agreementsRecipient
     }
 
+    String getConflictOfInterestRecipient() {
+        notifyConfiguration.conflictOfInterestRecipient
+    }
+
     /**
      * Utility method to remove ORSP from recipients and if it is there, swap it out for the email addresses
      * of the individual team members. The full ORSP email address is used as the address of an RT group so we don't
@@ -754,9 +758,9 @@ class NotifyService implements SendgridSupport, Status {
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(getDefaultRecipient()),
-                        ccAddresses: [],
+                        ccAddresses: Collections.singletonList(getConflictOfInterestRecipient()),
                         fromAddress: getDefaultFromAddress(),
-                        subject: "There's a companies/organizations name hit in " + project.projectKey,
+                        subject: "ALERT - Potential iCOI identified",
                         user: user,
                         issue: project,
                         details: matches)
