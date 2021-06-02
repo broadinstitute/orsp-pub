@@ -757,7 +757,7 @@ class NotifyService implements SendgridSupport, Status {
         User user = userService.findUser(project.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
-                        toAddresses: Collections.singletonList(getDefaultRecipient()),
+                        toAddresses: Collections.singletonList(getAdminRecipient()),
                         ccAddresses: Collections.singletonList(getConflictOfInterestRecipient()),
                         fromAddress: getDefaultFromAddress(),
                         subject: "ALERT - Potential iCOI identified",
