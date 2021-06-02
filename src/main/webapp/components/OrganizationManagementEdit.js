@@ -19,7 +19,6 @@ export const OrganizationManagementEdit = hh(class OrganizationManagementEdit ex
   }
 
   componentDidMount() {
-    ///this.defaultChecked();
     this.setState(prev => {
       prev.organizationData = this.props.organizationData;
       prev.organizationName = this.props.organizationData.name;
@@ -64,9 +63,6 @@ export const OrganizationManagementEdit = hh(class OrganizationManagementEdit ex
         });
       });
     }
-    
-
-    
   };
 
   closeAlertHandler = () => {

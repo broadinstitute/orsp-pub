@@ -3,7 +3,6 @@ import { a, div, h1, hh } from 'react-hyperscript-helpers';
 import { Table } from '../components/Table';
 import { OrganizationManagementEdit } from '../components/OrganizationManagementEdit';
 import { Organization } from '../util/ajax';
-import { TablePaginator } from '../components/TablePaginator';
 import { Panel } from '../components/Panel';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
@@ -211,11 +210,6 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
           onSearchChange: this.onSearchChange,
           onSortChange: this.onSortChange
         }),
-        /*TablePaginator({
-          onPageChange: this.onPageChange,
-          currentPage: this.state.currentPage,
-          lastPage: this.state.lastPage
-        }),*/
         ConfirmationDialog({
           closeModal: this.closeRemoveModal,
           show: this.state.showRemoveModal,
