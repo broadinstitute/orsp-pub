@@ -21,6 +21,7 @@ data:
           adminRecipient: orsp-dev@broadinstitute.org
           securityRecipient: orsp-dev@broadinstitute.org
           agreementsRecipient: orsp-dev@broadinstitute.org
+          conflictOfInterestRecipient: orsp-dev@broadinstitute.org
           orspSpecialRecipients: [grushton@broadinstitute.org]
           bccRecipients: [grushton@broadinstitute.org]
           replyToRecipient: orsp-dev@broadinstitute.org
@@ -94,6 +95,7 @@ data:
           adminRecipient: orsp-dev@broadinstitute.org
           securityRecipient: orsp-dev@broadinstitute.org
           agreementsRecipient: orsp-dev@broadinstitute.org
+          conflictOfInterestRecipient: orsp-dev@broadinstitute.org
           orspSpecialRecipients: [grushton@broadinstitute.org]
           bccRecipients: [grushton@broadinstitute.org]
           replyToRecipient: orsp-dev@broadinstitute.org
@@ -173,6 +175,7 @@ data:
           adminRecipient: orsp@broadinstitute.org
           securityRecipient: orsp-security@broadinstitute.org
           agreementsRecipient: agreements@broadinstitute.org
+          conflictOfInterestRecipient: wdodds@broadinstitute.org
           orspSpecialRecipients: [orsp-portal@broadinstitute.org]
           bccRecipients: []
           replyToRecipient: orsp-portal@broadinstitute.org
