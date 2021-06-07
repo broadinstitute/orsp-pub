@@ -5,6 +5,8 @@ import groovy.util.logging.Slf4j
 import org.grails.web.json.JSONArray
 
 import java.sql.SQLException
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import java.util.stream.Collectors
 
 @Slf4j
@@ -87,10 +89,10 @@ class OrganizationService {
 
         List<Organization> org = queryService.getOrganizations()
         org.retainAll() {o ->
-            String organizationName = o.name.toLowerCase()
-            issue.description.toLowerCase().contains(organizationName) ||
-            issue.summary.toLowerCase().contains(organizationName) ||
-            ( issue.getFundings() != null && issue.getFundings()*.name.toString().toLowerCase().contains(organizationName) )
+            String regex = "\\b"+o.name+"\\b";
+            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(issue.description + issue.summary + issue.getFundings()*.name);
+            matcher.find()
         }
 
         if (!org.isEmpty()) {
@@ -104,10 +106,10 @@ class OrganizationService {
 
         List<Organization> org = queryService.getOrganizations()
         org.retainAll() {o ->
-            String organizationName = o.name.toLowerCase()
-            fundings["future"]["sponsor"]?.any { s -> String
-                s.toString().toLowerCase().contains(organizationName)
-            } || issueReview.getDescription().toLowerCase().contains(organizationName) || issueReview.getProjectTitle().toLowerCase().contains(organizationName)
+            String regex = "\\b"+o.name+"\\b";
+            Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher( issueReview.getDescription() + issueReview.getProjectTitle() + fundings["future"]["sponsor"]);
+            matcher.find()
         }
 
         if (!org.isEmpty()) {
