@@ -115,7 +115,7 @@ dependencies {
     compile 'org.liquibase:liquibase-core:3.9.0'
 
     // Google Cloud BigQuery, to sync users
-    compile 'com.google.cloud:google-cloud-bigquery:1.79.0'
+    compile 'com.google.cloud:google-cloud-bigquery:1.132.0'
     
     // Broad's crowd server only likes TLSv1 HttpBuilder is very forgiving wrt ssl protocols
     compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.1'
