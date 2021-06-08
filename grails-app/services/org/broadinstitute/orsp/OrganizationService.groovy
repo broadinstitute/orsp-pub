@@ -86,12 +86,13 @@ class OrganizationService {
     }
 
     void organizationsMatch(Issue issue) {
-
+        String str = String.join(" ", issue.description, issue.summary, issue.getFundings()*.name.toString())
         List<Organization> org = queryService.getOrganizations()
+
         org.retainAll() {o ->
             String regex = "\\b"+o.name+"\\b";
             Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(issue.description + issue.summary + issue.getFundings()*.name);
+            Matcher matcher = pattern.matcher(str);
             matcher.find()
         }
 
@@ -103,12 +104,12 @@ class OrganizationService {
 
     void organizationsMatch(IssueReview issueReview) {
         JSONArray fundings = issueReview.getFunding()
-
+        String str = String.join(" ", issueReview.getDescription(), issueReview.getProjectTitle(), fundings[0]["future"]["sponsor"])
         List<Organization> org = queryService.getOrganizations()
         org.retainAll() {o ->
             String regex = "\\b"+o.name+"\\b";
             Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher( issueReview.getDescription() + issueReview.getProjectTitle() + fundings["future"]["sponsor"]);
+            Matcher matcher = pattern.matcher(str);
             matcher.find()
         }
 
