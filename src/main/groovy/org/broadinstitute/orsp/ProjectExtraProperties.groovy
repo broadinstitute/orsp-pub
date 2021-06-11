@@ -60,6 +60,7 @@ class ProjectExtraProperties {
     String textOtherNotEngagedCategory;
     String assignedAdmin;
     String adminComments;
+    String financialConflict;
 
     ProjectExtraProperties(Issue project) {
         // General Data
@@ -120,6 +121,7 @@ class ProjectExtraProperties {
         this.setExemptCategoryFourIV(project.getExemptCategoryFourIV() ?: "")
         this.setNotEngagedCategories(project.getNotEngagedCategories() ?: "")
         this.setTextOtherNotEngagedCategory(project.getTextOtherNotEngagedCategory() ?: "")
-        this.setAdminComments(project.getAdminComments())
+        this.setAdminComments(project.getAdminComments() ?: "")
+        this.setFinancialConflict(project.getFinancialConflict() ?: "")
     }
 }

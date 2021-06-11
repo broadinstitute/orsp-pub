@@ -70,7 +70,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
         textOtherNotEngagedCategory: '',
         otherCategory: false,
         assignedReviewer: '',
-        adminComments: ''
+        adminComments: '',
+        financialConflict: ''
       }
     };
     this.addNewDegree = this.addNewDegree.bind(this)
@@ -121,6 +122,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
       formData.textOtherNotEngagedCategory = issue.data.extraProperties.textOtherNotEngagedCategory;
       formData.assignedReviewer = isEmpty(issue.data.extraProperties.assignedAdmin) ? '' : JSON.parse(issue.data.extraProperties.assignedAdmin);
       formData.adminComments = issue.data.extraProperties.adminComments;
+      formData.financialConflict = issue.data.extraProperties.financialConflict;
       initial = createObjectCopy(formData);
       if (this._isMounted) {
         this.setState(prev => {
@@ -323,6 +325,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
     form.projectStatus = this.state.formData.projectStatus;
     form.assignedAdmin = JSON.stringify(this.state.formData.assignedReviewer);
     form.adminComments = isEmpty(this.state.formData.adminComments) ? '--' : this.state.formData.adminComments;
+    form.financialConflict = this.state.formData.financialConflict;
 
     if (this.state.formData.initialReviewType.value === 'Exempt') {
       form.categoryTwo = this.state.formData.categoryTwo;
@@ -828,6 +831,16 @@ const AdminOnly = hh(class AdminOnly extends Component {
               onChange: this.datePickerHandler,
               placeholder: "Enter date...",
               readOnly: !this.state.isAdmin,
+            }),
+            InputFieldRadio({
+              id: "radioFinancialConflict",
+              name: "financialConflict",
+              label: "Did any Broad study team members report a financial conflict of interest to the IRB?",
+              value: this.state.formData.financialConflict,
+              optionValues: ['yes', 'no', 'notAvailable'],
+              optionLabels: ['Yes', 'No', 'N/A'],
+              onChange: this.radioBtnHandler,
+              readOnly: !this.state.isAdmin
             })
 
           ]),
