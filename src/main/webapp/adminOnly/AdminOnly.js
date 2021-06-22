@@ -36,6 +36,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
       showSubmissionError: false,
       textOtherCategoryError: false,
       textOtherNotEngagedCategoryError: false,
+      textFinancialConflictError: false,
       textCategoryTwoError: false,
       textCategoryFourError: false,
       alertMessage: '',
@@ -71,7 +72,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
         otherCategory: false,
         assignedReviewer: '',
         adminComments: '',
-        financialConflict: ''
+        financialConflict: '',
+        textFinancialConflict: ''
       }
     };
     this.addNewDegree = this.addNewDegree.bind(this)
@@ -229,6 +231,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
     let isValidCategoryTwo = true;
     let isValidNotEngaged = true;
     let isValidCategoryFour = true;
+    let isValidFinancialConflict = true;
 
     if (this.state.formData.initialReviewType.value === 'Exempt') {
       if (this.state.formData.otherCategory && isEmpty(this.state.formData.textOtherCategory)) {
@@ -289,9 +292,15 @@ const AdminOnly = hh(class AdminOnly extends Component {
        });
        isValidNotEngaged = true;
      }
-    }   
+    }  else if (this.state.formData.financialConflict === 'yes' && isEmpty(this.state.formData.textFinancialConflict))  {
+      this.setState(prev => {
+        prev.textFinancialConflictError = true;
+        return prev;
+      });
+      isValidFinancialConflict = false;
+    }
 
-    return isValidExempt && isValidNotEngaged && isValidCategoryTwo && isValidCategoryFour;
+    return isValidExempt && isValidNotEngaged && isValidCategoryTwo && isValidCategoryFour && isValidFinancialConflict;
   }
 
   successNotification = (type, message, time) => {
@@ -841,6 +850,19 @@ const AdminOnly = hh(class AdminOnly extends Component {
               optionLabels: ['Yes', 'No', 'N/A'],
               onChange: this.radioBtnHandler,
               readOnly: !this.state.isAdmin
+            }),
+
+            InputFieldText({
+                isRendered: this.state.formData.financialConflict === 'yes',
+                id: "inputTextFinancialConflict",
+                name: "textFinancialConflict",
+                label: " Please describe financial conflict:",
+                value: this.state.formData.textFinancialConflict,
+                disabled: false,
+                required: true,
+                onChange: this.textHandler,
+                error: this.state.textFinancialConflictError,
+                errorMessage: "Required field"
             })
 
           ]),
