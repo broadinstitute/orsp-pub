@@ -98,6 +98,7 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String TEXT_OTHER_CATEGORY = "textOtherCategory"
     public static final String ADMIN_COMMENTS = "adminComments"
     public static final String FINANCIAL_CONFLICT = "financialConflict"
+    public static final String FINANCIAL_CONFLICT_ANSWER_YES = "financialConflictAnswerYes"
 
     // Status Flags
     public static final String APP_SUBMITTED_FLAG = "appSubmitted"

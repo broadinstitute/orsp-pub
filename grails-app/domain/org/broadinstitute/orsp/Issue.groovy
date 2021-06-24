@@ -150,6 +150,8 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String getFinancialConflict() { getExtraProperties().find { it.name == IssueExtraProperty.FINANCIAL_CONFLICT}?.value }
 
+    transient String getFinancialConflictAnswerYes() { getExtraProperties().find { it.name == IssueExtraProperty.FINANCIAL_CONFLICT_ANSWER_YES}?.value }
+
     // Others
     transient String getCollPublication() {
         BooleanOptions.getLabelForKey(getExtraProperties().find {

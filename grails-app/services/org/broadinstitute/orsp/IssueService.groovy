@@ -3,9 +3,7 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
-import org.apache.commons.lang.BooleanUtils
 import org.apache.commons.lang.StringUtils
-
 /**
  * This class handles the general update or creation of issues and nothing more.
  *
@@ -98,7 +96,9 @@ class IssueService implements UserInfo {
             IssueExtraProperty.IRB_REVIEWED_PROTOCOL,
             IssueExtraProperty.HUMAN_SUBJECTS,
             IssueExtraProperty.ADMIN_COMMENTS,
-            IssueExtraProperty.FINANCIAL_CONFLICT
+            IssueExtraProperty.FINANCIAL_CONFLICT,
+            IssueExtraProperty.FINANCIAL_CONFLICT_ANSWER_YES
+
     ]
 
 
