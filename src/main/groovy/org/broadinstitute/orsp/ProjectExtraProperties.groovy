@@ -124,6 +124,6 @@ class ProjectExtraProperties {
         this.setTextOtherNotEngagedCategory(project.getTextOtherNotEngagedCategory() ?: "")
         this.setAdminComments(project.getAdminComments() ?: "")
         this.setFinancialConflict(project.getFinancialConflict() ?: "")
-        this.setFinancialConflictAnswerYes(project.getFinancialConflictAnswerYes() ?: "")
+        this.setFinancialConflictAnswerYes(project.getFinancialConflictDescription() ?: "")
     }
 }
