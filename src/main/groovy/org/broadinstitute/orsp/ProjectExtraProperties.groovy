@@ -61,7 +61,7 @@ class ProjectExtraProperties {
     String assignedAdmin;
     String adminComments;
     String financialConflict;
-    String financialConflictAnswerYes;
+    String financialConflictDescription;
 
     ProjectExtraProperties(Issue project) {
         // General Data
@@ -124,6 +124,6 @@ class ProjectExtraProperties {
         this.setTextOtherNotEngagedCategory(project.getTextOtherNotEngagedCategory() ?: "")
         this.setAdminComments(project.getAdminComments() ?: "")
         this.setFinancialConflict(project.getFinancialConflict() ?: "")
-        this.setFinancialConflictAnswerYes(project.getFinancialConflictDescription() ?: "")
+        this.setFinancialConflictDescription(project.getFinancialConflictDescription() ?: "")
     }
 }
