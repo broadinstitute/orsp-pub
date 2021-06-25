@@ -4,6 +4,7 @@ import gorm.logical.delete.LogicalDelete
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.utils.IssueUtils
 
+
 class Issue implements LogicalDelete<Issue> {
 
     Integer id
@@ -149,6 +150,9 @@ class Issue implements LogicalDelete<Issue> {
     transient String getAdminComments() { getExtraProperties().find { it.name == IssueExtraProperty.ADMIN_COMMENTS}?.value }
 
     transient String getFinancialConflict() { getExtraProperties().find { it.name == IssueExtraProperty.FINANCIAL_CONFLICT}?.value }
+
+    transient String getFinancialConflictDescription() { getExtraProperties().find { it.name == IssueExtraProperty.FINANCIAL_CONFLICT_DESCRIPTION}?.value }
+
 
     // Others
     transient String getCollPublication() {
