@@ -96,8 +96,7 @@ class IssueService implements UserInfo {
             IssueExtraProperty.IRB_REVIEWED_PROTOCOL,
             IssueExtraProperty.HUMAN_SUBJECTS,
             IssueExtraProperty.ADMIN_COMMENTS,
-            IssueExtraProperty.FINANCIAL_CONFLICT,
-            IssueExtraProperty.FINANCIAL_CONFLICT_DESCRIPTION
+            IssueExtraProperty.FINANCIAL_CONFLICT
 
     ]
 

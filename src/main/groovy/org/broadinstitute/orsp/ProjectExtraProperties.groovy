@@ -63,6 +63,7 @@ class ProjectExtraProperties {
     String financialConflict;
     String financialConflictDescription;
 
+
     ProjectExtraProperties(Issue project) {
         // General Data
         this.setSummary(project.getExtraPropertySummary() ?: "")
@@ -125,5 +126,6 @@ class ProjectExtraProperties {
         this.setAdminComments(project.getAdminComments() ?: "")
         this.setFinancialConflict(project.getFinancialConflict() ?: "")
         this.setFinancialConflictDescription(project.getFinancialConflictDescription() ?: "")
+
     }
 }
