@@ -4,7 +4,6 @@ import gorm.logical.delete.LogicalDelete
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.utils.IssueUtils
 
-import javax.ws.rs.HEAD
 
 class Issue implements LogicalDelete<Issue> {
 
