@@ -44,7 +44,7 @@ dependencies {
     compile (group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9.2') {
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
     }
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.8' // Required for databind
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.4' // Required for databind
     compile group: 'xerces', name: 'xercesImpl', version: '2.12.0'
     compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
