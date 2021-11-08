@@ -853,21 +853,19 @@ const AdminOnly = hh(class AdminOnly extends Component {
               onChange: this.radioBtnHandler,
               readOnly: !this.state.isAdmin
             }),
-
             InputFieldText({
-                isRendered: this.state.formData.financialConflict === 'yes',
-                id: "inputTextFinancialConflict",
-                name: "financialConflictDescription",
-                label: " Please describe financial conflict:",
-                value: this.state.formData.financialConflictDescription,
-                disabled: false,
-                required: true,
-                onChange: this.textHandler,
-                error: this.state.textFinancialConflictError,
-                errorMessage: "Required field",
-                required: true
+              isRendered: this.state.formData.financialConflict === 'yes',
+              id: "inputTextFinancialConflict",
+              name: "financialConflictDescription",
+              label: " Please describe financial conflict:",
+              value: this.state.formData.financialConflictDescription,
+              disabled: false,
+              required: true,
+              onChange: this.textHandler,
+              error: this.state.textFinancialConflictError,
+              errorMessage: "Required field",
+              required: true
             })
-
           ]),
         ]),
         AlertMessage({
