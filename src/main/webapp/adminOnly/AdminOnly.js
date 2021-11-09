@@ -125,6 +125,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
       formData.assignedReviewer = isEmpty(issue.data.extraProperties.assignedAdmin) ? '' : JSON.parse(issue.data.extraProperties.assignedAdmin);
       formData.adminComments = issue.data.extraProperties.adminComments;
       formData.financialConflict = issue.data.extraProperties.financialConflict;
+      formData.financialConflictDescription = issue.data.extraProperties.financialConflictDescription;
       initial = createObjectCopy(formData);
       if (this._isMounted) {
         this.setState(prev => {
@@ -335,6 +336,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
     form.assignedAdmin = JSON.stringify(this.state.formData.assignedReviewer);
     form.adminComments = isEmpty(this.state.formData.adminComments) ? '--' : this.state.formData.adminComments;
     form.financialConflict = this.state.formData.financialConflict;
+    form.financialConflictDescription = this.state.formData.financialConflictDescription;
 
     if (this.state.formData.initialReviewType.value === 'Exempt') {
       form.categoryTwo = this.state.formData.categoryTwo;
@@ -851,21 +853,19 @@ const AdminOnly = hh(class AdminOnly extends Component {
               onChange: this.radioBtnHandler,
               readOnly: !this.state.isAdmin
             }),
-
             InputFieldText({
-                isRendered: this.state.formData.financialConflict === 'yes',
-                id: "inputTextFinancialConflict",
-                name: "textFinancialConflict",
-                label: " Please describe financial conflict:",
-                value: this.state.formData.textFinancialConflict,
-                disabled: false,
-                required: true,
-                onChange: this.textHandler,
-                error: this.state.textFinancialConflictError,
-                errorMessage: "Required field",
-                required: true
+              isRendered: this.state.formData.financialConflict === 'yes',
+              id: "inputTextFinancialConflict",
+              name: "financialConflictDescription",
+              label: " Please describe financial conflict:",
+              value: this.state.formData.financialConflictDescription,
+              disabled: false,
+              required: true,
+              onChange: this.textHandler,
+              error: this.state.textFinancialConflictError,
+              errorMessage: "Required field",
+              required: true
             })
-
           ]),
         ]),
         AlertMessage({
