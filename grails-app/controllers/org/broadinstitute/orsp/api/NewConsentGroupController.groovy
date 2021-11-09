@@ -182,41 +182,27 @@ class NewConsentGroupController extends AuthenticatedController {
             UtilityClass.registerIssueMarshaller()
             try {
                 LinkedHashMap consentGroups = consentService.findProjectConsentGroups(params.projectKey)
-                
-                     for (Map.Entry<String, Object> entry : consentGroups.entrySet()) {
-                        String key = entry.getKey();
-                        Object value = entry.getValue();
-                        if(key == "consentGroups"){
-                            for (Object key1 : value) {
-//                                System.out.println(key1.getAt("summary")+","+key1.getAt("projectKey"));
-                                LinkedHashMap consentGroup = queryService.getConsentGroupByKey(key1.getAt("projectKey"))
-                                for (Map.Entry<String, Object> entry1 : consentGroup.entrySet()) {
-                                    String key2 = entry1.getKey();
-                                    if(key2 == "extraProperties"){
-                                        for (Object key3 : entry1.getValue()) {
-                                            String institute = key3.getAt("institutionalSources");
-                                            if(institute != null && institute != "[]" ){
-                                                int intIndex = institute.indexOf("country")
-
-                                                String sub = institute.substring(intIndex,institute.length()-3).substring(9).substring(1)
-                                                //    System.out.println(">>"+sub);
-
-                                                key1.putAt("summary",key1.getAt("summary")+' / '+key3.getAt("collInst")+' / '+sub)
+                consentGroups.each {consentKeys, consentValues ->
+                    if(consentKeys == "consentGroups"){
+                        for (Object consentObject : consentValues) {
+                            LinkedHashMap consentGroup = queryService.getConsentGroupByKey(consentObject.getAt("projectKey"))
+                                consentGroup.each {groupkey, groupValue ->
+                                    if(groupkey == "extraProperties"){
+                                        for (Object groupObject : groupValue) {
+                                            String countrySource = groupObject.getAt("institutionalSources")
+                                            if(countrySource != null && countrySource != "[]" ){
+                                                int index = countrySource.indexOf("country")
+                                                String country = countrySource.substring(index,countrySource.length()-3).substring(9).substring(1)
+                                                consentObject.putAt("summary",consentObject.getAt("summary")+' / '+groupObject.getAt("collInst")+' / '+country)
                                             }else{
-                                                key1.putAt("summary",key1.getAt("summary")+' / '+key3.getAt("collInst"))
+                                                consentObject.putAt("summary",consentObject.getAt("summary")+' / '+groupObject.getAt("collInst"))
                                             }
-
-
                                         }
                                     }
                                 }
-
-                            }
-
                         }
-
                     }
-                
+                }   
                 response.status = 200
                 JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
                     render( consentGroups as JSON)
