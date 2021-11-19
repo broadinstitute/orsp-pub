@@ -194,7 +194,7 @@ class NewConsentGroupController extends AuthenticatedController {
                                             if(countrySource != null && countrySource != "[]" ){
                                                 def parser = new JsonSlurper()
                                                 def jsonData = parser.parseText(countrySource)
-                                                String country = "";
+                                                String country ="";
                                                 jsonData.each {
                                                     country+= it.country+","
                                                 }
