@@ -4,6 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonParser
 import grails.converters.JSON
 import grails.rest.Resource
+import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.CollectionLinkStatus
@@ -191,8 +192,13 @@ class NewConsentGroupController extends AuthenticatedController {
                                         for (Object groupObject : groupValue) {
                                             String countrySource = groupObject.getAt("institutionalSources")
                                             if(countrySource != null && countrySource != "[]" ){
-                                                int index = countrySource.indexOf("country")
-                                                String country = countrySource.substring(index,countrySource.length()-3).substring(9).substring(1)
+                                                def parser = new JsonSlurper()
+                                                def jsonData = parser.parseText(countrySource)
+                                                String country = "";
+                                                jsonData.each {
+                                                    country+= it.country+","
+                                                }
+                                                country = country.substring(0, country.length() - 1)
                                                 consentObject.putAt("summary",consentObject.getAt("summary")+' / '+groupObject.getAt("collInst")+' / '+country)
                                             }else{
                                                 consentObject.putAt("summary",consentObject.getAt("summary")+' / '+groupObject.getAt("collInst"))
