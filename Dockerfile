@@ -13,7 +13,7 @@ RUN apt-get -qq -y install \
 
 RUN mkdir /root/.nvm
 ENV NVM_DIR /root/.nvm
-ENV NODE_VERSION 10.16.0
+ENV NODE_VERSION 14.17.6
 ARG build_env="dev"
 
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
