@@ -196,9 +196,9 @@ class NewConsentGroupController extends AuthenticatedController {
                                                 def jsonData = parser.parseText(countrySource)
                                                 String country = "";
                                                 jsonData.each {
-                                                   country+= it.country+","
+                                                   country+= it.country+", "
                                                 }
-                                                country = country.substring(0, country.length() - 1)
+                                                country = country.substring(0, country.length() - 2)
                                                 consentObject.putAt("summary",consentObject.getAt("summary")+' / '+groupObject.getAt("collInst")+' / '+country)
                                             }else{
                                                 consentObject.putAt("summary",consentObject.getAt("summary")+' / '+groupObject.getAt("collInst"))
