@@ -189,7 +189,17 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
       return prev;
     });
   };
-
+  
+submittedToIRB = (e, consentKey) => {
+    e.stopPropagation();
+    this.setState(prev => {
+      prev.action = 'submit to IRB';
+      prev.showConfirmationModal = true;
+      prev.actionConsentKey = consentKey;
+      return prev;
+    })
+  };
+  
   reject = (e, consentKey) => {
     e.stopPropagation();
     this.setState(prev => {
@@ -237,6 +247,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
           showSearchBar : false,
           customHandlers : {
             approveHandler: this.approve,
+            submittedToIRBHandler: this.submittedToIRB,
             rejectHandler: this.reject,
             unlinkHandler: this.unlink,
             requestClarificationHandler: this.requestClarification
