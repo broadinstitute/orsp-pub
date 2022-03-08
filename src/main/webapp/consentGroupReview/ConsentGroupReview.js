@@ -41,7 +41,6 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
       discardEditsDialog: false,
       approveDialog: false,
       approveInfoDialog: false,
-      submitToIRBDialog: false,
       rejectProjectDialog: false,
       unlinkDialog: false,
       deleteDialog: false,
@@ -394,35 +393,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
         });
       })
   };
-submitToIRBConsentGroup = () => {
-    this.props.showSpinner();
-    this.setState({ disableApproveButton: true });
-    const data = { approvalStatus: "Submitted To IRB" };
-    ConsentGroup.approve(this.props.consentKey, data).then(
-      () => {
-        if (this.state.reviewSuggestion) {
-          let consentGroup = this.getConsentGroup();
-          ConsentGroup.updateConsent(consentGroup, this.props.consentKey).then(resp => {
-            this.removeEdits();
-          }).catch(error => {
-            this.props.hideSpinner();
-            console.error(error);
-          });
-        }
-        this.setState(prev => {
-          prev.formData.consentForm.approvalStatus = data.approvalStatus;
-          prev.current.consentExtraProps.projectReviewApproved = true;
-          prev.submitToIRBDialog = false;
-          return prev;
-        }, () => {
-          Project.getProject(this.props.consentKey).then(
-            issue => {
-              this.props.updateDetailsStatus(issue.data);
-              this.props.hideSpinner();
-            })
-        });
-      })
-  };
+
   rejectConsentGroup() {
     this.props.showSpinner();
     ConsentGroup.rejectConsent(this.props.consentKey).then(resp => {
@@ -489,20 +460,7 @@ submitToIRBConsentGroup = () => {
       });
     }
   };
-handlesubmitToIRBDialog = () => {
-    if (this.isValid()) {
-      this.setState({
-        submitToIRBDialog: true,
-        errorSubmit: false,
-      });
-    }
-    else {
-      this.props.hideSpinner();
-      this.setState({
-        errorSubmit: true
-      });
-    }
-  };
+
   enableEdit = (e) => () => {
     this.props.showSpinner();
     this.getReviewSuggestions();
@@ -1064,14 +1022,6 @@ handlesubmitToIRBDialog = () => {
           actionLabel: 'Yes'
         }, []),
         ConfirmationDialog({
-          closeModal: this.toggleState('submitToIRBDialog'),
-          show: this.state.submitToIRBDialog,
-          handleOkAction: this.submitToIRBConsentGroup,
-          title: 'Submit To IRB - Project Information',
-          bodyText: 'Are you sure you want to submit this Sample/Data Cohort Details to IRB?',
-          actionLabel: 'Yes'
-        }, []),
-        ConfirmationDialog({
           closeModal: this.toggleState('dialog'),
           show: this.state.dialog,
           handleOkAction: this.rejectConsentGroup,
@@ -1250,15 +1200,7 @@ handlesubmitToIRBDialog = () => {
             isRendered: this.state.current.consentExtraProps.projectReviewApproved !== true && this.state.isAdmin && this.state.readOnly === true,
             disabled: this.state.disableApproveButton
           }, ["Approve"]),
-          
-          /*visible for Admin in readOnly mode and if the consent group is in "pending" status*/
-          button({
-            className: "btn buttonPrimary floatRight",
-            onClick: this.handlesubmitToIRBDialog,
-            isRendered: this.state.current.consentExtraProps.projectReviewApproved !== true && this.state.isAdmin && this.state.readOnly === true,
-            disabled: this.state.disableApproveButton
-          }, ["Submit to IRB"]),
-          
+
           /*visible for Admin in readOnly mode and if there are changes to review*/
           button({
             className: "btn buttonPrimary floatRight",

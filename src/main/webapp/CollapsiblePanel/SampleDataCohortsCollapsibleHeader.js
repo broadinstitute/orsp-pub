@@ -6,137 +6,93 @@ import '../components/Btn.css';
 const styles = {
   pointer: {
     auto: { pointerEvents: 'auto' },
-    none: { pointerEvents: 'none' },
+    none: { pointerEvents: 'none' }
   },
   statusBase: {
     float: 'right',
     padding: '5px 18px',
     borderRadius: '4px',
     marginRight: '15px',
-    cursor: 'default',
+    cursor: 'default'
   },
   statusApproved: {
     backgroundColor: '#DFF0D8',
-    color: '#3C763D',
+    color: '#3C763D'
   },
   statusPending: {
     backgroundColor: '#F0E5A9',
-    color: '#333333',
-  },
-  statusSubmittedToIRB: {
-    backgroundColor: '#fac5af',
-    color: '#40281c',
+    color: '#333333'
   },
   link: {
-    textDecoration: 'none',
-    display: 'inline-block',
-    height: '42px',
-    lineHeight: '30px',
-    color: '#000000',
-  },
+      textDecoration: "none",
+      display: "inline-block",
+      height: "42px",
+      lineHeight: "30px",
+      color:"#000000",
+  }
 };
 
-const approved = { ...styles.statusBase, ...styles.statusApproved };
-const pending = { ...styles.statusBase, ...styles.statusPending };
-const submittedToIRB = { ...styles.statusBase, ...styles.statusSubmittedToIRB };
+const approved = { ...styles.statusBase, ...styles.statusApproved};
+const pending = { ...styles.statusBase, ...styles.statusPending};
 
 const STATUS = {
   approved: 'approved',
-  pending: 'pending',
-  submittedToIRB: 'submittedtoirb',
+  pending: 'pending'
 };
 
-export const SampleDataCohortsCollapsibleHeader = hh(
-  class SampleDataCohortsCollapsibleHeader extends Component {
-    constructor(props) {
-      super(props);
-      this.state = {};
-    }
-
-    linkToConsentGroup = (projectKey, summary) => {
-      let linkStyle = { ...styles.pointer.auto, ...styles.link };
-      return a(
-        {
-          onClick: (e) => e.stopPropagation(),
-          style: linkStyle,
-          onMouseEnter: (e) =>
-            (e.currentTarget.style.textDecoration = 'underline'),
-          onMouseLeave: (e) => (e.currentTarget.style.textDecoration = 'none'),
-          href: buildUrlToConsentGroup(
-            component.serverURL,
-            this.props.element.consent.projectKey,
-            this.props.extraData.issue.projectKey
-          ),
-        },
-        [projectKey + ': ' + summary]
-      );
+export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsCollapsibleHeader extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
     };
+  }
 
-    render() {
-      const {
-        unlinkHandler,
-        rejectHandler,
-        submittedToIRBHandler,
-        approveHandler,
-        requestClarificationHandler,
-      } = this.props.element.customHandlers;
-      const { projectKey, summary } = this.props.element.consent;
-      const status = isEmpty(this.props.element.consent.status)
-        ? ''
-        : this.props.element.consent.status.toLowerCase();
+  linkToConsentGroup = (projectKey, summary) => {
+    let linkStyle = {...styles.pointer.auto, ...styles.link};
+    return a({
+      onClick : (e) => e.stopPropagation(),
+      style: linkStyle,
+      onMouseEnter: (e) => e.currentTarget.style.textDecoration = "underline",
+      onMouseLeave: (e) => e.currentTarget.style.textDecoration = "none",
+    href: buildUrlToConsentGroup(component.serverURL, this.props.element.consent.projectKey, this.props.extraData.issue.projectKey)
+    },[
+      projectKey + ': ' + summary
+    ])
+  };
 
-      return div({ style: { width: '100%' } }, [
-        a({ className: 'pull-right' }, [
-          span(
-            {
-              className: 'consent-accordion-toggle btn btn-default',
-              style: styles.pointer.auto,
-            },
-            [i({ className: 'glyphicon glyphicon-chevron-down' }, [])]
-          ),
+  render() {
+    const { unlinkHandler, rejectHandler, approveHandler, requestClarificationHandler } = this.props.element.customHandlers;
+    const { projectKey, summary} = this.props.element.consent;
+    const  status = isEmpty(this.props.element.consent.status) ? '' : this.props.element.consent.status.toLowerCase();
+
+    return(
+      div({ style: { width: '100%' } }, [
+        a({className:'pull-right'}, [
+          span({
+            className: 'consent-accordion-toggle btn btn-default',
+            style: styles.pointer.auto
+            },[ i({ className: 'glyphicon glyphicon-chevron-down' },[])
+          ])
         ]),
-        span(
-          {
-            style:
-              status === STATUS.approved
-                ? approved
-                : pending || status === STATUS.submittedToIRB
-                ? submittedToIRB
-                : pending,
-          },
-          [
-            status === STATUS.approved
-              ? 'Approved'
-              : 'Pending ORSP Review' || status === STATUS.submittedToIRB
-              ? 'Pending IRB Review'
-              : 'Pending ORSP Review',
-          ]
-        ),
-        div({ className: 'panel-title' }, [
+        span({ style: status === STATUS.approved ? approved : pending },
+          [ status === STATUS.approved ? 'Approved' : 'Pending'
+        ]),
+        div({className: 'panel-title'}, [
           div({className: 'cta-container'}, [
             button({
-              isRendered: component.isAdmin && (status === STATUS.pending || STATUS.submittedToIRB || isEmpty(status)),
+              isRendered: component.isAdmin && (status === STATUS.pending || isEmpty(status)),
               className: 'btn btn-default btn-sm confirmationModal',
               style: styles.pointer.auto,
               onClick: (e) => approveHandler(e, projectKey)
             },['Approve']),
             button({
-              isRendered:
-              component.isAdmin &&
-              (status === STATUS.pending || isEmpty(status)),
-              className: 'btn btn-default btn-sm confirmationModal',
-              style: styles.pointer.auto,
-              onClick: (e) => submittedToIRBHandler(e, projectKey),
-              },['Submit to IRB']
-            ),
-            button({
-              isRendered: component.isAdmin && (status === STATUS.pending || STATUS.submittedToIRB || isEmpty(status)),
+              isRendered: component.isAdmin && (status === STATUS.pending || isEmpty(status)),
               className: 'btn btn-default btn-sm confirmationModal',
               style: styles.pointer.auto,
               onClick: (e) => rejectHandler(e, projectKey)
             },['Reject']),
             button({
-              isRendered: status === STATUS.approved || STATUS.submittedToIRB && component.isAdmin,
+              isRendered: status === STATUS.approved && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
               style: styles.pointer.auto,
               onClick: (e) => unlinkHandler(e, projectKey)
@@ -144,22 +100,19 @@ export const SampleDataCohortsCollapsibleHeader = hh(
           ]),
 
           div({ className: 'right-container' }, [
-            button(
-              {
-                isRendered: component.isAdmin,
-                className: 'request-clarification',
-                style: styles.pointer.auto,
-                onClick: (e) => requestClarificationHandler(e, projectKey),
-              },
-              [
-                span({ className: 'req-tooltip' }, ['Request Clarification']),
-                span({ className: 'arrow-down' }, []),
-              ]
-            ),
-            this.linkToConsentGroup(projectKey, summary),
-          ]),
-        ]),
-      ]);
-    }
+            button({
+              isRendered: component.isAdmin,
+              className:'request-clarification',
+              style: styles.pointer.auto,
+              onClick:(e) =>  requestClarificationHandler(e, projectKey)
+            },[
+              span({ className: 'req-tooltip' },[ 'Request Clarification']),
+              span({ className: 'arrow-down' },[])
+            ]),
+            this.linkToConsentGroup(projectKey, summary)
+          ])
+        ])
+      ])
+    )
   }
-);
+});
