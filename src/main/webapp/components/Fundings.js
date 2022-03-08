@@ -8,7 +8,7 @@ import { isEmpty } from "../util/Utils";
 const fundingOptions = [
   { value: 'federal_prime', label: 'Federal Prime' },
   { value: 'federal_sub-award', label: 'Federal Sub-award' },
-  { value: 'internal_broad', label: 'Internal Broad' },
+  { value: 'internal_broad', label: 'Broad Institutional Award' },
   { value: 'purchase_order', label: 'Purchase Order' },
   { value: 'corporate_funding', label: 'Corporate Funding' },
   { value: 'foundation', label: 'Foundation' },
@@ -178,7 +178,7 @@ export const Fundings = hh(class Fundings extends Component {
                 label({ className: "inputFieldLabel noMargin" }, ["Funding Source"])
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                label({ className: "inputFieldLabel noMargin" }, ["Sponsor Name"])
+                label({ className: "inputFieldLabel noMargin" }, ["Sponsor Name/Payer"])
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                 label({ className: "inputFieldLabel noMargin" }, ["Award Number/Identifier"])
@@ -226,7 +226,7 @@ export const Fundings = hh(class Fundings extends Component {
                       value: this.props.edit ? rd.future.sponsor : rd.sponsor,
                       currentValue: this.props.edit ? current[idx].current.sponsor : rd.sponsor,
                       disabled: false,
-                      required: false,
+                      required: this.props.edit ? rd.future.sponsor="legacy" : true,
                       onChange: this.handleFundingChange,
                       readOnly: this.props.readOnly
                     })
@@ -242,7 +242,7 @@ export const Fundings = hh(class Fundings extends Component {
                       value: this.props.edit ? rd.future.identifier: rd.identifier,
                       currentValue: this.props.edit ? current[idx].current.identifier : rd.identifier,
                       disabled: false,
-                      required: false,
+                      required: rd.future.sponsor.value === 'federal_prime' || rd.future.sponsor.value === 'federal_sub-award' ? true : false,
                       onChange: this.handleFundingChange,
                       readOnly: this.props.readOnly
                     })
