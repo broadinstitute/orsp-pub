@@ -226,7 +226,7 @@ export const Fundings = hh(class Fundings extends Component {
                       value: this.props.edit ? rd.future.sponsor : rd.sponsor,
                       currentValue: this.props.edit ? current[idx].current.sponsor : rd.sponsor,
                       disabled: false,
-                      required: true,
+                      required: this.props.edit ? false : true,
                       onChange: this.handleFundingChange,
                       readOnly: this.props.readOnly
                     })
