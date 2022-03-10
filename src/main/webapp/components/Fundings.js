@@ -242,7 +242,7 @@ export const Fundings = hh(class Fundings extends Component {
                       value: this.props.edit ? rd.future.identifier: rd.identifier,
                       currentValue: this.props.edit ? current[idx].current.identifier : rd.identifier,
                       disabled: false,
-                      required: (rd.source.value === 'federal_prime' || rd.source.value === 'federal_sub-award'),
+                      required: this.props.edit ? ( rd.future.source.value === 'federal_prime' ? true : rd.future.source.value === 'federal_sub-award' ? true : false) : (rd.source.value  === 'federal_prime' ? true : rd.source.value === 'federal_sub-award' ? true : false),
                       onChange: this.handleFundingChange,
                       readOnly: this.props.readOnly
                     })
