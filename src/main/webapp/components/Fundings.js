@@ -164,19 +164,22 @@ export const Fundings = hh(class Fundings extends Component {
     return identifierHasError;
   };
   requiredIdentifierField(rd) {
+    let federalPrimeValue = 'federal_prime';
+    let federalSubAwardValue = 'federal_sub-award';
+    let federalSubAwardLabel = 'Federal Sub-award';
     if (this.props.edit){
-      if (rd.future.source.value == 'federal_prime' || rd.future.source.value == 'federal_sub-award') {
-      return true;
+      if (rd.future.source.value.toLowerCase() == federalPrimeValue.toLowerCase() || rd.future.source.label.toLowerCase() == federalSubAwardLabel.toLowerCase()) {
+        return true;
       } else {
-      return false;
+        return false;
       }
+    } else {
+      if (rd.source.value.toLowerCase() == federalPrimeValue.toLowerCase() || rd.source.label.toLowerCase() == federalSubAwardLabel.toLowerCase() ) {
+        return true;
       } else {
-      if (rd.source.value == 'federal_prime' || rd.source.value == 'federal_sub-award' ) {
-      return true;
-      } else {
-      return false;
+        return false;
       }
-      }
+    }
   }
   render() {
     let {
