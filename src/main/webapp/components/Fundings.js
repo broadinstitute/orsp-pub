@@ -163,21 +163,20 @@ export const Fundings = hh(class Fundings extends Component {
     }
     return identifierHasError;
   };
-  requiredIdentifierField(rd) { console.log('Function trigger');
-    if (this.props.edit){ console.log(rd+'rd Edit');
-    if (rd.future.source.value == 'federal_prime' || rd.future.source.value == 'federal_sub-award') {console.log(rd+'First if');
+  requiredIdentifierField(rd) { 
+    if (this.props.edit){
+    if (rd.future.source.value == 'federal_prime' || rd.future.source.value == 'federal_sub_award') {
     return true;
-    } else { console.log('First else');
+    } else {
     return false;
     }
-   } else { console.log(rd+'rd non-edit');
-   if (rd.source.value == 'federal_prime' || rd.source.value == 'federal_sub-award' ) { console.log(rd+'Second if');
-  return true;
-  } else { console.log('Second else');
-  return false;
-  }
-  }
-  }
+    } else {
+    if (rd.source.value == 'federal_prime' || rd.source.value == 'federal_sub_award' ) {
+    return true;
+    } else {
+    return false;
+    }
+    }
   render() {
     let {
       fundings = [],
