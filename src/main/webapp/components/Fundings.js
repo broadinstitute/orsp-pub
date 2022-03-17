@@ -165,16 +165,17 @@ export const Fundings = hh(class Fundings extends Component {
   };
   requiredIdentifierField(rd) { 
     if (this.props.edit){
-    if (rd.future.source.value == 'federal_prime' || rd.future.source.value == 'federal_sub_award') {
+    if (rd.future.source.value == 'federal_sub-award') {
     return true;
     } else {
     return false;
     }
     } else {
-    if (rd.source.value == 'federal_prime' || rd.source.value == 'federal_sub_award' ) {
+    if (rd.source.value == 'federal_sub-award' ) {
     return true;
     } else {
     return false;
+    }
     }
     }
   render() {
