@@ -158,26 +158,12 @@ export const Fundings = hh(class Fundings extends Component {
   getIdentifierError = (element) => {
     let identifierHasError = false;
     const source = this.props.edit ? element.future.source : element.source;
-    if (this.props.fundingAwardNumberError && source.value === 'federal_prime') {
+    if (this.props.fundingAwardNumberError && source.value === 'federal_prime' && source.value === 'federal_sub-award') {
       identifierHasError = this.props.edit ? isEmpty(element.future.identifier): isEmpty(element.identifier)
     }
     return identifierHasError;
   };
-  requiredIdentifierField(rd) { 
-    if (this.props.edit){
-    if (rd.future.source.value == 'federal_sub-award') {
-    return true;
-    } else {
-    return false;
-    }
-    } else {
-    if (rd.source.value == 'federal_sub-award' ) {
-    return true;
-    } else {
-    return false;
-    }
-    }
-    }
+
   render() {
     let {
       fundings = [],
@@ -256,7 +242,7 @@ export const Fundings = hh(class Fundings extends Component {
                       value: this.props.edit ? rd.future.identifier: rd.identifier,
                       currentValue: this.props.edit ? current[idx].current.identifier : rd.identifier,
                       disabled: false,
-                      required: this.requiredIdentifierField(rd),
+                      required: false,
                       onChange: this.handleFundingChange,
                       readOnly: this.props.readOnly
                     })
