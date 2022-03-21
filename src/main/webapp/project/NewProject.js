@@ -289,7 +289,7 @@ const NewProject = hh(class NewProject extends Component {
           fundings = true;
           isValid = false;
         }
-        if (!fundings && funding.source.value === 'federal_prime' || funding.source.value === 'federal_sub-award' && isEmpty(funding.identifier) && isEmpty(funding.sponsor)) {
+        if (!fundings && funding.source.value === 'federal_prime' || funding.source.value === 'federal_sub-award' && isEmpty(funding.identifier) && !funding.sponsor) {
           fundingAwardNumber = true;
           isValid = false;
         }
