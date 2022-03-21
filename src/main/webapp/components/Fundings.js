@@ -164,6 +164,14 @@ export const Fundings = hh(class Fundings extends Component {
     return identifierHasError;
   };
 
+  getSponsorError = (element) => {
+    let sponsorHasError = false;
+    if (!this.props.edit && element.source.value) {
+      sponsorHasError = isEmpty(element.source);
+    }
+    return sponsorHasError;
+  }
+
   render() {
     let {
       fundings = [],
@@ -223,7 +231,7 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "sponsor",
                       label: "",
-                      error: this.props.edit ? false : true,
+                      error: this.getSponsorError(rd),
                       errorMessage: this.props.errorMessage,
                       value: this.props.edit ? rd.future.sponsor : rd.sponsor,
                       currentValue: this.props.edit ? current[idx].current.sponsor : rd.sponsor,
