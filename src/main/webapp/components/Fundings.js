@@ -223,10 +223,12 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "sponsor",
                       label: "",
+                      error: this.props.edit ? false : true,
+                      errorMessage: this.props.errorMessage,
                       value: this.props.edit ? rd.future.sponsor : rd.sponsor,
                       currentValue: this.props.edit ? current[idx].current.sponsor : rd.sponsor,
                       disabled: false,
-                      required: this.props.edit ? false : true,
+                      required: false,
                       onChange: this.handleFundingChange,
                       readOnly: this.props.readOnly
                     })
