@@ -131,6 +131,7 @@ export const Fundings = hh(class Fundings extends Component {
         }, () => this.props.updateFundings(this.state.fundings)
       )
     } else {
+      select[index].sponsor == '' ? "Legacy" : select[index].sponsor;
       let select = this.props.fundings;
       select[index].future.source = selectedOption;
       this.setState(prev => {
@@ -233,7 +234,7 @@ export const Fundings = hh(class Fundings extends Component {
                       label: "",
                       error: this.getSponsorError(rd),
                       errorMessage: this.props.errorMessage,
-                      value: this.props.edit ? rd.future.sponsor || "Legacy" : rd.sponsor,
+                      value: this.props.edit ? rd.future.sponsor : rd.sponsor,
                       currentValue: this.props.edit ? current[idx].current.sponsor : rd.sponsor,
                       disabled: false,
                       required: false,
