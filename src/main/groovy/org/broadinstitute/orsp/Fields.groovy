@@ -20,7 +20,7 @@ class Fields {
     }
 
     public static final List<String> FUNDING_SOURCES =
-            ["Federal Prime", "Federal Sub-award", "Internal Broad", "Purchase Order", "Corporate Funding", "Foundation", "Philanthropy", "Other"]
+            ["Federal Prime", "Federal Sub-award", "Broad Institutional Award", "Purchase Order", "Corporate Funding", "Foundation", "Philanthropy", "Other"]
 
     public static final Map<String, String> NOT_RESEARCH_MAP = [
             "10133":"This project does not constitute research.",

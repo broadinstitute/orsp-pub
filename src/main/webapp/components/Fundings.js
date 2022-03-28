@@ -131,6 +131,7 @@ export const Fundings = hh(class Fundings extends Component {
         }, () => this.props.updateFundings(this.state.fundings)
       )
     } else {
+      select[index].sponsor == '' ? "Legacy" : select[index].sponsor;
       let select = this.props.fundings;
       select[index].future.source = selectedOption;
       this.setState(prev => {
@@ -163,21 +164,15 @@ export const Fundings = hh(class Fundings extends Component {
     }
     return identifierHasError;
   };
-  requiredIdentifierField(rd) { 
-    if (this.props.edit){
-    if (rd.future.source.value == 'federal_sub-award') {
-    return true;
-    } else {
-    return false;
+
+  getSponsorError = (element) => {
+    let sponsorHasError = false;
+    if (!this.props.edit && element.source.value) {
+      sponsorHasError = !element.sponsor ? true : false;
     }
-    } else {
-    if (rd.source.value == 'federal_sub-award' ) {
-    return true;
-    } else {
-    return false;
-    }
-    }
-    }
+    return sponsorHasError;
+  }
+
   render() {
     let {
       fundings = [],
@@ -237,7 +232,9 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "sponsor",
                       label: "",
-                      value: this.props.edit ? rd.future.sponsor : rd.sponsor,
+                      error: this.getSponsorError(rd),
+                      errorMessage: this.props.errorMessage,
+                      value: this.props.edit ? rd.future.sponsor || "Legacy" : rd.sponsor,
                       currentValue: this.props.edit ? current[idx].current.sponsor : rd.sponsor,
                       disabled: false,
                       required: false,
@@ -251,7 +248,7 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "identifier",
                       label: "",
-                      error: this.getIdentifierError(rd),
+                      error: this.props.edit ? false : this.getIdentifierError(rd),
                       errorMessage: this.props.errorMessage,
                       value: this.props.edit ? rd.future.identifier: rd.identifier,
                       currentValue: this.props.edit ? current[idx].current.identifier : rd.identifier,
