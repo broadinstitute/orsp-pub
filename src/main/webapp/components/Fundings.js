@@ -131,7 +131,6 @@ export const Fundings = hh(class Fundings extends Component {
         }, () => this.props.updateFundings(this.state.fundings)
       )
     } else {
-      select[index].sponsor == '' ? "Legacy" : select[index].sponsor;
       let select = this.props.fundings;
       select[index].future.source = selectedOption;
       this.setState(prev => {
