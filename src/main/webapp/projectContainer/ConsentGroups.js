@@ -124,6 +124,11 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
         this.getProjectConsentGroups();
         this.closeConfirmationModal();
       });
+    } else if (this.state.action === "submit to IRB") {
+      ConsentCollectionLink.submittedToIRBLink(this.state.issue.projectKey, this.state.actionConsentKey).then(resp => {
+        this.getProjectConsentGroups();
+        this.closeConfirmationModal();
+      });
     } else if (this.state.action === 'remove') {
       DocumentHandler.deleteAttachmentByUuid(this.state.fileIdToRemove).
       then(resp => {
@@ -190,6 +195,15 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
     });
   };
 
+  submittedToIRB = (e, consentKey) => {
+    e.stopPropagation();
+    this.setState(prev => {
+      prev.action = 'submit to IRB';
+      prev.showConfirmationModal = true;
+      prev.actionConsentKey = consentKey;
+      return prev;
+  }
+
   reject = (e, consentKey) => {
     e.stopPropagation();
     this.setState(prev => {
@@ -239,6 +253,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
             approveHandler: this.approve,
             rejectHandler: this.reject,
             unlinkHandler: this.unlink,
+            submittedToIRBHandler: this.submittedToIRB,
             requestClarificationHandler: this.requestClarification
           }
         }

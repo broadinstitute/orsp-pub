@@ -93,6 +93,7 @@ export const UrlConstants = {
   sampleConsentLinkUrl: context + '/api/sample-consent-link',
   sampleBreakLinkUrl: context + '/api/break-link',
   sampleApproveLinkUrl: context + '/api/approve-link',
+  sampleSubmitToIRBLinkURL: context + '/api/submit-to-irb-link',
   historyUrl: context + '/api/history',
   restrictionUrl: context + '/dataUse/restriction',  
   showRestrictionUrl: context + '/dataUse/view',
