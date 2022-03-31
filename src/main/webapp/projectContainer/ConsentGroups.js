@@ -309,7 +309,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
           closeModal: this.closeConfirmationModal,
           show: this.state.showConfirmationModal,
           handleOkAction: this.handleOkConfirmation,
-          bodyText: 'Are you sure you want to ' + this.state.action +  ' this Sample / Data Cohort?',
+          bodyText: 'Are you sure you want to ' + (this.state.action === "submitToIRB" ? "submit to IRB" : this.state.action ) +  ' this Sample / Data Cohort?',
           actionLabel: 'Yes'
         }, []),
 
