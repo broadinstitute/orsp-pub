@@ -104,7 +104,7 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
               onClick: (e) => rejectHandler(e, projectKey)
             },['Reject']),
             button({
-              isRendered: (status === STATUS.approved || status === STATUS.pendingIRBReview) && component.isAdmin,
+              isRendered: (status === STATUS.approved) && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
               style: styles.pointer.auto,
               onClick: (e) => unlinkHandler(e, projectKey)
