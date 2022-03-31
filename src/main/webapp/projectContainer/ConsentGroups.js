@@ -202,7 +202,8 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
       prev.showConfirmationModal = true;
       prev.actionConsentKey = consentKey;
       return prev;
-  }
+    });
+  };
 
   reject = (e, consentKey) => {
     e.stopPropagation();
