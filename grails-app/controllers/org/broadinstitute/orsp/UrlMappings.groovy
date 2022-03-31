@@ -135,6 +135,7 @@ class UrlMappings {
         '/api/break-link'(controller: 'consentGroup', action: 'breakLink', method: 'POST')
 
         '/api/approve-link'(controller: 'newConsentGroup', action: 'approveLink', method: 'PUT')
+        '/api/submit-to-irb-link'(controller: 'newConsentGroup', action: 'submittedToIRBLink', method: 'PUT')
 
         '/api/osap/data-feed'(controller: 'api', action: 'osapDataFeed', method: 'GET')
 

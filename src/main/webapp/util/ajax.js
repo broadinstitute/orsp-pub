@@ -443,7 +443,7 @@ export const ConsentCollectionLink = {
 
   submittedToIRBLink(projectKey, consentKey) {
     return axios.put(UrlConstants.sampleSubmitToIRBLinkURL + '?projectKey='+ projectKey +"&consentKey=" + consentKey);
-  }
+  },
 
   approveLink(projectKey, consentKey) {
     return axios.put(UrlConstants.sampleApproveLinkUrl + '?projectKey='+ projectKey +"&consentKey=" + consentKey);

@@ -6,7 +6,8 @@ enum CollectionLinkStatus {
     APPROVED("Approved"),
     REJECTED("Rejected"),
     UNLINKED("Unlinked"),
-    PENDING("Pending")
+    PENDING("Pending"),
+    SUBMITTED_TO_IRB("PendingIRBReview")
 
     String name
 

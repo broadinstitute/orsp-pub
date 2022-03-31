@@ -43,7 +43,7 @@ const pendingIRBReview = { ...styles.statusBase, ...styles.statusPendingIRBRevie
 const STATUS = {
   approved: 'approved',
   pending: 'pending',
-  pendingIRBReview: 'pending irb review'
+  pendingIRBReview: 'pendingirbreview'
 };
 
 export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsCollapsibleHeader extends Component {
