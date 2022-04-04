@@ -284,14 +284,14 @@ class NewConsentGroupController extends AuthenticatedController {
         try {
             boolean isUpdated = queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, CollectionLinkStatus.SUBMITTED_TO_IRB.name)
             List<ConsentCollectionLink> links = queryService.findConsentCollectionLinksByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
-//            Issue issue = queryService.findByKey(params.projectKey);
-//            notifyService.sendAdminNotification(IssueType.SAMPLE_DATA_COHORTS.name, issue);
+            Issue issue = queryService.findByKey(params.projectKey);
+            notifyService.sendAdminNotification(IssueType.SAMPLE_DATA_COHORTS.name, issue);
             if (!isUpdated) {
                 response.status = 400
                 render([message: 'Error updating collection links, please check specified parameters.'] as JSON)
             } else {
                 response.status = 200
-                render(links as JSON)
+                render(issue as JSON)
             }
         } catch (Exception e) {
             handleException(e)
