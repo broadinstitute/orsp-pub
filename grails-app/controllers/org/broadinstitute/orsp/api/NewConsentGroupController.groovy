@@ -291,7 +291,7 @@ class NewConsentGroupController extends AuthenticatedController {
                 render([message: 'Error updating collection links, please check specified parameters.'] as JSON)
             } else {
                 response.status = 200
-                render(issue as JSON)
+                render(links as JSON)
             }
         } catch (Exception e) {
             handleException(e)
