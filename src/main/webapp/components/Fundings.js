@@ -166,9 +166,7 @@ export const Fundings = hh(class Fundings extends Component {
 
   getSponsorError = (element) => {
     let sponsorHasError = false;
-    if (this.props.edit && (element.future.source.value || element.current.source.value)) {
-      sponsorHasError = (!element.sponsor || (!element.future.sponsor || !element.current.sponsor))  ? true : false;
-    } else if (element.source.value) {
+    if (!this.props.edit && element.source.value) {
       sponsorHasError = !element.sponsor ? true : false;
     }
     return sponsorHasError;
@@ -249,7 +247,7 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "identifier",
                       label: "",
-                      error: this.getIdentifierError(rd),
+                      error: this.props.edit ? false : this.getIdentifierError(rd),
                       errorMessage: this.props.errorMessage,
                       value: this.props.edit ? rd.future.identifier: rd.identifier,
                       currentValue: this.props.edit ? current[idx].current.identifier : rd.identifier,
