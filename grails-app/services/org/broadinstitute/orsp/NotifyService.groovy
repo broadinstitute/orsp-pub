@@ -558,7 +558,7 @@ class NotifyService implements SendgridSupport, Status {
     }
 
     /**
-     * Send message to admins when project or consent group is created
+     * Send message to admins when a Sample/Data Cohort (or consent group) is created/added in a Project
      *
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
@@ -577,6 +577,30 @@ class NotifyService implements SendgridSupport, Status {
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
+
+
+    /**
+     * Send message to admins when project is created
+     *
+     * @param arguments NotifyArguments
+     * @return Response is a map entry with true/false and a reason for failure, if failed.
+     */
+    Map<Boolean, String> sendProjectAdminNotification(String type, Issue issue) {
+        User user = userService.findUser(issue.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(getAdminRecipient()),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: user.displayName + " created " + issue.projectKey + " - Your ORSP Review is Required",
+                        details: type,
+                        user: user,
+                        issue: issue)
+        arguments.view = "/notify/createProject"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+
 
     Map<Boolean, String> sendApprovedNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
@@ -659,7 +683,7 @@ class NotifyService implements SendgridSupport, Status {
     }
 
     Map<Boolean, String> sendEditsApprovedNotification(Issue issue, String editCreatorName, String sessionUsername) {
-        String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
+        String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Sample/Data Cohort" : "Project"
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
@@ -693,7 +717,7 @@ class NotifyService implements SendgridSupport, Status {
     }
 
     Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue, String editCreatorName, String sessionUsername) {
-        String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
+        String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Sample/Data Cohort" : "Project"
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
@@ -733,13 +757,13 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> consentGroupCreation(Issue issue, ConsentCollectionLink consentCollectionLink) {
         User user = userService.findUser(issue.reporter)
-        sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
+        sendAdminNotification(IssueType.SAMPLE_DATA_COHORTS.name, issue)
         sendSecurityInfo(issue, user, consentCollectionLink, user.displayName)
     }
 
     Map<Boolean, String> projectCreation(Issue issue) {
         User user = userService.findUser(issue.reporter)
-        sendAdminNotification(ProjectCGTypes.PROJECT.name, issue)
+        sendProjectAdminNotification(ProjectCGTypes.PROJECT.name, issue)
         sendApplicationSubmit(
                 new NotifyArguments(
                         toAddresses:  [user?.emailAddress],
