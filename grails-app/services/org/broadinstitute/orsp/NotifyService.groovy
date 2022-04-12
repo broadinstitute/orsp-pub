@@ -806,7 +806,7 @@ class NotifyService implements SendgridSupport, Status {
                         toAddresses: getUserApplicantSubmitter(project, consent),
                         ccAddresses: [],
                         fromAddress: getDefaultFromAddress(),
-                        subject: consent.projectKey + " - Your ORSP Consent Group added to " +
+                        subject: consent.projectKey + " - Your ORSP Sample/Data Cohort added to " +
                                 project.projectKey + (isApproved ? " has been approved" : " has been disapproved")
                                 + " by " + sessionUsername,
                         user: user,
