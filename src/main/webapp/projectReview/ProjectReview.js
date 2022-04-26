@@ -1370,7 +1370,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 onChange: () => { }
               }),
               InputFieldTextArea({
-                isRendered: this.state.current.projectExtraProps.broadInvestigator === 'yes',
+                isRendered: !isEmpty(this.state.formData.projectExtraProps.broadInvestigator) && this.state.formData.projectExtraProps.broadInvestigator === true,
                 id: "researchtext",
                 name: "researchtext",
                 label: "Please provide a rationale for why this project/work would not be considered as research",
