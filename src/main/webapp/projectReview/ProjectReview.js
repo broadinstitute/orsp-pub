@@ -1374,7 +1374,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 id: "researchtext",
                 name: "researchtext",
                 label: "Please provide a rationale for why this project/work would not be considered as research",
-                value: this.state.current.projectExtraProps.researchtext,
+                value: this.state.formData.projectExtraProps.researchtext,
                 currentValue: this.state.current.projectExtraProps.researchtext,                
                 required: true,
                 errorMessage: "Required field",
