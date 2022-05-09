@@ -589,7 +589,7 @@ class NotifyService implements SendgridSupport, Status {
         Issue consent = Issue.findByProjectKey(consentKey)
         NotifyArguments arguments =
                 new NotifyArguments(
-                        toAddresses: 'shaji@broadinstitute.org',
+                        toAddresses: Collections.singletonList('shaji@broadinstitute.org'),
                         fromAddress: getDefaultFromAddress(),
                         subject: consentKey + " - Your " + type + ", added to " + issue.projectKey + "  is now Pending IRB review",
                         details: type,
