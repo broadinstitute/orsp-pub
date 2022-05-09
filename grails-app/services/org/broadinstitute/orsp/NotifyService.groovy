@@ -587,6 +587,7 @@ class NotifyService implements SendgridSupport, Status {
     Map<Boolean, String> sendAdminNotificationforIRB(String type, Issue issue, String consentKey) {
         User user = userService.findUser(issue.reporter)
         Issue consent = Issue.findByProjectKey(consentKey)
+
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList('shaji@broadinstitute.org'),
