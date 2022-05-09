@@ -595,7 +595,8 @@ class NotifyService implements SendgridSupport, Status {
                         subject: consentKey + " - Your " + type + ", added to " + issue.projectKey + "  is now Pending IRB review",
                         details: type,
                         user: user,
-                        issue: issue)
+                        issue: issue,
+                        consent: consent)
         arguments.view = "/notify/irbSubmit"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
