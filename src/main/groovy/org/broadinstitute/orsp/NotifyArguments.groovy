@@ -16,7 +16,6 @@ class NotifyArguments {
 
     User user
     Issue issue
-    Issue consent
 
     @Override
     String toString() {
@@ -33,7 +32,6 @@ class NotifyArguments {
                 details this.details
                 userEmail this.user?.emailAddress
                 issue this.issue?.projectKey
-                consent this.consent?.projectKey
                 values new JsonBuilder(this.values).toString()
             }
         }
