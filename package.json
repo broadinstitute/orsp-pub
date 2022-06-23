@@ -33,7 +33,7 @@
     "file-loader": "2.0.0",
     "img-loader": "2.0.1",
     "jest": "23.6.0",
-    "jsdom": "10.1.0",
+    "jsdom": "16.5.0",
     "react-test-renderer": "16.6.0",
     "style-loader": "0.23.1",
     "url-loader": "0.5.8",
