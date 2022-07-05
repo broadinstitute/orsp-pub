@@ -584,6 +584,7 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
+
 //    Map<Boolean, String> sendAdminNotificationforIRB(String type, Issue issue, String consentKey) {
 //        User user = userService.findUser(issue.reporter)
 //            Issue consent = Issue.findByProjectKey(consentKey)
