@@ -287,6 +287,7 @@ class NewConsentGroupController extends AuthenticatedController {
             Issue issue = queryService.findByKey(params.projectKey);
             log.info("params" + params + "\nconsentKey" + params.consentKey + "\nprojectKey" + params.projectKey );
             log.info("Issue is:" + issue);
+
            notifyService.sendAdminNotificationforIRB(IssueType.SAMPLE_DATA_COHORTS.name, params.projectKey.toString(), params.consentKey.toString());
 //            notifyService.sendAdminNotification(IssueType.SAMPLE_DATA_COHORTS.name, issue);
             if (!isUpdated) {
