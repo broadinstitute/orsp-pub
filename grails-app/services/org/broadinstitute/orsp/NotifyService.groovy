@@ -588,10 +588,10 @@ class NotifyService implements SendgridSupport, Status {
     Map<Boolean, String> sendAdminNotificationforIRB(String type, String projectKey, String consentKey) {
         log.info("consentKey:" + consentKey + "\nprojectKey:" + projectKey + "\ntype:" + type);
         User user = userService.findUser(issue.reporter)
-        Issue consent = Issue.findByProjectKey(consentKey)
-        Issue issue = Issue.findByProjectKey(projectKey)
         log.info("\nuser:" + user);
+        Issue consent = Issue.findByProjectKey(consentKey)
         log.info("\nconsent:" + consent);
+        Issue issue = Issue.findByProjectKey(projectKey)
         log.info("\nproject:" + issue)
         NotifyArguments arguments =
                 new NotifyArguments(
