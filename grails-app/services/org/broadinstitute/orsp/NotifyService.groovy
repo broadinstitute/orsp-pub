@@ -585,23 +585,26 @@ class NotifyService implements SendgridSupport, Status {
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
 
-//    Map<Boolean, String> sendAdminNotificationforIRB(String type, Issue issue, String consentKey) {
-//        User user = userService.findUser(issue.reporter)
-//            Issue consent = Issue.findByProjectKey(consentKey)
-//            Issue project = Issue.findByProjectKey(projectKey)
-//        NotifyArguments arguments =
-//                new NotifyArguments(
-//                        toAddresses: Collections.singletonList('shaji@broadinstitute.org'),
-//                        fromAddress: getDefaultFromAddress(),
-//                        subject: consentKey + " - Your " + type + ", added to " + issue.projectKey + "  is now Pending IRB review",
-//                        details: type,
-//                        user: user,
-//                        issue: issue,
-//                        consent: consent)
-//        arguments.view = "/notify/irbSubmit"
-//        Mail mail = populateMailFromArguments(arguments)
-//        sendMail(mail, getApiKey(), getSendGridUrl())
-//    }
+    Map<Boolean, String> sendAdminNotificationforIRB(String type, String projectKey, String consentKey) {
+        log.info("consentKey:" + consentKey + "\nprojectKey:" + projectKey + "\ntype:" + type);
+        User user = userService.findUser(issue.reporter)
+        Issue consent = Issue.findByProjectKey(consentKey)
+        Issue issue = Issue.findByProjectKey(projectKey)
+        log.info("\nuser:" + user);
+        log.info("\nconsent:" + consent);
+        log.info("\nproject:" + issue)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList('shaji@broadinstitute.org'),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: consentKey + " - Your " + type + ", added to " + issue.projectKey + "  is now Pending IRB review",
+                        details: type,
+                        user: user,
+                        issue: issue)
+        arguments.view = "/notify/irbSubmit"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
 
 
     /**
