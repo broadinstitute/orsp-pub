@@ -285,7 +285,9 @@ class NewConsentGroupController extends AuthenticatedController {
             boolean isUpdated = queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, CollectionLinkStatus.SUBMITTED_TO_IRB.name)
             List<ConsentCollectionLink> links = queryService.findConsentCollectionLinksByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
             Issue issue = queryService.findByKey(params.projectKey);
-//            notifyService.sendAdminNotificationforIRB(IssueType.SAMPLE_DATA_COHORTS.name, issue, params.consentKey);
+            log.info("params" + params + "\nconsentKey" + params.consentKey + "\nprojectKey" + params.projectKey );
+            log.info("Issue is:" + issue);
+//          // notifyService.sendAdminNotificationforIRB(IssueType.SAMPLE_DATA_COHORTS.name, issue, params.consentKey);
             notifyService.sendAdminNotification(IssueType.SAMPLE_DATA_COHORTS.name, issue);
             if (!isUpdated) {
                 response.status = 400
