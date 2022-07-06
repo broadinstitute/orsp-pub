@@ -587,12 +587,11 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendAdminNotificationforIRB(String type, String projectKey, String consentKey) {
 
+        Map<String, String> values = new HashMap<>();
         Issue consent = Issue.findByProjectKey(consentKey);
-        log.info("\nconsent:" + consent);
-        log.info("\nissueLinkConsent" + issueLink);
         Issue issue = Issue.findByProjectKey(projectKey);
-        log.info("\nissueLinkProject" + issueLink);
-        User user = userService.findUser(issue.reporter)
+        User user = userService.findUser(issue.reporter);
+        values.put("projectLink", getShowIssueLink(consent))
         NotifyArguments arguments =
                 new NotifyArguments(
                         toAddresses: Collections.singletonList(user.emailAddress),
@@ -601,7 +600,8 @@ class NotifyService implements SendgridSupport, Status {
                         subject: consentKey + " - Your " + type + ", added to " + issue.projectKey + " is now Pending IRB review",
                         details: type,
                         user: user,
-                        issue: issue)
+                        issue: issue,
+                        values: values)
         arguments.view = "/notify/irbSubmit"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
