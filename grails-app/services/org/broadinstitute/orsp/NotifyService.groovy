@@ -586,6 +586,7 @@ class NotifyService implements SendgridSupport, Status {
      */
 
     Map<Boolean, String> sendAdminNotificationforIRB(String type, String projectKey, String consentKey) {
+        log.info("consentKey:" + consentKey + "\nprojectKey:" + projectKey + "\ntype:" + type);
         Issue consent = Issue.findByProjectKey(consentKey)
         log.info("\nconsent:" + consent);
         log.info("\nissueLinkConsent" + issueLink);
