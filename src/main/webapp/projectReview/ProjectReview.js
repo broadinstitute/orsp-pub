@@ -443,6 +443,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.protocol = this.state.formData.projectExtraProps.protocol;
     project.feeForService = this.state.formData.projectExtraProps.feeForService;
     project.broadInvestigator = this.state.formData.projectExtraProps.broadInvestigator;
+    project.researchtext = this.state.formData.projectExtraProps.researchtext;
     project.subjectsDeceased = this.state.formData.projectExtraProps.subjectsDeceased;
     project.interactionSource = this.state.formData.projectExtraProps.interactionSource;
     project.sensitiveInformationSource = this.state.formData.projectExtraProps.sensitiveInformationSource;
@@ -1366,6 +1367,17 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 moreInfo: span({style: { 'display': 'block' }}, ['Examples of projects that ', b(['DO NOT ']), 'contribute to generalizable knowledge include small case studies and internal technology development/validation projects. ']),
                 label: 'Is a Broad scientist(s) conducting research (generating or contributing to generalizable knowledge, with the intention to publish results)? ',
                 readOnly: true,
+                onChange: () => { }
+              }),
+              InputFieldTextArea({
+                isRendered: !isEmpty(this.state.formData.projectExtraProps.broadInvestigator) && this.state.formData.projectExtraProps.broadInvestigator === true,
+                id: "researchtext",
+                name: "researchtext",
+                label: "Please provide a rationale for why this project/work would not be considered as research",
+                value: this.state.formData.projectExtraProps.researchtext,
+                currentValue: this.state.current.projectExtraProps.researchtext,                
+                required: true,
+                errorMessage: "Required field",
                 onChange: () => { }
               })
             ]),
