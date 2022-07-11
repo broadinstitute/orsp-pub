@@ -578,6 +578,35 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
+    /**
+     * Send message to user when a Sample/Data Cohort is submitted to IRB
+     *
+     * @param arguments NotifyArguments
+     * @return Response is a map entry with true/false and a reason for failure, if failed.
+     */
+
+    Map<Boolean, String> sendAdminNotificationforIRB(String type, String projectKey, String consentKey) {
+
+        Map<String, String> values = new HashMap<>();
+        Issue consent = Issue.findByProjectKey(consentKey);
+        Issue issue = Issue.findByProjectKey(projectKey);
+        User user = userService.findUser(issue.reporter);
+        values.put("projectLink", getShowIssueLink(consent))
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(user.emailAddress),
+                        fromAddress: getDefaultFromAddress(),
+                        ccAddresses: Collections.singletonList(getAdminRecipient()),
+                        subject: consentKey + " - Your " + type + ", added to " + issue.projectKey + " is now Pending IRB review",
+                        details: type,
+                        user: user,
+                        issue: issue,
+                        values: values)
+        arguments.view = "/notify/irbSubmit"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
 
     /**
      * Send message to admins when project is created
