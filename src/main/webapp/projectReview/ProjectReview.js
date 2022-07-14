@@ -1369,7 +1369,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 readOnly: true,
                 onChange: () => { }
               }),
-
               InputFieldTextArea({              
                 isRendered: true,
                 id: "researchtext",
