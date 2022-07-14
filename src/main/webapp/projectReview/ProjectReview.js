@@ -1368,7 +1368,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 label: 'Is a Broad scientist(s) conducting research (generating or contributing to generalizable knowledge, with the intention to publish results)? ',
                 readOnly: true,
                 onChange: () => { }
-              }),
+              })
             ]),
 
             div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.subjectsDeceased) }, [

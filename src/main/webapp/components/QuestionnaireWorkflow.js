@@ -258,7 +258,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
             label: this.state.questions[currentQuestionIndex].question,
             moreInfo: this.state.questions[currentQuestionIndex].moreInfo,
             onChange: this.handleChange,
-            required: false
+            required: false,
           })
         ]),
 
