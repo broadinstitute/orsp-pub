@@ -1368,17 +1368,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 label: 'Is a Broad scientist(s) conducting research (generating or contributing to generalizable knowledge, with the intention to publish results)? ',
                 readOnly: true,
                 onChange: () => { }
-              }),
-              InputFieldTextArea({              
-                isRendered: !isEmpty(this.state.formData.projectExtraProps.broadInvestigator) || !isEmpty(this.state.current.projectExtraProps.broadInvestigator)
-                  && (this.state.formData.projectExtraProps.broadInvestigator == "true" || this.state.current.projectExtraProps.broadInvestigator == 'true'),
-                id: "researchtext",
-                name: "researchtext",
-                label: "Please provide a rationale for why this project/work would not be considered as research",
-                value: this.state.formData.projectExtraProps.researchtext,
-                currentValue: this.state.current.projectExtraProps.researchtext,
-                readOnly: true,
-                onChange: () => { }
               })
             ]),
 
