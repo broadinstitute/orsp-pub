@@ -260,6 +260,19 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
             onChange: this.handleChange,
             required: false
           }),
+          InputFieldTextArea({              
+            isRendered: !isEmpty(this.state.formData.projectExtraProps.broadInvestigator) || !isEmpty(this.state.current.projectExtraProps.broadInvestigator)
+              && (this.state.formData.projectExtraProps.broadInvestigator == "true" || this.state.current.projectExtraProps.broadInvestigator == 'true'),
+            id: "researchtext",
+            name: "researchtext",
+            label: "Please provide a rationale for why this project/work would not be considered as research",
+            value: this.state.formData.projectExtraProps.researchtext,
+            currentValue: this.state.current.projectExtraProps.researchtext,
+            required: true,
+            error: this.state.current.projectExtraProps.researchtext ? false : true,
+            errorMessage: "Required field",
+            onChange: () => { }
+          })
         ]),
 
         div({isRendered: this.state.questions[currentQuestionIndex].isRadio === true }, [
