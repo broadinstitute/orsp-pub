@@ -3,6 +3,7 @@ import { div, hh, button, label, input, h1, span, p, small } from 'react-hypersc
 import { InputYesNo } from './InputYesNo';
 import { InputFieldRadio } from './InputFieldRadio';
 import { QuestionnaireProgressBar } from './QuestionnaireProgressBar';
+import { InputFieldTextArea } from './InputFieldTextArea';
 import './QuestionnaireWorkflow.css';
 
 
