@@ -234,7 +234,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
   }
 
   render() {
-
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return h1({}, ["Something went wrong."]);
@@ -245,7 +244,8 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     }
 
     const { currentQuestionIndex } = this.state;
-
+    console.log('state', this.state.questions[currentQuestionIndex])
+    
     return (
       div({ className: this.props.questionnaireUnwrapped === true ? 'questionnaireContainerLight' : 'questionnaireContainer' }, [
         div({ className: "questionnaireProgressBar col-lg-4 col-md-5 col-sm-5 col-4" }, [
@@ -260,10 +260,9 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
             moreInfo: this.state.questions[currentQuestionIndex].moreInfo,
             onChange: this.handleChange,
             required: false,
-          })
-        ]),
-        div({isRendered: this.state.questions[currentQuestionIndex].id === 2 && this.state.questions[currentQuestionIndex].answer == 'true'}, [
+          }),
           InputFieldTextArea({
+            isRendered: this.state.questions[currentQuestionIndex].id === 2 && this.state.questions[currentQuestionIndex].answer == 'true',
             id: "researchText",
             name: "researchText",
             label: "Please provide a rationale for why this project/work would not be considered as research",
