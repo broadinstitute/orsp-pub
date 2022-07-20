@@ -175,7 +175,9 @@ const NewProject = hh(class NewProject extends Component {
     let questions = this.state.determination.questions;
     if (questions.length > 1) {
       questions.map(q => {
-        if (q.answer !== null) {
+        if (q.answer !== null && q.textValue !== null) {
+          extraProperties.push({ name: q.key, value: q.answer, textValue: q.textValue });
+        } else if (q.answer !== null) {
           extraProperties.push({ name: q.key, value: q.answer });
         }
       });
