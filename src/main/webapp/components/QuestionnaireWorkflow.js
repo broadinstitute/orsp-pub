@@ -277,7 +277,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
             label: "Please provide a rationale for why this project/work would not be considered as research",
             value: this.state.questions[currentQuestionIndex].textValue,
             required: true,
-            error: this.state.questions[currentQuestionIndex].currentTextValue ? false : true,
+            error: this.state.questions[currentQuestionIndex].textValue ? false : true,
             errorMessage: "Required Field",
             onChange: this.handleTextAreaChange,
           })
