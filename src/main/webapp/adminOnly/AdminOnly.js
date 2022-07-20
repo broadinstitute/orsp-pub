@@ -862,7 +862,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
               disabled: false,
               required: true,
               onChange: this.textHandler,
-              error: this.state.formData.financialConflictDescription ? this.state.textFinancialConflictError : false,
+              error: this.state.formData.financialConflictDescription ? false : true,
               errorMessage: "Required field",
               required: true
             })
