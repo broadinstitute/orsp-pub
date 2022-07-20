@@ -178,7 +178,7 @@ const NewProject = hh(class NewProject extends Component {
         if (q.answer !== null) {
           extraProperties.push({ name: q.key, value: q.answer });
         }
-        if (q.textValue !== null) {
+        if (q.textValue !== null  || q.textValue !== '') {
           extraProperties.push({name: q.key+"-textValue", value: q.textValue});
         }
       });
