@@ -233,15 +233,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     });
   }
 
-  handleTextAreaChange = (e) => {
-    const field = e.target.name;
-    const value = e.target.value;
-    this.setState(prev => {
-      prev.questions[prev.currentQuestionIndex].textValue = value;
-    },
-    () => { })
-  }
-
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
@@ -262,7 +253,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
             QuestionnaireProgressBar({ progress: (this.state.endState === true ? 100 : this.state.questions[currentQuestionIndex].progress) }, [])
         ]),
         div({isRendered: this.state.questions[currentQuestionIndex].isYesNo === true}, [
-          InputYesNo({            
+          InputYesNo({           
             id: this.state.questions[currentQuestionIndex].id,
             value: this.state.questions[currentQuestionIndex].answer,
             label: this.state.questions[currentQuestionIndex].question,
