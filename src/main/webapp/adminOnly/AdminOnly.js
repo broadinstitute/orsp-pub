@@ -293,12 +293,20 @@ const AdminOnly = hh(class AdminOnly extends Component {
        });
        isValidNotEngaged = true;
      }
-    }  else if (this.state.formData.financialConflict === 'yes' && isEmpty(this.state.formData.textFinancialConflict))  {
-      this.setState(prev => {
-        prev.textFinancialConflictError = true;
-        return prev;
-      });
-      isValidFinancialConflict = false;
+    } else if (this.state.formData.financialConflict === 'yes')  {
+        if(!this.state.formData.financialConflictDescription && isEmpty(this.state.formData.financialConflictDescription)) {
+          this.setState(prev => {
+            prev.textFinancialConflictError = true;
+            return prev;
+          });
+          isValidFinancialConflict = false;
+        } else {
+          this.setState(prev => {
+            prev.textFinancialConflictError = false;
+            return prev;
+          });
+          isValidFinancialConflict = true;
+        }
     }
 
     return isValidExempt && isValidNotEngaged && isValidCategoryTwo && isValidCategoryFour && isValidFinancialConflict;
