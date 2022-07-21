@@ -179,7 +179,7 @@ const NewProject = hh(class NewProject extends Component {
           extraProperties.push({ name: q.key, value: q.answer });
         }
         if (q.textValue !== null  || q.textValue !== '') {
-          extraProperties.push({name: q.key+"-textValue", value: q.textValue});
+          extraProperties.push({name: q.key+"TextValue", value: q.textValue});
         }
       });
     }
