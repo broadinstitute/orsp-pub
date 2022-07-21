@@ -23,6 +23,7 @@ class ProjectExtraProperties {
     // Determination questions
     String feeForService
     String broadInvestigator
+    String broadInvestigatorTextValue
     String subjectsDeceased
     String sensitiveInformationSource
     String interactionSource
@@ -88,6 +89,7 @@ class ProjectExtraProperties {
         // Determination questions
         this.setFeeForService(project.getFeeForService() ?: "")
         this.setBroadInvestigator(project.getBroadInvestigator() ?: "")
+        this.setBroadInvestigatorTextValue(project.getBroadInvestigatorTextValue() ?: "")
         this.setSubjectsDeceased(project.getSubjectDeceased() ?: "")
         this.setSensitiveInformationSource(project.getSensitiveInformationSource() ?: "")
         this.setInteractionSource(project.getInteractionSource() ?: "")
