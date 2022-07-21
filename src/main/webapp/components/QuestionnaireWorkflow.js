@@ -233,15 +233,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     });
   }
 
-  handleTextAreaChange = (e) => {
-    const field = e.target.name;
-    const value = e.target.value;
-    this.setState(prev => {
-      prev.questions[prev.currentQuestionIndex].textValue = value;
-    },
-    () => { })
-  }
-
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
@@ -276,10 +267,11 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
             name: "researchText",
             label: "Please provide a rationale for why this project/work would not be considered as research",
             value: this.state.questions[currentQuestionIndex].textValue,
+            currentValue: this.state.questions[currentQuestionIndex].currentTextValue,
             required: true,
-            error: this.state.questions[currentQuestionIndex].textValue ? false : true,
+            error: this.state.questions[currentQuestionIndex].currentTextValue ? false : true,
             errorMessage: "Required Field",
-            onChange: this.handleTextAreaChange,
+            onChange: () => { }
           })
         ]),
 
