@@ -17,10 +17,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       nextQuestionIndex: null,
       projectType: null,
       endState: true,
-      questions: [],
-      current: {
-        questions: []
-      }
+      questions: []
     };
   }
 
@@ -71,27 +68,18 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       prev.requiredError = false;
       prev.nextQuestionIndex = prev.currentQuestionIndex;
       prev.currentQuestionIndex = prev.currentQuestionIndex > 0 ? prev.currentQuestionIndex - 1 : 0;
-      prev.questions[currentQuestionIndex].textValue = '';
       return prev;
-    },()=> {
-      console.log('thi.state :>> ', this.state);
     })
   };
 
   nextQuestion = (e) => {
     let currentAnswer = this.state.questions[this.state.currentQuestionIndex].answer;
-    let currentTextValue = this.state.questions[this.state.currentQuestionIndex].textValue;
 
     if (this.props.edit === true) {
       this.props.cleanQuestionsUnanswered(this.state);
     }
 
     if (currentAnswer !== null) {
-      if (currentTextValue !== null) {
-        this.setState(prev => {
-          prev.current.questions[currentQuestionIndex].textValue = currentTextValue;
-        })
-      }
       e.preventDefault();
       this.setState(prev => {
         prev.endState = false;
@@ -250,9 +238,8 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     const value = e.target.value;
     this.setState(prev => {
       prev.questions[prev.currentQuestionIndex].textValue = value;
-    }, ()=> {
-      console.log('this.state.questions[currentQuestionIndex].textValue :>> ', this.state.questions[currentQuestionIndex].textValue)
-    })
+    },
+    () => { })
   }
 
   render() {
@@ -288,7 +275,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
             id: "broadInvestigatorTextValue",
             name: "broadInvestigatorTextValue",
             label: "Please provide a rationale for why this project/work would not be considered as research",
-            currentValue: this.state.current.questions[currentQuestionIndex].textValue,
             value: this.state.questions[currentQuestionIndex].textValue,
             required: true,
             error: this.state.questions[currentQuestionIndex].textValue ? false : true,
