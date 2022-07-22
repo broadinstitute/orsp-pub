@@ -107,6 +107,8 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String getBroadInvestigator() { getExtraProperties().find { it.name == IssueExtraProperty.BROAD_INVESTIGATOR }?.value }
 
+    transient String getBroadInvestigatorTextValue() { getExtraProperties().find { it.name == IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE }?.value }
+
     transient String getSubjectDeceased() { getExtraProperties().find { it.name == IssueExtraProperty.SUBJECTS_DECEASED }?.value }
 
     transient String getSensitiveInformationSource() { getExtraProperties().find { it.name == IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE }?.value }

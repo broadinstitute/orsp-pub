@@ -443,7 +443,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.protocol = this.state.formData.projectExtraProps.protocol;
     project.feeForService = this.state.formData.projectExtraProps.feeForService;
     project.broadInvestigator = this.state.formData.projectExtraProps.broadInvestigator;
-    project.researchtext = this.state.formData.projectExtraProps.researchtext;
+    project.broadInvestigatorTextValue = this.state.formData.projectExtraProps.broadInvestigatorTextValue;
     project.subjectsDeceased = this.state.formData.projectExtraProps.subjectsDeceased;
     project.interactionSource = this.state.formData.projectExtraProps.interactionSource;
     project.sensitiveInformationSource = this.state.formData.projectExtraProps.sensitiveInformationSource;
@@ -699,6 +699,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
             prev.formData.projectExtraProps[q.key] = q.answer;
           } else {
             prev.formData.projectExtraProps[q.key] = '';
+          }
+          if (q.textValue !== null  || q.textValue !== '') {
+            prev.formData.projectExtraProps[q.key+"TextValue"] = q.textValue;
+          } else {
+            prev.formData.projectExtraProps[q.key+"TextValue"] = '';
           }
         });
       }
@@ -1368,6 +1373,18 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 label: 'Is a Broad scientist(s) conducting research (generating or contributing to generalizable knowledge, with the intention to publish results)? ',
                 readOnly: true,
                 onChange: () => { }
+              }),
+              InputFieldText({
+                id: "broadInvestigatorTextValue",
+                name: "broadInvestigatorTextValue",
+                label: "Please provide a rationale for why this project/work would not be considered as research",
+                value: this.state.formData.projectExtraProps.broadInvestigatorTextValue,
+                currentValue: this.state.current.projectExtraProps.broadInvestigatorTextValue,
+                readOnly: this.state.readOnly,
+                required: false,
+                onChange: this.handleProjectExtraPropsChange,
+                valueEdited: isEmpty(this.state.current.projectExtraProps.broadInvestigatorTextValue) === !isEmpty(this.state.formData.projectExtraProps.broadInvestigatorTextValue),
+                edit: true
               })
             ]),
 

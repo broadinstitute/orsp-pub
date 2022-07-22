@@ -233,6 +233,15 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     });
   }
 
+  handleTextAreaChange = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+    this.setState(prev => {
+      prev.questions[prev.currentQuestionIndex].textValue = value;
+    },
+    () => { })
+  }
+
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
@@ -260,6 +269,17 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
             moreInfo: this.state.questions[currentQuestionIndex].moreInfo,
             onChange: this.handleChange,
             required: false,
+          }),
+          InputFieldTextArea({
+            isRendered: this.state.questions[currentQuestionIndex].id === 2 && this.state.questions[currentQuestionIndex].answer,
+            id: "broadInvestigatorTextValue",
+            name: "broadInvestigatorTextValue",
+            label: "Please provide a rationale for why this project/work would not be considered as research",
+            value: this.state.questions[currentQuestionIndex].textValue,
+            required: true,
+            error: this.state.questions[currentQuestionIndex].textValue ? false : true,
+            errorMessage: "Required Field",
+            onChange: this.handleTextAreaChange,
           })
         ]),
 
