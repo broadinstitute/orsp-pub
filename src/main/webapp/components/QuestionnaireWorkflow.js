@@ -248,8 +248,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     const value = e.target.value;
     this.setState(prev => {
       prev.questions[prev.currentQuestionIndex].textValue = value;
-    }, ()=> {
-      console.log('this.state.questions[currentQuestionIndex].textValue :>> ', this.state.questions[currentQuestionIndex].textValue)
+      console.log('this.state.questions[currentQuestionIndex].textValue :>> ', prev.questions[prev.currentQuestionIndex].textValue)
     })
   }
 
