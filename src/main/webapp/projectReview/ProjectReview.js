@@ -1380,7 +1380,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 label: "Please provide a rationale for why this project/work would not be considered as research",
                 value: this.state.formData.projectExtraProps.broadInvestigatorTextValue,
                 currentValue: this.state.current.projectExtraProps.broadInvestigatorTextValue,
-                readOnly: this.state.readOnly,
+                readOnly: true,
                 required: false,
                 onChange: this.handleProjectExtraPropsChange,
                 valueEdited: isEmpty(this.state.current.projectExtraProps.broadInvestigatorTextValue) === !isEmpty(this.state.formData.projectExtraProps.broadInvestigatorTextValue),
