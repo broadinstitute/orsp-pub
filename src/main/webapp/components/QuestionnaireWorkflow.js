@@ -69,7 +69,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       prev.requiredError = false;
       prev.nextQuestionIndex = prev.currentQuestionIndex;
       prev.currentQuestionIndex = prev.currentQuestionIndex > 0 ? prev.currentQuestionIndex - 1 : 0;
-      prev.questions[prev.currentQuestionIndex].textValue = '';
+      prev.questions[prev.currentQuestionIndex].textValue = null;
       return prev;
     },()=> {
       console.log('thi.state :>> ', this.state);
