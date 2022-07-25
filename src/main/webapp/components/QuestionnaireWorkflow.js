@@ -69,10 +69,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       prev.requiredError = false;
       prev.nextQuestionIndex = prev.currentQuestionIndex;
       prev.currentQuestionIndex = prev.currentQuestionIndex > 0 ? prev.currentQuestionIndex - 1 : 0;
-      prev.questions[prev.currentQuestionIndex].textValue = null;
       return prev;
-    },()=> {
-      console.log('thi.state :>> ', this.state);
     })
   };
 
@@ -248,7 +245,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     const value = e.target.value;
     this.setState(prev => {
       prev.questions[prev.currentQuestionIndex].textValue = value;
-      console.log('this.state.questions[currentQuestionIndex].textValue :>> ', prev.questions[prev.currentQuestionIndex].textValue)
       return prev;
     })
   }
@@ -264,7 +260,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     }
 
     const { currentQuestionIndex } = this.state;
-    console.log('state', this.state.questions[currentQuestionIndex])
     
     return (
       div({ className: this.props.questionnaireUnwrapped === true ? 'questionnaireContainerLight' : 'questionnaireContainer' }, [
