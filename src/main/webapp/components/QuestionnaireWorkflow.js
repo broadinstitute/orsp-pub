@@ -17,8 +17,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       nextQuestionIndex: null,
       projectType: null,
       endState: true,
-      questions: [],
-      broadInvestigatorTextValue: ''
+      questions: []
     };
   }
 
@@ -75,18 +74,12 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
 
   nextQuestion = (e) => {
     let currentAnswer = this.state.questions[this.state.currentQuestionIndex].answer;
-    let currentTextValue = this.state.questions[this.state.currentQuestionIndex].textValue;
 
     if (this.props.edit === true) {
       this.props.cleanQuestionsUnanswered(this.state);
     }
 
     if (currentAnswer !== null) {
-      if (currentTextValue !== null) {
-        this.setState(prev => {
-          prev.broadInvestigatorTextValue = currentTextValue;
-        })
-      }
       e.preventDefault();
       this.setState(prev => {
         prev.endState = false;
@@ -281,7 +274,6 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
             id: "broadInvestigatorTextValue",
             name: "broadInvestigatorTextValue",
             label: "Please provide a rationale for why this project/work would not be considered as research",
-            currentValue: this.state.broadInvestigatorTextValue,
             value: this.state.questions[currentQuestionIndex].textValue,
             required: true,
             error: this.state.questions[currentQuestionIndex].textValue ? false : true,
