@@ -89,6 +89,7 @@ class IssueService implements UserInfo {
             IssueExtraProperty.OTHER_CATEGORY,
             IssueExtraProperty.FEE_FOR_SERVICE,
             IssueExtraProperty.BROAD_INVESTIGATOR,
+            IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE,
             IssueExtraProperty.SUBJECTS_DECEASED,
             IssueExtraProperty.INTERACTION_SOURCE,
             IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE,
@@ -249,6 +250,9 @@ class IssueService implements UserInfo {
         // handle determination questions update
         if (input.containsKey(IssueExtraProperty.BROAD_INVESTIGATOR) && input.get(IssueExtraProperty.BROAD_INVESTIGATOR) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.BROAD_INVESTIGATOR })
+        }
+        if (input.containsKey(IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE) && input.get(IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE) == "") {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE })
         }
         if (input.containsKey(IssueExtraProperty.SUBJECTS_DECEASED) && input.get(IssueExtraProperty.SUBJECTS_DECEASED) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.SUBJECTS_DECEASED })
