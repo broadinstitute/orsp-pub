@@ -89,6 +89,7 @@ class IssueService implements UserInfo {
             IssueExtraProperty.OTHER_CATEGORY,
             IssueExtraProperty.FEE_FOR_SERVICE,
             IssueExtraProperty.BROAD_INVESTIGATOR,
+            IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE,
             IssueExtraProperty.SUBJECTS_DECEASED,
             IssueExtraProperty.INTERACTION_SOURCE,
             IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE,
