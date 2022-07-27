@@ -250,6 +250,9 @@ class IssueService implements UserInfo {
         if (input.containsKey(IssueExtraProperty.BROAD_INVESTIGATOR) && input.get(IssueExtraProperty.BROAD_INVESTIGATOR) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.BROAD_INVESTIGATOR })
         }
+        if (input.containsKey(IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE) && input.get(IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE) == "") {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE })
+        }
         if (input.containsKey(IssueExtraProperty.SUBJECTS_DECEASED) && input.get(IssueExtraProperty.SUBJECTS_DECEASED) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.SUBJECTS_DECEASED })
         }
