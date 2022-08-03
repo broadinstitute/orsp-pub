@@ -61,8 +61,4 @@ class PersistenceService {
         organization?.delete(flush: true)
     }
 
-    void saveLoginText(LoginText loginText) {
-        loginText.save(flush: true)
-    }
-
 }
