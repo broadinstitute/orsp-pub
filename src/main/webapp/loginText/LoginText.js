@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../components/Wizard.css'
 import '../index.css'
-import { button, hh, h1, div } from 'react-hyperscript-helpers';
+import { hh, h1, div } from 'react-hyperscript-helpers';
 
 import { InputFieldText } from '../components/InputFieldText'; 
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
