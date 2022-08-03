@@ -119,9 +119,6 @@ export const UrlConstants = {
   metricsReportUrl: context + "/report/aahrppMetrics",
   rolesManagementUrl: context + "/user/rolesManagement",
   organizationsUrl: context + "/admin/organizations",
-  projectUrl:  context + "/project/pages",
-  loginTextUrl: context + "api/login-text",
-  loginText: context + "/loginText",
-  editLoginTextUrl: context + "/api/edit-login-text"
+  projectUrl:  context + "/project/pages"
 };
 

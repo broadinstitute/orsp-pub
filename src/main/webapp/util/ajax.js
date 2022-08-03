@@ -569,13 +569,3 @@ export const Issues = {
     return axios.get(UrlConstants.issueListUrl + '?assignee=' + assignee + '&max=' + max + '&admin=' + admin);
   },
 };
-
-export const LoginText = {
-  getLoginText() {
-    return axios.get(UrlConstants.loginTextUrl);
-  },
-
-  updateLoginText(heading, body) {
-    return axios.put(UrlConstants.editLoginTextUrl, {heading: heading, body: body});
-  }
-};
