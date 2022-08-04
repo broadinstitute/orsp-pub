@@ -1849,7 +1849,6 @@ class QueryService implements Status {
         final String query = ' select o.* from login_text o '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final result = sqlQuery.with {
-            addEntity(LoginText)
             list()
         }
         result
