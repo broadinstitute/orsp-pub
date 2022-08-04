@@ -2,6 +2,7 @@ package org.broadinstitute.orsp
 
 class LoginText {
 
+    Integer id
     String heading
     String body
 
