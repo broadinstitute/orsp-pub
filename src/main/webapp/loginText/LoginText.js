@@ -80,7 +80,7 @@ export const LogintText = hh(class LogintText extends Component {
                         label: "Heading for login page text",
                         value: this.state.heading,
                         currentValue: this.state.currentValue.heading,
-                        required: "true",
+                        required: true,
                         error: this.state.heading == '' ? true : false,
                         errorMessage: "Heading cannot be empty",
                         onChange: this.handleHeadingChange
@@ -91,14 +91,13 @@ export const LogintText = hh(class LogintText extends Component {
                         label: "Body for login page text",
                         value: this.state.body,
                         currentValue: this.state.currentValue.body,
-                        required: "true",
+                        required: true,
                         error: this.state.body == '' ? true : false,
                         errorMessage: "Body cannot be empty",
                         onChange: this.handleBodyChange
                     }),
-                    div({ isRendered: this.state.readOnly === false, className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
+                    div({ className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
                         button({
-                            isRendered: true,
                             className: "btn buttonPrimary floatRight",
                             onClick: this.submitEditResponses,
                         }, ["Submit"])
