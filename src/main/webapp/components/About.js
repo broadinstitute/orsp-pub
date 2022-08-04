@@ -34,9 +34,10 @@ export const About = hh(class About extends Component {
       this.hasSession();
       LoginText.getLoginText().then(loginText => {
         console.log(loginText);
+        let data = LogintText.data[0];
         this.setState(prev => {
-          prev.heading = loginText.heading;
-          prev.body = loginText.body;
+          prev.heading = data[1];
+          prev.body = data[2];
           return prev;
         })
       })
