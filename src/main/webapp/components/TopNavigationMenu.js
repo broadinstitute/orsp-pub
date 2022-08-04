@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { a, hh, div, span, ul, li, b, h, nav, button } from 'react-hyperscript-helpers';
+import { a, hh, div, span, ul, li, b, h, nav, button, br } from 'react-hyperscript-helpers';
 import { Storage } from '../util/Storage'
 import { Reports, Search, User } from '../util/ajax';
 import { Link } from 'react-router-dom';
@@ -238,7 +238,8 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                       li({}, [a({ href: "#", onClick: this.openMetricsReport }, ["AAHRPP Metrics Report (CSV)"])]),
                       li({}, [h(Link, { to: { pathname: UrlConstants.sampleCollectionReportUrl } }, ["Consent Collection Links"])]),
                       li({}, [h(Link, { to: { pathname: UrlConstants.rolesManagementUrl } }, ["Roles Management"])]),
-                      li({}, [h(Link, { to: { pathname: UrlConstants.organizationsUrl } }, ["Organizations"])])
+                      li({}, [h(Link, { to: { pathname: UrlConstants.organizationsUrl } }, ["Organizations"])]),br(),
+                      li({}, [h(Link, { to: { pathname: UrlConstants.loginText } }, ["Login Text"])])
                     ])
                   ])
                 ]),
