@@ -1846,7 +1846,7 @@ class QueryService implements Status {
     Collection<LoginText> getLoginText() {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-        final String query = ' select o.*  from login_text as o where o.id = 1'
+        final String query = 'select o.* from login_text as o where o.id = 1'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final result = sqlQuery.with {
             addEntity(LoginText)

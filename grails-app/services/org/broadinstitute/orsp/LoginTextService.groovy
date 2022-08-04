@@ -21,7 +21,7 @@ class LoginTextService {
         queryService.getLoginText()
     }
 
-    void UpdateLoginText(String heading, String body) throws SQLException {
+    void updateLoginText(String heading, String body) throws SQLException {
         LoginText loginText = LoginText.findById(1)
         if (loginText != null) {
             loginText.setHeading(heading)
