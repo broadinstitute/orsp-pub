@@ -25,7 +25,7 @@ export const LogintText = hh(class LogintText extends Component {
         let current = {};
         LoginText.getLoginText().then(loginText => {
             console.log("Login Text: "+loginText);
-            let data = logintText.data[0];
+            let data = loginText.data[0];
             current.heading = data[1];
             current.body = data[2];
         });
