@@ -25,6 +25,7 @@ import ProjectReport from '../qaReport/ProjectReport';
 import InfoLink from '../infoLink/InfoLink';
 import { Storage } from '../util/Storage';
 import SampleCollection from '../sampleCollection/SampleCollection';
+import { LogintText } from '../loginText/LoginText';
 
 
 const Routes = ( props ) => (
