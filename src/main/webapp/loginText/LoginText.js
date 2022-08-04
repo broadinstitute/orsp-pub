@@ -25,8 +25,9 @@ export const LogintText = hh(class LogintText extends Component {
         let current = {};
         LoginText.getLoginText().then(loginText => {
             console.log("Login Text: "+loginText);
-            current.heading = loginText.data[0].heading;
-            current.body = loginText.data[0].body;
+            let data = LogintText.data[0];
+            current.heading = data[1];
+            current.body = data[2];
         });
         this.setState(prev => {
             prev.currentValue = current;
