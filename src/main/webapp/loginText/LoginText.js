@@ -18,14 +18,31 @@ export const LogintText = hh(class LogintText extends Component {
             currentValue: {},
             alert: ''
         };
-        this.init();
     }
 
-    init() {
+    componentDidMount() {
         let current = {};
         LoginText.getLoginText().then(loginText => {
-            console.log("Login Text: "+loginText);
-            let data = loginText.data[0];
+            console.log(loginText);
+            let loginTextData = JSON.parse(JSON.stringify(loginText))
+            console.log("Login Text: "+loginTextData);
+            let data = loginTextData.data[0];
+            current.heading = data[1];
+            current.body = data[2];
+        });
+        this.setState(prev => {
+            prev.currentValue = current;
+            return prev;
+        })
+    }
+
+    getLoginText() {
+        let current = {};
+        LoginText.getLoginText().then(loginText => {
+            console.log(loginText);
+            let loginTextData = JSON.parse(JSON.stringify(loginText))
+            console.log("Login Text: "+loginTextData);
+            let data = loginTextData.data[0];
             current.heading = data[1];
             current.body = data[2];
         });
@@ -56,7 +73,7 @@ export const LogintText = hh(class LogintText extends Component {
         let body = this.state.body;
         console.log("heading: "+heading, "body: "+body);
         LoginText.updateLoginText(heading, body).then(() => {
-            this.init();
+            this.getLoginText();
             this.setState(prev => {
                 prev.heading = '';
                 prev.body = '';
