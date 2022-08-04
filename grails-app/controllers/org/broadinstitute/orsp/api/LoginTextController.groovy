@@ -1,6 +1,8 @@
-package org.broadinstitute.orsp
+package org.broadinstitute.orsp.api
 
 import grails.converters.JSON
+import org.broadinstitute.orsp.LoginText
+import org.broadinstitute.orsp.LoginTextService
 import org.broadinstitute.orsp.utils.IssueUtils
 
 
@@ -13,6 +15,7 @@ class LoginTextController {
             List<LoginText> loginText = loginTextService.getLoginText()
             render loginText as JSON
         } catch (Exception e) {
+            render([message: 'Controller catch worked'] as JSON)
             handleException(e)
         }
     }
