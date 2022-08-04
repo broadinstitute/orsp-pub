@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat
 class OrganizationController extends AuthenticatedController {
 
     OrganizationService organizationService
+    LoginTextService loginTextService
 
     def getOrganizations() {
         try {
@@ -53,6 +54,26 @@ class OrganizationController extends AuthenticatedController {
             organizationService.deleteOrganization((String)params.id)
             response.status = 200
             render([message: 'Organization was deleted'] as JSON)
+        } catch(Exception e) {
+            handleException(e)
+        }
+    }
+
+    def getLoginText() {
+        try {
+            List<LoginText> loginText = loginTextService.getLoginText()
+            render loginText as JSON
+        } catch (Exception e) {
+            handleException(e)
+        }
+    }
+
+    def updateLoginText() {
+        Map<String, Object> loginText = IssueUtils.getJson(Map.class, request.JSON)
+        try {
+            loginTextService.UpdateLoginText((String)loginText.get("heading"), (String)loginText.get("body"))
+            response.status = 200
+            render([message: 'Login text was updated'] as JSON)
         } catch(Exception e) {
             handleException(e)
         }
