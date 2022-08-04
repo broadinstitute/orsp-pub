@@ -120,8 +120,8 @@ export const UrlConstants = {
   rolesManagementUrl: context + "/user/rolesManagement",
   organizationsUrl: context + "/admin/organizations",
   projectUrl:  context + "/project/pages",
-  loginTextUrl: context + "/api/login-text",
+  loginTextUrl: context + "/login-text",
   loginText: context + "/loginText",
-  editLoginTextUrl: context + "/api/edit-login-text"
+  editLoginTextUrl: context + "/edit-login-text"
 };
 
