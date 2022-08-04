@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '..components/Wizard.css'
+import '../components/Wizard.css'
 import '../index.css'
 import { button, hh, h1, div } from 'react-hyperscript-helpers';
 
