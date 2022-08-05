@@ -8,12 +8,6 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { LoginText } from '../util/ajax';
 import { AlertMessage } from '../components/AlertMessage';
 
-const styles = {
-    titleSize: '24px',
-    fontFamily : '"Helvetica Neue",Helvetica,Arial,sans-serif',
-    textFontSize: '14px'
-  };
-
 export const LogintText = hh(class LogintText extends Component {
 
     constructor(props) {
