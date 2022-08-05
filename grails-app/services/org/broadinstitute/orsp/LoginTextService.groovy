@@ -24,14 +24,9 @@ class LoginTextService {
     void UpdateLoginText(String heading, String body) throws SQLException {
         LoginText loginText = LoginText.findById(1)
         if (loginText != null) {
-            if(loginText.heading != null) {
-                loginText.setHeading(heading)
-                persistenceService.saveLoginText(loginText)
-            }
-            if (loginText.body != null) {
-                loginText.setBody(body)
-                persistenceService.saveLoginText(loginText)
-            }
+            loginText.setHeading(heading)
+//            loginText.setBody(body)
+            persistenceService.saveLoginText(loginText)
         } else {
             log.error("Error while trying to update login text")
         }
