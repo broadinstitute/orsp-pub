@@ -103,11 +103,6 @@ export const LogintText = hh(class LogintText extends Component {
     render() {
         return (
             div({}, [
-                div({ className: "col-md-10", style: { 'margin-bottom': '1rem' } }, [
-                    h3({ style: { fontSize: styles.titleSize }
-                    },[this.state.currentValue.heading]),
-                    p({style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [this.state.body])
-                ]),
                 h1({ className: "wizardTitle" }, ["Login Text"]),
                 div({}, [
                     InputFieldText({
