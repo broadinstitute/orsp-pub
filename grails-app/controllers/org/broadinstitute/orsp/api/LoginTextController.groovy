@@ -27,6 +27,7 @@ class LoginTextController {
             response.status = 200
             render([message: 'Login text was updated'] as JSON)
         } catch(Exception e) {
+            render(e as JSON)
             handleException(e)
         }
     }
