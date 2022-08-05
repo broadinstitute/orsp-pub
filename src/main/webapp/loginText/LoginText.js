@@ -8,6 +8,12 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { LoginText } from '../util/ajax';
 import { AlertMessage } from '../components/AlertMessage';
 
+const styles = {
+    titleSize: '24px',
+    fontFamily : '"Helvetica Neue",Helvetica,Arial,sans-serif',
+    textFontSize: '14px'
+  };
+
 export const LogintText = hh(class LogintText extends Component {
 
     constructor(props) {
@@ -16,7 +22,8 @@ export const LogintText = hh(class LogintText extends Component {
             heading: '',
             body: '',
             currentValue: {},
-            alert: ''
+            alert: '',
+            error: false
         };
     }
 
@@ -66,27 +73,41 @@ export const LogintText = hh(class LogintText extends Component {
     }
 
     submitEditResponses = () => {
-        let heading = this.state.heading;
-        let body = this.state.body;
-        console.log("heading: "+heading, "body: "+body);
-        LoginText.updateLoginText(heading, body).then(() => {
-            this.getLoginText();
-            this.setState(prev => {
-                prev.heading = '';
-                prev.body = '';
-                return prev;
+        if (this.state.heading == '' && this.state.body == '') {
+            this.setState({
+                error: true
+            });
+        } else {
+            this.setState({
+                error: false
+            });
+            let heading = this.state.heading;
+            let body = this.state.body;
+            console.log("heading: "+heading, "body: "+body);
+            LoginText.updateLoginText(heading, body).then(() => {
+                this.getLoginText();
+                this.setState(prev => {
+                    prev.heading = '';
+                    prev.body = '';
+                    return prev;
+                })
+            }).catch(error => {
+                this.setState(prev => {
+                    prev.alert = "We had an unexpected error "+error;
+                    return prev;
+                })
             })
-        }).catch(error => {
-            this.setState(prev => {
-                prev.alert = "We had an unexpected error "+error;
-                return prev;
-            })
-        })
+        }
     }
 
     render() {
         return (
             div({}, [
+                div({ className: "col-md-10", style: { 'margin-bottom': '1rem' } }, [
+                    h3({ style: { fontSize: styles.titleSize }
+                    },[this.state.currentValue.heading]),
+                    p({style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [this.state.body])
+                ]),
                 h1({ className: "wizardTitle" }, ["Login Text"]),
                 div({}, [
                     InputFieldText({
@@ -96,7 +117,7 @@ export const LogintText = hh(class LogintText extends Component {
                         value: this.state.heading,
                         currentValue: this.state.currentValue.heading,
                         required: true,
-                        error: this.state.heading == '' ? true : false,
+                        error: this.state.error,
                         errorMessage: "Heading cannot be empty",
                         onChange: this.handleHeadingChange
                     }),
@@ -107,7 +128,7 @@ export const LogintText = hh(class LogintText extends Component {
                         value: this.state.body,
                         currentValue: this.state.currentValue.body,
                         required: true,
-                        error: this.state.body == '' ? true : false,
+                        error: this.state.error,
                         errorMessage: "Body cannot be empty",
                         onChange: this.handleBodyChange
                     }),
