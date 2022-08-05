@@ -24,35 +24,36 @@ export const LogintText = hh(class LogintText extends Component {
         let current = {};
         LoginText.getLoginText().then(loginText => {
             console.log(loginText);
-            let loginTextData = JSON.parse(JSON.stringify(loginText))
-            console.log("Login Text: "+loginTextData);
-            let data = loginTextData.data[0];
+            console.log('logintext: ', loginText);
+            let data = loginText.data[0];
             current.heading = data[1];
             current.body = data[2];
+            console.log(current);
         });
-        this.setState(prev => {
-            prev.currentValue = current;
-            return prev;
+        this.setState({
+            currentValue: current,
+            heading: current.heading,
+            body: current.body
         })
     }
 
-    getLoginText() {
+    getLoginText = () => {
         let current = {};
         LoginText.getLoginText().then(loginText => {
             console.log(loginText);
-            let loginTextData = JSON.parse(JSON.stringify(loginText))
-            console.log("Login Text: "+loginTextData);
-            let data = loginTextData.data[0];
+            let data = loginText.data[0];
             current.heading = data[1];
             current.body = data[2];
         });
         this.setState(prev => {
             prev.currentValue = current;
+            prev.heading = current.heading;
+            prev.body = current.body;
             return prev;
         })
     }
 
-    handleHeadingChange(e) {
+    handleHeadingChange = (e) => {
         let value = e.target.value;
         this.setState(prev => {
             prev.heading = value;
@@ -60,7 +61,7 @@ export const LogintText = hh(class LogintText extends Component {
         })
     }
 
-    handleBodyChange(e) {
+    handleBodyChange = (e) => {
         let value = e.target.value;
         this.setState(prev => {
             prev.body = value;
@@ -68,17 +69,17 @@ export const LogintText = hh(class LogintText extends Component {
         })
     }
 
-    submitEditResponses() {
+    submitEditResponses = () => {
         let heading = this.state.heading;
         let body = this.state.body;
         console.log("heading: "+heading, "body: "+body);
         LoginText.updateLoginText(heading, body).then(() => {
             this.getLoginText();
-            this.setState(prev => {
-                prev.heading = '';
-                prev.body = '';
-                return prev;
-            })
+            // this.setState(prev => {
+            //     prev.heading = '';
+            //     prev.body = '';
+            //     return prev;
+            // })
         }).catch(error => {
             this.setState(prev => {
                 prev.alert = "We had an unexpected error "+error;
@@ -97,7 +98,7 @@ export const LogintText = hh(class LogintText extends Component {
                         name: "heading",
                         label: "Heading for login page text",
                         value: this.state.heading,
-                        currentValue: this.state.currentValue.heading,
+                        // currentValue: this.state.currentValue.heading,
                         required: true,
                         error: this.state.heading == '' ? true : false,
                         errorMessage: "Heading cannot be empty",
@@ -108,7 +109,7 @@ export const LogintText = hh(class LogintText extends Component {
                         name: "body",
                         label: "Body for login page text",
                         value: this.state.body,
-                        currentValue: this.state.currentValue.body,
+                        // currentValue: this.state.currentValue.body,
                         required: true,
                         error: this.state.body == '' ? true : false,
                         errorMessage: "Body cannot be empty",
