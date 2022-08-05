@@ -22,7 +22,7 @@ class LoginTextService {
     }
 
     void UpdateLoginText(String heading, String body) throws SQLException {
-        LoginText loginText = LoginText.findById('1')
+        LoginText loginText = LoginText.findById(1)
         if (loginText != null) {
             loginText.setHeading(heading)
             loginText.setBody(body)
