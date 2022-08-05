@@ -32,8 +32,8 @@ export const LogintText = hh(class LogintText extends Component {
         });
         this.setState({
             currentValue: current,
-            heading: current.heading,
-            body: current.body
+            // heading: current.heading,
+            // body: current.body
         })
     }
 
@@ -47,8 +47,8 @@ export const LogintText = hh(class LogintText extends Component {
         });
         this.setState(prev => {
             prev.currentValue = current;
-            prev.heading = current.heading;
-            prev.body = current.body;
+            // prev.heading = current.heading;
+            // prev.body = current.body;
             return prev;
         })
     }
@@ -115,7 +115,7 @@ export const LogintText = hh(class LogintText extends Component {
                         errorMessage: "Body cannot be empty",
                         onChange: this.handleBodyChange
                     }),
-                    div({ className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
+                    div({ className: "buttonContainer", style: { 'margin': '1rem 0 0 0' } }, [
                         button({
                             className: "btn buttonPrimary floatRight",
                             onClick: this.submitEditResponses,
