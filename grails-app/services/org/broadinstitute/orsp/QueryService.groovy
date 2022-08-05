@@ -1859,6 +1859,8 @@ class QueryService implements Status {
         final session = sessionFactory.currentSession
         final String query = ' update login_text set heading = :heading, body = :body '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
+        query.setParameter("heading", heading)
+        query.setParameter("body", body)
         final result = sqlQuery.with {
             list()
         }
