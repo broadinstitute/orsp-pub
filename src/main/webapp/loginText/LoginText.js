@@ -32,8 +32,6 @@ export const LogintText = hh(class LogintText extends Component {
         });
         this.setState({
             currentValue: current,
-            // heading: current.heading,
-            // body: current.body
         })
     }
 
@@ -47,8 +45,6 @@ export const LogintText = hh(class LogintText extends Component {
         });
         this.setState(prev => {
             prev.currentValue = current;
-            // prev.heading = current.heading;
-            // prev.body = current.body;
             return prev;
         })
     }
@@ -75,11 +71,11 @@ export const LogintText = hh(class LogintText extends Component {
         console.log("heading: "+heading, "body: "+body);
         LoginText.updateLoginText(heading, body).then(() => {
             this.getLoginText();
-            // this.setState(prev => {
-            //     prev.heading = '';
-            //     prev.body = '';
-            //     return prev;
-            // })
+            this.setState(prev => {
+                prev.heading = '';
+                prev.body = '';
+                return prev;
+            })
         }).catch(error => {
             this.setState(prev => {
                 prev.alert = "We had an unexpected error "+error;
@@ -98,7 +94,7 @@ export const LogintText = hh(class LogintText extends Component {
                         name: "heading",
                         label: "Heading for login page text",
                         value: this.state.heading,
-                        // currentValue: this.state.currentValue.heading,
+                        currentValue: this.state.currentValue.heading,
                         required: true,
                         error: this.state.heading == '' ? true : false,
                         errorMessage: "Heading cannot be empty",
@@ -109,7 +105,7 @@ export const LogintText = hh(class LogintText extends Component {
                         name: "body",
                         label: "Body for login page text",
                         value: this.state.body,
-                        // currentValue: this.state.currentValue.body,
+                        currentValue: this.state.currentValue.body,
                         required: true,
                         error: this.state.body == '' ? true : false,
                         errorMessage: "Body cannot be empty",
