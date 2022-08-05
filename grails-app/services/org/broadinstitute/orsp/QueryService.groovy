@@ -1854,13 +1854,14 @@ class QueryService implements Status {
         result
     }
 
-    Collection<LoginText> updateLoginText(String heading, String body) {
+    void updateLoginText(String heading, String body) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final String query = ' update login_text set heading = :heading, body = :body '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setParameter("heading", heading)
         sqlQuery.setParameter("body", body)
+        sqlQuery.executeUpdate()
     }
 
 }
