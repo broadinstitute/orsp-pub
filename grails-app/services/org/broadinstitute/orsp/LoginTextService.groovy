@@ -23,8 +23,10 @@ class LoginTextService {
 
     void UpdateLoginText(String heading, String body) throws SQLException {
         LoginText loginText = LoginText.findById(1)
-        if (loginText != null) {
+        if (loginText.heading != null) {
             loginText.setHeading(heading)
+            persistenceService.saveLoginText(loginText)
+        } else if (loginText.body != null) {
             loginText.setBody(body)
             persistenceService.saveLoginText(loginText)
         } else {
