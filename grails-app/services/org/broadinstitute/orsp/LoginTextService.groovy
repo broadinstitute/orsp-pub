@@ -22,6 +22,7 @@ class LoginTextService {
     }
 
     Collection<LoginText> updateLoginText(String heading, String body) {
+
         queryService.updateLoginText(heading, body)
     }
 
