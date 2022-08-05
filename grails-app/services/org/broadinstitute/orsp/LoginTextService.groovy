@@ -22,10 +22,10 @@ class LoginTextService {
     }
 
     void UpdateLoginText(String heading, String body) throws SQLException {
-        LoginText loginText = LoginText.findById(1)
+        LoginText loginText = LoginText.findById('1')
         if (loginText != null) {
             loginText.setHeading(heading)
-//            loginText.setBody(body)
+            loginText.setBody(body)
             persistenceService.saveLoginText(loginText)
         } else {
             log.error("Error while trying to update login text")
