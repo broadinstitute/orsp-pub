@@ -21,7 +21,8 @@ class LoginTextService {
         queryService.getLoginText()
     }
 
-    Collection<LoginText> updateLoginText(heading, body) {
+    Collection<LoginText> updateLoginText(String heading, String body) {
+
         queryService.updateLoginText(heading, body)
     }
 
