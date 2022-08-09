@@ -30,12 +30,9 @@ export const LogintText = hh(class LogintText extends Component {
     componentDidMount() {
         let current = {};
         LoginText.getLoginText().then(loginText => {
-            console.log(loginText);
-            console.log('logintext: ', loginText);
             let data = loginText.data[0];
             current.heading = data[1];
             current.body = data[2];
-            console.log(current);
         });
         this.setState({
             currentValue: current,
@@ -45,7 +42,6 @@ export const LogintText = hh(class LogintText extends Component {
     getLoginText = () => {
         let current = {};
         LoginText.getLoginText().then(loginText => {
-            console.log(loginText);
             let data = loginText.data[0];
             current.heading = data[1];
             current.body = data[2];
@@ -73,7 +69,7 @@ export const LogintText = hh(class LogintText extends Component {
     }
 
     submitEditResponses = () => {
-        if (this.state.heading == '' && this.state.body == '') {
+        if (this.state.heading === '' || this.state.body === '') {
             this.setState({
                 error: true
             });
@@ -83,7 +79,6 @@ export const LogintText = hh(class LogintText extends Component {
             });
             let heading = this.state.heading;
             let body = this.state.body;
-            console.log("heading: "+heading, "body: "+body);
             LoginText.updateLoginText(heading, body).then(() => {
                 this.getLoginText();
                 this.setState(prev => {
@@ -103,11 +98,11 @@ export const LogintText = hh(class LogintText extends Component {
     render() {
         return (
             div({}, [
-                h1({ className: "wizardTitle" }, ["Login Text"]),br(),
-                h3({ style: { fontSize: styles.titleSize }
+                h1({ className: "wizardTitle" }, ["Login Text"]),
+                h3({ style: { fontSize: styles.titleSize, 'margin-top': '1rem'}
                 },[this.state.currentValue.heading]),
-                p({style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [this.state.currentValue.body]),
-                div({}, [
+                p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize } }, [this.state.currentValue.body]),
+                div({ style: {'margin-top': '1rem'} }, [
                     InputFieldText({
                         id: "LoginTextHeading",
                         name: "heading",
