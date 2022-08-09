@@ -33,7 +33,6 @@ export const About = hh(class About extends Component {
   componentDidMount(){
       this.hasSession();
       LoginText.getLoginText().then(loginText => {
-        console.log(loginText);
         let data = loginText.data[0];
         this.setState(prev => {
           prev.heading = data[1];
