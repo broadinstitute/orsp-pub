@@ -25,6 +25,7 @@ export const LogintText = hh(class LogintText extends Component {
             alert: '',
             error: false
         };
+        this.getLoginText();
     }
 
     componentDidMount() {
