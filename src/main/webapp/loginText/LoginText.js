@@ -100,9 +100,9 @@ export const LogintText = hh(class LogintText extends Component {
         return (
             div({}, [
                 h1({ className: "wizardTitle" }, ["Login Text"]),
-                h3({ style: { fontSize: styles.titleSize, marginTop: '1rem'}
-                },[this.state.currentValue.heading]),
-                p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize } }, [this.state.currentValue.body]),
+                // h3({ style: { fontSize: styles.titleSize, marginTop: '1rem'}
+                // },[this.state.currentValue.heading]),
+                // p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize } }, [this.state.currentValue.body]),
                 div({ style: {marginTop: '1rem'} }, [
                     InputFieldText({
                         id: "LoginTextHeading",
