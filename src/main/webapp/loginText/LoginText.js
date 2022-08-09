@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import '../components/Wizard.css'
 import '../index.css'
-import { button, hh, h1, div } from 'react-hyperscript-helpers';
+import { button, hh, h1, h3, p, div } from 'react-hyperscript-helpers';
 
 import { InputFieldText } from '../components/InputFieldText'; 
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { LoginText } from '../util/ajax';
 import { AlertMessage } from '../components/AlertMessage';
+
+const styles = {
+    titleSize: '24px',
+    fontFamily : '"Helvetica Neue",Helvetica,Arial,sans-serif',
+    textFontSize: '14px'
+  };
 
 export const LogintText = hh(class LogintText extends Component {
 
@@ -97,7 +103,10 @@ export const LogintText = hh(class LogintText extends Component {
     render() {
         return (
             div({}, [
-                h1({ className: "wizardTitle" }, ["Login Text"]),
+                h1({ className: "wizardTitle" }, ["Login Text"]),br(),
+                h3({ style: { fontSize: styles.titleSize }
+                },[this.state.heading]),
+                p({style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [this.state.body]),
                 div({}, [
                     InputFieldText({
                         id: "LoginTextHeading",
