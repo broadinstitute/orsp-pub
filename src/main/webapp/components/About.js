@@ -6,7 +6,7 @@ import { AlertMessage } from './AlertMessage';
 import { Storage } from '../util/Storage';
 
 const styles = {
-  titleSize: '24px',
+  titleSize: '26px',
   fontFamily : '"Helvetica Neue",Helvetica,Arial,sans-serif',
   textFontSize: '14px'
 };
@@ -54,7 +54,7 @@ export const About = hh(class About extends Component {
         }),
   
         div({ className: "col-md-10" }, [
-          h3({ style: { fontSize: styles.titleSize }
+          h3({ style: { fontSize: styles.titleSize }, color: 'red', fontWeight: 'bold'
           },[this.state.heading]),
           p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
             a({
@@ -63,7 +63,7 @@ export const About = hh(class About extends Component {
                 "ORSP on the Broad Intranet"
             ]),
           ]),
-          p({style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [this.state.body]),
+          p({style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize, whiteSpace: 'pre' }}, [this.state.body]),
           // p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
           //   "The Office of Research Subject Protection (ORSP) at the Broad Institute is committed to helping " +
           //   "our community members adhere to federal regulations and institutional policies governing the " +
