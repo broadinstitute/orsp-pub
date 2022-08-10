@@ -36,9 +36,7 @@ export const LogintText = hh(class LogintText extends Component {
             current.body = data[2];
         });
         this.setState({
-            currentValue: current,
-            heading: current.heading,
-            body: current.body
+            currentValue: current
         });
     }
 
