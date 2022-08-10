@@ -117,7 +117,7 @@ export const LogintText = hh(class LogintText extends Component {
                         errorMessage: "Heading cannot be empty",
                         onChange: this.handleHeadingChange
                     }),
-                    InputFieldTextArea({style: {whiteSpace: 'pre'}}, {
+                    InputFieldTextArea({
                         id: "loginTextBody",
                         name: "body",
                         label: "Body for login page text",
