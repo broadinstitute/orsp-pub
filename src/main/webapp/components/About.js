@@ -6,7 +6,7 @@ import { AlertMessage } from './AlertMessage';
 import { Storage } from '../util/Storage';
 
 const styles = {
-  titleSize: '26px',
+  titleSize: '24px',
   fontFamily : '"Helvetica Neue",Helvetica,Arial,sans-serif',
   textFontSize: '14px'
 };
@@ -54,7 +54,7 @@ export const About = hh(class About extends Component {
         }),
   
         div({ className: "col-md-10" }, [
-          h3({ style: { fontSize: styles.titleSize }, color: 'red', fontWeight: 'bold'
+          h3({ style: { fontSize: styles.titleSize, color: '#ED1D24', fontWeight: 'bold' }
           },[this.state.heading]),
           p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
             a({

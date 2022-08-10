@@ -36,9 +36,7 @@ export const LogintText = hh(class LogintText extends Component {
             current.body = data[2];
         });
         this.setState({
-            currentValue: current,
-            heading: current.heading,
-            body: current.body
+            currentValue: current
         });
     }
 
@@ -51,8 +49,6 @@ export const LogintText = hh(class LogintText extends Component {
         });
         this.setState(prev => {
             prev.currentValue = current;
-            prev.heading = current.heading;
-            prev.body = current.body;
             return prev;
         })
     }
@@ -86,11 +82,11 @@ export const LogintText = hh(class LogintText extends Component {
             let body = this.state.body;
             LoginText.updateLoginText(heading, body).then(() => {
                 this.getLoginText();
-                // this.setState(prev => {
-                //     prev.heading = '';
-                //     prev.body = '';
-                //     return prev;
-                // })
+                this.setState(prev => {
+                    prev.heading = '';
+                    prev.body = '';
+                    return prev;
+                })
             }).catch(error => {
                 this.setState(prev => {
                     prev.alert = "We had an unexpected error "+error;
@@ -119,7 +115,7 @@ export const LogintText = hh(class LogintText extends Component {
                         errorMessage: "Heading cannot be empty",
                         onChange: this.handleHeadingChange
                     }),
-                    InputFieldTextArea({style: {whiteSpace: 'pre'}}, {
+                    InputFieldTextArea({
                         id: "loginTextBody",
                         name: "body",
                         label: "Body for login page text",
