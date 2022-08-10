@@ -6,7 +6,7 @@ import { AlertMessage } from './AlertMessage';
 import { Storage } from '../util/Storage';
 
 const styles = {
-  titleSize: '24px',
+  titleSize: '26px',
   fontFamily : '"Helvetica Neue",Helvetica,Arial,sans-serif',
   textFontSize: '14px'
 };
