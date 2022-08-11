@@ -122,6 +122,7 @@ export const UrlConstants = {
   projectUrl:  context + "/project/pages",
   loginTextUrl: context + "/api/login-text",
   loginText: context + "/loginText",
-  editLoginTextUrl: context + "/api/edit-login-text"
+  editLoginTextUrl: context + "/api/edit-login-text",
+  LoginTextResponseUrl: context + "/api/login-text-response"
 };
 

@@ -145,6 +145,7 @@ class UrlMappings {
         // Login text end point
         '/api/login-text'(controller: 'loginText', action: 'getLoginText', method: 'GET')
         '/api/edit-login-text'(controller: 'loginText', action: 'updateLoginText', method: 'PUT')
+        '/api/login-text-response'(controller: 'loginText', action: 'getLoginTextResponse', method: 'GET')
 
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
