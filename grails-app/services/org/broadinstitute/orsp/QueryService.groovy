@@ -1863,4 +1863,15 @@ class QueryService implements Status {
         sqlQuery.executeUpdate()
     }
 
+    Collection<LogintTextResponse> getLoginTextResponse() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = ' select o.* from login_text_response o '
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final result = sqlQuery.with {
+            list()
+        }
+        result
+    }
+
 }
