@@ -3,11 +3,13 @@ package org.broadinstitute.orsp
 class LogintTextResponse {
 
     Integer id
-    String responses
+    String heading
+    String body
 
     static constraints = {
         id nullable: false
-        responses nullable: false
+        heading nullable: false
+        body nullable: false
     }
 
 }
