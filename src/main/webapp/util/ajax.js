@@ -577,5 +577,9 @@ export const LoginText = {
 
   updateLoginText(heading, body) {
     return axios.put(UrlConstants.editLoginTextUrl, {heading: heading, body: body});
+  },
+
+  getLoginTextResponse() {
+    return axios.get(UrlConstants.LoginTextResponseUrl);
   }
 };

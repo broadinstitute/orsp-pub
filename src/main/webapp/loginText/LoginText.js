@@ -7,6 +7,7 @@ import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { LoginText } from '../util/ajax';
 import { AlertMessage } from '../components/AlertMessage';
+import { InputFieldSelect } from '../components/InputFieldSelect';
 
 const styles = {
     titleSize: '24px',
@@ -23,7 +24,9 @@ export const LogintText = hh(class LogintText extends Component {
             body: '',
             currentValue: {},
             alert: '',
-            error: false
+            error: false,
+            loginTextResponse: '',
+            optionData: []
         };
         this.getLoginText();
     }
@@ -35,8 +38,21 @@ export const LogintText = hh(class LogintText extends Component {
             current.heading = data[1];
             current.body = data[2];
         });
+        LoginText.getLoginTextResponse().then(loginTextResponse => {
+            console.log(loginTextResponse);
+            let optionData = []
+            let responseData = loginTextResponse.data[0];
+            responseData.forEach(element => {
+                optionData.push({label: element.heading, value: element.heading, body: element.body});
+            });
+            this.setState({
+                optionData: optionData
+            })
+        });
         this.setState({
-            currentValue: current
+            currentValue: current,
+            heading: current.heading,
+            body: current.body
         });
     }
 
@@ -54,6 +70,17 @@ export const LogintText = hh(class LogintText extends Component {
             return prev;
         })
     }
+
+    handleSelect = (field) => () => (selectedOption) => {
+        console.log(selectedOption);
+        this.setState(prev => {
+          prev.heading = selectedOption.value;
+          prev.body = selectedOption.body
+          prev.currentValue = {heading: selectedOption.value, body: selectedOption.body}
+          prev.loginTextResponse = selectedOption.value;
+          return prev;
+        })
+    };
 
     handleHeadingChange = (e) => {
         let value = e.target.value;
@@ -106,6 +133,18 @@ export const LogintText = hh(class LogintText extends Component {
                 // },[this.state.currentValue.heading]),
                 // p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize } }, [this.state.currentValue.body]),
                 div({ style: {marginTop: '1rem'} }, [
+                    InputFieldSelect({
+                        label: "Portal Message",
+                        id: "loginTextResponse",
+                        name: "loginTextResponse",
+                        options: this.state.optionData,
+                        value: this.state.loginTextResponse,
+                        currentValue: this.state.loginTextResponse,
+                        onChange: this.handleSelect("loginTextResponse"),
+                        readOnly: false,
+                        placeholder: "Select a quick response",
+                        edit: true
+                      }),
                     InputFieldText({
                         id: "LoginTextHeading",
                         name: "heading",
