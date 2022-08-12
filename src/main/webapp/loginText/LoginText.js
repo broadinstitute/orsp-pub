@@ -32,7 +32,12 @@ export const LogintText = hh(class LogintText extends Component {
     }
 
     componentDidMount() {
+        this.init();
+    }
+
+    init() {
         let current = {};
+        let optionData = []
         LoginText.getLoginText().then(loginText => {
             let data = loginText.data[0];
             current.heading = data[1];
@@ -40,19 +45,17 @@ export const LogintText = hh(class LogintText extends Component {
         });
         LoginText.getLoginTextResponse().then(loginTextResponse => {
             console.log(loginTextResponse);
-            let optionData = []
-            let responseData = loginTextResponse.data[0];
+            let responseData = loginTextResponse.data;
             responseData.forEach(element => {
                 optionData.push({label: element.heading, value: element.heading, body: element.body});
             });
-            this.setState({
-                optionData: optionData
-            })
         });
-        this.setState({
-            currentValue: current,
-            heading: current.heading,
-            body: current.body
+        this.setState(prev => {
+            prev.currentValue= current;
+            prev.heading= current.heading;
+            prev.body= current.body;
+            prev.optionData= optionData;
+            return prev;
         });
     }
 
