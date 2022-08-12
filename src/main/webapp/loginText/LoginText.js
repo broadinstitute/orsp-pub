@@ -81,8 +81,8 @@ export const LogintText = hh(class LogintText extends Component {
         console.log(selectedOption);
         this.setState(prev => {
           prev.heading = selectedOption.value;
-          prev.body = selectedOption.body
-          prev.currentValue = {heading: selectedOption.value, body: selectedOption.body}
+        //   prev.body = selectedOption.body
+          prev.currentValue = {heading: selectedOption.value}
           prev.loginTextResponse = selectedOption.value;
           return prev;
         })
