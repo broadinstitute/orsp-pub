@@ -42,22 +42,23 @@ export const LogintText = hh(class LogintText extends Component {
             let data = loginText.data[0];
             current.heading = data[1];
             current.body = data[2];
+            this.setState({
+                currentValue: current,
+                heading: current.heading,
+                body: current.body
+            });
         });
         LoginText.getLoginTextResponse().then(loginTextResponse => {
             console.log(loginTextResponse);
             let responseData = loginTextResponse.data;
             console.log(responseData)
             responseData.forEach(element => {
-                optionData.push({label: element[1], value: element[1]});
+                optionData.push({label: element[1], value: element[1], body: element[2]});
                 console.log(optionData);
+                this.setState({
+                    optionData: optionData 
+                });
             });
-        });
-        this.setState(prev => {
-            prev.currentValue= current;
-            prev.heading= current.heading;
-            prev.body= current.body;
-            prev.optionData= optionData;
-            return prev;
         });
     }
 
@@ -67,21 +68,21 @@ export const LogintText = hh(class LogintText extends Component {
             let data = loginText.data[0];
             current.heading = data[1];
             current.body = data[2];
+            this.setState(prev => {
+                prev.currentValue = current;
+                prev.heading = current.heading;
+                prev.body = current.body;
+                return prev;
+            })
         });
-        this.setState(prev => {
-            prev.currentValue = current;
-            prev.heading = current.heading;
-            prev.body = current.body;
-            return prev;
-        })
     }
 
     handleSelect = (field) => () => (selectedOption) => {
         console.log(selectedOption);
         this.setState(prev => {
           prev.heading = selectedOption.value;
-        //   prev.body = selectedOption.body
-          prev.currentValue = {heading: selectedOption.value}
+          prev.body = selectedOption.body
+          prev.currentValue = {heading: selectedOption.value, body: selectedOption.body}
           prev.loginTextResponse = selectedOption.value;
           return prev;
         })
