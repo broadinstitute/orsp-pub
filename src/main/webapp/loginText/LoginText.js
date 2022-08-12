@@ -35,10 +35,10 @@ export const LogintText = hh(class LogintText extends Component {
         this.init();
     }
 
-    init() {
+    async init() {
         let current = {};
         let optionData = []
-        LoginText.getLoginText().then(loginText => {
+        await LoginText.getLoginText().then(loginText => {
             let data = loginText.data[0];
             current.heading = data[1];
             current.body = data[2];
@@ -48,7 +48,7 @@ export const LogintText = hh(class LogintText extends Component {
                 body: current.body
             });
         });
-        LoginText.getLoginTextResponse().then(loginTextResponse => {
+        await LoginText.getLoginTextResponse().then(loginTextResponse => {
             console.log(loginTextResponse);
             let responseData = loginTextResponse.data;
             console.log(responseData)
@@ -81,8 +81,8 @@ export const LogintText = hh(class LogintText extends Component {
         console.log(selectedOption);
         this.setState(prev => {
           prev.heading = selectedOption.value;
-        //   prev.body = selectedOption.body
-          prev.currentValue = {heading: selectedOption.value}
+          prev.body = selectedOption.body;
+          prev.currentValue = {heading: selectedOption.value, body: selectedOption.body};
           prev.loginTextResponse = selectedOption.value;
           return prev;
         })
