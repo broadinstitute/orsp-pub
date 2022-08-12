@@ -46,6 +46,7 @@ export const LogintText = hh(class LogintText extends Component {
         LoginText.getLoginTextResponse().then(loginTextResponse => {
             console.log(loginTextResponse);
             let responseData = loginTextResponse.data;
+            console.log(responseData)
             responseData.forEach(element => {
                 optionData.push({label: element[1], value: element[1]});
                 console.log(optionData);
