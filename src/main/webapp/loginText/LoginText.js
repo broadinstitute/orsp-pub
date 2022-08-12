@@ -48,8 +48,7 @@ export const LogintText = hh(class LogintText extends Component {
             let responseData = loginTextResponse.data;
             console.log(responseData)
             responseData.forEach(element => {
-                console.log(element);
-                optionData.push({label: element[1], value: element[1], body: element[2]});
+                optionData.push({label: element[1], value: element[1]});
                 console.log(optionData);
             });
         });
@@ -81,8 +80,8 @@ export const LogintText = hh(class LogintText extends Component {
         console.log(selectedOption);
         this.setState(prev => {
           prev.heading = selectedOption.value;
-          prev.body = selectedOption.body
-          prev.currentValue = {heading: selectedOption.value, body: selectedOption.body}
+        //   prev.body = selectedOption.body
+          prev.currentValue = {heading: selectedOption.value}
           prev.loginTextResponse = selectedOption.value;
           return prev;
         })
