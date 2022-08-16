@@ -27,9 +27,7 @@ class LoginTextController {
         try {
             LoginText loginTextUpdate = loginTextService.updateLoginText((String)loginText.get("heading"), (String)loginText.get("body"))
             response.status = 200
-            render(loginTextUpdate as JSON)
         } catch(Exception e) {
-            render([message: 'entered catch block' + e] as JSON)
             handleException(e)
         }
     }
