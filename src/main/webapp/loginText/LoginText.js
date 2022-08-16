@@ -155,7 +155,7 @@ export const LogintText = hh(class LogintText extends Component {
                         currentValue: this.state.loginTextResponse,
                         onChange: this.handleSelect("loginTextResponse"),
                         readOnly: false,
-                        placeholder: "Select a quick response",
+                        placeholder: this.state.loginTextResponse || "Select a quick response",
                         edit: true,
                         onClick: this.clickSelect
                       }),
