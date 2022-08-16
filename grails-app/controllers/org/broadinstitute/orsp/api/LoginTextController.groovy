@@ -29,6 +29,7 @@ class LoginTextController {
             response.status = 200
             render(loginTextUpdate as JSON)
         } catch(Exception e) {
+            render(e as JSON)
             handleException(e)
         }
     }
