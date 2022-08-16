@@ -30,6 +30,7 @@ class LoginTextController {
             render(loginTextUpdate as JSON)
         } catch(Exception e) {
             handleException(e)
+            render([message: 'entered catch block' + e])
         }
     }
 
