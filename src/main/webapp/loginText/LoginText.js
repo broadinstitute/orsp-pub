@@ -55,8 +55,9 @@ export const LogintText = hh(class LogintText extends Component {
             responseData.forEach(element => {
                 optionData.push({label: element[1], value: element[1], body: element[2]});
                 console.log(optionData);
-                this.setState({
-                    optionData: optionData 
+                this.setState(prev => {
+                    prev.optionData = optionData;
+                    return prev;
                 });
             });
         });
