@@ -104,6 +104,12 @@ export const LogintText = hh(class LogintText extends Component {
         })
     }
 
+    clickSelect = () => {
+        this.setState({
+            optionData : this.state.optionData
+        })
+    }
+
     submitEditResponses = () => {
         if (this.state.heading === '' || this.state.body === '') {
             this.setState({
@@ -149,7 +155,8 @@ export const LogintText = hh(class LogintText extends Component {
                         onChange: this.handleSelect("loginTextResponse"),
                         readOnly: false,
                         placeholder: "Select a quick response",
-                        edit: true
+                        edit: true,
+                        onClick: this.clickSelect
                       }),
                     InputFieldText({
                         id: "LoginTextHeading",
