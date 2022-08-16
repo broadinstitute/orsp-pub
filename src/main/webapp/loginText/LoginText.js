@@ -48,19 +48,15 @@ export const LogintText = hh(class LogintText extends Component {
         let optionData = []
 
         await LoginText.getLoginText().then(loginText => {
-            if(this._isMounted) {
-                this.props.hideSpinner();
-                let data = loginText.data[0];
-                current.heading = data[1];
-                current.body = data[2];
-                this.setState({
-                    currentValue: current,
-                    heading: current.heading,
-                    body: current.body
-                });
-            }
+            let data = loginText.data[0];
+            current.heading = data[1];
+            current.body = data[2];
+            this.setState({
+                currentValue: current,
+                heading: current.heading,
+                body: current.body
+            });
         }).catch(error => {
-            this.props.hideSpinner();
             console.log(error);
             this.setState(() => { throw error; });
         });
