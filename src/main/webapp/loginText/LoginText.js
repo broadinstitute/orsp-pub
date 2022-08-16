@@ -55,8 +55,9 @@ export const LogintText = hh(class LogintText extends Component {
             responseData.forEach(element => {
                 optionData.push({label: element[1], value: element[1], body: element[2]});
                 console.log(optionData);
-                this.setState({
-                    optionData: optionData 
+                this.setState(prev => {
+                    prev.optionData = optionData;
+                    return prev;
                 });
             });
         });
@@ -101,12 +102,6 @@ export const LogintText = hh(class LogintText extends Component {
         this.setState(prev => {
             prev.body = value;
             return prev;
-        })
-    }
-
-    clickSelect = () => {
-        this.setState({
-            optionData : this.state.optionData
         })
     }
 
@@ -155,8 +150,7 @@ export const LogintText = hh(class LogintText extends Component {
                         onChange: this.handleSelect("loginTextResponse"),
                         readOnly: false,
                         placeholder: "Select a quick response",
-                        edit: true,
-                        onClick: this.clickSelect
+                        edit: true
                       }),
                     InputFieldText({
                         id: "LoginTextHeading",
