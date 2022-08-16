@@ -17,6 +17,8 @@ const styles = {
 
 export const LogintText = hh(class LogintText extends Component {
 
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -32,21 +34,35 @@ export const LogintText = hh(class LogintText extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true;
+        this.props.showSpinner();
         this.init();
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     async init() {
         let current = {};
         let optionData = []
+
         await LoginText.getLoginText().then(loginText => {
-            let data = loginText.data[0];
-            current.heading = data[1];
-            current.body = data[2];
-            this.setState({
-                currentValue: current,
-                heading: current.heading,
-                body: current.body
-            });
+            if(this._isMounted) {
+                this.props.hideSpinner();
+                let data = loginText.data[0];
+                current.heading = data[1];
+                current.body = data[2];
+                this.setState({
+                    currentValue: current,
+                    heading: current.heading,
+                    body: current.body
+                });
+            }
+        }).catch(error => {
+            this.props.hideSpinner();
+            console.log(error);
+            this.setState(() => { throw error; });
         });
         await LoginText.getLoginTextResponse().then(loginTextResponse => {
             console.log(loginTextResponse);
@@ -60,6 +76,9 @@ export const LogintText = hh(class LogintText extends Component {
                 prev.optionData = optionData;
                 return prev;
             });
+        }).catch(error => {
+            console.log(error);
+            this.setState(() => { throw error; });
         });
     }
 
