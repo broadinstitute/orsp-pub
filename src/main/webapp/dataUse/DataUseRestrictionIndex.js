@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { h, hh } from 'react-hyperscript-helpers';
+import { h, hh, div } from 'react-hyperscript-helpers';
 import SampleCollectionLinks from './SampleCollectionLinks';
 import DataUseRestriction from './DataUseRestriction';
 import { About } from '../components/About';
@@ -8,11 +8,13 @@ const DataUseRestrictionIndex = hh(class DataUseRestrictionIndex extends Compone
 
   render() {
      return (
-      About({showWarning: false}),
-       h( Fragment, {},[
-         h(DataUseRestriction, {}),
-         h(SampleCollectionLinks,{}),
-       ])
+      div({}, [
+        About({showWarning: false}),
+        h( Fragment, {},[
+          h(DataUseRestriction, {}),
+          h(SampleCollectionLinks,{}),
+        ])
+      ])
      )
   }
 });
