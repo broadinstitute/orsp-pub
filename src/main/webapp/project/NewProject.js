@@ -8,7 +8,7 @@ import { DETERMINATION } from '../util/TypeDescription';
 import { Project, User } from '../util/ajax';
 import { handleUnauthorized, isEmpty } from '../util/Utils';
 import { getProjectType } from '../util/DeterminationQuestions';
-import { hh } from 'react-hyperscript-helpers';
+import { hh, div } from 'react-hyperscript-helpers';
 import 'regenerator-runtime/runtime';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { About } from '../components/About';
