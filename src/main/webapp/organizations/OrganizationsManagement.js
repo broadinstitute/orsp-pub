@@ -193,42 +193,43 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
     return(
       div({}, [
         About({showWarning: false}),
-      ]),
-      Panel({ title: "Organizations" }, [
-      div({ className: "roles-management" },[
-        a({
-          isRendered: this.state.isAdmin,
-          onClick: this.addOrganizationHandler,
-          className: "btn btn-primary",
-          style: styles.add
-        }, ["Add"]),
-        Table({
-          headers: tableHeaders,
-          isAdmin: this.state.isAdmin,
-          data: this.state.organizations,
-          editOrganization: this.editOrganizationHandler,
-          deleteOrganization: this.deleteOrganizationHandler,
-          reviewFlow: true,
-          pagination: false,
-          tableHandler: this.tableHandler,
-          onSearchChange: this.onSearchChange,
-          onSortChange: this.onSortChange
-        }),
-        ConfirmationDialog({
-          closeModal: this.closeRemoveModal,
-          show: this.state.showRemoveModal,
-          handleOkAction: this.deleteOrganization,
-          title: 'Delete Organization',
-          bodyText: 'Are you sure you want to delete this organization?',
-          actionLabel: 'Yes'
-        }, []),
-        OrganizationManagementEdit({
-          closeModal: this.closeModal,
-          closeOnSubmit: this.submit,
-          show: this.state.editOrganizationDialog,
-          isRendered: this.state.editOrganizationDialog,
-          organizationData : this.state.rowData
-        })
+        Panel({ title: "Organizations" }, [
+        div({ className: "roles-management" },[
+          a({
+            isRendered: this.state.isAdmin,
+            onClick: this.addOrganizationHandler,
+            className: "btn btn-primary",
+            style: styles.add
+          }, ["Add"]),
+          Table({
+            headers: tableHeaders,
+            isAdmin: this.state.isAdmin,
+            data: this.state.organizations,
+            editOrganization: this.editOrganizationHandler,
+            deleteOrganization: this.deleteOrganizationHandler,
+            reviewFlow: true,
+            pagination: false,
+            tableHandler: this.tableHandler,
+            onSearchChange: this.onSearchChange,
+            onSortChange: this.onSortChange
+          }),
+          ConfirmationDialog({
+            closeModal: this.closeRemoveModal,
+            show: this.state.showRemoveModal,
+            handleOkAction: this.deleteOrganization,
+            title: 'Delete Organization',
+            bodyText: 'Are you sure you want to delete this organization?',
+            actionLabel: 'Yes'
+          }, []),
+          OrganizationManagementEdit({
+            closeModal: this.closeModal,
+            closeOnSubmit: this.submit,
+            show: this.state.editOrganizationDialog,
+            isRendered: this.state.editOrganizationDialog,
+            organizationData : this.state.rowData
+          })
+        ])
+
       ])
     ])
     );  

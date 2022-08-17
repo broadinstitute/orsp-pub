@@ -8,7 +8,7 @@ import { DETERMINATION } from '../util/TypeDescription';
 import { Project, User } from '../util/ajax';
 import { handleUnauthorized, isEmpty } from '../util/Utils';
 import { getProjectType } from '../util/DeterminationQuestions';
-import { hh } from 'react-hyperscript-helpers';
+import { hh, div } from 'react-hyperscript-helpers';
 import 'regenerator-runtime/runtime';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { About } from '../components/About';
@@ -393,47 +393,47 @@ const NewProject = hh(class NewProject extends Component {
     return (
       div({}, [
         About({showWarning: false}),
-      ]),
-      Wizard({
-        title: "New Project",
-        note: "Note that this application cannot be saved and returned to for completion later. However, allowing the page to remain open in your browser will permit you to return to the application at any time.",
-        stepChanged: this.stepChanged,
-        isValid: this.isValid,
-        submitHandler: this.submitNewProject,
-        showSubmit: this.showSubmit,
-        disabledSubmit: this.state.formSubmitted,
-      }, [
-          NewProjectGeneralData({
-            title: "Project Details",
-            currentStep: currentStep,
-            user: this.state.user,
-            updateForm: this.updateGeneralDataFormData,
-            errors: this.state.errors,
-            removeErrorMessage: this.removeErrorMessage
-          }),
-          NewProjectDetermination({
-            title: "Determination Questions",
-            currentStep: currentStep,
-            determination: this.state.determination,
-            handler: this.determinationHandler,
-            errors: this.state.showErrorDeterminationQuestions
-          }),
-          NewProjectDocuments({
-            title: "Documents",
-            currentStep: currentStep,
-            step: LAST_STEP,
-            fileHandler: this.fileHandler,
-            projectType: projectType,
-            files: this.state.files,
-            errors: this.state.errors,
-            generalError: this.state.generalError,
-            submitError: this.state.submitError,
-            options: this.state.documentOptions,
-            removeErrorMessage: this.removeErrorMessage,
-            updateForm: this.updateAttestationFormData,
-            formData: this.state.attestationFormData
-          })
+        Wizard({
+          title: "New Project",
+          note: "Note that this application cannot be saved and returned to for completion later. However, allowing the page to remain open in your browser will permit you to return to the application at any time.",
+          stepChanged: this.stepChanged,
+          isValid: this.isValid,
+          submitHandler: this.submitNewProject,
+          showSubmit: this.showSubmit,
+          disabledSubmit: this.state.formSubmitted,
+        }, [
+            NewProjectGeneralData({
+              title: "Project Details",
+              currentStep: currentStep,
+              user: this.state.user,
+              updateForm: this.updateGeneralDataFormData,
+              errors: this.state.errors,
+              removeErrorMessage: this.removeErrorMessage
+            }),
+            NewProjectDetermination({
+              title: "Determination Questions",
+              currentStep: currentStep,
+              determination: this.state.determination,
+              handler: this.determinationHandler,
+              errors: this.state.showErrorDeterminationQuestions
+            }),
+            NewProjectDocuments({
+              title: "Documents",
+              currentStep: currentStep,
+              step: LAST_STEP,
+              fileHandler: this.fileHandler,
+              projectType: projectType,
+              files: this.state.files,
+              errors: this.state.errors,
+              generalError: this.state.generalError,
+              submitError: this.state.submitError,
+              options: this.state.documentOptions,
+              removeErrorMessage: this.removeErrorMessage,
+              updateForm: this.updateAttestationFormData,
+              formData: this.state.attestationFormData
+            })
         ])
+      ])
     );
   }
 });
