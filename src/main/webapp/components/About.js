@@ -63,7 +63,7 @@ export const About = hh(class About extends Component {
                 "ORSP on the Broad Intranet"
             ]),
           ]),
-          <p style={{fontFamily : styles.fontFamily, fontSize: styles.textFontSize, whiteSpace: 'pre'}}>{this.state.body}</p>,
+          <p style={{fontFamily : styles.fontFamily, fontSize: styles.textFontSize}}>{this.state.body}</p>,
           // p({style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize, whiteSpace: 'pre' }}, [this.state.body]),
           // p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
           //   "The Office of Research Subject Protection (ORSP) at the Broad Institute is committed to helping " +
