@@ -11,6 +11,7 @@ import { getProjectType } from '../util/DeterminationQuestions';
 import { hh } from 'react-hyperscript-helpers';
 import 'regenerator-runtime/runtime';
 import LoadingWrapper from '../components/LoadingWrapper';
+import { About } from '../components/About';
 
 const LAST_STEP = 2;
 
@@ -390,6 +391,7 @@ const NewProject = hh(class NewProject extends Component {
     const { currentStep, determination } = this.state;
     let projectType = determination.projectType;
     return (
+      About({showWarning: false}),
       Wizard({
         title: "New Project",
         note: "Note that this application cannot be saved and returned to for completion later. However, allowing the page to remain open in your browser will permit you to return to the application at any time.",

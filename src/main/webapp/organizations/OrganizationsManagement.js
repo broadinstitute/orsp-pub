@@ -6,6 +6,7 @@ import { Organization } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { About } from '../components/About';
 
 const tableHeaders =
   [
@@ -190,6 +191,7 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
 
    render() {
     return(
+      About({showWarning: false}),
       Panel({ title: "Organizations" }, [
       div({ className: "roles-management" },[
         a({
