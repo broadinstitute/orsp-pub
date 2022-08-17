@@ -227,7 +227,7 @@ class Search extends React.Component {
   render() {
     return (
       <div>
-        <About showWarning="false"></About>
+        <About showWarning={false}></About>
         <h1>Search</h1>
         <hr />
         <form onSubmit={this.handleSubmit}>
