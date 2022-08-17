@@ -229,6 +229,7 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
             organizationData : this.state.rowData
           })
         ])
+
       ])
     ])
     );  
