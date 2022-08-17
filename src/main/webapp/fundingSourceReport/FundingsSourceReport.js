@@ -7,6 +7,7 @@ import { FUNDING_SORT_NAME_INDEX, styles } from '../util/ReportConstants';
 import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from '../util/TableUtil';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { projectStatus } from '../util/Utils';
+import { About } from '../components/About';
 
 const stylesHeader = {
   pageTitle: {
@@ -241,6 +242,7 @@ const FundingsSourceReport = hh(class FundingsSourceReport extends Component {
   render() {
     return(
       div({},[
+        About({showWarning: false}),
         h1({ style: stylesHeader.pageTitle}, ["Funding Source Report"]),
         TableComponent({
           remoteProp: true,

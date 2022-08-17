@@ -7,6 +7,7 @@ import { TABLE_ACTIONS, formatDataPrintableFormat } from '../util/TableUtil';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Link } from 'react-router-dom';
 import { exportData, isEmpty } from '../util/Utils';
+import { About } from '../components/About';
 
 const stylesHeader = {
   pageTitle: {
@@ -188,6 +189,7 @@ const SampleCollection = hh(class SampleCollection extends Component {
   render() {
     return (
       div({}, [
+        About({showWarning: false}),
         h1({ style: stylesHeader.pageTitle }, ["Consent Collection Links"]),
         TableComponent({
           remoteProp: true,

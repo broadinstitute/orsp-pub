@@ -143,6 +143,7 @@ const RolesManagement = hh(class RolesManagement extends Component {
    render() {
     return(
       div({ className: "roles-management" },[
+        About({showWarning: false}),
         h1({ style: stylesHeader.pageTitle}, ["Roles Management"]),
         Table({
           headers: tableHeaders,

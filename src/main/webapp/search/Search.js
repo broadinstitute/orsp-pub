@@ -6,6 +6,7 @@ import { MultiSelect } from '../components/MultiSelect';
 import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import SearchResults from "./SearchResults";
 import UserAutocomplete from "../util/UserAutocomplete";
+import { About } from "../components/About";
 import { UrlConstants } from "../util/UrlConstants";
 import { SampleCollections } from "../util/ajax";
 import { isEmpty } from '../util/Utils';
@@ -226,6 +227,7 @@ class Search extends React.Component {
   render() {
     return (
       <div>
+        <About showWarning="false"></About>
         <h1>Search</h1>
         <hr />
         <form onSubmit={this.handleSubmit}>

@@ -6,6 +6,7 @@ import { CATEGORY_SORT_NAME_INDEX, styles } from '../util/ReportConstants';
 import { TABLE_ACTIONS } from '../util/TableUtil';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Link } from 'react-router-dom';
+import { About } from '../components/About';
 
 const stylesHeader = {
   pageTitle: {
@@ -193,6 +194,7 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
   render() {
     return(
       div({},[
+        About({showWarning: false}),
         h1({ style: stylesHeader.pageTitle}, ["Review Category Report"]),
         TableComponent({
           remoteProp: true,

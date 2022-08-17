@@ -9,6 +9,7 @@ import { IRB, NO_IRB, QA_REPORT_COLUMNS } from '../util/ReportConstants';
 import { createObjectCopy, exportData, isEmpty } from '../util/Utils';
 import MultiTab from '../components/MultiTab';
 import LoadingWrapper from '../components/LoadingWrapper';
+import { About } from '../components/About';
 
 const QaReport = hh(class QaReport extends Component {
 
@@ -176,6 +177,7 @@ const QaReport = hh(class QaReport extends Component {
     return(
       div({
       },[
+        About({showWarning: false}),
         h1({},['Quality Assurance Report']),
         h(FilterPanel,{
           handleDatePicker: this.handleDatePicker,
