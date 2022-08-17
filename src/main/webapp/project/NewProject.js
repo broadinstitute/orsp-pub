@@ -391,7 +391,9 @@ const NewProject = hh(class NewProject extends Component {
     const { currentStep, determination } = this.state;
     let projectType = determination.projectType;
     return (
-      About({showWarning: false}),
+      div({}, [
+        About({showWarning: false}),
+      ]),
       Wizard({
         title: "New Project",
         note: "Note that this application cannot be saved and returned to for completion later. However, allowing the page to remain open in your browser will permit you to return to the application at any time.",

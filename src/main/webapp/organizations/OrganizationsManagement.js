@@ -191,7 +191,9 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
 
    render() {
     return(
-      About({showWarning: false}),
+      div({}, [
+        About({showWarning: false}),
+      ]),
       Panel({ title: "Organizations" }, [
       div({ className: "roles-management" },[
         a({
