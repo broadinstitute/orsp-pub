@@ -52,12 +52,9 @@ export const LogintText = hh(class LogintText extends Component {
             this.setState(() => { throw error; });
         });
         await LoginText.getLoginTextResponse().then(loginTextResponse => {
-            console.log(loginTextResponse);
             let responseData = loginTextResponse.data;
-            console.log(responseData)
             responseData.forEach(element => {
                 optionData.push({label: element[1], value: element[1], body: element[2]});
-                console.log(optionData);
             });
             this.setState(prev => {
                 prev.optionData = optionData;
@@ -85,7 +82,6 @@ export const LogintText = hh(class LogintText extends Component {
     }
 
     handleSelect = (field) => () => (selectedOption) => {
-        console.log(selectedOption);
         this.setState(prev => {
           prev.heading = selectedOption.value;
           prev.body = selectedOption.body;
