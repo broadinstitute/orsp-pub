@@ -125,14 +125,14 @@ export const LogintText = hh(class LogintText extends Component {
     setDefault = () => {
         let defaultData;
         this.state.optionData.forEach(element => {
-            if (element[3].toLowerCase() === 'default') {
+            if (element[3] === 'default') {
                 defaultData = element;
                 console.log(defaultData);
             }
         });
         let heading = defaultData[1];
         let body = defaultData[2];
-        LoginText.updateLoginText(heading, body).then(() => {
+        LoginText.updateLoginText(heading, body, 'default').then(() => {
             this.getLoginText();
             this.setState(prev => {
                 prev.alert = 'Login text defaulted to About details'
@@ -150,7 +150,15 @@ export const LogintText = hh(class LogintText extends Component {
     submitEditResponses = () => {
         let heading = this.state.heading;
         let body = this.state.formattedBody;
-        LoginText.updateLoginText(heading, body).then(() => {
+        let defaultValue = '';
+        this.state.optionData.forEach(element => {
+            if (element[3] === 'default') {
+                defaultValue = 'default';
+            } else {
+                defaultValue = '';
+            }
+        })
+        LoginText.updateLoginText(heading, body, defaultValue).then(() => {
             this.getLoginText();
             this.setState(prev => {
                 prev.alert = 'Submitted Successfully'
@@ -196,12 +204,11 @@ export const LogintText = hh(class LogintText extends Component {
                         theme='snow'
                         value={this.state.body}
                         onChange={this.handleBodyChange}
-                        style={{minHeight: '300px', height: '10rem'}}
+                        style={{height: '12rem'}}
                     /><br/>
                     <div className="buttonContainer" style={{margin: '1rem 0 0 0'}}>
                         <button 
-                            className="btn buttonPrimary floatRight"
-                            style={{marginRight: '10px'}}
+                            className="btn buttonPrimary"
                             onClick={this.setDefault}
                         >Default</button>
                         <button 
