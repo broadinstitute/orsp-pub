@@ -25,7 +25,7 @@ class LoginTextController {
     def updateLoginText() {
         Map<String, Object> loginText = IssueUtils.getJson(Map.class, request.JSON)
         try {
-            LoginText loginTextUpdate = loginTextService.updateLoginText((String)loginText.get("heading"), (String)loginText.get("body"))
+            LoginText loginTextUpdate = loginTextService.updateLoginText((String)loginText.get("heading"), (String)loginText.get("body"), (String)loginText.get("default_value"))
             response.status = 200
         } catch(Exception e) {
             handleException(e)
