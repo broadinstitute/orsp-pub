@@ -1860,7 +1860,7 @@ class QueryService implements Status {
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setParameter("heading", heading)
         sqlQuery.setParameter("body", body)
-        sqlQuery.setParameter("default_name", default_value)
+        sqlQuery.setParameter("default_value", default_value)
         sqlQuery.executeUpdate()
     }
 
