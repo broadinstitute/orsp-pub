@@ -24,7 +24,6 @@ export const LogintText = hh(class LogintText extends Component {
             body: '',
             currentValue: {},
             alert: '',
-            error: false,
             loginTextResponse: '',
             optionData: []
         };
@@ -41,7 +40,10 @@ export const LogintText = hh(class LogintText extends Component {
         await LoginText.getLoginText().then(loginText => {
             let data = loginText.data[0];
             current.heading = data[1];
-            current.body = data[2];
+            let bodyData = data[2];
+            bodyData = bodyData.replaceAll("&lt;", "<");
+            bodyData = bodyData.replaceAll("&gt;", ">");
+            current.body = bodyData;
             this.setState({
                 currentValue: current,
                 heading: current.heading,
@@ -71,7 +73,10 @@ export const LogintText = hh(class LogintText extends Component {
         LoginText.getLoginText().then(loginText => {
             let data = loginText.data[0];
             current.heading = data[1];
-            current.body = data[2];
+            let bodyData = data[2];
+            bodyData = bodyData.replaceAll("&lt;", "<");
+            bodyData = bodyData.replaceAll("&gt;", ">");
+            current.body = bodyData;
             this.setState(prev => {
                 prev.currentValue = current;
                 prev.heading = current.heading;
@@ -100,7 +105,10 @@ export const LogintText = hh(class LogintText extends Component {
     }
 
     handleBodyChange = (e) => {
-        let value = e.target.value;
+        console.log(e);
+        e = e.replaceAll("<", "&lt;");
+        e = e.replaceAll(">", "&gt;");
+        let value = e;
         this.setState(prev => {
             prev.body = value;
             return prev;
@@ -114,88 +122,117 @@ export const LogintText = hh(class LogintText extends Component {
     }
 
     submitEditResponses = () => {
-        if (this.state.heading === '' || this.state.body === '') {
-            this.setState({
-                error: true
-            });
-        } else {
-            this.setState({
-                error: false
-            });
-            let heading = this.state.heading;
-            let body = this.state.body;
-            LoginText.updateLoginText(heading, body).then(() => {
-                this.getLoginText();
-                // this.setState(prev => {
-                //     prev.heading = '';
-                //     prev.body = '';
-                //     return prev;
-                // })
-            }).catch(error => {
-                this.setState(prev => {
-                    prev.alert = "We had an unexpected error "+error;
-                    return prev;
-                })
+        let heading = this.state.heading;
+        let body = this.state.body;
+        LoginText.updateLoginText(heading, body).then(() => {
+            this.getLoginText();
+        }).catch(error => {
+            this.setState(prev => {
+                prev.alert = "We had an unexpected error "+error;
+                return prev;
             })
-        }
+        })
     }
 
     render() {
         return (
-            div({}, [
-                h1({ className: "wizardTitle" }, ["Login Text"]),
-                // h3({ style: { fontSize: styles.titleSize, marginTop: '1rem'}
-                // },[this.state.currentValue.heading]),
-                // p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize } }, [this.state.currentValue.body]),
-                div({ style: {marginTop: '1rem'} }, [
-                    InputFieldSelect({
-                        label: "Portal Message",
-                        id: "loginTextResponse",
-                        name: "loginTextResponse",
-                        options: this.state.optionData,
-                        value: this.state.loginTextResponse,
-                        currentValue: this.state.loginTextResponse,
-                        onChange: this.handleSelect("loginTextResponse"),
-                        readOnly: false,
-                        placeholder: this.state.loginTextResponse || "Select a quick response",
-                        edit: true,
-                        onClick: this.clickSelect
-                      }),
-                    InputFieldText({
-                        id: "LoginTextHeading",
-                        name: "heading",
-                        label: "Heading for login page text",
-                        value: this.state.heading,
-                        currentValue: this.state.currentValue.heading,
-                        required: true,
-                        error: this.state.error,
-                        errorMessage: "Heading cannot be empty",
-                        onChange: this.handleHeadingChange
-                    }),
-                    InputFieldTextArea({
-                        id: "loginTextBody",
-                        name: "body",
-                        label: "Body for login page text",
-                        value: this.state.body,
-                        currentValue: this.state.currentValue.body,
-                        required: true,
-                        error: this.state.error,
-                        errorMessage: "Body cannot be empty",
-                        onChange: this.handleBodyChange
-                    }),
-                    div({ className: "buttonContainer", style: { 'margin': '1rem 0 0 0' } }, [
-                        button({
-                            className: "btn buttonPrimary floatRight",
-                            onClick: this.submitEditResponses,
-                        }, ["Submit"])
-                    ]),
-                    AlertMessage({
-                        msg: this.state.alert,
-                        show: this.state.alert !== '' ? true : false,
-                        type: 'danger'
-                    })
-                ])
-            ])
+            <div>
+                <h1 className="wizardTitle">Login Text</h1>
+                <div style={{marginTop: '1rem'}}>
+                    <InputFieldSelect
+                        label="Portal Message"
+                        id="loginTextResponse"
+                        name="loginTextResponse"
+                        options={this.state.optionData}
+                        value={this.state.loginTextResponse}
+                        currentValue={this.state.loginTextResponse}
+                        onChange={this.handleSelect("loginTextResponse")}
+                        readOnly={false}
+                        placeholder={this.state.loginTextResponse || "Select a quick response"}
+                        edit={true}
+                        onClick={this.clickSelect}
+                    ></InputFieldSelect>
+                    <InputFieldText
+                        id="LoginTextHeading"
+                        name="heading"
+                        label="Heading for login page text"
+                        value={this.state.heading}
+                        currentValue={this.state.currentValue.heading}
+                        onChange={this.handleHeadingChange}
+                    ></InputFieldText>
+                    <ReactQuill
+                        theme='snow'
+                        value={this.state.body}
+                        onChange={this.handleBodyChange}
+                        style={{minHeight: '300px', height: '15rem'}}
+                    />
+                    <div className="buttonContainer" style={{margin: '1rem 0 0 0'}}>
+                        <button 
+                            className="btn buttonPrimary floatRight" 
+                            onClick={this.submitEditResponses}
+                        >Submit</button>
+                    </div>
+                    <AlertMessage
+                        msg={this.state.alert}
+                        show={this.state.alert !== '' ? true : false}
+                        type='danger'
+                    ></AlertMessage>
+                </div>
+            </div>
+            // div({}, [
+            //     h1({ className: "wizardTitle" }, ["Login Text"]),
+            //     // h3({ style: { fontSize: styles.titleSize, marginTop: '1rem'}
+            //     // },[this.state.currentValue.heading]),
+            //     // p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize } }, [this.state.currentValue.body]),
+            //     div({ style: {marginTop: '1rem'} }, [
+            //         InputFieldSelect({
+            //             label: "Portal Message",
+            //             id: "loginTextResponse",
+            //             name: "loginTextResponse",
+            //             options: this.state.optionData,
+            //             value: this.state.loginTextResponse,
+            //             currentValue: this.state.loginTextResponse,
+            //             onChange: this.handleSelect("loginTextResponse"),
+            //             readOnly: false,
+            //             placeholder: this.state.loginTextResponse || "Select a quick response",
+            //             edit: true,
+            //             onClick: this.clickSelect
+            //           }),
+            //         InputFieldText({
+            //             id: "LoginTextHeading",
+            //             name: "heading",
+            //             label: "Heading for login page text",
+            //             value: this.state.heading,
+            //             currentValue: this.state.currentValue.heading,
+            //             required: true,
+            //             error: this.state.error,
+            //             errorMessage: "Heading cannot be empty",
+            //             onChange: this.handleHeadingChange
+            //         }),
+            //         InputFieldTextArea({
+            //             id: "loginTextBody",
+            //             name: "body",
+            //             label: "Body for login page text",
+            //             value: this.state.body,
+            //             currentValue: this.state.currentValue.body,
+            //             required: true,
+            //             error: this.state.error,
+            //             errorMessage: "Body cannot be empty",
+            //             onChange: this.handleBodyChange
+            //         }),
+            //         div({ className: "buttonContainer", style: { 'margin': '1rem 0 0 0' } }, [
+            //             button({
+            //                 className: "btn buttonPrimary floatRight",
+            //                 onClick: this.submitEditResponses,
+            //             }, ["Submit"])
+            //         ]),
+            //         AlertMessage({
+            //             msg: this.state.alert,
+            //             show: this.state.alert !== '' ? true : false,
+            //             type: 'danger'
+            //         })
+            //     ])
+            // ])
         );
     }
 })

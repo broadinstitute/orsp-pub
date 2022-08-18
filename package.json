@@ -76,6 +76,7 @@
     "react-responsive-navbar": "1.0.11",
     "react-router-dom": "5.0.1",
     "react-select": "2.1.2",
+    "react-quill": "^2.0.0",
     "regenerator-runtime": "0.13.2",
     "rxjs": "6.5.3",
     "sanitize-html": "^1.24.0",
