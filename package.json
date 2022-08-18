@@ -79,7 +79,7 @@
     "react-quill": "^2.0.0",
     "regenerator-runtime": "0.13.2",
     "rxjs": "6.5.3",
-    "sanitize-html": "^1.24.0",
+    "sanitize-html": "^2.3.2",
     "xlsx": "0.14.3"
   }
 }
