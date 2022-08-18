@@ -203,8 +203,7 @@ export const LogintText = hh(class LogintText extends Component {
                     <label style={{ color: '#286090', fontWeight: '700', fontSize: '1rem', marginBottom: '3px', marginTop: '10px' }}>Body for the login page text</label>
                     <ReactQuill
                         theme='snow'
-                        // value={this.state.body}
-                        dangerouslySetInnerHTML={{ __html: this.state.body }}
+                        value={this.state.body}
                         onChange={this.handleBodyChange}
                         style={{height: '12rem'}}
                     /><br/>
