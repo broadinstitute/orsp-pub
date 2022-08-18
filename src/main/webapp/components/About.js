@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { hh, span, div, a, h3, p, br } from 'react-hyperscript-helpers';
 import { isEmpty } from "../util/Utils";
 import { LoginText, User } from "../util/ajax";
