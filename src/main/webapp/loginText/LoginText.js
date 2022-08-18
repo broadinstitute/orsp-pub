@@ -26,6 +26,7 @@ export const LogintText = hh(class LogintText extends Component {
             heading: '',
             body: '',
             formattedBody: '',
+            defaultValue: '',
             currentValue: {},
             alert: '',
             loginTextResponse: '',
@@ -97,6 +98,7 @@ export const LogintText = hh(class LogintText extends Component {
           prev.body = selectedOption.body;
           prev.currentValue = {heading: selectedOption.value, body: selectedOption.body};
           prev.loginTextResponse = selectedOption.value;
+          prev.defaultValue = selectedOption.default;
           return prev;
         })
     };
@@ -152,13 +154,11 @@ export const LogintText = hh(class LogintText extends Component {
         let heading = this.state.heading;
         let body = this.state.formattedBody;
         let defaultValue = '';
-        this.state.optionData.forEach(element => {
-            if (element.default === 'default') {
-                defaultValue = 'default';
-            } else {
-                defaultValue = '';
-            }
-        })
+        if (this.state.default === 'default') {
+            defaultValue = 'default';
+        } else {
+            defaultValue = '';
+        }
         LoginText.updateLoginText(heading, body, defaultValue).then(() => {
             this.getLoginText();
             this.setState(prev => {
