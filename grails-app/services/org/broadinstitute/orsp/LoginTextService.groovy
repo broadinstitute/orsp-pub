@@ -21,8 +21,8 @@ class LoginTextService {
         queryService.getLoginText()
     }
 
-    Collection<LoginText> updateLoginText(String heading, String body) {
-        queryService.updateLoginText(heading, body)
+    Collection<LoginText> updateLoginText(String heading, String body, String default_value) {
+        queryService.updateLoginText(heading, body, default_value)
     }
 
 //    void UpdateLoginText(String heading, String body) throws SQLException {

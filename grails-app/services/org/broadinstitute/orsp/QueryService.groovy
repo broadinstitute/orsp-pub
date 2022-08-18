@@ -1854,12 +1854,13 @@ class QueryService implements Status {
         result
     }
 
-    void updateLoginText(String heading, String body) {
+    void updateLoginText(String heading, String body, String default_value) {
         final session = sessionFactory.currentSession
-        final String query = ' update login_text set heading = :heading, body = :body '
+        final String query = ' update login_text set heading = :heading, body = :body, default_value = :default_value '
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setParameter("heading", heading)
         sqlQuery.setParameter("body", body)
+        sqlQuery.setParameter("default_name", default_value)
         sqlQuery.executeUpdate()
     }
 

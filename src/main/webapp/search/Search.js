@@ -56,7 +56,8 @@ class Search extends React.Component {
       types: this.getLocalStorageState("types", "array"),
       statuses: this.getLocalStorageState("statuses", "array"),
       irb: this.getLocalStorageState("irb", "array"),
-      collection: ''
+      collection: '',
+      aboutValueCheck: ''
     };
   }
 
@@ -122,7 +123,8 @@ class Search extends React.Component {
       data: [],
       loading: false,
       loaded: false,
-      collection: ''
+      collection: '',
+      aboutValueCheck: ''
     }));
     this.userAutocomplete.clear();
     this.projectAutocomplete.clear();
