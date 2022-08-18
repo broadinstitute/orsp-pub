@@ -25,6 +25,7 @@ export const LogintText = hh(class LogintText extends Component {
         this.state = {
             heading: '',
             body: '',
+            formattedBody: '',
             currentValue: {},
             alert: '',
             loginTextResponse: '',
@@ -109,18 +110,19 @@ export const LogintText = hh(class LogintText extends Component {
 
     handleBodyChange(e) {
         console.log(e);
-        e = e.replaceAll("<", "&lt;");
-        e = e.replaceAll(">", "&gt;");
-        let value = e;
+        let formattedBody = e
+        formattedBody = formattedBody.replaceAll("<", "&lt;");
+        formattedBody = formattedBody.replaceAll(">", "&gt;");
         this.setState(prev => {
-            prev.body = value;
+            prev.formattedBody = formattedBody;
+            prev.body = e;
             return prev;
         })
     }
 
     submitEditResponses = () => {
         let heading = this.state.heading;
-        let body = this.state.body;
+        let body = this.state.formattedBody;
         LoginText.updateLoginText(heading, body).then(() => {
             this.getLoginText();
         }).catch(error => {
