@@ -126,26 +126,26 @@ export const LogintText = hh(class LogintText extends Component {
         let defaultData;
         this.state.optionData.forEach(element => {
             console.log('element', element);
-            if (element[3] === 'default') {
+            if (element.default === 'default') {
                 defaultData = element;
                 console.log(defaultData);
             }
         });
-        // let heading = defaultData[1];
-        // let body = defaultData[2];
-        // LoginText.updateLoginText(heading, body, 'default').then(() => {
-        //     this.getLoginText();
-        //     this.setState(prev => {
-        //         prev.alert = 'Login text defaulted to About details'
-        //         prev.alertType = 'success'
-        //     })
-        // }).catch(error => {
-        //     this.setState(prev => {
-        //         prev.alert = "We had an unexpected error "+error;
-        //         prev.alertType = 'danger';
-        //         return prev;
-        //     })
-        // })
+        let heading = defaultData.value;
+        let body = defaultData.body;
+        LoginText.updateLoginText(heading, body, 'default').then(() => {
+            this.getLoginText();
+            this.setState(prev => {
+                prev.alert = 'Login text defaulted to About details'
+                prev.alertType = 'success'
+            })
+        }).catch(error => {
+            this.setState(prev => {
+                prev.alert = "We had an unexpected error "+error;
+                prev.alertType = 'danger';
+                return prev;
+            })
+        })
     }
 
     submitEditResponses = () => {
@@ -153,7 +153,7 @@ export const LogintText = hh(class LogintText extends Component {
         let body = this.state.formattedBody;
         let defaultValue = '';
         this.state.optionData.forEach(element => {
-            if (element[3] === 'default') {
+            if (element.default === 'default') {
                 defaultValue = 'default';
             } else {
                 defaultValue = '';
