@@ -108,7 +108,7 @@ export const LogintText = hh(class LogintText extends Component {
         })
     }
 
-    handleBodyChange(e) {
+    handleBodyChange = (e) => {
         this.setState({
             body: e
         })
