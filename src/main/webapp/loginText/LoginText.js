@@ -107,7 +107,7 @@ export const LogintText = hh(class LogintText extends Component {
         })
     }
 
-    handleBodyChange = (e) => {
+    handleBodyChange(e) {
         console.log(e);
         e = e.replaceAll("<", "&lt;");
         e = e.replaceAll(">", "&gt;");
@@ -115,12 +115,6 @@ export const LogintText = hh(class LogintText extends Component {
         this.setState(prev => {
             prev.body = value;
             return prev;
-        })
-    }
-
-    clickSelect = () => {
-        this.setState({
-            optionData : this.state.optionData
         })
     }
 
