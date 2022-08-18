@@ -29,7 +29,8 @@ export const LogintText = hh(class LogintText extends Component {
             currentValue: {},
             alert: '',
             loginTextResponse: '',
-            optionData: []
+            optionData: [],
+            alertType: ''
         };
         this.getLoginText();
     }
@@ -60,7 +61,7 @@ export const LogintText = hh(class LogintText extends Component {
         await LoginText.getLoginTextResponse().then(loginTextResponse => {
             let responseData = loginTextResponse.data;
             responseData.forEach(element => {
-                optionData.push({label: element[1], value: element[1], body: element[2]});
+                optionData.push({label: element[1], value: element[1], body: element[2], default: element[3]});
             });
             this.setState(prev => {
                 prev.optionData = optionData;
@@ -121,14 +122,44 @@ export const LogintText = hh(class LogintText extends Component {
         })
     }
 
+    setDefault = () => {
+        let defaultData;
+        this.state.optionData.forEach(element => {
+            if (element[3].toLowerCase() === 'default') {
+                defaultData = element;
+                console.log(defaultData);
+            }
+        });
+        let heading = defaultData[1];
+        let body = defaultData[2];
+        LoginText.updateLoginText(heading, body).then(() => {
+            this.getLoginText();
+            this.setState(prev => {
+                prev.alert = 'Login text defaulted to About details'
+                prev.alertType = 'success'
+            })
+        }).catch(error => {
+            this.setState(prev => {
+                prev.alert = "We had an unexpected error "+error;
+                prev.alertType = 'danger';
+                return prev;
+            })
+        })
+    }
+
     submitEditResponses = () => {
         let heading = this.state.heading;
         let body = this.state.formattedBody;
         LoginText.updateLoginText(heading, body).then(() => {
             this.getLoginText();
+            this.setState(prev => {
+                prev.alert = 'Submitted Successfully'
+                prev.alertType = 'success'
+            })
         }).catch(error => {
             this.setState(prev => {
                 prev.alert = "We had an unexpected error "+error;
+                prev.alertType = 'danger';
                 return prev;
             })
         })
@@ -160,13 +191,19 @@ export const LogintText = hh(class LogintText extends Component {
                         currentValue={this.state.currentValue.heading}
                         onChange={this.handleHeadingChange}
                     ></InputFieldText>
+                    <label style={{ color: '#286090', fontWeight: '700', fontSize: '1rem', marginBottom: '3px', marginTop: '10px' }}>Body for the login page text</label>
                     <ReactQuill
                         theme='snow'
                         value={this.state.body}
                         onChange={this.handleBodyChange}
-                        style={{minHeight: '300px', height: '15rem'}}
-                    />
+                        style={{minHeight: '300px', height: '10rem'}}
+                    /><br/>
                     <div className="buttonContainer" style={{margin: '1rem 0 0 0'}}>
+                        <button 
+                            className="btn buttonPrimary floatRight"
+                            style={{marginRight: '10px'}}
+                            onClick={this.setDefault}
+                        >Default</button>
                         <button 
                             className="btn buttonPrimary floatRight" 
                             onClick={this.submitEditResponses}
@@ -175,7 +212,7 @@ export const LogintText = hh(class LogintText extends Component {
                     <AlertMessage
                         msg={this.state.alert}
                         show={this.state.alert !== '' ? true : false}
-                        type='danger'
+                        type={this.state.alertType}
                     ></AlertMessage>
                 </div>
             </div>
