@@ -9,6 +9,9 @@ import { LoginText } from '../util/ajax';
 import { AlertMessage } from '../components/AlertMessage';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 
+import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
+
 const styles = {
     titleSize: '24px',
     fontFamily : '"Helvetica Neue",Helvetica,Arial,sans-serif',

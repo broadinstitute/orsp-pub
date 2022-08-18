@@ -58,23 +58,20 @@ export const About = hh(class About extends Component {
         <div className="col-md-10">
           <h3 style={{ fontSize: styles.titleSize, color: '#ED1D24', fontWeight: 'bold' }}>{this.state.heading}</h3>
           <p style={{ fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}>
-            <a
-              isRendered={component.isBroad && showAccessDetails}
+            { component.isBroad && showAccessDetails ? <a
               href="https://iwww.broadinstitute.org/sponsored-research/research-subject-protection/office-research-subject-protection"
               target="_blank"
-            >ORSP on the Broad Intranet</a>
+            >ORSP on the Broad Intranet</a> : undefined }
           </p>
           <p 
             style={{ fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}
             dangerouslySetInnerHTML={{ __html: this.state.body }}
           ></p>
-          <p
-            isRendered={this.props.showWarning}
-            style={{ fontFamily : styles.fontFamily, fontSize: styles.textFontSize, padding:"15px", border:"1px solid #CCCCCC", borderRadius:"6px", margin:"20px 0 30px 0" }}
-          >Please note that Microsoft Edge and Internet Explorer are not supported browsers for the ORSP Portal. Please use Google Chrome or Firefox instead.</p>
-          <div
-            isRendered={component.isBroad && showAccessDetails}
-          >
+          { this.props.showWarning ? <p
+            style={{ fontFamily : styles.fontFamily, fontSize: styles.textFontSize, padding:"15px", border:"1px solid #CCCCCC", borderRadius:"6px", margin:"20px 0 30px 0" }}>
+              Please note that Microsoft Edge and Internet Explorer are not supported browsers for the ORSP Portal. Please use Google Chrome or Firefox instead.
+          </p> : undefined }
+          { component.isBroad && showAccessDetails ? <div>
             <h3
               style={{ fontSize: styles.titleSize }}
             >User Guide</h3>
@@ -85,7 +82,7 @@ export const About = hh(class About extends Component {
                 target="_blank"
               >https://intranet.broadinstitute.org/research-subject-protection/orsp-online-portal-submission-system</a>
             </p>
-          </div>
+          </div> : undefined }
         </div>
       </div>
       // div({className: "row"}, [
