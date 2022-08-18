@@ -109,14 +109,15 @@ export const LogintText = hh(class LogintText extends Component {
     }
 
     handleBodyChange(e) {
+        this.setState({
+            body: e
+        })
         console.log(e);
         let formattedBody = e
         formattedBody = formattedBody.replaceAll("<", "&lt;");
         formattedBody = formattedBody.replaceAll(">", "&gt;");
-        this.setState(prev => {
-            prev.formattedBody = formattedBody;
-            prev.body = e;
-            return prev;
+        this.setState({
+            formattedBody: formattedBody
         })
     }
 
