@@ -125,26 +125,27 @@ export const LogintText = hh(class LogintText extends Component {
     setDefault = () => {
         let defaultData;
         this.state.optionData.forEach(element => {
+            console.log('element', element);
             if (element[3] === 'default') {
                 defaultData = element;
                 console.log(defaultData);
             }
         });
-        let heading = defaultData[1];
-        let body = defaultData[2];
-        LoginText.updateLoginText(heading, body, 'default').then(() => {
-            this.getLoginText();
-            this.setState(prev => {
-                prev.alert = 'Login text defaulted to About details'
-                prev.alertType = 'success'
-            })
-        }).catch(error => {
-            this.setState(prev => {
-                prev.alert = "We had an unexpected error "+error;
-                prev.alertType = 'danger';
-                return prev;
-            })
-        })
+        // let heading = defaultData[1];
+        // let body = defaultData[2];
+        // LoginText.updateLoginText(heading, body, 'default').then(() => {
+        //     this.getLoginText();
+        //     this.setState(prev => {
+        //         prev.alert = 'Login text defaulted to About details'
+        //         prev.alertType = 'success'
+        //     })
+        // }).catch(error => {
+        //     this.setState(prev => {
+        //         prev.alert = "We had an unexpected error "+error;
+        //         prev.alertType = 'danger';
+        //         return prev;
+        //     })
+        // })
     }
 
     submitEditResponses = () => {
@@ -206,7 +207,7 @@ export const LogintText = hh(class LogintText extends Component {
                         onChange={this.handleBodyChange}
                         style={{height: '12rem'}}
                     /><br/>
-                    <div className="buttonContainer" style={{margin: '1rem 0 0 0'}}>
+                    <div className="buttonContainer" style={{margin: '2.5rem 0 0 0'}}>
                         <button 
                             className="btn buttonPrimary"
                             onClick={this.setDefault}
