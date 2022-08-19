@@ -52,6 +52,7 @@ const QaReport = hh(class QaReport extends Component {
   }
 
   async componentDidMount() {
+    this.checkDefault();
     await this.init();
     this.checkDefault();
   }
@@ -60,8 +61,8 @@ const QaReport = hh(class QaReport extends Component {
     await this.tableHandler(IRB);
   }
 
-  checkDefault() {
-    LoginText.getLoginText().then(loginText => {
+  async checkDefault() {
+    await LoginText.getLoginText().then(loginText => {
       let data = loginText.data[0];
       if(data[3] === 'default') {
         this.setState({

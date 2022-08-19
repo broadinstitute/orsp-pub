@@ -96,6 +96,7 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
 
   componentDidMount() {
     this._isMounted = true;
+    this.checkDefault()
     this.init();
     this.checkDefault()
   }
@@ -109,8 +110,8 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
 
-  checkDefault() {
-    LoginText.getLoginText().then(loginText => {
+  async checkDefault() {
+    await LoginText.getLoginText().then(loginText => {
       let data = loginText.data[0];
       if(data[3] === 'default') {
         this.setState({

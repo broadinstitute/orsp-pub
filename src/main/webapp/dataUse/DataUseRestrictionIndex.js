@@ -18,8 +18,9 @@ const DataUseRestrictionIndex = hh(class DataUseRestrictionIndex extends Compone
     this.checkDefault();
   }
 
-  checkDefault() {
-    LoginText.getLoginText().then(loginText => {
+
+  async checkDefault() {
+    await LoginText.getLoginText().then(loginText => {
       let data = loginText.data[0];
       if(data[3] === 'default') {
         this.setState({
