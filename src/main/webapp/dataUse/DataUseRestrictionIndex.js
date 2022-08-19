@@ -10,7 +10,7 @@ const DataUseRestrictionIndex = hh(class DataUseRestrictionIndex extends Compone
   constructor(props) {
     super(props);
     this.state = {
-      defaultValueCheckForAbout: ''
+      defaultValueCheckForAbout: 'default'
     }
   }
 

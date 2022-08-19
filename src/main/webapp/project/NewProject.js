@@ -53,7 +53,7 @@ const NewProject = hh(class NewProject extends Component {
         fundingAwardNumber: false
       },
       formerProjectType: null,
-      defaultValueCheckForAbout: '',
+      defaultValueCheckForAbout: 'default',
     };
     this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.updateAttestationFormData = this.updateAttestationFormData.bind(this);

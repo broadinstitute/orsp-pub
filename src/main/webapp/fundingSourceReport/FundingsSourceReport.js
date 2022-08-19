@@ -130,7 +130,7 @@ const FundingsSourceReport = hh(class FundingsSourceReport extends Component {
       currentPage: 1,
       fundings: [],
       isAdmin: true,
-      defaultValueCheckForAbout: ''
+      defaultValueCheckForAbout: 'default'
     };
   }
 

@@ -44,7 +44,7 @@ const RolesManagement = hh(class RolesManagement extends Component {
       editRoleRowData: {},
       showError: false,
       isAdmin: true,
-      defaultValueCheckForAbout: ''
+      defaultValueCheckForAbout: 'default'
     };
   }
 

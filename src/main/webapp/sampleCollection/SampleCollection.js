@@ -80,7 +80,7 @@ const SampleCollection = hh(class SampleCollection extends Component {
       },
       currentPage: 1,
       collections: [],
-      defaultValueCheckForAbout: ''
+      defaultValueCheckForAbout: 'default'
     };
   }
 

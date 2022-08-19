@@ -47,7 +47,7 @@ const QaReport = hh(class QaReport extends Component {
       projectType: { value: 'all', label: 'All' },
       showError: false,
       isAdmin: component.isAdmin,
-      defaultValueCheckForAbout: ''
+      defaultValueCheckForAbout: 'default'
     };
   }
 

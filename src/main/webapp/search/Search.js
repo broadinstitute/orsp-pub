@@ -57,7 +57,7 @@ class Search extends React.Component {
       statuses: this.getLocalStorageState("statuses", "array"),
       irb: this.getLocalStorageState("irb", "array"),
       collection: '',
-      defaultValueCheckForAbout: ''
+      defaultValueCheckForAbout: 'default'
     };
   }
 

@@ -48,7 +48,7 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
       showError: false,
       isAdmin: true,
       showRemoveModal: false,
-      defaultValueCheckForAbout: ''
+      defaultValueCheckForAbout: 'default'
     };
   }
 

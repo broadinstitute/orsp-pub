@@ -90,7 +90,7 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
       },
       currentPage: 1,
       categories: [],
-      defaultValueCheckForAbout: ''
+      defaultValueCheckForAbout: 'default'
     };
   }
 
