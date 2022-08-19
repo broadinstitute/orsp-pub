@@ -44,7 +44,7 @@ const RolesManagement = hh(class RolesManagement extends Component {
       editRoleRowData: {},
       showError: false,
       isAdmin: true,
-      defaultValueCheckForAbout: 'default'
+      defaultValueForAbout: 'default'
     };
   }
 
@@ -65,11 +65,11 @@ const RolesManagement = hh(class RolesManagement extends Component {
       let data = loginText.data[0];
       if(data[3] === 'default') {
         this.setState({
-          defaultValueCheckForAbout: 'default'
+          defaultValueForAbout: 'default'
         })
       } else {
         this.setState({
-          defaultValueCheckForAbout: ''
+          defaultValueForAbout: ''
         })
       }
     })
@@ -163,7 +163,7 @@ const RolesManagement = hh(class RolesManagement extends Component {
     return(
       div({ className: "roles-management" },[
         About({
-          isRendered: this.state.defaultValueCheckForAbout !== 'default',
+          isRendered: this.state.defaultValueForAbout !== 'default',
           showWarning: false
         }),
         h1({ style: stylesHeader.pageTitle}, ["Roles Management"]),

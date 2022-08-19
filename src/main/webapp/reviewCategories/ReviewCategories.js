@@ -90,7 +90,7 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
       },
       currentPage: 1,
       categories: [],
-      defaultValueCheckForAbout: 'default'
+      defaultValueForAbout: 'default'
     };
   }
 
@@ -115,11 +115,11 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
       let data = loginText.data[0];
       if(data[3] === 'default') {
         this.setState({
-          defaultValueCheckForAbout: 'default'
+          defaultValueForAbout: 'default'
         })
       } else {
         this.setState({
-          defaultValueCheckForAbout: ''
+          defaultValueForAbout: ''
         })
       }
     })
@@ -213,7 +213,7 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
     return(
       div({},[
         About({
-          isRendered: this.state.defaultValueCheckForAbout !== 'default',
+          isRendered: this.state.defaultValueForAbout !== 'default',
           showWarning: false
         }),
         h1({ style: stylesHeader.pageTitle}, ["Review Category Report"]),

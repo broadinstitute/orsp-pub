@@ -47,7 +47,7 @@ const QaReport = hh(class QaReport extends Component {
       projectType: { value: 'all', label: 'All' },
       showError: false,
       isAdmin: component.isAdmin,
-      defaultValueCheckForAbout: 'default'
+      defaultValueForAbout: 'default'
     };
   }
 
@@ -66,11 +66,11 @@ const QaReport = hh(class QaReport extends Component {
       let data = loginText.data[0];
       if(data[3] === 'default') {
         this.setState({
-          defaultValueCheckForAbout: 'default'
+          defaultValueForAbout: 'default'
         })
       } else {
         this.setState({
-          defaultValueCheckForAbout: ''
+          defaultValueForAbout: ''
         })
       }
     })
@@ -196,7 +196,7 @@ const QaReport = hh(class QaReport extends Component {
       div({
       },[
         About({
-          isRendered: this.state.defaultValueCheckForAbout !== 'default',
+          isRendered: this.state.defaultValueForAbout !== 'default',
           showWarning: false
         }),
         h1({},['Quality Assurance Report']),

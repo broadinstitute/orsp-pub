@@ -80,7 +80,7 @@ const SampleCollection = hh(class SampleCollection extends Component {
       },
       currentPage: 1,
       collections: [],
-      defaultValueCheckForAbout: 'default'
+      defaultValueForAbout: 'default'
     };
   }
 
@@ -105,11 +105,11 @@ const SampleCollection = hh(class SampleCollection extends Component {
       let data = loginText.data[0];
       if(data[3] === 'default') {
         this.setState({
-          defaultValueCheckForAbout: 'default'
+          defaultValueForAbout: 'default'
         })
       } else {
         this.setState({
-          defaultValueCheckForAbout: ''
+          defaultValueForAbout: ''
         })
       }
     })
@@ -208,7 +208,7 @@ const SampleCollection = hh(class SampleCollection extends Component {
     return (
       div({}, [
         About({
-          isRendered: this.state.defaultValueCheckForAbout !== 'default',
+          isRendered: this.state.defaultValueForAbout !== 'default',
           showWarning: false
         }),
         h1({ style: stylesHeader.pageTitle }, ["Consent Collection Links"]),

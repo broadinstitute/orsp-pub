@@ -57,7 +57,7 @@ class Search extends React.Component {
       statuses: this.getLocalStorageState("statuses", "array"),
       irb: this.getLocalStorageState("irb", "array"),
       collection: '',
-      defaultValueCheckForAbout: 'default'
+      defaultValueForAbout: 'default'
     };
   }
 
@@ -82,11 +82,11 @@ class Search extends React.Component {
       let data = loginText.data[0];
       if(data[3] === 'default') {
         this.setState({
-          defaultValueCheckForAbout: 'default'
+          defaultValueForAbout: 'default'
         })
       } else {
         this.setState({
-          defaultValueCheckForAbout: ''
+          defaultValueForAbout: ''
         })
       }
     })
@@ -244,7 +244,7 @@ class Search extends React.Component {
   render() {
     return (
       <div>
-        { this.state.defaultValueCheckForAbout !== 'default' ? <About showWarning={false}></About> : undefined }
+        { this.state.defaultValueForAbout !== 'default' ? <About showWarning={false}></About> : undefined }
         <h1>Search</h1>
         <hr />
         <form onSubmit={this.handleSubmit}>
