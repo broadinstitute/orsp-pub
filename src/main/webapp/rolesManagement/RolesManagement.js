@@ -43,12 +43,14 @@ const RolesManagement = hh(class RolesManagement extends Component {
       editRoleDialog: false,
       editRoleRowData: {},
       showError: false,
-      isAdmin: true
+      isAdmin: true,
+      defaultValueCheckForAbout: ''
     };
   }
 
   componentDidMount() {
     this.init();
+    this.checkDefault();
   }
 
   init = () => {
@@ -56,6 +58,21 @@ const RolesManagement = hh(class RolesManagement extends Component {
     this.setState({ isAdmin: component.isAdmin });
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
+
+  checkDefault() {
+    LoginText.getLoginText().then(loginText => {
+      let data = loginText.data[0];
+      if(data[3] === 'default') {
+        this.setState({
+          defaultValueCheckForAbout: 'default'
+        })
+      } else {
+        this.setState({
+          defaultValueCheckForAbout: ''
+        })
+      }
+    })
+  }
 
   editRoleHandler = (data) => () => {
     this.setState(prev => {
@@ -144,7 +161,10 @@ const RolesManagement = hh(class RolesManagement extends Component {
    render() {
     return(
       div({ className: "roles-management" },[
-        About({showWarning: false}),
+        About({
+          isRendered: this.state.defaultValueCheckForAbout !== 'default',
+          showWarning: false
+        }),
         h1({ style: stylesHeader.pageTitle}, ["Roles Management"]),
         Table({
           headers: tableHeaders,

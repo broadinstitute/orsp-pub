@@ -8,7 +8,7 @@ import SearchResults from "./SearchResults";
 import UserAutocomplete from "../util/UserAutocomplete";
 import { About } from "../components/About";
 import { UrlConstants } from "../util/UrlConstants";
-import { SampleCollections } from "../util/ajax";
+import { LoginText, SampleCollections } from "../util/ajax";
 import { isEmpty } from '../util/Utils';
 import "./style.css";
 
@@ -57,7 +57,7 @@ class Search extends React.Component {
       statuses: this.getLocalStorageState("statuses", "array"),
       irb: this.getLocalStorageState("irb", "array"),
       collection: '',
-      aboutValueCheck: ''
+      defaultValueCheckForAbout: ''
     };
   }
 
@@ -74,6 +74,22 @@ class Search extends React.Component {
     ) {
       this.refs.search.click();
     }
+    this.checkDefault();
+  }
+
+  checkDefault() {
+    LoginText.getLoginText().then(loginText => {
+      let data = loginText.data[0];
+      if(data[3] === 'default') {
+        this.setState({
+          defaultValueCheckForAbout: 'default'
+        })
+      } else {
+        this.setState({
+          defaultValueCheckForAbout: ''
+        })
+      }
+    })
   }
 
   getLocalStorageState(key, type) {
@@ -123,8 +139,7 @@ class Search extends React.Component {
       data: [],
       loading: false,
       loaded: false,
-      collection: '',
-      aboutValueCheck: ''
+      collection: ''
     }));
     this.userAutocomplete.clear();
     this.projectAutocomplete.clear();
@@ -229,7 +244,7 @@ class Search extends React.Component {
   render() {
     return (
       <div>
-        <About showWarning={false}></About>
+        { this.state.defaultValueCheckForAbout !== 'default' ? <About showWarning={false}></About> : undefined }
         <h1>Search</h1>
         <hr />
         <form onSubmit={this.handleSubmit}>

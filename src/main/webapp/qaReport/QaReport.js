@@ -46,16 +46,33 @@ const QaReport = hh(class QaReport extends Component {
       afterDate: null,
       projectType: { value: 'all', label: 'All' },
       showError: false,
-      isAdmin: component.isAdmin
+      isAdmin: component.isAdmin,
+      defaultValueCheckForAbout: ''
     };
   }
 
   async componentDidMount() {
     await this.init();
+    this.checkDefault();
   }
 
   async init() {
     await this.tableHandler(IRB);
+  }
+
+  checkDefault() {
+    LoginText.getLoginText().then(loginText => {
+      let data = loginText.data[0];
+      if(data[3] === 'default') {
+        this.setState({
+          defaultValueCheckForAbout: 'default'
+        })
+      } else {
+        this.setState({
+          defaultValueCheckForAbout: ''
+        })
+      }
+    })
   }
 
   tableHandler = async (tab) => {
@@ -177,7 +194,10 @@ const QaReport = hh(class QaReport extends Component {
     return(
       div({
       },[
-        About({showWarning: false}),
+        About({
+          isRendered: this.state.defaultValueCheckForAbout !== 'default',
+          showWarning: false
+        }),
         h1({},['Quality Assurance Report']),
         h(FilterPanel,{
           handleDatePicker: this.handleDatePicker,

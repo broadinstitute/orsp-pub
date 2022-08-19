@@ -48,11 +48,13 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
       showError: false,
       isAdmin: true,
       showRemoveModal: false,
+      defaultValueCheckForAbout: ''
     };
   }
 
   componentDidMount() {
     this.init();
+    this.checkDefault();
   }
 
   init = () => {
@@ -60,6 +62,21 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
     this.setState({ isAdmin: component.isAdmin });
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
+
+  checkDefault() {
+    LoginText.getLoginText().then(loginText => {
+      let data = loginText.data[0];
+      if(data[3] === 'default') {
+        this.setState({
+          defaultValueCheckForAbout: 'default'
+        })
+      } else {
+        this.setState({
+          defaultValueCheckForAbout: ''
+        })
+      }
+    })
+  }
 
   editOrganizationHandler = (data) => () => {
     this.setState(prev => {
@@ -192,7 +209,10 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
    render() {
     return(
       div({}, [
-        About({showWarning: false}),
+        About({
+          isRendered: this.state.defaultValueCheckForAbout !== 'default',
+          showWarning: false
+        }),
         Panel({ title: "Organizations" }, [
         div({ className: "roles-management" },[
           a({

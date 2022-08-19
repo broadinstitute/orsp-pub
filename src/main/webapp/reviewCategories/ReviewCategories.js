@@ -89,13 +89,15 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
         orderColumn: null
       },
       currentPage: 1,
-      categories: []
+      categories: [],
+      defaultValueCheckForAbout: ''
     };
   }
 
   componentDidMount() {
     this._isMounted = true;
     this.init();
+    this.checkDefault()
   }
 
   componentWillUnmount() {
@@ -106,6 +108,21 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
     this.props.showSpinner();
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
+
+  checkDefault() {
+    LoginText.getLoginText().then(loginText => {
+      let data = loginText.data[0];
+      if(data[3] === 'default') {
+        this.setState({
+          defaultValueCheckForAbout: 'default'
+        })
+      } else {
+        this.setState({
+          defaultValueCheckForAbout: ''
+        })
+      }
+    })
+  }
 
   tableHandler = (offset, limit, search, sort, page) => {
     let query = {
@@ -194,7 +211,10 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
   render() {
     return(
       div({},[
-        About({showWarning: false}),
+        About({
+          isRendered: this.state.defaultValueCheckForAbout !== 'default',
+          showWarning: false
+        }),
         h1({ style: stylesHeader.pageTitle}, ["Review Category Report"]),
         TableComponent({
           remoteProp: true,
