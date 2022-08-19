@@ -115,7 +115,6 @@ export const LogintText = hh(class LogintText extends Component {
         this.setState({
             body: e
         })
-        console.log(e);
         let formattedBody = e
         formattedBody = formattedBody.replaceAll("<", "&lt;");
         formattedBody = formattedBody.replaceAll(">", "&gt;");
@@ -127,10 +126,8 @@ export const LogintText = hh(class LogintText extends Component {
     setDefault = () => {
         let defaultData;
         this.state.optionData.forEach(element => {
-            console.log('element', element);
             if (element.default === 'default') {
                 defaultData = element;
-                console.log(defaultData);
             }
         });
         let heading = defaultData.value;

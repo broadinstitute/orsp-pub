@@ -53,6 +53,7 @@ const NewProject = hh(class NewProject extends Component {
         fundingAwardNumber: false
       },
       formerProjectType: null,
+      defaultValueCheckForAbout: '',
     };
     this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.updateAttestationFormData = this.updateAttestationFormData.bind(this);
@@ -71,6 +72,22 @@ const NewProject = hh(class NewProject extends Component {
       this.setState(() => { throw error; });
     });
     this.loadOptions();
+    this.checkDefault();
+  }
+
+  checkDefault() {
+    LoginText.getLoginText().then(loginText => {
+      let data = loginText.data[0];
+      if(data[3] === 'default') {
+        this.setState({
+          defaultValueCheckForAbout: 'default'
+        })
+      } else {
+        this.setState({
+          defaultValueCheckForAbout: ''
+        })
+      }
+    })
   }
 
   loadOptions() {
@@ -392,7 +409,10 @@ const NewProject = hh(class NewProject extends Component {
     let projectType = determination.projectType;
     return (
       div({}, [
-        About({showWarning: false}),
+        About({
+          isRendered: this.state.defaultValueCheckForAbout !== 'default',
+          showWarning: false
+        }),
         Wizard({
           title: "New Project",
           note: "Note that this application cannot be saved and returned to for completion later. However, allowing the page to remain open in your browser will permit you to return to the application at any time.",

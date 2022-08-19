@@ -6,10 +6,39 @@ import { About } from '../components/About';
 
 const DataUseRestrictionIndex = hh(class DataUseRestrictionIndex extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      defaultValueCheckForAbout: ''
+    }
+  }
+
+  componentDidMount() {
+    this.checkDefault();
+  }
+
+  checkDefault() {
+    LoginText.getLoginText().then(loginText => {
+      let data = loginText.data[0];
+      if(data[3] === 'default') {
+        this.setState({
+          defaultValueCheckForAbout: 'default'
+        })
+      } else {
+        this.setState({
+          defaultValueCheckForAbout: ''
+        })
+      }
+    })
+  }
+
   render() {
      return (
       div({}, [
-        About({showWarning: false}),
+        About({
+          isRendered: this.state.defaultValueCheckForAbout !== 'default',
+          showWarning: false
+        }),
         h( Fragment, {},[
           h(DataUseRestriction, {}),
           h(SampleCollectionLinks,{}),
