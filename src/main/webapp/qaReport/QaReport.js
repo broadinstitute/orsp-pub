@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { div, h, h1, hh } from 'react-hyperscript-helpers';
-import { Reports } from '../util/ajax';
+import { LoginText, Reports } from '../util/ajax';
 import FilterPanel from './FilterPanel';
 import { formatDataPrintableFormat } from '../util/TableUtil';
 import IrbTable from './IrbTable';

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { a, div, h1, hh, span } from 'react-hyperscript-helpers';
-import { Reports } from '../util/ajax';
+import { LoginText, Reports } from '../util/ajax';
 import { TableComponent } from '../components/TableComponent';
 import { exportData, handleRedirectToProject } from '../util/Utils';
 import { FUNDING_SORT_NAME_INDEX, styles } from '../util/ReportConstants';

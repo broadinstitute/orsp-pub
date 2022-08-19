@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { a, div, h1, hh } from 'react-hyperscript-helpers';
 import { Table } from '../components/Table';
 import { OrganizationManagementEdit } from '../components/OrganizationManagementEdit';
-import { Organization } from '../util/ajax';
+import { LoginText, Organization } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';

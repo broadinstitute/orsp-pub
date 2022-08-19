@@ -3,6 +3,7 @@ import { h, hh, div } from 'react-hyperscript-helpers';
 import SampleCollectionLinks from './SampleCollectionLinks';
 import DataUseRestriction from './DataUseRestriction';
 import { About } from '../components/About';
+import { LoginText } from '../util/ajax';
 
 const DataUseRestrictionIndex = hh(class DataUseRestrictionIndex extends Component {
 
