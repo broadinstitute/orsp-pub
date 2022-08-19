@@ -62,6 +62,11 @@ export const LogintText = hh(class LogintText extends Component {
         await LoginText.getLoginTextResponse().then(loginTextResponse => {
             let responseData = loginTextResponse.data;
             responseData.forEach(element => {
+                if(element[1] == current.heading)  {
+                    this.setState({
+                        loginTextResponse: current.heading
+                    });
+                }
                 optionData.push({label: element[1], value: element[1], body: element[2], default: element[3]});
             });
             this.setState(prev => {
@@ -120,6 +125,13 @@ export const LogintText = hh(class LogintText extends Component {
         formattedBody = formattedBody.replaceAll(">", "&gt;");
         this.setState({
             formattedBody: formattedBody
+        })
+    }
+
+    clearFields = () => {
+        this.setState({
+            heading: '',
+            body: ''
         })
     }
 
@@ -204,13 +216,17 @@ export const LogintText = hh(class LogintText extends Component {
                         onChange={this.handleBodyChange}
                         style={{height: '12rem'}}
                     /><br/>
-                    <div className="buttonContainer" style={{margin: '2.5rem 0 0 0'}}>
+                    <div className="buttonContainer" style={{margin: '2.5rem 0 0 0', display: 'flex', alignItems: 'right'}}>
+                        <button
+                            className='btn buttonSecondary'
+                            onClick={this.clearFields}
+                        >Clear</button>
                         <button 
-                            className="btn buttonPrimary"
+                            className="btn buttonSecondary"
                             onClick={this.setDefault}
                         >Default</button>
                         <button 
-                            className="btn buttonPrimary floatRight" 
+                            className="btn buttonPrimary" 
                             onClick={this.submitEditResponses}
                         >Submit</button>
                     </div>
