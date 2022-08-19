@@ -10,7 +10,7 @@ const DataUseRestrictionIndex = hh(class DataUseRestrictionIndex extends Compone
   constructor(props) {
     super(props);
     this.state = {
-      defaultValueCheckForAbout: ''
+      defaultValueForAbout: 'default'
     }
   }
 
@@ -24,11 +24,11 @@ const DataUseRestrictionIndex = hh(class DataUseRestrictionIndex extends Compone
       let data = loginText.data[0];
       if(data[3] === 'default') {
         this.setState({
-          defaultValueCheckForAbout: 'default'
+          defaultValueForAbout: 'default'
         })
       } else {
         this.setState({
-          defaultValueCheckForAbout: ''
+          defaultValueForAbout: ''
         })
       }
     })
@@ -38,7 +38,7 @@ const DataUseRestrictionIndex = hh(class DataUseRestrictionIndex extends Compone
      return (
       div({}, [
         About({
-          isRendered: this.state.defaultValueCheckForAbout !== 'default',
+          isRendered: this.state.defaultValueForAbout !== 'default',
           showWarning: false
         }),
         h( Fragment, {},[

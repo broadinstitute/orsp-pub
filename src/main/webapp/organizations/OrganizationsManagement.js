@@ -48,7 +48,7 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
       showError: false,
       isAdmin: true,
       showRemoveModal: false,
-      defaultValueCheckForAbout: ''
+      defaultValueForAbout: 'default'
     };
   }
 
@@ -69,11 +69,11 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
       let data = loginText.data[0];
       if(data[3] === 'default') {
         this.setState({
-          defaultValueCheckForAbout: 'default'
+          defaultValueForAbout: 'default'
         })
       } else {
         this.setState({
-          defaultValueCheckForAbout: ''
+          defaultValueForAbout: ''
         })
       }
     })
@@ -211,7 +211,7 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
     return(
       div({}, [
         About({
-          isRendered: this.state.defaultValueCheckForAbout !== 'default',
+          isRendered: this.state.defaultValueForAbout !== 'default',
           showWarning: false
         }),
         Panel({ title: "Organizations" }, [

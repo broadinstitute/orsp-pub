@@ -53,7 +53,7 @@ const NewProject = hh(class NewProject extends Component {
         fundingAwardNumber: false
       },
       formerProjectType: null,
-      defaultValueCheckForAbout: '',
+      defaultValueForAbout: 'default',
     };
     this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.updateAttestationFormData = this.updateAttestationFormData.bind(this);
@@ -80,11 +80,11 @@ const NewProject = hh(class NewProject extends Component {
       let data = loginText.data[0];
       if(data[3] === 'default') {
         this.setState({
-          defaultValueCheckForAbout: 'default'
+          defaultValueForAbout: 'default'
         })
       } else {
         this.setState({
-          defaultValueCheckForAbout: ''
+          defaultValueForAbout: ''
         })
       }
     })
@@ -410,7 +410,7 @@ const NewProject = hh(class NewProject extends Component {
     return (
       div({}, [
         About({
-          isRendered: this.state.defaultValueCheckForAbout !== 'default',
+          isRendered: this.state.defaultValueForAbout !== 'default',
           showWarning: false
         }),
         Wizard({
