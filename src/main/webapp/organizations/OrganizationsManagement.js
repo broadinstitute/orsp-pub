@@ -53,8 +53,8 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
   }
 
   componentDidMount() {
-    this.init();
     this.checkDefault();
+    this.init();
   }
 
   init = () => {
@@ -63,8 +63,8 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
 
-  checkDefault() {
-    LoginText.getLoginText().then(loginText => {
+  async checkDefault() {
+    await LoginText.getLoginText().then(loginText => {
       let data = loginText.data[0];
       if(data[3] === 'default') {
         this.setState({

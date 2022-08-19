@@ -136,8 +136,8 @@ const FundingsSourceReport = hh(class FundingsSourceReport extends Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this.init();
     this.checkDefault();
+    this.init();
   }
 
   componentWillUnmount() {
@@ -150,8 +150,8 @@ const FundingsSourceReport = hh(class FundingsSourceReport extends Component {
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
 
-  checkDefault() {
-    LoginText.getLoginText().then(loginText => {
+  async checkDefault() {
+    await LoginText.getLoginText().then(loginText => {
       let data = loginText.data[0];
       if(data[3] === 'default') {
         this.setState({
