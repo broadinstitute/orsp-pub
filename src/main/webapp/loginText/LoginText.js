@@ -219,12 +219,12 @@ export const LogintText = hh(class LogintText extends Component {
                     <div className="buttonContainer" style={{margin: '3rem 0 1rem 0', display: 'flex', justifyContent: 'right'}}>
                         <button
                             className='btn buttonSecondary'
-                            style={{background: 'none !important', color: '#000000 !important', margin: '0 1rem 0 0' }}
+                            style={{ background: 'none !important', color: '#000000 !important', margin: '0 1rem 0 0' }}
                             onClick={this.clearFields}
                         >Clear</button>
                         <button 
                             className="btn buttonSecondary"
-                            style={{margin: '0 1rem 0 0'}}
+                            style={{ background: 'none !important', color: '#000000 !important', margin: '0 1rem 0 0' }}
                             onClick={this.setDefault}
                         >Default</button>
                         <button 
