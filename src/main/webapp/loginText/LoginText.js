@@ -218,13 +218,25 @@ export const LogintText = hh(class LogintText extends Component {
                     /><br/>
                     <div className="buttonContainer" style={{margin: '3rem 0 1rem 0', display: 'flex', justifyContent: 'right'}}>
                         <button
+                            ref={el => {
+                                if(el) {
+                                    el.style.setProperty('background', 'none', 'important');
+                                    el.style.setProperty('color', '#000000', 'important');
+                                }
+                            }}
                             className='btn buttonSecondary'
-                            style={{ background: 'none !important', color: '#000000 !important', margin: '0 1rem 0 0' }}
+                            style={{ margin: '0 1rem 0 0' }}
                             onClick={this.clearFields}
                         >Clear</button>
                         <button 
+                            ref={el => {
+                                if(el) {
+                                    el.style.setProperty('background', 'none', 'important');
+                                    el.style.setProperty('color', '#000000', 'important');
+                                }
+                            }}
                             className="btn buttonSecondary"
-                            style={{ background: 'none !important', color: '#000000 !important', margin: '0 1rem 0 0' }}
+                            style={{ margin: '0 1rem 0 0' }}
                             onClick={this.setDefault}
                         >Default</button>
                         <button 
