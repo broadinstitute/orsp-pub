@@ -51,6 +51,7 @@ const RolesManagement = hh(class RolesManagement extends Component {
   componentDidMount() {
     this.checkDefault();
     this.init();
+    this.checkDefault();
   }
 
   init = () => {

@@ -98,6 +98,7 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
     this._isMounted = true;
     this.checkDefault()
     this.init();
+    this.checkDefault()
   }
 
   componentWillUnmount() {

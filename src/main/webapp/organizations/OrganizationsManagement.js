@@ -55,6 +55,7 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
   componentDidMount() {
     this.checkDefault();
     this.init();
+    this.checkDefault();
   }
 
   init = () => {

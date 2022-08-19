@@ -54,6 +54,7 @@ const QaReport = hh(class QaReport extends Component {
   async componentDidMount() {
     this.checkDefault();
     await this.init();
+    this.checkDefault();
   }
 
   async init() {

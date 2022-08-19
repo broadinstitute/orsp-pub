@@ -138,6 +138,7 @@ const FundingsSourceReport = hh(class FundingsSourceReport extends Component {
     this._isMounted = true;
     this.checkDefault();
     this.init();
+    this.checkDefault();
   }
 
   componentWillUnmount() {

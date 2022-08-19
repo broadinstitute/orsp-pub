@@ -88,6 +88,7 @@ const SampleCollection = hh(class SampleCollection extends Component {
     this._isMounted = true;
     this.checkDefault();
     this.init();
+    this.checkDefault();
   }
 
   componentWillUnmount() {

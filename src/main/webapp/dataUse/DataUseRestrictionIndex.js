@@ -18,6 +18,7 @@ const DataUseRestrictionIndex = hh(class DataUseRestrictionIndex extends Compone
     this.checkDefault();
   }
 
+
   async checkDefault() {
     await LoginText.getLoginText().then(loginText => {
       let data = loginText.data[0];
