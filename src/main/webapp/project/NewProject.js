@@ -5,7 +5,7 @@ import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { DETERMINATION } from '../util/TypeDescription';
-import { Project, User } from '../util/ajax';
+import { LoginText, Project, User } from '../util/ajax';
 import { handleUnauthorized, isEmpty } from '../util/Utils';
 import { getProjectType } from '../util/DeterminationQuestions';
 import { hh, div } from 'react-hyperscript-helpers';
