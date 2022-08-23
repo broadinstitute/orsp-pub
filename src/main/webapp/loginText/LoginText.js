@@ -153,7 +153,7 @@ export const LogintText = hh(class LogintText extends Component {
 
     submitEditResponses = () => {
         let heading = this.state.heading;
-        let body = this.state.formattedBody;
+        let body = this.state.formattedBody || this.state.body;
         LoginText.updateLoginText(heading, body, 'Y').then(() => {
             this.getLoginText();
             this.setState(prev => {
