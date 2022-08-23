@@ -33,5 +33,4 @@ export const PortalMessage = hh(class PortalMessage extends Component {
             </div>
         )
     }
-
 })
