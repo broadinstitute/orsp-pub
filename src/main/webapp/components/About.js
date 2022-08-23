@@ -4,6 +4,7 @@ import { isEmpty } from "../util/Utils";
 import { LoginText, User } from "../util/ajax";
 import { AlertMessage } from './AlertMessage';
 import { Storage } from '../util/Storage';
+import { PortalMessage } from './PortalMessage';
 
 const styles = {
   titleSize: '24px',
