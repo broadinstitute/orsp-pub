@@ -100,6 +100,7 @@ class Main extends Component {
   render() {
     return (
       div({ className: "headerBoxContainer" }, [
+        PortalMessage({}),
         StatusBox({
           issueType: this.state.issueType,
           status: this.state.status

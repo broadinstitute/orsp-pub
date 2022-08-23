@@ -14,7 +14,6 @@ import { InputField } from '../components/InputField';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import { PortalMessage } from '../components/PortalMessage';
 import { Project, Review, Search, User } from '../util/ajax';
 import get from 'lodash/get';
 import head from 'lodash/head';
@@ -1055,7 +1054,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
     const { projectReviewApproved } = this.state.formData.projectExtraProps;
     return (
       div({}, [
-        PortalMessage({}),
         h2({ className: "stepTitle" }, ["Project Information"]),
         button({
           className: "btn buttonPrimary floatRight",
