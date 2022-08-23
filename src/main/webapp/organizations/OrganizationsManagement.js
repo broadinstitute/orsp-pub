@@ -6,7 +6,6 @@ import { LoginText, Organization } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import { About } from '../components/About';
 import { PortalMessage } from '../components/PortalMessage';
 
 const tableHeaders =

@@ -6,7 +6,6 @@ import { MultiSelect } from '../components/MultiSelect';
 import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import SearchResults from "./SearchResults";
 import UserAutocomplete from "../util/UserAutocomplete";
-import { About } from "../components/About";
 import { UrlConstants } from "../util/UrlConstants";
 import { LoginText, SampleCollections } from "../util/ajax";
 import { isEmpty } from '../util/Utils';

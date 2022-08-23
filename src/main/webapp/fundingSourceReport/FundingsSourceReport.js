@@ -7,7 +7,6 @@ import { FUNDING_SORT_NAME_INDEX, styles } from '../util/ReportConstants';
 import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from '../util/TableUtil';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { projectStatus } from '../util/Utils';
-import { About } from '../components/About';
 import { PortalMessage } from '../components/PortalMessage';
 
 const stylesHeader = {

@@ -7,7 +7,6 @@ import { TABLE_ACTIONS, formatDataPrintableFormat } from '../util/TableUtil';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Link } from 'react-router-dom';
 import { exportData, isEmpty } from '../util/Utils';
-import { About } from '../components/About';
 import { PortalMessage } from '../components/PortalMessage';
 
 const stylesHeader = {
