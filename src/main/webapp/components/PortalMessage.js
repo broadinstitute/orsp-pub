@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { LoginText } from '../util/ajax';
 
+
 class PortalMessage extends Component {
 
     constructor(props) {
