@@ -27,12 +27,16 @@ export const PortalMessage = hh(class PortalMessage extends Component {
 
     render() {
         return(
-            <div style={{ padding:"15px", border:"1px solid #CCCCCC", borderRadius:"6px", margin:"20px 0 30px 0" }}>
-                <h3 style={{ fontSize: '24px', color: '#ED1D24', fontWeight: 'bold' }}>{this.state.heading}</h3>
-                <p 
-                    style={{ fontSize: '14px' }}
-                    dangerouslySetInnerHTML={{ __html: this.state.body }}
-                ></p>
+            <div>
+                { this.state.heading !== '' ?
+                    <div style={{ padding:"15px", border:"1px solid #CCCCCC", borderRadius:"6px", margin:"20px 0 30px 0" }}>
+                        <h3 style={{ fontSize: '24px', color: '#ED1D24', fontWeight: 'bold' }}>{this.state.heading}</h3>
+                        <p 
+                            style={{ fontSize: '14px' }}
+                            dangerouslySetInnerHTML={{ __html: this.state.body }}
+                        ></p>
+                    </div> : undefined
+                }
             </div>
         )
     }
