@@ -236,6 +236,7 @@ const LandingPage = hh(class LandingPage extends Component{
      return (
       div({}, [
         PortalMessage({}),
+        About({showWarning: false}),
         div({className: "row", isRendered: component.isBroad === true && component.isAdmin === false}, [
           div({className: "col-xs-12"}, [
             h3({style: {'fontWeight' : 'bold'}}, ["My Task List ",
