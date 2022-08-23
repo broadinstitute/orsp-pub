@@ -7,6 +7,7 @@ import get from 'lodash/get';
 import defaultTo from 'lodash/defaultTo';
 import { createObjectCopy, isEmpty, projectStatus } from '../util/Utils';
 import './Main.css';
+import { PortalMessage } from '../components/PortalMessage';
 
 const LEGACY = 'Legacy';
 
