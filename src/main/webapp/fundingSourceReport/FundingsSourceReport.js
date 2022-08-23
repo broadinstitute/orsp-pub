@@ -8,6 +8,7 @@ import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from '../uti
 import LoadingWrapper from '../components/LoadingWrapper';
 import { projectStatus } from '../util/Utils';
 import { About } from '../components/About';
+import { PortalMessage } from '../components/PortalMessage';
 
 const stylesHeader = {
   pageTitle: {
@@ -260,10 +261,7 @@ const FundingsSourceReport = hh(class FundingsSourceReport extends Component {
   render() {
     return(
       div({},[
-        About({
-          isRendered: this.state.defaultValueForAbout !== 'default',
-          showWarning: false
-        }),
+        PortalMessage({}),
         h1({ style: stylesHeader.pageTitle}, ["Funding Source Report"]),
         TableComponent({
           remoteProp: true,

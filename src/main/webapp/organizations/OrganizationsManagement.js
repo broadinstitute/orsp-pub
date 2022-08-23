@@ -7,6 +7,7 @@ import { Panel } from '../components/Panel';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { About } from '../components/About';
+import { PortalMessage } from '../components/PortalMessage';
 
 const tableHeaders =
   [
@@ -210,10 +211,7 @@ const OrganizationsManagement = hh(class OrganizationsManagement extends Compone
    render() {
     return(
       div({}, [
-        About({
-          isRendered: this.state.defaultValueForAbout !== 'default',
-          showWarning: false
-        }),
+        PortalMessage({}),
         Panel({ title: "Organizations" }, [
         div({ className: "roles-management" },[
           a({

@@ -12,6 +12,7 @@ import { hh, div } from 'react-hyperscript-helpers';
 import 'regenerator-runtime/runtime';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { About } from '../components/About';
+import { PortalMessage } from '../components/PortalMessage';
 
 const LAST_STEP = 2;
 
@@ -409,10 +410,7 @@ const NewProject = hh(class NewProject extends Component {
     let projectType = determination.projectType;
     return (
       div({}, [
-        About({
-          isRendered: this.state.defaultValueForAbout !== 'default',
-          showWarning: false
-        }),
+        PortalMessage({}),
         Wizard({
           title: "New Project",
           note: "Note that this application cannot be saved and returned to for completion later. However, allowing the page to remain open in your browser will permit you to return to the application at any time.",
