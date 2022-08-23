@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { LoginText } from '../util/ajax';
+import { hh } from 'react-hyperscript-helpers';
 
-
-class PortalMessage extends Component {
+export const PortalMessage = hh(class PortalMessage extends Component {
 
     constructor(props) {
         super(props);
@@ -34,6 +34,4 @@ class PortalMessage extends Component {
         )
     }
 
-}
-
-export default PortalMessage;
+})
