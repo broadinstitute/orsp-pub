@@ -77,8 +77,8 @@ export const About = hh(class About extends Component {
           msg: 'You must be a Broad Institute User for further access. Please sign out and log in with a "broadinstitute.org" email account.',
           show: Storage.userIsLogged() && !Storage.getCurrentUser().isBroad,
           type: 'danger'
-        }),
-  
+        }),      
+        PortalMessage({}),
         div({ className: "col-md-10" }, [
           h3({ style: { fontSize: styles.titleSize }
           },['About the ORSP Portal']),
