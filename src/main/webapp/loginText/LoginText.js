@@ -26,7 +26,6 @@ export const LogintText = hh(class LogintText extends Component {
             heading: '',
             body: '',
             formattedBody: '',
-            defaultValue: '',
             currentValue: {},
             alert: '',
             loginTextResponse: '',
