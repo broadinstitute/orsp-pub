@@ -5,12 +5,12 @@ class LoginText {
     Integer id
     String heading
     String body
-    String default_value
+    String showMessage
 
     static constraints = {
         heading nullable: true
         body nullable: true
-        default_value nullable: true
+        showMessage nullable: false
     }
 
 }

@@ -26,7 +26,6 @@ export const LogintText = hh(class LogintText extends Component {
             heading: '',
             body: '',
             formattedBody: '',
-            defaultValue: '',
             currentValue: {},
             alert: '',
             loginTextResponse: '',
@@ -67,7 +66,7 @@ export const LogintText = hh(class LogintText extends Component {
                         loginTextResponse: current.heading
                     });
                 }
-                optionData.push({label: element[1], value: element[1], body: element[2], default: element[3]});
+                optionData.push({label: element[1], value: element[1], body: element[2]});
             });
             this.setState(prev => {
                 prev.optionData = optionData;
@@ -103,7 +102,6 @@ export const LogintText = hh(class LogintText extends Component {
           prev.body = selectedOption.body;
           prev.currentValue = {heading: selectedOption.value, body: selectedOption.body};
           prev.loginTextResponse = selectedOption.value;
-          prev.defaultValue = selectedOption.default;
           return prev;
         })
     };
@@ -135,16 +133,10 @@ export const LogintText = hh(class LogintText extends Component {
         })
     }
 
-    setDefault = () => {
-        let defaultData;
-        this.state.optionData.forEach(element => {
-            if (element.default === 'default') {
-                defaultData = element;
-            }
-        });
-        let heading = defaultData.value;
-        let body = defaultData.body;
-        LoginText.updateLoginText(heading, body, 'default').then(() => {
+    setShowMessage = () => {
+        let heading = this.state.heading;
+        let body = this.state.formattedBody;
+        LoginText.updateLoginText(heading, body, 'N').then(() => {
             this.getLoginText();
             this.setState(prev => {
                 prev.alert = 'Login text defaulted to About details'
@@ -162,13 +154,7 @@ export const LogintText = hh(class LogintText extends Component {
     submitEditResponses = () => {
         let heading = this.state.heading;
         let body = this.state.formattedBody;
-        let defaultValue = '';
-        if (this.state.default === 'default') {
-            defaultValue = 'default';
-        } else {
-            defaultValue = '';
-        }
-        LoginText.updateLoginText(heading, body, defaultValue).then(() => {
+        LoginText.updateLoginText(heading, body, 'Y').then(() => {
             this.getLoginText();
             this.setState(prev => {
                 prev.alert = 'Submitted Successfully'
@@ -237,7 +223,7 @@ export const LogintText = hh(class LogintText extends Component {
                             }}
                             className="btn buttonSecondary"
                             style={{ margin: '0 1rem 0 0' }}
-                            onClick={this.setDefault}
+                            onClick={this.setShowMessage}
                         >Default</button>
                         <button 
                             className="btn buttonPrimary" 
