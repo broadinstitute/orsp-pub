@@ -15,9 +15,12 @@ export const PortalMessage = hh(class PortalMessage extends Component {
     componentDidMount() {
         LoginText.getLoginText().then(loginText => {
             let data = loginText.data[0];
+            let bodyData = data[2];
+            bodyData = bodyData.replaceAll("&lt;", "<");
+            bodyData = bodyData.replaceAll("&gt;", ">");
             this.setState({
                 heading: data[1],
-                body: data[2]
+                body: bodyData
             })
         })
     }
