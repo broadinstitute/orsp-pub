@@ -9,7 +9,6 @@ import { IRB, NO_IRB, QA_REPORT_COLUMNS } from '../util/ReportConstants';
 import { createObjectCopy, exportData, isEmpty } from '../util/Utils';
 import MultiTab from '../components/MultiTab';
 import LoadingWrapper from '../components/LoadingWrapper';
-import { About } from '../components/About';
 import { PortalMessage } from '../components/PortalMessage';
 
 const QaReport = hh(class QaReport extends Component {

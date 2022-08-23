@@ -11,7 +11,6 @@ import { Storage } from '../util/Storage';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import moment from 'moment';
 import get from 'lodash/get';
-import { PortalMessage } from '../components/PortalMessage';
 
 const styles = {
   projectWidth: '120px',
@@ -235,7 +234,6 @@ const LandingPage = hh(class LandingPage extends Component{
   render() {
      return (
       div({}, [
-        PortalMessage({}),
         About({showWarning: false}),
         div({className: "row", isRendered: component.isBroad === true && component.isAdmin === false}, [
           div({className: "col-xs-12"}, [

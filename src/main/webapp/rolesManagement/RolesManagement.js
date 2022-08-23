@@ -5,7 +5,6 @@ import { RoleManagementEdit } from '../components/RoleManagementEdit';
 import { LoginText, User } from '../util/ajax';
 import { TablePaginator } from '../components/TablePaginator';
 import LoadingWrapper from '../components/LoadingWrapper';
-import { About } from '../components/About';
 import { PortalMessage } from '../components/PortalMessage';
 
 const tableHeaders =

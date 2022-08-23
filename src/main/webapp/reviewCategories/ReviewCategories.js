@@ -6,7 +6,6 @@ import { CATEGORY_SORT_NAME_INDEX, styles } from '../util/ReportConstants';
 import { TABLE_ACTIONS } from '../util/TableUtil';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Link } from 'react-router-dom';
-import { About } from '../components/About';
 import { PortalMessage } from '../components/PortalMessage';
 
 const stylesHeader = {
