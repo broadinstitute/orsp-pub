@@ -7,6 +7,7 @@ import { TABLE_ACTIONS } from '../util/TableUtil';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Link } from 'react-router-dom';
 import { About } from '../components/About';
+import { PortalMessage } from '../components/PortalMessage';
 
 const stylesHeader = {
   pageTitle: {
@@ -212,10 +213,7 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
   render() {
     return(
       div({},[
-        About({
-          isRendered: this.state.defaultValueForAbout !== 'default',
-          showWarning: false
-        }),
+        PortalMessage({}),
         h1({ style: stylesHeader.pageTitle}, ["Review Category Report"]),
         TableComponent({
           remoteProp: true,

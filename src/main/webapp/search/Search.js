@@ -11,6 +11,7 @@ import { UrlConstants } from "../util/UrlConstants";
 import { LoginText, SampleCollections } from "../util/ajax";
 import { isEmpty } from '../util/Utils';
 import "./style.css";
+import { PortalMessage } from "../components/PortalMessage";
 
 const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "On Hold"];
 
@@ -244,7 +245,7 @@ class Search extends React.Component {
   render() {
     return (
       <div>
-        { this.state.defaultValueForAbout !== 'default' ? <About showWarning={false}></About> : undefined }
+        <PortalMessage></PortalMessage>
         <h1>Search</h1>
         <hr />
         <form onSubmit={this.handleSubmit}>

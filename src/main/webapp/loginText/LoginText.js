@@ -134,11 +134,12 @@ export const LogintText = hh(class LogintText extends Component {
     }
 
     setShowMessage = () => {
-        let heading = this.state.heading;
-        let body = this.state.formattedBody;
+        let heading = '';
+        let body = '';
         LoginText.updateLoginText(heading, body, 'N').then(() => {
             this.getLoginText();
             this.setState(prev => {
+                prev.loginTextResponse = '';
                 prev.alert = 'Login text defaulted to About details'
                 prev.alertType = 'success'
             })

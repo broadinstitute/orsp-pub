@@ -8,6 +8,7 @@ import LoadingWrapper from '../components/LoadingWrapper';
 import { Link } from 'react-router-dom';
 import { exportData, isEmpty } from '../util/Utils';
 import { About } from '../components/About';
+import { PortalMessage } from '../components/PortalMessage';
 
 const stylesHeader = {
   pageTitle: {
@@ -207,10 +208,7 @@ const SampleCollection = hh(class SampleCollection extends Component {
   render() {
     return (
       div({}, [
-        About({
-          isRendered: this.state.defaultValueForAbout !== 'default',
-          showWarning: false
-        }),
+        PortalMessage({}),
         h1({ style: stylesHeader.pageTitle }, ["Consent Collection Links"]),
         TableComponent({
           remoteProp: true,

@@ -4,6 +4,7 @@ import SampleCollectionLinks from './SampleCollectionLinks';
 import DataUseRestriction from './DataUseRestriction';
 import { About } from '../components/About';
 import { LoginText } from '../util/ajax';
+import { PortalMessage } from '../components/PortalMessage';
 
 const DataUseRestrictionIndex = hh(class DataUseRestrictionIndex extends Component {
 
@@ -37,10 +38,7 @@ const DataUseRestrictionIndex = hh(class DataUseRestrictionIndex extends Compone
   render() {
      return (
       div({}, [
-        About({
-          isRendered: this.state.defaultValueForAbout !== 'default',
-          showWarning: false
-        }),
+        PortalMessage({}),
         h( Fragment, {},[
           h(DataUseRestriction, {}),
           h(SampleCollectionLinks,{}),

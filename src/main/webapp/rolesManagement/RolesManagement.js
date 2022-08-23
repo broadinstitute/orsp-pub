@@ -6,6 +6,7 @@ import { LoginText, User } from '../util/ajax';
 import { TablePaginator } from '../components/TablePaginator';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { About } from '../components/About';
+import { PortalMessage } from '../components/PortalMessage';
 
 const tableHeaders =
   [
@@ -162,10 +163,7 @@ const RolesManagement = hh(class RolesManagement extends Component {
    render() {
     return(
       div({ className: "roles-management" },[
-        About({
-          isRendered: this.state.defaultValueForAbout !== 'default',
-          showWarning: false
-        }),
+        PortalMessage({}),
         h1({ style: stylesHeader.pageTitle}, ["Roles Management"]),
         Table({
           headers: tableHeaders,

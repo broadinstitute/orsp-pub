@@ -10,6 +10,7 @@ import { createObjectCopy, exportData, isEmpty } from '../util/Utils';
 import MultiTab from '../components/MultiTab';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { About } from '../components/About';
+import { PortalMessage } from '../components/PortalMessage';
 
 const QaReport = hh(class QaReport extends Component {
 
@@ -195,10 +196,7 @@ const QaReport = hh(class QaReport extends Component {
     return(
       div({
       },[
-        About({
-          isRendered: this.state.defaultValueForAbout !== 'default',
-          showWarning: false
-        }),
+        PortalMessage({}),
         h1({},['Quality Assurance Report']),
         h(FilterPanel,{
           handleDatePicker: this.handleDatePicker,
