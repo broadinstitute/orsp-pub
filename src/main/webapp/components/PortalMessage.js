@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { LoginText } from '../util/ajax';
 
-export const PortalMessage = class PortalMessage extends Component {
+
+class PortalMessage extends Component {
 
     constructor(props) {
         super(props);
@@ -34,3 +35,5 @@ export const PortalMessage = class PortalMessage extends Component {
     }
 
 }
+
+export default PortalMessage;
