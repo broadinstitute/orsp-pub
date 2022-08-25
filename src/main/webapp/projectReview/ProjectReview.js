@@ -1441,7 +1441,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 value: this.state.formData.projectExtraProps.isCoPublishing,
                 currentValue: this.state.current.projectExtraProps.isCoPublishing,
                 label: 'Will the Broad investigator be co-publishing or jointly analyzing data with the sample provider who has access to identifiable information about the original sample donor?',
-                moreInfo: '(no joint analysis, no co-publishing)',
+                // moreInfo: '(no joint analysis, no co-publishing)',
                 readOnly: true,
                 onChange: () => { }
               })
