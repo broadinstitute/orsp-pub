@@ -1831,4 +1831,48 @@ class QueryService implements Status {
         query
     }
 
+    Collection<Organization> getOrganizations() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = ' select o.*  from organization as o where o.deleted = 0 and o.active = 1 order by o.name asc'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final result = sqlQuery.with {
+            addEntity(Organization)
+            list()
+        }
+        result
+    }
+
+    Collection<LoginText> getLoginText() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = ' select o.* from login_text o '
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final result = sqlQuery.with {
+            list()
+        }
+        result
+    }
+
+    void updateLoginText(String heading, String body, String showMessage) {
+        final session = sessionFactory.currentSession
+        final String query = ' update login_text set heading = :heading, body = :body, showMessage = :showMessage '
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter("heading", heading)
+        sqlQuery.setParameter("body", body)
+        sqlQuery.setParameter("showMessage", showMessage)
+        sqlQuery.executeUpdate()
+    }
+
+    Collection<LogintTextResponse> getLoginTextResponse() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = ' select o.* from login_text_response o '
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final result = sqlQuery.with {
+            list()
+        }
+        result
+    }
+
 }

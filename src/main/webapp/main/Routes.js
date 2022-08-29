@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import RolesManagement from '../rolesManagement/RolesManagement';
+import OrganizationsManagement from '../organizations/OrganizationsManagement';
 import ReviewCategories from '../reviewCategories/ReviewCategories';
 import Main from './Main';
 import FundingsSourceReport from '../fundingSourceReport/FundingsSourceReport';
@@ -24,11 +25,13 @@ import ProjectReport from '../qaReport/ProjectReport';
 import InfoLink from '../infoLink/InfoLink';
 import { Storage } from '../util/Storage';
 import SampleCollection from '../sampleCollection/SampleCollection';
+import { LogintText } from '../loginText/LoginText';
 
 
 const Routes = ( props ) => (
   <Switch>
     <AuthenticatedRoute path= {"/user/rolesManagement"} component={RolesManagement} props={props} admin={true}/> }/>
+    <AuthenticatedRoute path= {"/admin/organizations"} component={OrganizationsManagement} props={props} admin={true}/> }/>
     <AuthenticatedRoute path= {["/project/main", "/newConsentGroup/main"]} component={Main} props={props}/> }/>
     <AuthenticatedRoute path= {"/project/pages"} component={NewProject} props={props}/> }/>
     <AuthenticatedRoute path= {"/admin/fundingReport"} component={FundingsSourceReport} props={props} admin={true}/> }/>
@@ -47,6 +50,7 @@ const Routes = ( props ) => (
     <AuthenticatedRoute path= {"/infoLink/showInfoLink"} component={InfoLink} props={props}/> }/>
     <AuthenticatedRoute path= {["/index/profile", "/profile"]} component={Profile} props={props}/>  }/>
     <AuthenticatedRoute path= {"/index"} exact component = {LandingPage} props= {props}/> }/>
+    <AuthenticatedRoute path= {"/loginText"} component = {LogintText} props = {props} admin = {true} />
     <Route path= {["/about"]} exact render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/"} exact render = {(routeProps) =>  Storage.userIsLogged() ? <LandingPage {...routeProps} {...props}/> : <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/dataUseLetter/view"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>

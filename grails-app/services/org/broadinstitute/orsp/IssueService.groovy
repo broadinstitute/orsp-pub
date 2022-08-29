@@ -3,9 +3,7 @@ package org.broadinstitute.orsp
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.util.logging.Slf4j
-import org.apache.commons.lang.BooleanUtils
 import org.apache.commons.lang.StringUtils
-
 /**
  * This class handles the general update or creation of issues and nothing more.
  *
@@ -21,6 +19,7 @@ class IssueService implements UserInfo {
     NotifyService notifyService
     IssueReviewService issueReviewService
     StorageProviderService storageProviderService
+    OrganizationService organizationService
 
     Collection<String> singleValuedPropertyKeys = [
             IssueExtraProperty.ACCURATE,
@@ -90,13 +89,19 @@ class IssueService implements UserInfo {
             IssueExtraProperty.OTHER_CATEGORY,
             IssueExtraProperty.FEE_FOR_SERVICE,
             IssueExtraProperty.BROAD_INVESTIGATOR,
+            IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE,
             IssueExtraProperty.SUBJECTS_DECEASED,
             IssueExtraProperty.INTERACTION_SOURCE,
             IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE,
             IssueExtraProperty.IS_ID_RECEIVE,
             IssueExtraProperty.IRB_REVIEWED_PROTOCOL,
             IssueExtraProperty.HUMAN_SUBJECTS,
-            IssueExtraProperty.ADMIN_COMMENTS
+            IssueExtraProperty.ADMIN_COMMENTS,
+            IssueExtraProperty.FINANCIAL_CONFLICT,
+            IssueExtraProperty.FINANCIAL_CONFLICT_DESCRIPTION
+
+
+
     ]
 
 
@@ -245,6 +250,9 @@ class IssueService implements UserInfo {
         // handle determination questions update
         if (input.containsKey(IssueExtraProperty.BROAD_INVESTIGATOR) && input.get(IssueExtraProperty.BROAD_INVESTIGATOR) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.BROAD_INVESTIGATOR })
+        }
+        if (input.containsKey(IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE) && input.get(IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE) == "") {
+            propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE })
         }
         if (input.containsKey(IssueExtraProperty.SUBJECTS_DECEASED) && input.get(IssueExtraProperty.SUBJECTS_DECEASED) == "") {
             propsToDelete.addAll(issue.getExtraProperties().findAll { it.name == IssueExtraProperty.SUBJECTS_DECEASED })

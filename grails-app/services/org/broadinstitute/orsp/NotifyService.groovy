@@ -71,6 +71,10 @@ class NotifyService implements SendgridSupport, Status {
         notifyConfiguration.agreementsRecipient
     }
 
+    String getConflictOfInterestRecipient() {
+        notifyConfiguration.conflictOfInterestRecipient
+    }
+
     /**
      * Utility method to remove ORSP from recipients and if it is there, swap it out for the email addresses
      * of the individual team members. The full ORSP email address is used as the address of an RT group so we don't
@@ -554,7 +558,7 @@ class NotifyService implements SendgridSupport, Status {
     }
 
     /**
-     * Send message to admins when project or consent group is created
+     * Send message to admins when a Sample/Data Cohort (or consent group) is created/added in a Project
      *
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
@@ -573,6 +577,59 @@ class NotifyService implements SendgridSupport, Status {
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
+
+    /**
+     * Send message to user when a Sample/Data Cohort is submitted to IRB
+     *
+     * @param arguments NotifyArguments
+     * @return Response is a map entry with true/false and a reason for failure, if failed.
+     */
+
+    Map<Boolean, String> sendAdminNotificationforIRB(String type, String projectKey, String consentKey) {
+
+        Map<String, String> values = new HashMap<>();
+        Issue consent = Issue.findByProjectKey(consentKey);
+        Issue issue = Issue.findByProjectKey(projectKey);
+        User user = userService.findUser(issue.reporter);
+        values.put("projectLink", getShowIssueLink(consent))
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(user.emailAddress),
+                        fromAddress: getDefaultFromAddress(),
+                        ccAddresses: Collections.singletonList(getAdminRecipient()),
+                        subject: consentKey + " - Your " + type + ", added to " + issue.projectKey + " is now Pending IRB review",
+                        details: type,
+                        user: user,
+                        issue: issue,
+                        values: values)
+        arguments.view = "/notify/irbSubmit"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+
+    /**
+     * Send message to admins when project is created
+     *
+     * @param arguments NotifyArguments
+     * @return Response is a map entry with true/false and a reason for failure, if failed.
+     */
+    Map<Boolean, String> sendProjectAdminNotification(String type, Issue issue) {
+        User user = userService.findUser(issue.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(getAdminRecipient()),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: user.displayName + " created " + issue.projectKey + " - Your ORSP Review is Required",
+                        details: type,
+                        user: user,
+                        issue: issue)
+        arguments.view = "/notify/createProject"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+    }
+
+
 
     Map<Boolean, String> sendApprovedNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
@@ -655,7 +712,7 @@ class NotifyService implements SendgridSupport, Status {
     }
 
     Map<Boolean, String> sendEditsApprovedNotification(Issue issue, String editCreatorName, String sessionUsername) {
-        String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
+        String type = issue.type.equals(IssueType.CONSENT_GROUP.getName()) ? "Sample/Data Cohort" : "Project"
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
@@ -689,7 +746,7 @@ class NotifyService implements SendgridSupport, Status {
     }
 
     Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue, String editCreatorName, String sessionUsername) {
-        String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Consent Group" : "Project"
+        String type = issue.type?.equals(IssueType.CONSENT_GROUP.getName()) ? "Sample/Data Cohort" : "Project"
         User user = userService.findUser(issue.reporter)
         NotifyArguments arguments =
                 new NotifyArguments(
@@ -729,13 +786,13 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> consentGroupCreation(Issue issue, ConsentCollectionLink consentCollectionLink) {
         User user = userService.findUser(issue.reporter)
-        sendAdminNotification(IssueType.CONSENT_GROUP.name, issue)
+        sendAdminNotification(IssueType.SAMPLE_DATA_COHORTS.name, issue)
         sendSecurityInfo(issue, user, consentCollectionLink, user.displayName)
     }
 
     Map<Boolean, String> projectCreation(Issue issue) {
         User user = userService.findUser(issue.reporter)
-        sendAdminNotification(ProjectCGTypes.PROJECT.name, issue)
+        sendProjectAdminNotification(ProjectCGTypes.PROJECT.name, issue)
         sendApplicationSubmit(
                 new NotifyArguments(
                         toAddresses:  [user?.emailAddress],
@@ -746,6 +803,24 @@ class NotifyService implements SendgridSupport, Status {
                         user: user
                 )
         )
+    }
+
+    void notifyOrganizationsMatch(String projectKey, String matches) {
+        Issue project = Issue.findByProjectKey(projectKey)
+        User user = userService.findUser(project.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList(getAdminRecipient()),
+                        ccAddresses: Collections.singletonList(getConflictOfInterestRecipient()),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: "ALERT - Potential iCOI identified",
+                        user: user,
+                        issue: project,
+                        details: matches)
+
+        arguments.view = "/notify/organizationsMatch"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
     }
 
     Map<Boolean, String> sendApproveRejectLinkNotification(String projectKey, String consentKey, boolean isApproved, String sessionUsername) {
@@ -760,7 +835,7 @@ class NotifyService implements SendgridSupport, Status {
                         toAddresses: getUserApplicantSubmitter(project, consent),
                         ccAddresses: [],
                         fromAddress: getDefaultFromAddress(),
-                        subject: consent.projectKey + " - Your ORSP Consent Group added to " +
+                        subject: consent.projectKey + " - Your ORSP Sample/Data Cohort added to " +
                                 project.projectKey + (isApproved ? " has been approved" : " has been disapproved")
                                 + " by " + sessionUsername,
                         user: user,

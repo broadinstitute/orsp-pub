@@ -76,6 +76,10 @@ export const UrlConstants = {
   getAllUsersUrl: context + '/api/get-users',
   dataUseLetterUrl: context + '/api/data-use-letter',
   saveDataUseLetterUrl: context + '/api/data-use-letter/pdf',
+  editOrganizationUrl: context + '/api/edit-organization',
+  deleteOrganizationUrl: context + '/api/delete-organization',
+  addOrganizationUrl: context + '/api/add-organization',
+  getAllOrganizationsUrl: context + '/api/get-organizations',
  
   infoLinkUrl: context + '/api/info-link',
   showRestrictionsUrl: context + '/api/dur',
@@ -89,6 +93,7 @@ export const UrlConstants = {
   sampleConsentLinkUrl: context + '/api/sample-consent-link',
   sampleBreakLinkUrl: context + '/api/break-link',
   sampleApproveLinkUrl: context + '/api/approve-link',
+  sampleSubmitToIRBLinkURL: context + '/api/submit-to-irb-link',
   historyUrl: context + '/api/history',
   restrictionUrl: context + '/dataUse/restriction',  
   showRestrictionUrl: context + '/dataUse/view',
@@ -113,6 +118,11 @@ export const UrlConstants = {
   sampleCollectionReportUrl: context + "/report/sampleCollections",
   metricsReportUrl: context + "/report/aahrppMetrics",
   rolesManagementUrl: context + "/user/rolesManagement",
-  projectUrl:  context + "/project/pages"
+  organizationsUrl: context + "/admin/organizations",
+  projectUrl:  context + "/project/pages",
+  loginTextUrl: context + "/api/login-text",
+  loginText: context + "/loginText",
+  editLoginTextUrl: context + "/api/edit-login-text",
+  LoginTextResponseUrl: context + "/api/login-text-response"
 };
 

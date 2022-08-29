@@ -1,7 +1,6 @@
 package org.broadinstitute.orsp
 
 import gorm.logical.delete.LogicalDelete
-
 /**
  * Properties on an issue.
  */
@@ -37,6 +36,7 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String FEE_FOR_SERVICE = "feeForService"
     public static final String FEE_FOR_SERVICE_WORK = "feeForServiceWork"
     public static final String BROAD_INVESTIGATOR = "broadInvestigator"
+    public static final String BROAD_INVESTIGATOR_TEXTVALUE = "broadInvestigatorTextValue"
     public static final String SUBJECTS_DECEASED = "subjectsDeceased"
     public static final String INTERACTION_SOURCE = "interactionSource"
     public static final String IS_ID_RECEIVE = "isIdReceive"
@@ -97,6 +97,9 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String OTHER_CATEGORY = "otherCategory"
     public static final String TEXT_OTHER_CATEGORY = "textOtherCategory"
     public static final String ADMIN_COMMENTS = "adminComments"
+    public static final String FINANCIAL_CONFLICT = "financialConflict"
+    public static final String FINANCIAL_CONFLICT_DESCRIPTION = "financialConflictDescription"
+
 
     // Status Flags
     public static final String APP_SUBMITTED_FLAG = "appSubmitted"

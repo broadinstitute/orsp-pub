@@ -4,6 +4,7 @@ import gorm.logical.delete.LogicalDelete
 import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.utils.IssueUtils
 
+
 class Issue implements LogicalDelete<Issue> {
 
     Integer id
@@ -106,6 +107,8 @@ class Issue implements LogicalDelete<Issue> {
 
     transient String getBroadInvestigator() { getExtraProperties().find { it.name == IssueExtraProperty.BROAD_INVESTIGATOR }?.value }
 
+    transient String getBroadInvestigatorTextValue() { getExtraProperties().find { it.name == IssueExtraProperty.BROAD_INVESTIGATOR_TEXTVALUE }?.value }
+
     transient String getSubjectDeceased() { getExtraProperties().find { it.name == IssueExtraProperty.SUBJECTS_DECEASED }?.value }
 
     transient String getSensitiveInformationSource() { getExtraProperties().find { it.name == IssueExtraProperty.SENSITIVE_INFORMATION_SOURCE }?.value }
@@ -147,6 +150,11 @@ class Issue implements LogicalDelete<Issue> {
     transient String getAssignedAdmin() { getExtraProperties().find { it.name == IssueExtraProperty.ASSIGNED_ADMIN}?.value }
 
     transient String getAdminComments() { getExtraProperties().find { it.name == IssueExtraProperty.ADMIN_COMMENTS}?.value }
+
+    transient String getFinancialConflict() { getExtraProperties().find { it.name == IssueExtraProperty.FINANCIAL_CONFLICT}?.value }
+
+    transient String getFinancialConflictDescription() { getExtraProperties().find { it.name == IssueExtraProperty.FINANCIAL_CONFLICT_DESCRIPTION}?.value }
+
 
     // Others
     transient String getCollPublication() {

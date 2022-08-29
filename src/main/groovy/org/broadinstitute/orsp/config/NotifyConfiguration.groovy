@@ -17,4 +17,5 @@ class NotifyConfiguration {
     String adminRecipient
     String securityRecipient
     String agreementsRecipient
+    String conflictOfInterestRecipient
 }

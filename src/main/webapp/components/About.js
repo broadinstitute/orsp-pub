@@ -1,9 +1,10 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { hh, span, div, a, h3, p, br } from 'react-hyperscript-helpers';
 import { isEmpty } from "../util/Utils";
-import { User } from "../util/ajax";
+import { LoginText, User } from "../util/ajax";
 import { AlertMessage } from './AlertMessage';
 import { Storage } from '../util/Storage';
+import { PortalMessage } from './PortalMessage';
 
 const styles = {
   titleSize: '24px',
@@ -36,16 +37,52 @@ export const About = hh(class About extends Component {
 
     const showAccessDetails = !isEmpty(this.props.showAccessDetails) ? true : false;
     return (
+      // <div className='row'>
+      //   <AlertMessage
+      //     msg='You must be a Broad Institute User for further access. Please sign out and log in with a "broadinstitute.org" email account.'
+      //     show={Storage.userIsLogged() && !Storage.getCurrentUser().isBroad}
+      //     type='danger'
+      //   ></AlertMessage>
+      //   <div className="col-md-10">
+      //     <h3 style={ this.state.defaultValue !== 'default' ? { fontSize: styles.titleSize, color: '#ED1D24', fontWeight: 'bold' } : { fontSize: '24px', color: '#000000', fontWeight: 'bold' }}>{this.state.heading}</h3>
+      //     <p 
+      //       style={{ fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}
+      //       dangerouslySetInnerHTML={{ __html: this.state.body }}
+      //     ></p>
+      //     <p style={{ fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}>
+      //       { component.isBroad && showAccessDetails ? <a
+      //         href="https://iwww.broadinstitute.org/sponsored-research/research-subject-protection/office-research-subject-protection"
+      //         target="_blank"
+      //       >ORSP on the Broad Intranet</a> : undefined }
+      //     </p>
+      //     { this.props.showWarning ? <p
+      //       style={{ fontFamily : styles.fontFamily, fontSize: styles.textFontSize, padding:"15px", border:"1px solid #CCCCCC", borderRadius:"6px", margin:"20px 0 30px 0" }}>
+      //         Please note that Microsoft Edge and Internet Explorer are not supported browsers for the ORSP Portal. Please use Google Chrome or Firefox instead.
+      //     </p> : undefined }
+      //     { component.isBroad && showAccessDetails ? <div>
+      //       <h3
+      //         style={{ fontSize: styles.titleSize }}
+      //       >User Guide</h3>
+      //       <p style={{ fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}>To access detailed instructions about how to use the ORSP portal, please visit: 
+      //         <br/>
+      //         <a
+      //           href="https://intranet.broadinstitute.org/research-subject-protection/orsp-online-portal-submission-system"
+      //           target="_blank"
+      //         >https://intranet.broadinstitute.org/research-subject-protection/orsp-online-portal-submission-system</a>
+      //       </p>
+      //     </div> : undefined }
+      //   </div>
+      // </div>
       div({className: "row"}, [
         AlertMessage({
           msg: 'You must be a Broad Institute User for further access. Please sign out and log in with a "broadinstitute.org" email account.',
           show: Storage.userIsLogged() && !Storage.getCurrentUser().isBroad,
           type: 'danger'
-        }),
-  
+        }),      
+        PortalMessage({}),
         div({ className: "col-md-10" }, [
           h3({ style: { fontSize: styles.titleSize }
-          },["About the ORSP Portal"]),
+          },['About the ORSP Portal']),
           p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
             a({
               isRendered: component.isBroad && showAccessDetails,

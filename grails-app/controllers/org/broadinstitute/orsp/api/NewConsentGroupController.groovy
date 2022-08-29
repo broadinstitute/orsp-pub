@@ -4,6 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonParser
 import grails.converters.JSON
 import grails.rest.Resource
+import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.CollectionLinkStatus
@@ -182,6 +183,32 @@ class NewConsentGroupController extends AuthenticatedController {
             UtilityClass.registerIssueMarshaller()
             try {
                 LinkedHashMap consentGroups = consentService.findProjectConsentGroups(params.projectKey)
+                consentGroups.each {consentKeys, consentValues ->
+                    if(consentKeys == "consentGroups"){
+                        for (Object consentObject : consentValues) {
+                            LinkedHashMap consentGroup = queryService.getConsentGroupByKey(consentObject.getAt("projectKey"))
+                                consentGroup.each {groupkey, groupValue ->
+                                    if(groupkey == "extraProperties"){
+                                        for (Object groupObject : groupValue) {
+                                            String countrySource = groupObject.getAt("institutionalSources")
+                                            if(countrySource != null && countrySource != "[]" ){
+                                                def parser = new JsonSlurper()
+                                                def jsonData = parser.parseText(countrySource)
+                                                String country = "";
+                                                jsonData.each {
+                                                   country+= it.country+", "
+                                                }
+                                                country = country.substring(0, country.length() - 2)
+                                                consentObject.putAt("summary",consentObject.getAt("summary")+' / '+groupObject.getAt("collInst")+' / '+country)
+                                            }else{
+                                                consentObject.putAt("summary",consentObject.getAt("summary")+' / '+groupObject.getAt("collInst"))
+                                            }
+                                        }
+                                    }
+                                }
+                        }
+                    }
+                }   
                 response.status = 200
                 JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
                     render( consentGroups as JSON)
@@ -247,6 +274,30 @@ class NewConsentGroupController extends AuthenticatedController {
             handleException(e)
         }
         render(response)
+    }
+
+    /**
+     * This action submit the cohorts to IRB and wait for Approve/Reject from IRB.
+     *
+     */
+    def submittedToIRBLink() {
+        try {
+            boolean isUpdated = queryService.updateCollectionLinkStatus(params.consentKey, params.projectKey, CollectionLinkStatus.SUBMITTED_TO_IRB.name)
+            List<ConsentCollectionLink> links = queryService.findConsentCollectionLinksByProjectKeyAndConsentKey(params.projectKey, params.consentKey)
+            Issue issue = queryService.findByKey(params.projectKey);
+            notifyService.sendAdminNotificationforIRB(IssueType.SAMPLE_DATA_COHORTS.name, params.projectKey.toString(), params.consentKey.toString());
+            if (!isUpdated) {
+                response.status = 400
+                render([message: 'Error updating collection links, please check specified parameters.'] as JSON)
+            } else {
+                response.status = 200
+                render(issue as JSON)
+            }
+        } catch (Exception e) {
+            handleException(e)
+        }
+        render(response)
+
     }
 
     def matchConsentName() {

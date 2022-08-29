@@ -318,6 +318,35 @@ export const User = {
   
 };
 
+export const Organization = {
+
+  getAllOrganizations(query) {
+    return axios.get(UrlConstants.getAllOrganizationsUrl, {
+      params: {
+        draw: 1,
+        start: query.start,
+        length: query.length,
+        orderColumn: query.orderColumn,
+        sortDirection: query.sortDirection,
+        searchValue: query.searchValue
+      }
+    })
+  },
+
+  editOrganization(organizationId, name) {
+    return axios.put(UrlConstants.editOrganizationUrl, {id: organizationId, name: name});
+  },
+
+  addOrganization(name) {
+    return axios.post(UrlConstants.addOrganizationUrl, { name: name});
+  },
+
+  deleteOrganization(organizationId) {
+    return axios.delete(UrlConstants.deleteOrganizationUrl, { params: {id: organizationId }});
+  }
+  
+};
+
 export const Review = {
 
   deleteSuggestions(projectKey, type) {
@@ -410,6 +439,10 @@ export const ConsentCollectionLink = {
 
   breakLink(projectKey, consentKey, actionKey) {
     return axios.post(UrlConstants.sampleBreakLinkUrl + '?projectKey='+ projectKey +"&consentKey=" + consentKey + "&type=" + actionKey);
+  },
+
+  submittedToIRBLink(projectKey, consentKey) {
+    return axios.put(UrlConstants.sampleSubmitToIRBLinkURL + '?projectKey='+ projectKey +"&consentKey=" + consentKey);
   },
 
   approveLink(projectKey, consentKey) {
@@ -535,4 +568,18 @@ export const Issues = {
   getIssueList(assignee, max, admin) {
     return axios.get(UrlConstants.issueListUrl + '?assignee=' + assignee + '&max=' + max + '&admin=' + admin);
   },
+};
+
+export const LoginText = {
+  getLoginText() {
+    return axios.get(UrlConstants.loginTextUrl);
+  },
+
+  updateLoginText(heading, body, showMessage) {
+    return axios.put(UrlConstants.editLoginTextUrl, {heading: heading, body: body, showMessage: showMessage});
+  },
+
+  getLoginTextResponse() {
+    return axios.get(UrlConstants.LoginTextResponseUrl);
+  }
 };

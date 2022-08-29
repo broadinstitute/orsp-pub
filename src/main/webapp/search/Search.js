@@ -7,9 +7,10 @@ import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import SearchResults from "./SearchResults";
 import UserAutocomplete from "../util/UserAutocomplete";
 import { UrlConstants } from "../util/UrlConstants";
-import { SampleCollections } from "../util/ajax";
+import { LoginText, SampleCollections } from "../util/ajax";
 import { isEmpty } from '../util/Utils';
 import "./style.css";
+import { PortalMessage } from "../components/PortalMessage";
 
 const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "On Hold"];
 
@@ -55,7 +56,8 @@ class Search extends React.Component {
       types: this.getLocalStorageState("types", "array"),
       statuses: this.getLocalStorageState("statuses", "array"),
       irb: this.getLocalStorageState("irb", "array"),
-      collection: ''
+      collection: '',
+      defaultValueForAbout: 'default'
     };
   }
 
@@ -72,6 +74,22 @@ class Search extends React.Component {
     ) {
       this.refs.search.click();
     }
+    this.checkDefault();
+  }
+
+  async checkDefault() {
+    await LoginText.getLoginText().then(loginText => {
+      let data = loginText.data[0];
+      if(data[3] === 'default') {
+        this.setState({
+          defaultValueForAbout: 'default'
+        })
+      } else {
+        this.setState({
+          defaultValueForAbout: ''
+        })
+      }
+    })
   }
 
   getLocalStorageState(key, type) {
@@ -226,6 +244,7 @@ class Search extends React.Component {
   render() {
     return (
       <div>
+        <PortalMessage></PortalMessage>
         <h1>Search</h1>
         <hr />
         <form onSubmit={this.handleSubmit}>

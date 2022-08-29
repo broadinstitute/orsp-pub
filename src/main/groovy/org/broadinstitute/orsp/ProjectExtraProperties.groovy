@@ -23,6 +23,7 @@ class ProjectExtraProperties {
     // Determination questions
     String feeForService
     String broadInvestigator
+    String broadInvestigatorTextValue
     String subjectsDeceased
     String sensitiveInformationSource
     String interactionSource
@@ -60,6 +61,9 @@ class ProjectExtraProperties {
     String textOtherNotEngagedCategory;
     String assignedAdmin;
     String adminComments;
+    String financialConflict;
+    String financialConflictDescription;
+
 
     ProjectExtraProperties(Issue project) {
         // General Data
@@ -85,6 +89,7 @@ class ProjectExtraProperties {
         // Determination questions
         this.setFeeForService(project.getFeeForService() ?: "")
         this.setBroadInvestigator(project.getBroadInvestigator() ?: "")
+        this.setBroadInvestigatorTextValue(project.getBroadInvestigatorTextValue() ?: "")
         this.setSubjectsDeceased(project.getSubjectDeceased() ?: "")
         this.setSensitiveInformationSource(project.getSensitiveInformationSource() ?: "")
         this.setInteractionSource(project.getInteractionSource() ?: "")
@@ -120,6 +125,9 @@ class ProjectExtraProperties {
         this.setExemptCategoryFourIV(project.getExemptCategoryFourIV() ?: "")
         this.setNotEngagedCategories(project.getNotEngagedCategories() ?: "")
         this.setTextOtherNotEngagedCategory(project.getTextOtherNotEngagedCategory() ?: "")
-        this.setAdminComments(project.getAdminComments())
+        this.setAdminComments(project.getAdminComments() ?: "")
+        this.setFinancialConflict(project.getFinancialConflict() ?: "")
+        this.setFinancialConflictDescription(project.getFinancialConflictDescription() ?: "")
+
     }
 }

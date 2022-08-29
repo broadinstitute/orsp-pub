@@ -91,6 +91,12 @@ class UrlMappings {
         '/api/user/authenticated/download-document'(controller: 'authenticated', action: 'downloadDocument')
         '/api/user/authenticated'(controller: 'authenticated', action: 'isCurrentUserAdmin')
 
+        // Organizations/Companies end points
+        '/api/delete-organization'(controller: 'organization', action: 'deleteOrganization', method: 'DELETE')
+        '/api/edit-organization'(controller: 'organization', action: 'editOrganization', method: 'PUT')
+        '/api/add-organization'(controller: 'organization', action: 'addOrganization', method: 'POST')
+        '/api/get-organizations'(controller: 'organization', action: 'getOrganizations', method: 'GET')
+
         // Search end points
         '/search/matching-users'(controller: 'search', action: 'getMatchingUsers')
         '/search/project-key/autocomplete'(controller: 'search', action: 'projectKeyAutocomplete')
@@ -129,11 +135,17 @@ class UrlMappings {
         '/api/break-link'(controller: 'consentGroup', action: 'breakLink', method: 'POST')
 
         '/api/approve-link'(controller: 'newConsentGroup', action: 'approveLink', method: 'PUT')
+        '/api/submit-to-irb-link'(controller: 'newConsentGroup', action: 'submittedToIRBLink', method: 'PUT')
 
         '/api/osap/data-feed'(controller: 'api', action: 'osapDataFeed', method: 'GET')
 
         '/api/issue-list'(controller: 'issueList', action: 'issueItems', method: 'GET')
         '/api/auth'(controller: 'auth', action: 'authUser')
+
+        // Login text end point
+        '/api/login-text'(controller: 'loginText', action: 'getLoginText', method: 'GET')
+        '/api/edit-login-text'(controller: 'loginText', action: 'updateLoginText', method: 'PUT')
+        '/api/login-text-response'(controller: 'loginText', action: 'getLoginTextResponse', method: 'GET')
 
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")

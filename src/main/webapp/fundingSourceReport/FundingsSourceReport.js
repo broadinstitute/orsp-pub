@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { a, div, h1, hh, span } from 'react-hyperscript-helpers';
-import { Reports } from '../util/ajax';
+import { LoginText, Reports } from '../util/ajax';
 import { TableComponent } from '../components/TableComponent';
 import { exportData, handleRedirectToProject } from '../util/Utils';
 import { FUNDING_SORT_NAME_INDEX, styles } from '../util/ReportConstants';
 import { formatDataPrintableFormat, formatNullCell, TABLE_ACTIONS } from '../util/TableUtil';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { projectStatus } from '../util/Utils';
+import { PortalMessage } from '../components/PortalMessage';
 
 const stylesHeader = {
   pageTitle: {
@@ -128,13 +129,16 @@ const FundingsSourceReport = hh(class FundingsSourceReport extends Component {
       },
       currentPage: 1,
       fundings: [],
-      isAdmin: true
+      isAdmin: true,
+      defaultValueForAbout: 'default'
     };
   }
 
   componentDidMount() {
     this._isMounted = true;
+    this.checkDefault();
     this.init();
+    this.checkDefault();
   }
 
   componentWillUnmount() {
@@ -146,6 +150,21 @@ const FundingsSourceReport = hh(class FundingsSourceReport extends Component {
     this.setState({ isAdmin: component.isAdmin });
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
+
+  async checkDefault() {
+    await LoginText.getLoginText().then(loginText => {
+      let data = loginText.data[0];
+      if(data[3] === 'default') {
+        this.setState({
+          defaultValueForAbout: 'default'
+        })
+      } else {
+        this.setState({
+          defaultValueForAbout: ''
+        })
+      }
+    })
+  }
 
   tableHandler = (offset, limit, search, sort, page) => {
     let query = {
@@ -241,6 +260,7 @@ const FundingsSourceReport = hh(class FundingsSourceReport extends Component {
   render() {
     return(
       div({},[
+        PortalMessage({}),
         h1({ style: stylesHeader.pageTitle}, ["Funding Source Report"]),
         TableComponent({
           remoteProp: true,

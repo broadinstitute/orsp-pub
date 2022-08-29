@@ -6,7 +6,8 @@ enum IssueType {
     NE("'Not Engaged' Project", "'Not Engaged' Project", "ne", "NE"),
     NHSR("NHSR Project", "Not Human Subjects Research", "nhsr", "NHSR"),
     CONSENT_GROUP("Consent Group", "Consent Group Record", "consentGroup", "CG"),
-    EX("Exempt Project", "Exempt", "ex", "EX")
+    EX("Exempt Project", "Exempt", "ex", "EX"),
+    SAMPLE_DATA_COHORTS("Sample/Data Cohort", "Sample/Data Cohort Record", "consentGroup", "SDC")
 
     String name
     String label

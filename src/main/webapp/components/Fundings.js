@@ -8,7 +8,7 @@ import { isEmpty } from "../util/Utils";
 const fundingOptions = [
   { value: 'federal_prime', label: 'Federal Prime' },
   { value: 'federal_sub-award', label: 'Federal Sub-award' },
-  { value: 'internal_broad', label: 'Internal Broad' },
+  { value: 'internal_broad', label: 'Broad Institutional Award' },
   { value: 'purchase_order', label: 'Purchase Order' },
   { value: 'corporate_funding', label: 'Corporate Funding' },
   { value: 'foundation', label: 'Foundation' },
@@ -158,11 +158,19 @@ export const Fundings = hh(class Fundings extends Component {
   getIdentifierError = (element) => {
     let identifierHasError = false;
     const source = this.props.edit ? element.future.source : element.source;
-    if (this.props.fundingAwardNumberError && source.value === 'federal_prime') {
+    if (this.props.fundingAwardNumberError && source.value === 'federal_prime' || source.value === 'federal_sub-award') {
       identifierHasError = this.props.edit ? isEmpty(element.future.identifier): isEmpty(element.identifier)
     }
     return identifierHasError;
   };
+
+  getSponsorError = (element) => {
+    let sponsorHasError = false;
+    if (!this.props.edit && element.source.value) {
+      sponsorHasError = !element.sponsor ? true : false;
+    }
+    return sponsorHasError;
+  }
 
   render() {
     let {
@@ -178,7 +186,7 @@ export const Fundings = hh(class Fundings extends Component {
                 label({ className: "inputFieldLabel noMargin" }, ["Funding Source"])
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                label({ className: "inputFieldLabel noMargin" }, ["Sponsor Name"])
+                label({ className: "inputFieldLabel noMargin" }, ["Sponsor Name/Payer"])
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                 label({ className: "inputFieldLabel noMargin" }, ["Award Number/Identifier"])
@@ -223,6 +231,8 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "sponsor",
                       label: "",
+                      error: this.getSponsorError(rd),
+                      errorMessage: this.props.errorMessage,
                       value: this.props.edit ? rd.future.sponsor : rd.sponsor,
                       currentValue: this.props.edit ? current[idx].current.sponsor : rd.sponsor,
                       disabled: false,
@@ -237,7 +247,7 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "identifier",
                       label: "",
-                      error: this.getIdentifierError(rd),
+                      error: this.props.edit ? false : this.getIdentifierError(rd),
                       errorMessage: this.props.errorMessage,
                       value: this.props.edit ? rd.future.identifier: rd.identifier,
                       currentValue: this.props.edit ? current[idx].current.identifier : rd.identifier,

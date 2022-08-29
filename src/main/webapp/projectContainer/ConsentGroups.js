@@ -124,6 +124,11 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
         this.getProjectConsentGroups();
         this.closeConfirmationModal();
       });
+    } else if (this.state.action === "submitToIRB") {
+      ConsentCollectionLink.submittedToIRBLink(this.state.issue.projectKey, this.state.actionConsentKey).then(resp => {
+        this.getProjectConsentGroups();
+        this.closeConfirmationModal();
+      });
     } else if (this.state.action === 'remove') {
       DocumentHandler.deleteAttachmentByUuid(this.state.fileIdToRemove).
       then(resp => {
@@ -190,6 +195,17 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
     });
   };
 
+  submittedToIRB = (e, consentKey) => {
+    e.stopPropagation();
+    this.setState(prev => {
+      prev.action = 'submitToIRB';
+      prev.showConfirmationModal = true;
+      prev.actionConsentKey = consentKey;
+      return prev;
+    });
+  };
+
+
   reject = (e, consentKey) => {
     e.stopPropagation();
     this.setState(prev => {
@@ -239,6 +255,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
             approveHandler: this.approve,
             rejectHandler: this.reject,
             unlinkHandler: this.unlink,
+            submittedToIRBHandler: this.submittedToIRB,
             requestClarificationHandler: this.requestClarification
           }
         }
@@ -294,7 +311,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
           closeModal: this.closeConfirmationModal,
           show: this.state.showConfirmationModal,
           handleOkAction: this.handleOkConfirmation,
-          bodyText: 'Are you sure you want to ' + this.state.action +  ' this Sample / Data Cohort?',
+          bodyText: 'Are you sure you want to ' + (this.state.action === "submitToIRB" ? "submit to IRB" : this.state.action ) +  ' this Sample / Data Cohort?',
           actionLabel: 'Yes'
         }, []),
 

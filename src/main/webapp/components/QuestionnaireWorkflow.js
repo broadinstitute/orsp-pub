@@ -3,6 +3,7 @@ import { div, hh, button, label, input, h1, span, p, small } from 'react-hypersc
 import { InputYesNo } from './InputYesNo';
 import { InputFieldRadio } from './InputFieldRadio';
 import { QuestionnaireProgressBar } from './QuestionnaireProgressBar';
+import { InputFieldTextArea } from './InputFieldTextArea';
 import './QuestionnaireWorkflow.css';
 
 
@@ -232,8 +233,16 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     });
   }
 
-  render() {
+  handleTextAreaChange = (e) => {
+    const field = e.target.name;
+    const value = e.target.value;
+    this.setState(prev => {
+      prev.questions[prev.currentQuestionIndex].textValue = value;
+      return prev;
+    })
+  }
 
+  render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return h1({}, ["Something went wrong."]);
@@ -244,7 +253,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     }
 
     const { currentQuestionIndex } = this.state;
-
+    
     return (
       div({ className: this.props.questionnaireUnwrapped === true ? 'questionnaireContainerLight' : 'questionnaireContainer' }, [
         div({ className: "questionnaireProgressBar col-lg-4 col-md-5 col-sm-5 col-4" }, [
@@ -252,14 +261,25 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
             QuestionnaireProgressBar({ progress: (this.state.endState === true ? 100 : this.state.questions[currentQuestionIndex].progress) }, [])
         ]),
         div({isRendered: this.state.questions[currentQuestionIndex].isYesNo === true}, [
-          InputYesNo({            
+          InputYesNo({
             id: this.state.questions[currentQuestionIndex].id,
             value: this.state.questions[currentQuestionIndex].answer,
             label: this.state.questions[currentQuestionIndex].question,
             moreInfo: this.state.questions[currentQuestionIndex].moreInfo,
             onChange: this.handleChange,
-            required: false
+            required: false,
           }),
+          InputFieldTextArea({
+            isRendered: this.state.questions[currentQuestionIndex].id === 2 && this.state.questions[currentQuestionIndex].answer == false,
+            id: "broadInvestigatorTextValue",
+            name: "broadInvestigatorTextValue",
+            label: "Please provide a rationale for why this project/work would not be considered as research",
+            value: this.state.questions[currentQuestionIndex].textValue,
+            required: true,
+            error: this.state.questions[currentQuestionIndex].textValue ? false : true,
+            errorMessage: "Required Field",
+            onChange: this.handleTextAreaChange,
+          })
         ]),
 
         div({isRendered: this.state.questions[currentQuestionIndex].isRadio === true }, [

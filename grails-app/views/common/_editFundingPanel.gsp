@@ -12,7 +12,7 @@ This view requires the following arguments:
             <ul>
                 <li><strong>Federal Prime:</strong> Direct federal (ex: NIH) award to Broad.</li>
                 <li><strong>Federal Sub-Award:</strong> Federal award received by Broad via a subcontract with another institution.  For example, MGH is the prime reciepient of a federal award and Broad receives a portion of the award via a subcontract from MGH.</li>
-                <li><strong>Internal Broad:</strong> Internal Broad Institute funding such as SPARC funding</li>
+                <li><strong>Broad Institutional Award:</strong> Internal Broad Institute funding such as SPARC funding</li>
                 <li><strong>Purchase Order:</strong> Typically used for Fee-for-Service work.</li>
                 <li><strong>Corporate Funding:</strong> Industry (ex: Johnson & Johnson) funding</li>
                 <li><strong>Foundation:</strong> Foundation funding  (ex: American Cancer Society)</li>
