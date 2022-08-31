@@ -103,7 +103,7 @@ dependencies {
     compile 'com.google.guava:guava:28.2-jre'
     compile 'commons-logging:commons-logging:1.2'
     compile 'com.google.apis:google-api-services-storage:v1-rev136-1.24.1'
-    compile 'com.google.api-client:google-api-client:1.27.0'
+    compile 'com.google.api-client:google-api-client:2.0.0'
     compile 'com.google.api-client:google-api-client-jackson2:1.27.0'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.10.3'
     compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
