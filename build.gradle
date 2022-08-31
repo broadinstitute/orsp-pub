@@ -130,7 +130,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.15'
 
-    testCompile ('com.github.tomakehurst:wiremock:2.18.0') {
+    testCompile ('com.github.tomakehurst:wiremock:2.27.2') {
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
     }
     testCompile 'junit:junit:4.13.2'
