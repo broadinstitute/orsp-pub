@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@tinymce/tinymce-react": "3.2.0",
-    "axios": "0.21.1",
+    "axios": "0.27.2",
     "babel-plugin-transform-class-properties": "6.24.1",
     "babel-polyfill": "6.26.0",
     "babel-register": "6.26.0",
