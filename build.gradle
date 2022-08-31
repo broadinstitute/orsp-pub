@@ -112,7 +112,7 @@ dependencies {
     compile 'com.google.cloud:google-cloud-storage:1.108.0'
 
     // DB Libraries
-    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.3.0'
+    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.0.7'
     compile 'org.grails.plugins:database-migration:3.0.4'
     compile 'org.liquibase:liquibase-core:3.9.0'
 
