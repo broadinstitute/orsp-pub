@@ -80,6 +80,6 @@
     "react-quill": "^2.0.0",
     "rxjs": "6.5.3",
     "sanitize-html": "^1.24.0",
-    "xlsx": "0.14.3"
+    "xlsx": "0.17.0"
   }
 }
