@@ -2,9 +2,10 @@ import { Component } from 'react';
 import { div, h1, hh } from 'react-hyperscript-helpers';
 import { Table } from '../components/Table';
 import { RoleManagementEdit } from '../components/RoleManagementEdit';
-import { User } from '../util/ajax';
+import { LoginText, User } from '../util/ajax';
 import { TablePaginator } from '../components/TablePaginator';
 import LoadingWrapper from '../components/LoadingWrapper';
+import { PortalMessage } from '../components/PortalMessage';
 
 const tableHeaders =
   [
@@ -42,12 +43,15 @@ const RolesManagement = hh(class RolesManagement extends Component {
       editRoleDialog: false,
       editRoleRowData: {},
       showError: false,
-      isAdmin: true
+      isAdmin: true,
+      defaultValueForAbout: 'default'
     };
   }
 
   componentDidMount() {
+    this.checkDefault();
     this.init();
+    this.checkDefault();
   }
 
   init = () => {
@@ -55,6 +59,21 @@ const RolesManagement = hh(class RolesManagement extends Component {
     this.setState({ isAdmin: component.isAdmin });
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
+
+  async checkDefault() {
+    await LoginText.getLoginText().then(loginText => {
+      let data = loginText.data[0];
+      if(data[3] === 'default') {
+        this.setState({
+          defaultValueForAbout: 'default'
+        })
+      } else {
+        this.setState({
+          defaultValueForAbout: ''
+        })
+      }
+    })
+  }
 
   editRoleHandler = (data) => () => {
     this.setState(prev => {
@@ -143,6 +162,7 @@ const RolesManagement = hh(class RolesManagement extends Component {
    render() {
     return(
       div({ className: "roles-management" },[
+        PortalMessage({}),
         h1({ style: stylesHeader.pageTitle}, ["Roles Management"]),
         Table({
           headers: tableHeaders,

@@ -7,6 +7,7 @@ import get from 'lodash/get';
 import defaultTo from 'lodash/defaultTo';
 import { createObjectCopy, isEmpty, projectStatus } from '../util/Utils';
 import './Main.css';
+import { PortalMessage } from '../components/PortalMessage';
 
 const LEGACY = 'Legacy';
 
@@ -100,6 +101,7 @@ class Main extends Component {
   render() {
     return (
       div({ className: "headerBoxContainer" }, [
+        PortalMessage({}),
         StatusBox({
           issueType: this.state.issueType,
           status: this.state.status

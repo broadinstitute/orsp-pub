@@ -5,12 +5,13 @@ import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { DETERMINATION } from '../util/TypeDescription';
-import { Project, User } from '../util/ajax';
+import { LoginText, Project, User } from '../util/ajax';
 import { handleUnauthorized, isEmpty } from '../util/Utils';
 import { getProjectType } from '../util/DeterminationQuestions';
-import { hh } from 'react-hyperscript-helpers';
+import { hh, div } from 'react-hyperscript-helpers';
 import 'regenerator-runtime/runtime';
 import LoadingWrapper from '../components/LoadingWrapper';
+import { PortalMessage } from '../components/PortalMessage';
 
 const LAST_STEP = 2;
 
@@ -52,6 +53,7 @@ const NewProject = hh(class NewProject extends Component {
         fundingAwardNumber: false
       },
       formerProjectType: null,
+      defaultValueForAbout: 'default',
     };
     this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.updateAttestationFormData = this.updateAttestationFormData.bind(this);
@@ -70,6 +72,22 @@ const NewProject = hh(class NewProject extends Component {
       this.setState(() => { throw error; });
     });
     this.loadOptions();
+    this.checkDefault();
+  }
+
+  async checkDefault() {
+    await LoginText.getLoginText().then(loginText => {
+      let data = loginText.data[0];
+      if(data[3] === 'default') {
+        this.setState({
+          defaultValueForAbout: 'default'
+        })
+      } else {
+        this.setState({
+          defaultValueForAbout: ''
+        })
+      }
+    })
   }
 
   loadOptions() {
@@ -177,6 +195,9 @@ const NewProject = hh(class NewProject extends Component {
       questions.map(q => {
         if (q.answer !== null) {
           extraProperties.push({ name: q.key, value: q.answer });
+        }
+        if (q.textValue !== null  || q.textValue !== '') {
+          extraProperties.push({name: q.key+"TextValue", value: q.textValue});
         }
       });
     }
@@ -289,7 +310,11 @@ const NewProject = hh(class NewProject extends Component {
           fundings = true;
           isValid = false;
         }
-        if (!fundings && funding.source.value === 'federal_prime' && isEmpty(funding.identifier)) {
+        if (!fundings && (funding.source.value === 'federal_prime' || funding.source.value === 'federal_sub-award') && isEmpty(funding.identifier)) {
+          fundingAwardNumber = true;
+          isValid = false;
+        }
+        if (!funding.sponsor) {
           fundingAwardNumber = true;
           isValid = false;
         }
@@ -383,46 +408,49 @@ const NewProject = hh(class NewProject extends Component {
     const { currentStep, determination } = this.state;
     let projectType = determination.projectType;
     return (
-      Wizard({
-        title: "New Project",
-        note: "Note that this application cannot be saved and returned to for completion later. However, allowing the page to remain open in your browser will permit you to return to the application at any time.",
-        stepChanged: this.stepChanged,
-        isValid: this.isValid,
-        submitHandler: this.submitNewProject,
-        showSubmit: this.showSubmit,
-        disabledSubmit: this.state.formSubmitted,
-      }, [
-          NewProjectGeneralData({
-            title: "Project Details",
-            currentStep: currentStep,
-            user: this.state.user,
-            updateForm: this.updateGeneralDataFormData,
-            errors: this.state.errors,
-            removeErrorMessage: this.removeErrorMessage
-          }),
-          NewProjectDetermination({
-            title: "Determination Questions",
-            currentStep: currentStep,
-            determination: this.state.determination,
-            handler: this.determinationHandler,
-            errors: this.state.showErrorDeterminationQuestions
-          }),
-          NewProjectDocuments({
-            title: "Documents",
-            currentStep: currentStep,
-            step: LAST_STEP,
-            fileHandler: this.fileHandler,
-            projectType: projectType,
-            files: this.state.files,
-            errors: this.state.errors,
-            generalError: this.state.generalError,
-            submitError: this.state.submitError,
-            options: this.state.documentOptions,
-            removeErrorMessage: this.removeErrorMessage,
-            updateForm: this.updateAttestationFormData,
-            formData: this.state.attestationFormData
-          })
+      div({}, [
+        PortalMessage({}),
+        Wizard({
+          title: "New Project",
+          note: "Note that this application cannot be saved and returned to for completion later. However, allowing the page to remain open in your browser will permit you to return to the application at any time.",
+          stepChanged: this.stepChanged,
+          isValid: this.isValid,
+          submitHandler: this.submitNewProject,
+          showSubmit: this.showSubmit,
+          disabledSubmit: this.state.formSubmitted,
+        }, [
+            NewProjectGeneralData({
+              title: "Project Details",
+              currentStep: currentStep,
+              user: this.state.user,
+              updateForm: this.updateGeneralDataFormData,
+              errors: this.state.errors,
+              removeErrorMessage: this.removeErrorMessage
+            }),
+            NewProjectDetermination({
+              title: "Determination Questions",
+              currentStep: currentStep,
+              determination: this.state.determination,
+              handler: this.determinationHandler,
+              errors: this.state.showErrorDeterminationQuestions
+            }),
+            NewProjectDocuments({
+              title: "Documents",
+              currentStep: currentStep,
+              step: LAST_STEP,
+              fileHandler: this.fileHandler,
+              projectType: projectType,
+              files: this.state.files,
+              errors: this.state.errors,
+              generalError: this.state.generalError,
+              submitError: this.state.submitError,
+              options: this.state.documentOptions,
+              removeErrorMessage: this.removeErrorMessage,
+              updateForm: this.updateAttestationFormData,
+              formData: this.state.attestationFormData
+            })
         ])
+      ])
     );
   }
 });

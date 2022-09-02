@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { a, div, h1, hh, span, h } from 'react-hyperscript-helpers';
-import { Reports } from '../util/ajax';
+import { LoginText, Reports } from '../util/ajax';
 import { TableComponent } from '../components/TableComponent';
 import { SAMPLE_COLLECTION_SORT_NAME_INDEX } from '../util/ReportConstants';
 import { TABLE_ACTIONS, formatDataPrintableFormat } from '../util/TableUtil';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Link } from 'react-router-dom';
 import { exportData, isEmpty } from '../util/Utils';
+import { PortalMessage } from '../components/PortalMessage';
 
 const stylesHeader = {
   pageTitle: {
@@ -78,13 +79,16 @@ const SampleCollection = hh(class SampleCollection extends Component {
         orderColumn: null
       },
       currentPage: 1,
-      collections: []
+      collections: [],
+      defaultValueForAbout: 'default'
     };
   }
 
   componentDidMount() {
     this._isMounted = true;
+    this.checkDefault();
     this.init();
+    this.checkDefault();
   }
 
   componentWillUnmount() {
@@ -95,6 +99,21 @@ const SampleCollection = hh(class SampleCollection extends Component {
     this.props.showSpinner();
     this.tableHandler(0, this.state.sizePerPage, this.state.search, this.state.sort, this.state.currentPage);
   };
+
+  async checkDefault() {
+    await LoginText.getLoginText().then(loginText => {
+      let data = loginText.data[0];
+      if(data[3] === 'default') {
+        this.setState({
+          defaultValueForAbout: 'default'
+        })
+      } else {
+        this.setState({
+          defaultValueForAbout: ''
+        })
+      }
+    })
+  }
 
   tableHandler = (offset, limit, search, sort, page) => {
     let query = {
@@ -188,6 +207,7 @@ const SampleCollection = hh(class SampleCollection extends Component {
   render() {
     return (
       div({}, [
+        PortalMessage({}),
         h1({ style: stylesHeader.pageTitle }, ["Consent Collection Links"]),
         TableComponent({
           remoteProp: true,

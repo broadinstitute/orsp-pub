@@ -44,7 +44,7 @@ dependencies {
     compile (group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9.2') {
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
     }
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.8' // Required for databind
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.4' // Required for databind
     compile group: 'xerces', name: 'xercesImpl', version: '2.12.0'
     compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
@@ -106,7 +106,7 @@ dependencies {
     compile 'com.google.api-client:google-api-client:1.27.0'
     compile 'com.google.api-client:google-api-client-jackson2:1.27.0'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.10.3'
-    compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.3'
+    compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
     compile group: 'joda-time', name: 'joda-time', version: '2.10.1'
     compile 'org.grails.plugins:quartz:2.0.13'
     compile 'com.google.cloud:google-cloud-storage:1.108.0'
@@ -117,15 +117,15 @@ dependencies {
     compile 'org.liquibase:liquibase-core:3.9.0'
 
     // Google Cloud BigQuery, to sync users
-    compile 'com.google.cloud:google-cloud-bigquery:1.79.0'
+    compile 'com.google.cloud:google-cloud-bigquery:1.137.1'
     
     // Broad's crowd server only likes TLSv1 HttpBuilder is very forgiving wrt ssl protocols
-    compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.1'
+    compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.2'
     // https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-json
-    compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.4.15'
+    compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '3.0.8'
 
     compile group: 'io.github.http-builder-ng', name: 'http-builder-ng-okhttp', version: '1.0.3'
-    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.6'
+    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.13'
     compile 'org.grails.plugins:gorm-logical-delete:2.0.0.M2'
     // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.15'
@@ -133,12 +133,12 @@ dependencies {
     testCompile ('com.github.tomakehurst:wiremock:2.18.0') {
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
     }
-    testCompile 'junit:junit:4.12'
+    testCompile 'junit:junit:4.13.2'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
 
     // Swagger
-    compile group: 'org.parboiled', name: 'parboiled-java', version: '1.2.0'
+    compile group: 'org.parboiled', name: 'parboiled-java', version: '1.3.2'
     compile group: 'org.webjars', name: 'swagger-ui', version: '2.2.10-1'
 
     // Code Coverage

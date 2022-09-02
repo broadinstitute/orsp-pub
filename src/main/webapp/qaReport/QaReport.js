@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { div, h, h1, hh } from 'react-hyperscript-helpers';
-import { Reports } from '../util/ajax';
+import { LoginText, Reports } from '../util/ajax';
 import FilterPanel from './FilterPanel';
 import { formatDataPrintableFormat } from '../util/TableUtil';
 import IrbTable from './IrbTable';
@@ -9,6 +9,7 @@ import { IRB, NO_IRB, QA_REPORT_COLUMNS } from '../util/ReportConstants';
 import { createObjectCopy, exportData, isEmpty } from '../util/Utils';
 import MultiTab from '../components/MultiTab';
 import LoadingWrapper from '../components/LoadingWrapper';
+import { PortalMessage } from '../components/PortalMessage';
 
 const QaReport = hh(class QaReport extends Component {
 
@@ -45,16 +46,34 @@ const QaReport = hh(class QaReport extends Component {
       afterDate: null,
       projectType: { value: 'all', label: 'All' },
       showError: false,
-      isAdmin: component.isAdmin
+      isAdmin: component.isAdmin,
+      defaultValueForAbout: 'default'
     };
   }
 
   async componentDidMount() {
+    this.checkDefault();
     await this.init();
+    this.checkDefault();
   }
 
   async init() {
     await this.tableHandler(IRB);
+  }
+
+  async checkDefault() {
+    await LoginText.getLoginText().then(loginText => {
+      let data = loginText.data[0];
+      if(data[3] === 'default') {
+        this.setState({
+          defaultValueForAbout: 'default'
+        })
+      } else {
+        this.setState({
+          defaultValueForAbout: ''
+        })
+      }
+    })
   }
 
   tableHandler = async (tab) => {
@@ -176,6 +195,7 @@ const QaReport = hh(class QaReport extends Component {
     return(
       div({
       },[
+        PortalMessage({}),
         h1({},['Quality Assurance Report']),
         h(FilterPanel,{
           handleDatePicker: this.handleDatePicker,

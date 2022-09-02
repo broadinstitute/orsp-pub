@@ -25,6 +25,7 @@ import ProjectReport from '../qaReport/ProjectReport';
 import InfoLink from '../infoLink/InfoLink';
 import { Storage } from '../util/Storage';
 import SampleCollection from '../sampleCollection/SampleCollection';
+import { LogintText } from '../loginText/LoginText';
 
 
 const Routes = ( props ) => (
@@ -49,6 +50,7 @@ const Routes = ( props ) => (
     <AuthenticatedRoute path= {"/infoLink/showInfoLink"} component={InfoLink} props={props}/> }/>
     <AuthenticatedRoute path= {["/index/profile", "/profile"]} component={Profile} props={props}/>  }/>
     <AuthenticatedRoute path= {"/index"} exact component = {LandingPage} props= {props}/> }/>
+    <AuthenticatedRoute path= {"/loginText"} component = {LogintText} props = {props} admin = {true} />
     <Route path= {["/about"]} exact render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/"} exact render = {(routeProps) =>  Storage.userIsLogged() ? <LandingPage {...routeProps} {...props}/> : <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/dataUseLetter/view"} render = {(routeProps) =>  <DataUseLetterIndex {...routeProps} {...props}/> }/>

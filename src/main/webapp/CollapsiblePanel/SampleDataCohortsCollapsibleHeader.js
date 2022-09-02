@@ -23,6 +23,10 @@ const styles = {
     backgroundColor: '#F0E5A9',
     color: '#333333'
   },
+  statusPendingIRBReview: {
+    backgroundColor: '#ffb499',
+    color: '#4d1400'
+  },
   link: {
       textDecoration: "none",
       display: "inline-block",
@@ -34,10 +38,12 @@ const styles = {
 
 const approved = { ...styles.statusBase, ...styles.statusApproved};
 const pending = { ...styles.statusBase, ...styles.statusPending};
+const pendingIRBReview = { ...styles.statusBase, ...styles.statusPendingIRBReview };
 
 const STATUS = {
   approved: 'approved',
-  pending: 'pending'
+  pending: 'pending',
+  pendingIRBReview: 'pendingirbreview'
 };
 
 export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsCollapsibleHeader extends Component {
@@ -61,7 +67,7 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
   };
 
   render() {
-    const { unlinkHandler, rejectHandler, approveHandler, requestClarificationHandler } = this.props.element.customHandlers;
+    const { unlinkHandler, rejectHandler, approveHandler, submittedToIRBHandler, requestClarificationHandler } = this.props.element.customHandlers;
     const { projectKey, summary} = this.props.element.consent;
     const  status = isEmpty(this.props.element.consent.status) ? '' : this.props.element.consent.status.toLowerCase();
 
@@ -74,13 +80,13 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
             },[ i({ className: 'glyphicon glyphicon-chevron-down' },[])
           ])
         ]),
-        span({ style: status === STATUS.approved ? approved : pending },
-          [ status === STATUS.approved ? 'Approved' : 'Pending'
+        span({ style: status === STATUS.approved ? approved : status === STATUS.pendingIRBReview ? pendingIRBReview : pending },
+          [ status === STATUS.approved ? 'Approved' : status === STATUS.pendingIRBReview ? 'Pending IRB Review' : 'Pending ORSP Review'
         ]),
         div({className: 'panel-title'}, [
           div({className: 'cta-container'}, [
             button({
-              isRendered: component.isAdmin && (status === STATUS.pending || isEmpty(status)),
+              isRendered: component.isAdmin && (status === STATUS.pending || status === STATUS.pendingIRBReview || isEmpty(status)),
               className: 'btn btn-default btn-sm confirmationModal',
               style: styles.pointer.auto,
               onClick: (e) => approveHandler(e, projectKey)
@@ -89,10 +95,16 @@ export const SampleDataCohortsCollapsibleHeader = hh(class SampleDataCohortsColl
               isRendered: component.isAdmin && (status === STATUS.pending || isEmpty(status)),
               className: 'btn btn-default btn-sm confirmationModal',
               style: styles.pointer.auto,
+              onClick: (e) => submittedToIRBHandler(e, projectKey)
+            },['Submitted to IRB']),
+            button({
+              isRendered: component.isAdmin && (status === STATUS.pending || status === STATUS.pendingIRBReview || isEmpty(status)),
+              className: 'btn btn-default btn-sm confirmationModal',
+              style: styles.pointer.auto,
               onClick: (e) => rejectHandler(e, projectKey)
             },['Reject']),
             button({
-              isRendered: status === STATUS.approved && component.isAdmin,
+              isRendered: (status === STATUS.approved || status === STATUS.pendingIRBReview) && component.isAdmin,
               className: 'btn btn-default btn-sm confirmationModal',
               style: styles.pointer.auto,
               onClick: (e) => unlinkHandler(e, projectKey)

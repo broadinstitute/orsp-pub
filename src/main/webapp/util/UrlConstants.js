@@ -93,6 +93,7 @@ export const UrlConstants = {
   sampleConsentLinkUrl: context + '/api/sample-consent-link',
   sampleBreakLinkUrl: context + '/api/break-link',
   sampleApproveLinkUrl: context + '/api/approve-link',
+  sampleSubmitToIRBLinkURL: context + '/api/submit-to-irb-link',
   historyUrl: context + '/api/history',
   restrictionUrl: context + '/dataUse/restriction',  
   showRestrictionUrl: context + '/dataUse/view',
@@ -118,6 +119,10 @@ export const UrlConstants = {
   metricsReportUrl: context + "/report/aahrppMetrics",
   rolesManagementUrl: context + "/user/rolesManagement",
   organizationsUrl: context + "/admin/organizations",
-  projectUrl:  context + "/project/pages"
+  projectUrl:  context + "/project/pages",
+  loginTextUrl: context + "/api/login-text",
+  loginText: context + "/loginText",
+  editLoginTextUrl: context + "/api/edit-login-text",
+  LoginTextResponseUrl: context + "/api/login-text-response"
 };
 
