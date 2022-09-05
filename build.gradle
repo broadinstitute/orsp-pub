@@ -44,7 +44,7 @@ dependencies {
     compile (group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9.2') {
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
     }
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.8' // Required for databind
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.4' // Required for databind
     compile group: 'xerces', name: 'xercesImpl', version: '2.12.0'
     compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
@@ -94,7 +94,7 @@ dependencies {
     testCompile "org.grails.plugins:geb"
     testCompile "org.grails:grails-web-testing-support"
     testRuntime "org.seleniumhq.selenium:selenium-htmlunit-driver:2.47.1"
-    testRuntime "net.sourceforge.htmlunit:htmlunit:2.18"
+    testRuntime "net.sourceforge.htmlunit:htmlunit:2.52.0"
 
     // Application Specific dependencies
     compile 'javax.ws.rs:jsr311-api:1.1.1'
@@ -112,12 +112,12 @@ dependencies {
     compile 'com.google.cloud:google-cloud-storage:1.108.0'
 
     // DB Libraries
-    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.3.0'
+    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.0.7'
     compile 'org.grails.plugins:database-migration:3.0.4'
     compile 'org.liquibase:liquibase-core:3.9.0'
 
     // Google Cloud BigQuery, to sync users
-    compile 'com.google.cloud:google-cloud-bigquery:1.79.0'
+    compile 'com.google.cloud:google-cloud-bigquery:2.15.0'
     
     // Broad's crowd server only likes TLSv1 HttpBuilder is very forgiving wrt ssl protocols
     compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.2'
@@ -130,7 +130,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
     compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.15'
 
-    testCompile ('com.github.tomakehurst:wiremock:2.18.0') {
+    testCompile ('com.github.tomakehurst:wiremock:2.27.2') {
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
     }
     testCompile 'junit:junit:4.13.2'
@@ -139,7 +139,7 @@ dependencies {
 
     // Swagger
     compile group: 'org.parboiled', name: 'parboiled-java', version: '1.4.1'
-    compile group: 'org.webjars', name: 'swagger-ui', version: '2.2.10-1'
+    compile group: 'org.webjars', name: 'swagger-ui', version: '4.14.0'
 
     // Code Coverage
     clover 'org.openclover:clover:4.4.1'
