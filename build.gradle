@@ -12,7 +12,7 @@ buildscript {
         classpath "org.grails.plugins:hibernate5:${gormVersion-".RELEASE"}"
         classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.4.6"
         classpath "org.grails.plugins:views-gradle:1.1.6"
-        classpath "gradle.plugin.com.srcclr:gradle:3.0.4"
+        classpath "gradle.plugin.com.srcclr:gradle:3.1.12"
         classpath 'com.bmuschko:gradle-clover-plugin:2.2.0'
         classpath 'org.grails.plugins:database-migration:3.0.4'
     }
@@ -124,7 +124,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-json
     compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '3.0.8'
 
-    compile group: 'io.github.http-builder-ng', name: 'http-builder-ng-okhttp', version: '1.0.3'
+    compile group: 'io.github.http-builder-ng', name: 'http-builder-ng-okhttp', version: '1.0.4'
     compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.13'
     compile 'org.grails.plugins:gorm-logical-delete:2.0.0.M2'
     // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
