@@ -79,7 +79,7 @@ dependencies {
     compile "org.grails:grails-plugin-gsp"
     compile "org.grails.plugins:events"
     compile "org.grails.plugins:hibernate5"
-    compile "org.hibernate:hibernate-core:5.1.5.Final"
+    compile "org.hibernate:hibernate-core:6.1.2.Final"
     compile "org.grails.plugins:gsp"
     compile "org.grails.plugins:views-json"
     compile "org.grails.plugins:views-json-templates"
@@ -114,7 +114,7 @@ dependencies {
     // DB Libraries
     compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.0.7'
     compile 'org.grails.plugins:database-migration:3.0.4'
-    compile 'org.liquibase:liquibase-core:3.9.0'
+    compile 'org.liquibase:liquibase-core:4.15.0'
 
     // Google Cloud BigQuery, to sync users
     compile 'com.google.cloud:google-cloud-bigquery:2.15.0'
