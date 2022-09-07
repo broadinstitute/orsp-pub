@@ -14,7 +14,7 @@ buildscript {
         classpath "org.grails.plugins:views-gradle:1.1.6"
         classpath "gradle.plugin.com.srcclr:gradle:3.0.4"
         classpath 'com.bmuschko:gradle-clover-plugin:2.2.0'
-        classpath 'org.grails.plugins:database-migration:3.0.4'
+        classpath 'org.grails.plugins:database-migration:4.1.0'
     }
 }
 
