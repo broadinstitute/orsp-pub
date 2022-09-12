@@ -332,6 +332,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/irb/bothAccepted"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendIrbBothAccepted '+ mail)
     }
 
     /**
@@ -344,6 +345,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/irb/supportAccepted"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendIrbSupportAccepted '+ mail)
     }
 
     /**
@@ -356,6 +358,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/non-irb/ccoReview"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendNonIrbCcoReview '+ mail)
     }
 
     /**
@@ -368,6 +371,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/irbApprove"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendIrbApprove '+ mail)
     }
 
     /**
@@ -380,6 +384,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/irb/irbModRequested"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendIrbModRequested '+ mail)
     }
 
     /**
@@ -392,6 +397,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/requestMod"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendRequestModification '+ mail)
     }
 
     /**
@@ -404,6 +410,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/non-irb/neDetermination"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendNotEngagedDetermination '+ mail)
     }
 
     /**
@@ -416,6 +423,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/non-irb/nhsrDetermination"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendNHSRDetermination '+ mail)
     }
 
     /**
@@ -428,6 +436,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/submit"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendApplicationSubmit '+ mail)
     }
 
     /**
@@ -440,6 +449,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/irb/supportSubmit"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendSupportingDocumentsSubmit '+ mail)
     }
 
     /**
@@ -452,6 +462,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/comment"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendComment '+ mail)
     }
 
     /**
@@ -464,6 +475,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/clarificationRequest"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendClarificationRequest '+ mail)
     }
 
     /**
@@ -477,6 +489,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.subject = "Closed: " + arguments.issue.projectKey
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendClosed '+ mail)
     }
 
     /**
@@ -490,6 +503,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.subject = "Withdrawn: " + arguments.issue.projectKey
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendWithdrawn '+ mail)
     }
 
 
@@ -508,15 +522,24 @@ class NotifyService implements SendgridSupport, Status {
             sendEmail = true
         }
         if (sendEmail) {
+            Collection<User> reporter = userService.findUsers(issue.getReporter())
+            Collection<User> pm = userService.findUsers(issue.getPMs())
+            Collection<String> reporterEmails = reporter.emailAddress
+            Collection<String> pmEmails = pm.emailAddress
+            Collection<String> ccEmails
+            ccEmails.addAll(reporterEmails)
+            ccEmails.addAll(pmEmails)
             NotifyArguments arguments = new NotifyArguments(
                     toAddresses: Collections.singletonList(getSecurityRecipient()),
                     fromAddress: getDefaultFromAddress(),
+                    ccAddresses: ccEmails,
                     subject: subjectDisplayName + " added " + issue.projectKey + " - Required InfoSec Follow-up",
                     user: user,
                     issue: issue)
             arguments.view = "/notify/generalInfo"
             Mail mail = populateMailFromArguments(arguments)
             result = sendMail(mail, getApiKey(), getSendGridUrl())
+            log.info('Email Send to Security and CC to reporter and PMs ' + mail + 'and result of send email is: ' + result);
         }
         result
     }
@@ -576,6 +599,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/creation"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendAdminNotification '+ mail)
     }
 
     /**
@@ -605,6 +629,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/irbSubmit"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendAdminNotificationforIRB '+ mail)
     }
 
 
@@ -627,13 +652,19 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/createProject"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendProjectAdminNotification '+ mail)
     }
 
 
 
     Map<Boolean, String> sendApprovedNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<String> emails = usersToNotify.emailAddress
+        Collection<User> reportersToNotify = userService.findUsers(issue.getReporter())
+        Collection<String> pmEmails = usersToNotify.emailAddress
+        Collection<String> reporterEmails = reportersToNotify.emailAddress
+        Collection<String> emails
+        emails.addAll(pmEmails)
+        emails.addAll(reporterEmails)
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
@@ -645,11 +676,17 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/approval"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendApprovedNotification '+ mail)
     }
 
     Map<Boolean, String> sendRejectionProjectNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<String> emails = usersToNotify.emailAddress
+        Collection<User> reportersToNotify = userService.findUsers(issue.getReporter())
+        Collection<String> pmEmails = usersToNotify.emailAddress
+        Collection<String> reporterEmails = reportersToNotify.emailAddress
+        Collection<String> emails
+        emails.addAll(pmEmails)
+        emails.addAll(reporterEmails)
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
@@ -661,11 +698,17 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/rejection"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendRejectionProjectNotification '+ mail)
     }
 
     Map<Boolean, String> sendClosedProjectNotification(Issue issue) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<String> emails = usersToNotify.emailAddress
+        Collection<User> reportersToNotify = userService.findUsers(issue.getReporter())
+        Collection<String> pmEmails = usersToNotify.emailAddress
+        Collection<String> reporterEmails = reportersToNotify.emailAddress
+        Collection<String> emails
+        emails.addAll(pmEmails)
+        emails.addAll(reporterEmails)
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
@@ -709,6 +752,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/edits"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendEditsSubmissionNotification '+ mail)
     }
 
     Map<Boolean, String> sendEditsApprovedNotification(Issue issue, String editCreatorName, String sessionUsername) {
@@ -726,6 +770,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/editsApproved"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendEditsApprovedNotification '+ mail)
     }
 
     Map<Boolean, String> sendDeterminationRevisedNotification(Issue issue, String editCreatorName, String oldProjectKey) {
@@ -743,6 +788,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.oldProjectkey = oldProjectKey
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendDeterminationRevisedNotification '+ mail)
     }
 
     Map<Boolean, String> sendEditsDisapprovedNotification(Issue issue, String editCreatorName, String sessionUsername) {
@@ -760,6 +806,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/editsDisapproved"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendEditsDisapprovedNotification '+ mail)
     }
 
     Map<Boolean, String> sendDulFormLinkNotification(NotifyArguments arguments) {
@@ -781,6 +828,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/dulSubmit"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendDulSubmitNotification '+ mail)
     }
 
 
@@ -795,7 +843,7 @@ class NotifyService implements SendgridSupport, Status {
         sendProjectAdminNotification(ProjectCGTypes.PROJECT.name, issue)
         sendApplicationSubmit(
                 new NotifyArguments(
-                        toAddresses:  [user?.emailAddress],
+                        toAddresses:  [user?.emailAddress, 'orsp@broadinstitute.org'],
                         fromAddress: getDefaultFromAddress(),
                         ccAddresses: [],
                         subject: "Project Submission Received by ORSP: " + issue.projectKey,
@@ -821,6 +869,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/organizationsMatch"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for notifyOrganizationsMatch '+ mail)
     }
 
     Map<Boolean, String> sendApproveRejectLinkNotification(String projectKey, String consentKey, boolean isApproved, String sessionUsername) {
@@ -845,6 +894,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = isApproved ? "/notify/approveLink" : "/notify/rejectLink"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for sendApproveRejectLinkNotification '+ mail)
     }
 
     List<String> getUserApplicantSubmitter(Issue project, Issue consent) {
@@ -877,5 +927,6 @@ class NotifyService implements SendgridSupport, Status {
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
         sendSecurityInfo(consent, user, consentCollectionLink, subjectDisplayName)
+        log.info('Sent notification mail for sendAddedCGToProjectNotification '+ mail)
     }
 }
