@@ -86,7 +86,7 @@ dependencies {
     console "org.grails:grails-console"
     profile "org.grails.profiles:react:5.0.1"
     profile "org.grails.profiles:web"
-    runtime "org.glassfish.web:el-impl:2.2.1-b05"
+    runtime "org.glassfish.web:el-impl:2.2.1"
     runtime "org.apache.tomcat:tomcat-jdbc:9.0.13"
     runtime "com.bertramlabs.plugins:asset-pipeline-grails:3.0.11"
     testRuntime "com.h2database:h2"
@@ -122,7 +122,7 @@ dependencies {
     // Broad's crowd server only likes TLSv1 HttpBuilder is very forgiving wrt ssl protocols
     compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.2'
     // https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-json
-    compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '3.0.8'
+    compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '3.0.12'
 
     compile group: 'io.github.http-builder-ng', name: 'http-builder-ng-okhttp', version: '1.0.3'
     compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.13'
@@ -145,7 +145,7 @@ dependencies {
     clover 'org.openclover:clover:4.4.1'
 
     // Slf4j startup error handling
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0'
 
 }
 
