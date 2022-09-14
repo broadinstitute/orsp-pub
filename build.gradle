@@ -105,7 +105,7 @@ dependencies {
     compile 'com.google.apis:google-api-services-storage:v1-rev20220705-2.0.0'
     compile 'com.google.api-client:google-api-client:2.0.0'
     compile 'com.google.api-client:google-api-client-jackson2:1.27.0'
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.10.3'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.15.3'
     compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
     compile group: 'joda-time', name: 'joda-time', version: '2.11.1'
     compile 'org.grails.plugins:quartz:2.0.13'
@@ -117,7 +117,7 @@ dependencies {
     compile 'org.liquibase:liquibase-core:3.9.0'
 
     // Google Cloud BigQuery, to sync users
-    compile 'com.google.cloud:google-cloud-bigquery:2.15.0'
+    compile 'com.google.cloud:google-cloud-bigquery:2.16.0'
     
     // Broad's crowd server only likes TLSv1 HttpBuilder is very forgiving wrt ssl protocols
     compile group: 'org.codehaus.groovy.modules.http-builder', name: 'http-builder', version: '0.7.2'
