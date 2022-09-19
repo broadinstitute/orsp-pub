@@ -45,7 +45,7 @@ dependencies {
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
     }
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.12.4' // Required for databind
-    compile group: 'xerces', name: 'xercesImpl', version: '2.12.0'
+    compile group: 'xerces', name: 'xercesImpl', version: '2.12.2'
     compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     compile group: 'org.springframework.integration', name: 'spring-integration-core', version: '4.3.15.RELEASE'
@@ -79,7 +79,7 @@ dependencies {
     compile "org.grails:grails-plugin-gsp"
     compile "org.grails.plugins:events"
     compile "org.grails.plugins:hibernate5"
-    compile "org.hibernate:hibernate-core:5.1.5.Final"
+    compile "org.hibernate:hibernate-core:6.1.3.Final"
     compile "org.grails.plugins:gsp"
     compile "org.grails.plugins:views-json"
     compile "org.grails.plugins:views-json-templates"
