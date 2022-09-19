@@ -14,7 +14,7 @@ buildscript {
         classpath "org.grails.plugins:views-gradle:1.1.6"
         classpath "gradle.plugin.com.srcclr:gradle:3.0.4"
         classpath 'com.bmuschko:gradle-clover-plugin:2.2.0'
-        classpath 'org.grails.plugins:database-migration:3.0.4'
+        classpath 'org.grails.plugins:database-migration:4.1.0'
     }
 }
 
@@ -114,7 +114,7 @@ dependencies {
     // DB Libraries
     compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.0.7'
     compile 'org.grails.plugins:database-migration:3.0.4'
-    compile 'org.liquibase:liquibase-core:3.9.0'
+    compile 'org.liquibase:liquibase-core:4.16.1'
 
     // Google Cloud BigQuery, to sync users
     compile 'com.google.cloud:google-cloud-bigquery:2.15.0'
