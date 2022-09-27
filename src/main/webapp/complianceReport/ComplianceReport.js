@@ -25,9 +25,9 @@ class ComplianceReport extends Component {
 
     render() {
         return (
-            <>
+            <div>
                 <h1>{this.state.data}</h1>
-            </>
+            </div>
         )
     }
 }
