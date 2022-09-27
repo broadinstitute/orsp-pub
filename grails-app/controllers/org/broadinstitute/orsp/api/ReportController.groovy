@@ -103,14 +103,4 @@ class ReportController extends AuthenticatedController {
             handleException(e)
         }
     }
-
-    def getComplianceReportDetails() {
-        Map<String, Object> complianceReport = IssueUtils.getJson(Map.class, request.JSON)
-        try {
-            List complianceResult = queryService.complianceReportResultData((String)complianceReport.get("startDate"), (String)complianceReport.get("endDate"))
-            render complianceResult as JSON
-        } catch(Exception e) {
-            handleException(e)
-        }
-    }
 }
