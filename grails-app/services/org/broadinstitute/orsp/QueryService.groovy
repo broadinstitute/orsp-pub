@@ -1875,4 +1875,47 @@ class QueryService implements Status {
         result
     }
 
+    Collection getComplianceDetails(String startDate, String endDate) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = new StringBuilder().append('SELECT t1.project_key, t1.request_date, t1.type, t2.name, t2.value, t3.source')
+                .append('FROM issue_extra_property t2')
+                .append('INNER JOIN issue t1 ON t1.project_key = t2.project_key')
+                .append('INNER JOIN funding t3 ON t1.project_key = t3.project_key')
+                .append('WHERE date(t1.request_date) >= :startDate and date(t1.request_date) <= :endDate').toString()
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter("startDate", startDate)
+        sqlQuery.setParameter("endDate", endDate)
+        final result = sqlQuery.with{
+            list()
+        }
+        result
+    }
+
+    Collection getSubmissionDetails() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+
+        final String query = new StringBuilder().append('SELECT t1.project_key, t1.type, t2.create_date, t2.type')
+                .append('FROM issue t1')
+                .append('INNER JOIN submission t2 ON t1.project_key = t2.project_key')
+                .append('WHERE t1.type= :irbProject and t2.type= :event').toString();
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter("irbProject", "IRB Project")
+        sqlQuery.setParameter("event", "Other Event")
+        final result = sqlQuery.with{
+            list()
+        }
+        result
+    }
+
+    Collection complianceReportResultData(String startDate, String endDate) {
+        Collection compliance = getComplianceDetails(startDate, endDate)
+        Collection submission = getSubmissionDetails()
+        Collection result
+        result.addAll(compliance)
+        result.addAll(submission)
+        result
+    }
+
 }
