@@ -23,7 +23,6 @@ import org.hibernate.SQLQuery
 import org.hibernate.SessionFactory
 import org.hibernate.transform.Transformers
 
-import javax.mail.Session
 import javax.sql.DataSource
 import java.sql.SQLException
 
