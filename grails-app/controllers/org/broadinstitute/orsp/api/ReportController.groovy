@@ -108,7 +108,7 @@ class ReportController extends AuthenticatedController {
     def getComplianceReportDetails() {
         Map<String, Object> complianceReportDates = IssueUtils.getJson(Map.class, request.JSON)
         try {
-            List complianceReportData = queryService.complianceReportData((String)complianceReportDates.get("startDate"), (String)complianceReportDates.get("endDate"))
+            Collection complianceReportData = queryService.complianceReportData((String)complianceReportDates.get("startDate"), (String)complianceReportDates.get("endDate"))
             render complianceReportData as JSON
         } catch (Exception e) {
             handleException(e)
