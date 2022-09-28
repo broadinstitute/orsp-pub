@@ -26,6 +26,7 @@ import InfoLink from '../infoLink/InfoLink';
 import { Storage } from '../util/Storage';
 import SampleCollection from '../sampleCollection/SampleCollection';
 import { LogintText } from '../loginText/LoginText';
+import ComplianceReport from '../complianceReport/ComplianceReport'
 
 
 const Routes = ( props ) => (
