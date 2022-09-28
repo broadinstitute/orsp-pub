@@ -508,7 +508,7 @@ export const Reports = {
   },
 
   getComplianceReportData(startDate, endDate) {
-    return axios.get(UrlConstants.complianceReportUrl, {startDate: startDate, endDate: endDate});
+    return axios.get(UrlConstants.complianceReportUrl + "?startDate=" + startDate + "&endDate=" + endDate);
   }
 };
 
