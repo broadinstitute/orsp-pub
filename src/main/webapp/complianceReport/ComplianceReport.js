@@ -14,7 +14,7 @@ class ComplianceReport extends Component {
     }
 
     async init() {
-        await Reports.getComplianceReportData().then(data => {
+        await Reports.getComplianceReportData('2021-01-01', '2022-09-28').then(data => {
             console.log(data)
             this.setState({
                 data: data
