@@ -505,6 +505,10 @@ export const Reports = {
         searchValue: query.searchValue
       }
     })
+  },
+
+  getComplianceReportData(startDate, endDate) {
+    return axios.get(UrlConstants.complianceReportUrl, {startDate: startDate, endDate: endDate});
   }
 };
 
