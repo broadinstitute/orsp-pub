@@ -31,3 +31,5 @@ class ComplianceReport extends Component {
         )
     }
 }
+
+export default ComplianceReport
