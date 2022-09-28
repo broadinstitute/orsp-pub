@@ -11,6 +11,7 @@ import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.ReportService
+import org.broadinstitute.orsp.utils.IssueUtils
 import org.broadinstitute.orsp.utils.UtilityClass
 import org.broadinstitute.orsp.webservice.PaginationParams
 
@@ -99,6 +100,16 @@ class ReportController extends AuthenticatedController {
             JSON.use(UtilityClass.CONSENT_LINK_REPORT) {
                 render queryService.findAllCollectionLinks(pagination) as JSON
             }
+        } catch (Exception e) {
+            handleException(e)
+        }
+    }
+
+    def getComplianceReportDetails() {
+        Map<String, Object> complianceReportDates = IssueUtils.getJson(Map.class, request.JSON)
+        try {
+            List complianceReportData = queryService.complianceReportData((String)complianceReportDates.get("startDate"), (String)complianceReportDates.get("endDate"))
+            render complianceReportData as JSON
         } catch (Exception e) {
             handleException(e)
         }
