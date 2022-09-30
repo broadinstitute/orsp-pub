@@ -192,6 +192,7 @@ const QaReport = hh(class QaReport extends Component {
   };
 
   render() {
+    console.log("IRB table data:", this.state[IRB])
     return(
       div({
       },[
