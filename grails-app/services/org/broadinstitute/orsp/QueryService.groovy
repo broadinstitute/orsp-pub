@@ -1883,17 +1883,17 @@ class QueryService implements Status {
                                                 .append('INNER JOIN issue t1 ON t1.project_key = t2.project_key')
                                                 .append('INNER JOIN funding t3 ON t1.project_key = t3.project_key')
                                                 .append('WHERE date(t1.request_date) >= :startDate and date(t1.request_date) <= :endDate').toString()
-        List<ComplianceReport> result = session.createSQLQuery(query)
-                .setResultTransformer(Transformers.aliasToBean(ComplianceReport.class))
-                .setString('startDate', startDate)
-                .setString('endDate', endDate)
-                .list()
-//        final SQLQuery sqlQuery = session.createSQLQuery(query)
-//        sqlQuery.setParameter("startDate", startDate)
-//        sqlQuery.setParameter("endDate", endDate)
-//        final result = sqlQuery.with{
-//            list()
-//        }
+//        List<ComplianceReport> result = session.createSQLQuery(query)
+//                .setResultTransformer(Transformers.aliasToBean(ComplianceReport.class))
+//                .setString('startDate', startDate)
+//                .setString('endDate', endDate)
+//                .list()
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter("startDate", startDate)
+        sqlQuery.setParameter("endDate", endDate)
+        final result = sqlQuery.with{
+            list()
+        }
         result
     }
 
@@ -1904,17 +1904,17 @@ class QueryService implements Status {
                                                 .append('FROM issue t1')
                                                 .append('INNER JOIN submission t2 ON t1.project_key = t2.project_key')
                                                 .append('WHERE t1.type= :irbProject and t2.type= :event').toString()
-        List<SubmissionData> result = session.createSQLQuery(query)
-                .setResultTransformer(Transformers.aliasToBean(SubmissionData.class))
-                .setString("irbProject", "IRB project")
-                .setString("event", "Other Event")
-                .list()
-//        final SQLQuery sqlQuery = session.createSQLQuery(query)
-//        sqlQuery.setParameter("irbProject", "IRB Project")
-//        sqlQuery.setParameter("event", "Other Event")
-//        final result = sqlQuery.with{
-//            list()
-//        }
+//        List<SubmissionData> result = session.createSQLQuery(query)
+//                .setResultTransformer(Transformers.aliasToBean(SubmissionData.class))
+//                .setString("irbProject", "IRB project")
+//                .setString("event", "Other Event")
+//                .list()
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter("irbProject", "IRB Project")
+        sqlQuery.setParameter("event", "Other Event")
+        final result = sqlQuery.with{
+            list()
+        }
         result
     }
 
