@@ -10,7 +10,7 @@ trait ExceptionHandler {
     def handleException(Exception e) {
         log.error("${e}")
         response.status = 500
-        render([error: e.message] as JSON)
+        render([error: e] as JSON)
     }
 
     def handleNotFound(String message) {
