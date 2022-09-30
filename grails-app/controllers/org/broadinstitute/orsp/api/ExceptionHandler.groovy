@@ -22,7 +22,7 @@ trait ExceptionHandler {
     def handleIllegalArgumentException(IllegalArgumentException e) {
         log.error("${e}")
         response.status = 400
-        render([error: e.message] as JSON)
+        render([error: e] as JSON)
     }
 
     def handleUnauthorized() {
