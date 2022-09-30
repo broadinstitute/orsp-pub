@@ -1884,9 +1884,9 @@ class QueryService implements Status {
 //                                                .append('INNER JOIN funding t3 ON t1.project_key = t3.project_key')
 //                                                .append('WHERE date(t1.request_date) >= :startDate and date(t1.request_date) <= :endDate').toString()
         final String query = 'SELECT t1.project_key, t1.request_date, t1.type, t2.name, t2.value, t3.source' +
-                            'FROM issue_extra_property t2' +
-                            'INNER JOIN issue t1 ON t1.project_key = t2.project_key' +
-                            'INNER JOIN funding t3 ON t1.project_key = t3.project_key' +
+                            'FROM issue_extra_property as t2' +
+                            'INNER JOIN issue as t1 ON t1.project_key = t2.project_key' +
+                            'INNER JOIN funding as t3 ON t1.project_key = t3.project_key' +
                             'WHERE t1.request_date >= :startDate and t1.request_date <= :endDate'
 //        List<ComplianceReport> result = session.createSQLQuery(query)
 //                .setResultTransformer(Transformers.aliasToBean(ComplianceReport.class))
