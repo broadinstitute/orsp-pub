@@ -121,6 +121,7 @@ class ReportController extends AuthenticatedController {
 //                    submissionData: submissionData
 //            ])
             render complianceReportData as JSON
+
         } catch (Exception e) {
             handleException(e)
         }
