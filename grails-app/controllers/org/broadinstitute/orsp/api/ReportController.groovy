@@ -113,14 +113,14 @@ class ReportController extends AuthenticatedController {
 //            String startDate = params.startDate
 //            String endDate = params.endDate
 //            List complianceReportData = queryService.complianceReportData(startDate, endDate)
-            def result = []
+//            def result = []
             List complianceReportData = queryService.getComplianceDetails((String)complianceReportDates.get("startDate"), (String)complianceReportDates.get("endDate"))
-            List submissionData = queryService.getSubmissionDetails()
-            result.add([
-                    complianceReportData: complianceReportData,
-                    submissionData: submissionData
-            ])
-            render result as JSON
+//            List submissionData = queryService.getSubmissionDetails()
+//            result.add([
+//                    complianceReportData: complianceReportData,
+//                    submissionData: submissionData
+//            ])
+            render complianceReportData as JSON
         } catch (Exception e) {
             handleException(e)
         }
