@@ -1900,7 +1900,7 @@ class QueryService implements Status {
     List<SubmissionData> getSubmissionDetails() {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-        final String query = new StringBuilder().append('SELECT t1.project_key, t1.type, t2.create_date, t2.type ')
+        final String query = new StringBuilder().append('SELECT t1.project_key, t1.type, t2.create_date, t2.type as event_type ')
                                                 .append('FROM issue t1 ')
                                                 .append('INNER JOIN submission t2 ON t1.project_key = t2.project_key ')
                                                 .append('WHERE t1.type= :irbProject and t2.type= :event').toString()
