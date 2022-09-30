@@ -26,7 +26,6 @@ class ComplianceReport extends Component {
         return(
             <div>
                 <h1>Compliance Report</h1>
-                <p>{this.state.data}</p>
             </div>
         )
     }
