@@ -1878,19 +1878,24 @@ class QueryService implements Status {
     List getComplianceDetails(String startDate, String endDate) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-        final String query = new StringBuilder().append('SELECT t1.project_key, t1.request_date, t1.type, t2.name, t2.value, t3.source')
-                                                .append('FROM issue_extra_property t2')
-                                                .append('INNER JOIN issue t1 ON t1.project_key = t2.project_key')
-                                                .append('INNER JOIN funding t3 ON t1.project_key = t3.project_key')
-                                                .append('WHERE date(t1.request_date) >= :startDate and date(t1.request_date) <= :endDate').toString()
+//        final String query = new StringBuilder().append('SELECT t1.project_key, t1.request_date, t1.type, t2.name, t2.value, t3.source')
+//                                                .append('FROM issue_extra_property t2')
+//                                                .append('INNER JOIN issue t1 ON t1.project_key = t2.project_key')
+//                                                .append('INNER JOIN funding t3 ON t1.project_key = t3.project_key')
+//                                                .append('WHERE date(t1.request_date) >= :startDate and date(t1.request_date) <= :endDate').toString()
+        final String query = 'SELECT t1.project_key, t1.request_date, t1.type, t2.name, t2.value, t3.source' +
+                            'FROM issue_extra_property t2' +
+                            'INNER JOIN issue t1 ON t1.project_key = t2.project_key' +
+                            'INNER JOIN funding t3 ON t1.project_key = t3.project_key' +
+                            'WHERE t1.request_date >= :startDate and t1.request_date <= :endDate'
 //        List<ComplianceReport> result = session.createSQLQuery(query)
 //                .setResultTransformer(Transformers.aliasToBean(ComplianceReport.class))
 //                .setString('startDate', startDate)
 //                .setString('endDate', endDate)
 //                .list()
         final SQLQuery sqlQuery = session.createSQLQuery(query)
-        sqlQuery.setParameter("startDate", startDate)
-        sqlQuery.setParameter("endDate", endDate)
+        sqlQuery.setParameter("startDate", startDate+'%')
+        sqlQuery.setParameter("endDate", endDate+'%')
         final result = sqlQuery.with{
             list()
         }

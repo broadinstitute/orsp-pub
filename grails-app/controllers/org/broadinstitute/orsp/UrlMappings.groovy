@@ -17,7 +17,7 @@ class UrlMappings {
         '/api/swagger/**'(controller: 'api', action: 'swagger')
 
         // Compliance report end point
-        "/api/report/compliance-report"(controller: "report", action: "getComplianceReportDetails", method: "POST")
+        "/api/report/compliance-report"(controller: "report", action: "getComplianceReportDetails", method: "GET")
 
         // Project end points
         '/api/project'(resource: 'project')
