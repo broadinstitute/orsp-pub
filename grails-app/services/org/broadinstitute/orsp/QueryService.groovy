@@ -1875,7 +1875,7 @@ class QueryService implements Status {
         result
     }
 
-    List<ComplianceReport> getComplianceDetails(String startDate, String endDate) {
+    List getComplianceDetails(String startDate, String endDate) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final String query = new StringBuilder().append('SELECT t1.project_key, t1.request_date, t1.type, t2.name, t2.value, t3.source')
