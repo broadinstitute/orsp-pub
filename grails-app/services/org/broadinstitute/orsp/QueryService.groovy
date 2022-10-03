@@ -1913,13 +1913,4 @@ class QueryService implements Status {
         result
     }
 
-    Collection complianceReportData(String startDate, String endDate) {
-        Collection compliance = getComplianceDetails(startDate, endDate)
-        Collection submission = getSubmissionDetails()
-        Collection result = []
-        result.addAll(compliance)
-        result.addAll(submission)
-        result
-    }
-
 }
