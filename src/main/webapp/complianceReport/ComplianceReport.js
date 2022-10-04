@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { Reports } from '../util/ajax';
+import {div, button} from 'react-hyperscript-helpers'
 
 class ComplianceReport extends Component {
     constructor(props) {
@@ -43,7 +44,9 @@ class ComplianceReport extends Component {
         return(
             div({
             },[
-                h1({},['Compliance Report']),
+                div({}, [
+                    <h1>Compliance Report</h1>
+                ]),
                 Panel({ title: "Filter Compliance report" }, [
                     div({className: "row"}, [
                     div({className: "col-xs-12 col-sm-6"}, [
