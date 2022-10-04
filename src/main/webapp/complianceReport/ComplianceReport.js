@@ -19,25 +19,25 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
             complianceReportData: [],
             afterDate: null,
             beforeDate: null,
-
+            showTable: false
         }
     }
 
     applyFilterPanel = async () => {
         this.props.showSpinner();
+        this.setState({
+            showTable: false
+        })
         let afterDateStr = this.state.afterDate.toISOString().substring(0, 10);
         let beforeDateStr = this.state.beforeDate.toISOString().substring(0, 10);
         await Reports.getComplianceReportData(afterDateStr, beforeDateStr).then(data => {
             let complianceData = data.data[0];
-            console.log(complianceData);
-
             let complianceDataArr = [];
             let submissionDataArr = [];
 
             /* 
-                Converting array of strings to array of objects
-                This is the data of compliance report filtered directly from database
-                according to the required date
+                Converting array of strings to array of objects,
+                array of strings is received from the api call
             */
             const complianceReportData = complianceData.complianceReportData;
             complianceReportData.forEach(complianceReportDataElement => {
@@ -56,7 +56,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
 
             /* 
                 Converting array of strings to array of objects
-                This is the data of submission details filtered directly from database
+                array of strings is received from the api call that filters
                 using IRB project type and Other event type
             */
             const submissionReportData = complianceData.submissionData;
@@ -82,10 +82,8 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                 })
             })
 
-            console.log(complianceDataArr);
-
             /*
-                Converting resultant data from above operation to required form
+                Converting resultant data from above operation to get required data
                 by adding new fields needed for the report
             */
             let reportDataArr = [];
@@ -143,17 +141,6 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
             })
 
             /*
-                code to take count of unique project keys
-            */
-
-            let projArr = []
-            reportDataArr.forEach(element => {
-                projArr.push(element.projectKey);
-            })
-
-            console.log([...new Set(projArr)])
-
-            /*
                 Removing duplicate objects from the above resultant
             */
             let startIndex = 0
@@ -169,13 +156,16 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                 startIndex += 1
             })
             reportDataArr.unshift(tempSave[0])
-            console.log(reportDataArr)
             this.setState(prev => {
                 prev.complianceReportData = reportDataArr;
+                prev.showTable = true
             }, () => {
                 this.props.hideSpinner();
             })
         }).catch(err => {
+            this.setState({
+                showTable: false
+            })
             this.props.hideSpinner();
             console.log(err);
         })
@@ -249,7 +239,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                     onClick: this.clearFilterPanel
                     }, ['Clear'])
                 ]),
-                div({ isRendered: this.state.afterDate && this.state.beforeDate }, [
+                div({ isRendered: this.state.showTable }, [
                     <TableComponent
                         remoteProp= {false}
                         data= {this.state.complianceReportData}
