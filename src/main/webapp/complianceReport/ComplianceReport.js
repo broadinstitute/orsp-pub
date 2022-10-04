@@ -196,7 +196,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
         let elementsArray = formatDataPrintableFormat(this.state.complianceReportData, cols);
         const headerText = 'Compliance Report';
         const columnsWidths = ['*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'];
-        exportData(action,'Compliance Report', elementsArray, '', headerText, columnsWidths, 'A3');
+        exportData(action,'Compliance Report', elementsArray, '', headerText, columnsWidths, 'A2');
       };
 
     render() {
