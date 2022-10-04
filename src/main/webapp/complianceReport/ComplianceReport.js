@@ -5,6 +5,7 @@ import { Panel } from '../components/Panel';
 import DatePicker from 'react-datepicker';
 
 import './ComplianceReport.css';
+
 import { TableComponent } from '../components/TableComponent';
 import { COMPLIANCE_REPORT_COLUMNS, defaultSorted, COMPLIANCE, SIZE_PER_PAGE_LIST } from '../util/ReportConstants';
 
