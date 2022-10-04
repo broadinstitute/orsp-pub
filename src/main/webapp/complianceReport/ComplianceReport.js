@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { Reports } from '../util/ajax';
+import {div, button} from 'react-hyperscript-helpers'
 
 class ComplianceReport extends Component {
     constructor(props) {
