@@ -4,6 +4,7 @@ import {hh, div, button, h1} from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import DatePicker from 'react-datepicker';
 import { formatDataPrintableFormat } from '../util/TableUtil';
+import { exportData } from '../util/Utils';
 import LoadingWrapper from '../components/LoadingWrapper';
 
 import './ComplianceReport.css';
