@@ -3,6 +3,7 @@ import { Reports } from '../util/ajax';
 import {hh, div, button, h1} from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import DatePicker from 'react-datepicker';
+import { formatDataPrintableFormat } from '../util/TableUtil';
 import LoadingWrapper from '../components/LoadingWrapper';
 
 import './ComplianceReport.css';
