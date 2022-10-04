@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Reports } from '../util/ajax';
-import {div, button} from 'react-hyperscript-helpers'
+import {div, button, h1} from 'react-hyperscript-helpers'
 
 class ComplianceReport extends Component {
     constructor(props) {
@@ -15,7 +15,8 @@ class ComplianceReport extends Component {
 
     applyFilterPanel = () => {
         Reports.getComplianceReportData(this.state.afterDate, this.state.beforeDate).then(data => {
-            console.log(data);
+            let complianceData = data[0];
+            console.log(complianceData);
         })
     }
 
