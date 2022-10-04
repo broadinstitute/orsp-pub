@@ -6,5 +6,5 @@
     border: 1px solid #ced4da;
     font-size: 1rem;
     color: black;
-    width: 95%;
+    width: 95% !important;
 }

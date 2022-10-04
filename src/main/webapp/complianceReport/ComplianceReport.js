@@ -21,6 +21,7 @@ class ComplianceReport extends Component {
     }
 
     applyFilterPanel = async () => {
+        this.props.showSpinner();
         let afterDateStr = this.state.afterDate.toISOString().substring(0, 10);
         let beforeDateStr = this.state.beforeDate.toISOString().substring(0, 10);
         await Reports.getComplianceReportData(afterDateStr, beforeDateStr).then(data => {
@@ -132,7 +133,7 @@ class ComplianceReport extends Component {
                             reportData["financialConflict"] = tempData.value;
                         if (tempData.name == "financialConflictDescription")
                             reportData["financialConflictDescription"] = tempData.value;
-                        let daysCount = Math.round((new Date(reportData.submittedDate).getTime() - new Date(reportData.approveDate).getTime()) / (1000*3600*24))
+                        let daysCount = Math.round((new Date(reportData.approveDate).getTime() - new Date(reportData.submittedDate).getTime()) / (1000*3600*24))
                         reportData["daysFromSubmissionToApproval"] = isNaN(daysCount) ? 'Not yet approved' : daysCount;
                 })
                 reportDataArr.push(reportData);
@@ -166,9 +167,14 @@ class ComplianceReport extends Component {
             })
             reportDataArr.unshift(tempSave[0])
             console.log(reportDataArr)
-            this.setState({
-                complianceReportData: reportDataArr
+            this.setState(prev => {
+                prev.complianceReportData = reportDataArr;
+            }, () => {
+                this.props.hideSpinner();
             })
+        }).catch(err => {
+            this.props.hideSpinner();
+            console.log(err);
         })
     }
 
@@ -193,7 +199,7 @@ class ComplianceReport extends Component {
 
     exportTable = (action, tab) => {
         let cols = COMPLIANCE_REPORT_COLUMNS.filter(el => el.dataField !== 'id');
-        let elementsArray = formatDataPrintableFormat(this.state[tab].data, cols);
+        let elementsArray = formatDataPrintableFormat(this.state.complianceReportData, cols);
         const headerText = 'Compliance Report';
         const columnsWidths = ['*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'];
         exportData(action,'Compliance Report', elementsArray, '', headerText, columnsWidths, 'A3');
@@ -240,7 +246,7 @@ class ComplianceReport extends Component {
                     onClick: this.clearFilterPanel
                     }, ['Clear'])
                 ]),
-                div({}, [
+                div({ isRendered: this.state.afterDate && this.state.beforeDate }, [
                     <TableComponent
                         remoteProp= {false}
                         data= {this.state.complianceReportData}
@@ -248,7 +254,7 @@ class ComplianceReport extends Component {
                         keyField= 'projectKey'
                         search= {true}
                         fileName= 'Compliance Report'
-                        showPrintButton= {true}
+                        showPrintButton= {false}
                         sizePerPageList= {SIZE_PER_PAGE_LIST}
                         printComments= {() => this.exportTable('print', COMPLIANCE)}
                         downloadPdf= {() => this.exportTable('download', COMPLIANCE)}
