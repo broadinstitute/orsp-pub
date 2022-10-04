@@ -61,6 +61,7 @@ export const styles = {
 
 export const NO_IRB = 'noIrb';
 export const IRB = 'irb';
+export const COMPLIANCE = 'compliance'
 
 export const QA_REPORT_COLUMNS = [{
   dataField: 'id',
@@ -178,3 +179,76 @@ let formatAge = (row) => {
   const result = getDays(row);
   return result
 };
+
+export const COMPLIANCE_REPORT_COLUMNS = [
+  {
+    dataField: 'projectKey',
+    text: 'Project',
+    sort: true
+  },
+  {
+    dataField: 'firstNameOfInvestigator',
+    text: 'First name of investigator',
+    sort: true
+  },
+  {
+    dataField: 'lastNameOfInvestigator',
+    text: 'Last name of investigator',
+    sort: true
+  },
+  {
+    dataField: 'degree',
+    text: 'Degree(s) of investigator',
+    sort: true
+  },
+  {
+    dataField: 'typeOfInitialReview',
+    text: 'Type of initial review',
+    sort: true
+  },
+  {
+    dataField: 'biomedical',
+    text: 'Biomedical or Non-Biomedical study',
+    sort: true
+  },
+  {
+    dataField: 'submittedDate',
+    text: 'Date submitted',
+    sort: true
+  },
+  {
+    dataField: 'approveDate',
+    text: 'Date approved',
+    sort: true
+  },
+  {
+    dataField: 'daysFromSubmissionToApproval',
+    text: 'Time in days from submission to approval',
+    sort: true
+  },
+  {
+    dataField: 'funding',
+    text: 'Funding source(s)',
+    sort: true
+  },
+  {
+    dataField: 'numberofOtherEvents',
+    text: 'Number of "Other Events" reported for each IRB project',
+    sort: true
+  },
+  {
+    dataField: 'eventCreatedDates',
+    text: 'Dates that Other Events were entered',
+    sort: true
+  },
+  {
+    dataField: 'financialConflict',
+    text: 'Financial conflict',
+    sort: true
+  },
+  {
+    dataField: 'financialConflictDescription',
+    text: 'Financial Conflict Description',
+    sort: true
+  }
+]

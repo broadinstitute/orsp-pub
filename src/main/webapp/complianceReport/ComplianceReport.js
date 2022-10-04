@@ -4,7 +4,7 @@ import {div, button, h1} from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import DatePicker from 'react-datepicker';
 
-import '../components/InputField.css';
+import './ComplianceReport.css';
 
 class ComplianceReport extends Component {
     constructor(props) {
@@ -17,11 +17,11 @@ class ComplianceReport extends Component {
         }
     }
 
-    applyFilterPanel = () => {
+    applyFilterPanel = async () => {
         let afterDateStr = this.state.afterDate.toISOString().substring(0, 10);
         let beforeDateStr = this.state.beforeDate.toISOString().substring(0, 10);
-        Reports.getComplianceReportData(afterDateStr, beforeDateStr).then(data => {
-            let complianceData = data[0];
+        await Reports.getComplianceReportData(afterDateStr, beforeDateStr).then(data => {
+            let complianceData = data;
             console.log(complianceData);
 
             
@@ -56,8 +56,8 @@ class ComplianceReport extends Component {
                 Panel({ title: "Filter Compliance report" }, [
                     div({className: "row"}, [
                     div({className: "col-xs-12 col-sm-6"}, [
-                        <div className="inputFieldSelectWrapper">
-                            <label className='inputFieldLabel'>Created After</label>
+                        <div>
+                            <label className='DatePicker'>Created After</label>
                             <br/>
                             <DatePicker 
                                 selected={this.state.afterDate}
@@ -67,8 +67,8 @@ class ComplianceReport extends Component {
                         </div>
                     ]),
                     div({className: "col-xs-12 col-sm-6"}, [
-                        <div className="inputFieldSelectWrapper">
-                            <label className='inputFieldLabel'>Created Before</label>
+                        <div>
+                            <label className='DatePicker'>Created Before</label>
                             <br/>
                             <DatePicker 
                                 selected={this.state.beforeDate}
