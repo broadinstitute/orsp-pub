@@ -4,7 +4,7 @@ import {div, button, h1} from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import DatePicker from 'react-datepicker';
 
-import './InputField.css';
+import '../components/InputField.css';
 
 class ComplianceReport extends Component {
     constructor(props) {
