@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Reports } from '../util/ajax';
-import {div, button, h1} from 'react-hyperscript-helpers'
+import {div, button, h1} from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 
 class ComplianceReport extends Component {
