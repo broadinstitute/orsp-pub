@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Reports } from '../util/ajax';
-import {div, button, h1} from 'react-hyperscript-helpers';
+import {hh, div, button, h1} from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import DatePicker from 'react-datepicker';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -11,7 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { TableComponent } from '../components/TableComponent';
 import { COMPLIANCE_REPORT_COLUMNS, defaultSorted, COMPLIANCE, SIZE_PER_PAGE_LIST } from '../util/ReportConstants';
 
-class ComplianceReport extends Component {
+const ComplianceReport = hh(class ComplianceReport extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -270,6 +270,6 @@ class ComplianceReport extends Component {
             ])
         )
     }
-}
+});
 
 export default LoadingWrapper(ComplianceReport)
