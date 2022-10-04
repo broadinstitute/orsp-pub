@@ -11,49 +11,40 @@ class ComplianceReport extends Component {
         super(props)
         this.state = {
             data: [],
-            afterDate: '',
-            beforeDate: '',
+            afterDate: null,
+            beforeDate: null,
 
         }
     }
 
     applyFilterPanel = () => {
-        Reports.getComplianceReportData(this.state.afterDate, this.state.beforeDate).then(data => {
+        let afterDateStr = this.state.afterDate.toISOString().substring(0, 10);
+        let beforeDateStr = this.state.beforeDate.toISOString().substring(0, 10);
+        Reports.getComplianceReportData(afterDateStr, beforeDateStr).then(data => {
             let complianceData = data[0];
             console.log(complianceData);
+
+            
+
         })
     }
 
     setBeforeDate(date) {
-        let mm = date.getMonth() + 1;
-        let dd = date.getDate();
-
-        let beforeDate = [(dd>9 ? '' : '0') + dd,
-                (mm>9 ? '' : '0') + mm,
-                date.getFullYear()
-                ].join('-');
         this.setState({
-            beforeDate: beforeDate
+            beforeDate: date
         })
     }
 
     setAfterDate(date) {
-        let mm = date.getMonth() + 1;
-        let dd = date.getDate();
-
-        let afterDate = [(dd>9 ? '' : '0') + dd,
-                (mm>9 ? '' : '0') + mm,
-                date.getFullYear()
-                ].join('-');
         this.setState({
-            afterDate: afterDate
+            afterDate: date
         })
     }
 
     clearFilterPanel = () => {
         this.setState({
-            afterDate: '',
-            beforeDate: ''
+            afterDate: null,
+            beforeDate: null
         })
     }
 
@@ -65,8 +56,9 @@ class ComplianceReport extends Component {
                 Panel({ title: "Filter Compliance report" }, [
                     div({className: "row"}, [
                     div({className: "col-xs-12 col-sm-6"}, [
-                        <div>
+                        <div className="inputFieldSelectWrapper">
                             <label className='inputFieldLabel'>Created After</label>
+                            <br/>
                             <DatePicker 
                                 selected={this.state.afterDate}
                                 onChange={(date) => this.setAfterDate(date)}
@@ -75,8 +67,9 @@ class ComplianceReport extends Component {
                         </div>
                     ]),
                     div({className: "col-xs-12 col-sm-6"}, [
-                        <div>
+                        <div className="inputFieldSelectWrapper">
                             <label className='inputFieldLabel'>Created Before</label>
+                            <br/>
                             <DatePicker 
                                 selected={this.state.beforeDate}
                                 onChange={(date) => this.setBeforeDate(date)}
