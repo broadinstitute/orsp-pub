@@ -45,9 +45,7 @@ class ComplianceReport extends Component {
         return(
             div({
             },[
-                div({}, [
-                    <h1>Compliance Report</h1>
-                ]),
+                h1({},['Compliance Report']),
                 Panel({ title: "Filter Compliance report" }, [
                     div({className: "row"}, [
                     div({className: "col-xs-12 col-sm-6"}, [
