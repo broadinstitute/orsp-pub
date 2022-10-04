@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { Reports } from '../util/ajax';
 import {div, button, h1} from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
-import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
+import DatePicker from 'react-datepicker';
+
+import './InputField.css';
 
 class ComplianceReport extends Component {
     constructor(props) {
@@ -22,12 +24,30 @@ class ComplianceReport extends Component {
         })
     }
 
-    handleAfterDatePicker = (e) => {
-        console.log('afterDate: ', e)
+    setBeforeDate(date) {
+        let mm = date.getMonth() + 1;
+        let dd = date.getDate();
+
+        let beforeDate = [(dd>9 ? '' : '0') + dd,
+                (mm>9 ? '' : '0') + mm,
+                date.getFullYear()
+                ].join('-');
+        this.setState({
+            beforeDate: beforeDate
+        })
     }
 
-    handleBeforeDatePicker = (e) => {
-        console.log('afterDate: ', e)
+    setAfterDate(date) {
+        let mm = date.getMonth() + 1;
+        let dd = date.getDate();
+
+        let afterDate = [(dd>9 ? '' : '0') + dd,
+                (mm>9 ? '' : '0') + mm,
+                date.getFullYear()
+                ].join('-');
+        this.setState({
+            afterDate: afterDate
+        })
     }
 
     clearFilterPanel = () => {
@@ -45,22 +65,24 @@ class ComplianceReport extends Component {
                 Panel({ title: "Filter Compliance report" }, [
                     div({className: "row"}, [
                     div({className: "col-xs-12 col-sm-6"}, [
-                        InputFieldDatePicker({
-                        selected: this.state.afterDate,
-                        name: "afterDate",
-                        label: "Created After",
-                        onChange:  this.handleAfterDatePicker,
-                        disabled: false
-                        })
+                        <div>
+                            <label className='inputFieldLabel'>Created After</label>
+                            <DatePicker 
+                                selected={this.state.afterDate}
+                                onChange={(date) => this.setAfterDate(date)}
+                                className="inputFieldDatePicker"
+                            ></DatePicker>
+                        </div>
                     ]),
                     div({className: "col-xs-12 col-sm-6"}, [
-                        InputFieldDatePicker({
-                        selected: this.state.beforeDate,
-                        name: "beforeDate",
-                        label: "Created Before",
-                        onChange: this.handleBeforeDatePicker,
-                        disabled: false
-                        })
+                        <div>
+                            <label className='inputFieldLabel'>Created Before</label>
+                            <DatePicker 
+                                selected={this.state.beforeDate}
+                                onChange={(date) => this.setBeforeDate(date)}
+                                className="inputFieldDatePicker"
+                            ></DatePicker>
+                        </div>
                     ])
                     ]),
                     button({
