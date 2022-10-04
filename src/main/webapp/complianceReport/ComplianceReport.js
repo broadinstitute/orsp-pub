@@ -24,16 +24,10 @@ class ComplianceReport extends Component {
 
     handleAfterDatePicker = (e) => {
         console.log('afterDate: ', e)
-        this.setState({
-            afterDate: (e.target.value).toString()
-        })
     }
 
     handleBeforeDatePicker = (e) => {
         console.log('afterDate: ', e)
-        this.setState({
-            afterDate: (e.target.value).toString()
-        })
     }
 
     clearFilterPanel = () => {
@@ -55,7 +49,7 @@ class ComplianceReport extends Component {
                         selected: this.state.afterDate,
                         name: "afterDate",
                         label: "Created After",
-                        onChange:  (e) => this.handleAfterDatePicker(e),
+                        onChange:  this.handleAfterDatePicker,
                         disabled: false
                         })
                     ]),
@@ -64,7 +58,7 @@ class ComplianceReport extends Component {
                         selected: this.state.beforeDate,
                         name: "beforeDate",
                         label: "Created Before",
-                        onChange: (e) => this.handleBeforeDatePicker(e),
+                        onChange: this.handleBeforeDatePicker,
                         disabled: false
                         })
                     ])
