@@ -3,8 +3,10 @@ import { Reports } from '../util/ajax';
 import {div, button, h1} from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import DatePicker from 'react-datepicker';
+import LoadingWrapper from '../components/LoadingWrapper';
 
 import './ComplianceReport.css';
+import "react-datepicker/dist/react-datepicker.css";
 
 import { TableComponent } from '../components/TableComponent';
 import { COMPLIANCE_REPORT_COLUMNS, defaultSorted, COMPLIANCE, SIZE_PER_PAGE_LIST } from '../util/ReportConstants';
@@ -216,7 +218,7 @@ class ComplianceReport extends Component {
                         <div>
                             <label className='inputFieldLabel'>Created After</label>
                             <br/>
-                            <DatePicker 
+                            <DatePicker style={{display: 'block'}}
                                 selected={this.state.afterDate}
                                 onChange={(date) => this.setAfterDate(date)}
                                 className="DatePicker"
@@ -227,7 +229,7 @@ class ComplianceReport extends Component {
                         <div>
                             <label className='inputFieldLabel'>Created Before</label>
                             <br/>
-                            <DatePicker 
+                            <DatePicker style={{display: 'block'}}
                                 selected={this.state.beforeDate}
                                 onChange={(date) => this.setBeforeDate(date)}
                                 className="DatePicker"
@@ -270,4 +272,4 @@ class ComplianceReport extends Component {
     }
 }
 
-export default ComplianceReport
+export default LoadingWrapper(ComplianceReport)
