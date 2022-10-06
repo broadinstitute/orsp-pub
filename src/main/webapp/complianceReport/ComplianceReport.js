@@ -257,6 +257,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                         showExportButtons= {true}
                         showSearchBar= {true}
                         showPdfExport= {true}
+                        className= "compliance-table"
                     ></TableComponent>
                 ])
             ])

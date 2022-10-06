@@ -17,21 +17,21 @@
     display: block !important;
 }
 
-.react-bootstrap-table {
+.compliance-table .react-bootstrap-table {
     max-height: 1000px;
     overflow: auto;
     margin-bottom: 10px;
     border-bottom: 1px solid #ced4da;
 }
 
-.react-bootstrap-table thead {
+.compliance-table .react-bootstrap-table thead {
     position: sticky;
     top: -1px;
     z-index: 2;
     background-color: #e6e9ed;
 }
 
-.table-containter .table thead tr th {
+.compliance-table .table-containter .table thead tr th {
     white-space: normal;
     text-overflow: unset;
     padding-left: 4px;
