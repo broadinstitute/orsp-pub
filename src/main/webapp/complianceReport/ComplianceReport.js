@@ -240,7 +240,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                     onClick: this.clearFilterPanel
                     }, ['Clear'])
                 ]),
-                div({ isRendered: this.state.showTable }, [
+                div({ isRendered: this.state.showTable, className: "compliance-table" }, [
                     <TableComponent
                         remoteProp= {false}
                         data= {this.state.complianceReportData}
