@@ -452,10 +452,18 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
               onDrop: this.dropHandler,
               onDragOver: this.dragoverHandler,
             }, [
-              <p>Drag and drop your documents here or 
-              <a
-                onClick={this.addDocuments}
-              >click here to add documents</a></p>
+              p({}, ['Drag and drop your documents here or ',
+              a({
+                onClick: this.addDocuments,
+                className: 'drop_zone_link'
+              }, [
+                'click here to add documents'
+              ])
+            ])
+              // <p>Drag and drop your documents here or 
+              // <a
+              //   onClick={this.addDocuments}
+              // >click here to add documents</a></p>
             ])
           ]),
           Table({

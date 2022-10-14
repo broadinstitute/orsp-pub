@@ -423,7 +423,7 @@ input[type=checkbox] {
   text-align: center;
 }
 
-.drop_zone a {
+.drop_zone_link {
   cursor: pointer;
   text-decoration: underline;
   color: #337ab7;
