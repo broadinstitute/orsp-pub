@@ -453,8 +453,8 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
               style: {padding: '10px 0 10px 0', textAlign: 'center', border: '1px solid #ddd', width: '100%'},
               isRendered: !component.isViewer,
               className: 'drop_zone',
-              ondrop: this.dropHandler,
-              ondragover: this.dragoverHandler,
+              onDrop: this.dropHandler,
+              onDragOver: this.dragoverHandler,
             }, [
               p({}, ['Drag and drop your documents here or ',
               a({
