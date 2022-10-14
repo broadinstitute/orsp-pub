@@ -330,12 +330,14 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   };
 
   dropHandler(event) {
+    console.log(event)
     event.preventDefault();
     let file
     if (event.dataTransfer.items) {
         [...event.dataTransfer.items].forEach((item, i) => {
             if (item.kind === 'file') {
                 file = item.getAsFile();
+                console.log(file)
             }
         })
     }
@@ -347,6 +349,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   }
 
   dragOverHandler(event) {
+    console.log(event)
     event.preventDefault();
   }
 
@@ -447,10 +450,11 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         },[
           div({ style: styles.addDocumentContainer }, [
             div({
+              style: {padding: '10px 0 10px 0', textAlign: 'center', border: '1px solid #ddd', width: '100%'},
               isRendered: !component.isViewer,
               className: 'drop_zone',
-              ondrop: this.dropHandler,
-              ondragover: this.dragoverHandler,
+              onDrop: this.dropHandler,
+              onDragOver: this.dragoverHandler,
             }, [
               p({}, ['Drag and drop your documents here or ',
               a({

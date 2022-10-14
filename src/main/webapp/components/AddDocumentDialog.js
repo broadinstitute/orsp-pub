@@ -173,6 +173,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   };
 
   setFilesToUpload = () => (e) => {
+    console.log(e)
     let selectedFile = e.target.files[0];
     e.target.value = '';
     if(selectedFile.size > MAX_SIZE) {
