@@ -449,8 +449,8 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             div({
               isRendered: !component.isViewer,
               className: 'drop_zone',
-              onDrop: this.dropHandler,
-              onDragOver: this.dragoverHandler,
+              ondrop: this.dropHandler,
+              ondragover: this.dragoverHandler,
             }, [
               p({}, ['Drag and drop your documents here or ',
               a({
@@ -481,6 +481,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             reviewFlow: false,
             pagination: false,
             isAdmin: component.isAdmin,
+            style: {top: '10px'}
           }),
           button({
             isRendered: !component.isViewer,

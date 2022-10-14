@@ -418,9 +418,9 @@ input[type=checkbox] {
 
 .drop_zone {
   width: 100%;
-  padding: 40px 0 40px 0;
+  padding: 10px 0 10px 0 !important;
   border: 2px solid #dddddd;
-  text-align: center;
+  text-align: center !important;
 }
 
 .drop_zone_link {
