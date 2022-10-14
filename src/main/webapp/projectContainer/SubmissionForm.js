@@ -1,4 +1,4 @@
-import { React, Component } from 'react';
+import { Component } from 'react';
 import { a, button, div, h, h1, hh, small, p } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { Files, ProjectMigration } from '../util/ajax';
@@ -452,11 +452,25 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
               onDrop: this.dropHandler,
               onDragOver: this.dragoverHandler,
             }, [
-              <p>Drag and drop your documents here or 
-              <a
-                onClick={this.addDocuments}
-              >click here to add documents</a></p>
+              p({}, ['Drag and drop your documents here or ',
+              a({
+                onClick: this.addDocuments,
+                className: 'drop_zone_link'
+              }, [
+                'click here to add documents'
+              ])
             ])
+              // <p>Drag and drop your documents here or 
+              // <a
+              //   onClick={this.addDocuments}
+              // >click here to add documents</a></p>
+            ])
+            // button({
+            //   isRendered: !component.isViewer,
+            //   className: "btn buttonSecondary",
+            //   style: styles.addDocumentBtn,
+            //   onClick: this.addDocuments
+            // }, ["Add Document"])
           ]),
           Table({
             headers: headers,
