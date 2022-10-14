@@ -69,6 +69,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         number: false,
         numberType: 'Required field'
       },
+      dropEvent: {}
     };
   }
 
@@ -328,6 +329,27 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     });
   };
 
+  dropHandler(event) {
+    event.preventDefault();
+    let file
+    if (event.dataTransfer.items) {
+        [...event.dataTransfer.items].forEach((item, i) => {
+            if (item.kind === 'file') {
+                file = item.getAsFile();
+            }
+        })
+    }
+    this.setState(prev => {
+      prev.dropEvent = file
+    }, () => {
+      this.addDocuments();
+    })
+  }
+
+  dragOverHandler(event) {
+    event.preventDefault();
+  }
+
   backToProject = () => {
     this.props.history.push('/project/main?projectKey=' + this.state.params.projectKey + '&tab=submissions', {tab: 'submissions'});
   };
@@ -360,7 +382,8 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           handleLoadDocuments: this.props.handleLoadDocuments,
           emailUrl: this.props.emailUrl,
           userName: this.props.userName,
-          documentHandler: this.setFilesToUpload
+          documentHandler: this.setFilesToUpload,
+          dropEvent: this.state.dropEvent
         }),
           h1({
             style: {'marginBottom':'20px'}
@@ -423,12 +446,23 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           title: "Files"
         },[
           div({ style: styles.addDocumentContainer }, [
-            button({
+            div({
               isRendered: !component.isViewer,
-              className: "btn buttonSecondary",
-              style: styles.addDocumentBtn,
-              onClick: this.addDocuments
-            }, ["Add Document"])
+              className: 'drop_zone',
+              onDrop: this.dropHandler,
+              onDragOver: this.dragoverHandler,
+            }, [
+              <p>Drag and drop your documents here or 
+              <a
+                onClick={this.addDocuments}
+              >click here to add documents</a></p>
+            ])
+            // button({
+            //   isRendered: !component.isViewer,
+            //   className: "btn buttonSecondary",
+            //   style: styles.addDocumentBtn,
+            //   onClick: this.addDocuments
+            // }, ["Add Document"])
           ]),
           Table({
             headers: headers,

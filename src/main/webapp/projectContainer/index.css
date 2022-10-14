@@ -415,3 +415,16 @@ input[type=checkbox] {
 .tableContainer .table {
   margin-bottom: 0;
 }
+
+.drop_zone {
+  width: 100%;
+  padding: 40px 0 40px 0;
+  border: 2px solid #dddddd;
+  text-align: center;
+}
+
+.drop_zone a {
+  cursor: pointer;
+  text-decoration: underline;
+  color: #337ab7;
+}
