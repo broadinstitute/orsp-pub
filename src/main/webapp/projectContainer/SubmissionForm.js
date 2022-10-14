@@ -457,12 +457,6 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
                 onClick={this.addDocuments}
               >click here to add documents</a></p>
             ])
-            // button({
-            //   isRendered: !component.isViewer,
-            //   className: "btn buttonSecondary",
-            //   style: styles.addDocumentBtn,
-            //   onClick: this.addDocuments
-            // }, ["Add Document"])
           ]),
           Table({
             headers: headers,
