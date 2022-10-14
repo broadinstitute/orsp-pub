@@ -69,7 +69,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         number: false,
         numberType: 'Required field'
       },
-      dropEvent: ''
+      dropEvent: {}
     };
   }
 
@@ -331,8 +331,16 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
 
   dropHandler(event) {
     event.preventDefault();
+    let file
+    if (event.dataTransfer.items) {
+        [...event.dataTransfer.items].forEach((item, i) => {
+            if (item.kind === 'file') {
+                file = item.getAsFile();
+            }
+        })
+    }
     this.setState(prev => {
-      prev.dropEvent = event
+      prev.dropEvent = file
     }, () => {
       this.addDocuments();
     })
