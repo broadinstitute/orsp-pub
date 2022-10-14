@@ -452,10 +452,10 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
               onDrop: this.dropHandler,
               onDragOver: this.dragoverHandler,
             }, [
-              <p>Drag and drop your documents here or 
-              <a
-                onClick={this.addDocuments}
-              >click here to add documents</a></p>
+              p({},['Drag and drop your documents here or '],
+              a({
+                onClick:this.addDocuments},
+              ['click here to add documents']))
             ])
             // button({
             //   isRendered: !component.isViewer,
