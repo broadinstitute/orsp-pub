@@ -38,35 +38,6 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
     this.setFilesToUpload = this.setFilesToUpload.bind(this);
   }
 
-  componentDidMount() {
-    this.init();
-  }
-
-  init() {
-    if (this.props.dropEvent) {
-      let file = this.props.dropEvent
-      if (file.size > MAX_SIZE) {
-        this.setState(prev => {
-          prev.errorMessage = 'Size exceeded. Max file size 15.7 Mb.';
-          prev.fileError = true;
-          prev.file = { name: '' };
-          return prev;
-        });
-      } else {
-        this.setState(prev => {
-          prev.alertMessage = '';
-          prev.errorMessage = '';
-          prev.disableBtn = false;
-          prev.showAlert = false;
-          prev.fileError = false;
-          prev.file = file;
-          console.log('file details', file)
-          return prev;
-        });
-      }
-    }
-  }
-
   handleClose = () => {
     this.setState(prev => {
       prev.file = {
@@ -176,6 +147,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   setFilesToUpload = () => (e) => {
     console.log(e)
     let selectedFile = e.target.files[0];
+    console.log(selectedFile)
     e.target.value = '';
     if(selectedFile.size > MAX_SIZE) {
       this.setState(prev => {
