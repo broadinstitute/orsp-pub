@@ -11,7 +11,6 @@ import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { AlertMessage } from '../components/AlertMessage';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Editor } from '@tinymce/tinymce-react';
-import { FileUploader } from "react-drag-drop-files";
 
 const errorBorderStyle = {
   border: "1px solid red",
