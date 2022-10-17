@@ -11,6 +11,7 @@ import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { AlertMessage } from '../components/AlertMessage';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Editor } from '@tinymce/tinymce-react';
+import { FileUploader } from "react-drag-drop-files";
 
 const errorBorderStyle = {
   border: "1px solid red",
@@ -329,28 +330,12 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     });
   };
 
-  dropHandler(event) {
-    console.log(event)
-    event.preventDefault();
-    let file
-    if (event.dataTransfer.items) {
-        [...event.dataTransfer.items].forEach((item, i) => {
-            if (item.kind === 'file') {
-                file = item.getAsFile();
-                console.log(file)
-            }
-        })
-    }
+  dropHandler = (file) => {
     this.setState(prev => {
       prev.dropEvent = file
     }, () => {
       this.addDocuments();
     })
-  }
-
-  dragOverHandler(event) {
-    console.log(event)
-    event.preventDefault();
   }
 
   backToProject = () => {
@@ -449,12 +434,17 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           title: "Files"
         },[
           div({ style: styles.addDocumentContainer }, [
-            button({
-              isRendered: !component.isViewer,
-              className: "btn buttonSecondary",
-              style: styles.addDocumentBtn,
-              onClick: this.addDocuments
-            }, ["Add Document"])
+            FileUploader({
+              multiple:false,
+              handleChange: this.dropHandler,
+              name: 'file'
+            }, [])
+          //   button({
+          //     isRendered: !component.isViewer,
+          //     className: "btn buttonSecondary",
+          //     style: styles.addDocumentBtn,
+          //     onClick: this.addDocuments
+          //   }, ["Add Document"])
           ]),
           Table({
             headers: headers,
