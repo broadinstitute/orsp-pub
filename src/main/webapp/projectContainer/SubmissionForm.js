@@ -330,12 +330,25 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     });
   };
 
-  dropHandler = (file) => {
+  dropHandler = (event) => {
+    event.preventDefault();
+    let file
+    if (event.dataTransfer.items) {
+        [...event.dataTransfer.items].forEach((item, i) => {
+            if (item.kind === 'file') {
+                file = item.getAsFile();
+            }
+        })
+    }
     this.setState(prev => {
       prev.dropEvent = file
     }, () => {
       this.addDocuments();
     })
+  }
+
+  dragOverHandler(event) {
+    event.preventDefault();
   }
 
   backToProject = () => {
@@ -434,11 +447,15 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           title: "Files"
         },[
           div({ style: styles.addDocumentContainer }, [
-            FileUploader({
-              multiple:false,
-              handleChange: this.dropHandler,
-              name: 'file'
-            }, [])
+            div({
+              isRendered: !component.isViewer,
+              id: 'drop_zone',
+              onDrop: this.dropHandler,
+              onDragOver: this.dragOverHandler,
+              style: {padding: '10px 0 10px 0', textAlign: 'center', border: '1px solid #ddd', width: '100%'}
+            }, [
+              p(['Drag and drop your documents here or', a(['click here to add documents'])])
+            ])
           //   button({
           //     isRendered: !component.isViewer,
           //     className: "btn buttonSecondary",

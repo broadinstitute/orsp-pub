@@ -416,15 +416,15 @@ input[type=checkbox] {
   margin-bottom: 0;
 }
 
-.lkjDVC {
-  border: 1px solid #ddd !important;
-  max-width: 100% !important;
+#drop_zone {
+  padding: '10px 0 10px 0';
+  text-align: 'center';
+  border: '1px solid #ddd';
+  width: '100%'
 }
 
-.lkjDVC svg {
-  display: none;
-}
-
-.dmajdp {
-  justify-content: center !important;
+#drop_zone a {
+  cursor: pointer;
+  text-decoration: underline;
+  color: #337ab7;
 }
