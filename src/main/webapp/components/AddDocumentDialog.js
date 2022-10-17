@@ -60,6 +60,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
           prev.showAlert = false;
           prev.fileError = false;
           prev.file = file;
+          console.log('file details', file)
           return prev;
         });
       }
