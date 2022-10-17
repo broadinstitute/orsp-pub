@@ -290,29 +290,6 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   };
 
   setFilesToUpload = (doc) => {
-    if (this.props.dropEvent) {
-      let file = this.props.dropEvent
-      if (file.size > MAX_SIZE) {
-        this.setState(prev => {
-          prev.errorMessage = 'Size exceeded. Max file size 15.7 Mb.';
-          prev.fileError = true;
-          prev.file = { name: '' };
-          return prev;
-        });
-      } else {
-        this.setState(prev => {
-          prev.alertMessage = '';
-          prev.errorMessage = '';
-          prev.disableBtn = false;
-          prev.showAlert = false;
-          prev.fileError = false;
-          prev.file = file;
-          console.log('file details', file)
-          return prev;
-        });
-      }
-    }
-    console.log(doc);
     this.setState(prev => {
       let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random() };
       let documents = prev.documents;
