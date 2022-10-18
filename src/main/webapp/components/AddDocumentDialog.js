@@ -66,12 +66,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
           return prev;
         });
         let file;
-        if (this.props.dropEvent) {
-          console.log(this.props.dropEvent);
-          file = { file: this.props.dropEvent, fileKey: this.state.type.label }
-        } else {
-          file = { file: this.state.file, fileKey: this.state.type.label };
-        }
+        file = { file: this.state.file, fileKey: this.state.type.label };
         let files = [file];
         if(this.props.projectKey !== undefined) {
           this.props.showSpinner();
@@ -211,7 +206,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
             id: "documentFile",
             name: "documentFile",
             callback: this.setFilesToUpload(this.state.documents),
-            fileName: this.state.file.name || (this.props.dropEvent && this.props.dropEvent['name']),
+            fileName: this.state.file.name,
             required: true,
             error: this.state.fileError,
             errorMessage: this.state.errorMessage,
