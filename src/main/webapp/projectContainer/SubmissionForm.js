@@ -68,11 +68,6 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         serverError: false,
         number: false,
         numberType: 'Required field'
-      },
-      dropEvent: {
-        name:'',
-        size: '',
-        type: ''
       }
     };
   }
@@ -333,28 +328,6 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     });
   };
 
-  dropHandler = (event) => {
-    event.preventDefault();
-    let file
-    if (event.dataTransfer.items) {
-        [...event.dataTransfer.items].forEach((item, i) => {
-            if (item.kind === 'file') {
-                file = item.getAsFile();
-            }
-        })
-    }
-    this.setState(prev => {
-      console.log('submission file: ', file)
-      prev.dropEvent = file
-    }, () => {
-      this.addDocuments();
-    })
-  }
-
-  dragOverHandler(event) {
-    event.preventDefault();
-  }
-
   backToProject = () => {
     this.props.history.push('/project/main?projectKey=' + this.state.params.projectKey + '&tab=submissions', {tab: 'submissions'});
   };
@@ -388,7 +361,6 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           emailUrl: this.props.emailUrl,
           userName: this.props.userName,
           documentHandler: this.setFilesToUpload,
-          dropEvent: this.state.dropEvent
         }),
           h1({
             style: {'marginBottom':'20px'}
@@ -451,21 +423,12 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           title: "Files"
         },[
           div({ style: styles.addDocumentContainer }, [
-            div({
+            button({
               isRendered: !component.isViewer,
-              id: 'drop_zone',
-              onDrop: this.dropHandler,
-              onDragOver: this.dragOverHandler,
-              style: {padding: '10px 0 10px 0', textAlign: 'center', border: '1px solid #ddd', width: '100%'}
-            }, [
-              p(['Drag and drop your documents here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
-            ])
-          //   button({
-          //     isRendered: !component.isViewer,
-          //     className: "btn buttonSecondary",
-          //     style: styles.addDocumentBtn,
-          //     onClick: this.addDocuments
-          //   }, ["Add Document"])
+              className: "btn buttonSecondary",
+              style: styles.addDocumentBtn,
+              onClick: this.addDocuments
+            }, ["Add Document"])
           ]),
           Table({
             headers: headers,
