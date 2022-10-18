@@ -210,7 +210,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
             id: "documentFile",
             name: "documentFile",
             callback: this.setFilesToUpload(this.state.documents),
-            fileName: this.state.file.name || this.props.dropEvent.name,
+            fileName: this.state.file.name || this.props.dropEvent['name'],
             required: true,
             error: this.state.fileError,
             errorMessage: this.state.errorMessage,
