@@ -69,7 +69,11 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         number: false,
         numberType: 'Required field'
       },
-      dropEvent: {}
+      dropEvent: {
+        name:'',
+        size: '',
+        type: ''
+      }
     };
   }
 
