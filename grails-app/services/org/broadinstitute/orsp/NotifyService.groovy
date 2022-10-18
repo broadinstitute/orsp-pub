@@ -659,7 +659,7 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendApprovedNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<String> reporter
+        Collection<String> reporter = []
         reporter.addAll(issue.getReporter())
         Collection<User> reportersToNotify = userService.findUsers(reporter)
         Collection<String> pmEmails = usersToNotify.emailAddress
