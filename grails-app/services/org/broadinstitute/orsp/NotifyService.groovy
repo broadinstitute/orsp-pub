@@ -664,7 +664,6 @@ class NotifyService implements SendgridSupport, Status {
         Collection<User> reportersToNotify = userService.findUsers(reporter)
         Collection<String> pmEmails = usersToNotify.emailAddress
         Collection<String> reporterEmails = reportersToNotify.emailAddress
-//        Collection<String> emails
         List<String> emails = new ArrayList<String>()
         emails.add(pmEmails)
         emails.add(reporterEmails)
@@ -684,12 +683,14 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendRejectionProjectNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<User> reportersToNotify = userService.findUsers(issue.getReporter())
+        Collection<String> reporter = new LinkedList<String>()
+        reporter.add(issue.getReporter())
+        Collection<User> reportersToNotify = userService.findUsers(reporter)
         Collection<String> pmEmails = usersToNotify.emailAddress
         Collection<String> reporterEmails = reportersToNotify.emailAddress
-        Collection<String> emails
-        emails.addAll(pmEmails)
-        emails.addAll(reporterEmails)
+        List<String> emails = new ArrayList<String>()
+        emails.add(pmEmails)
+        emails.add(reporterEmails)
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
@@ -706,12 +707,14 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendClosedProjectNotification(Issue issue) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<User> reportersToNotify = userService.findUsers(issue.getReporter())
+        Collection<String> reporter = new LinkedList<String>()
+        reporter.add(issue.getReporter())
+        Collection<User> reportersToNotify = userService.findUsers(reporter)
         Collection<String> pmEmails = usersToNotify.emailAddress
         Collection<String> reporterEmails = reportersToNotify.emailAddress
-        Collection<String> emails
-        emails.addAll(pmEmails)
-        emails.addAll(reporterEmails)
+        List<String> emails = new ArrayList<String>()
+        emails.add(pmEmails)
+        emails.add(reporterEmails)
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
