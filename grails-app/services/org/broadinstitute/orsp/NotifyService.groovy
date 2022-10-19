@@ -525,7 +525,6 @@ class NotifyService implements SendgridSupport, Status {
             NotifyArguments arguments = new NotifyArguments(
                     toAddresses: Collections.singletonList(getSecurityRecipient()),
                     fromAddress: getDefaultFromAddress(),
-                    ccAddresses: ccEmails,
                     subject: subjectDisplayName + " added " + issue.projectKey + " - Required InfoSec Follow-up",
                     user: user,
                     issue: issue)
