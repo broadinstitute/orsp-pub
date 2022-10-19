@@ -659,13 +659,18 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendApprovedNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<User> reportersToNotify = userService.findUser(issue.getReporter())
-        log.debug('Reporters to Notify', reportersToNotify)
+        Collection<String> reporter = new LinkedList<String>()
+        reporter.add(issue.getReporter())
+        Collection<User> reportersToNotify = userService.findUsers(reporter)
         Collection<String> pmEmails = usersToNotify.emailAddress
         Collection<String> reporterEmails = reportersToNotify.emailAddress
-        log.debug('Reporter Email', reporterEmails)
+        List<String> emails = new ArrayList<String>()
+        if (pmEmails != null && !pmEmails.isEmpty()) {
+            emails.add(pmEmails)
+        }
+        emails.add(reporterEmails)
         NotifyArguments arguments = new NotifyArguments(
-                toAddresses: [pmEmails, reporterEmails],
+                toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
                 ccAddresses: Collections.singletonList(getAdminRecipient()),
                 subject: issue.projectKey + " - Your ORSP submission has been approved by " + sessionUsername,
@@ -680,13 +685,18 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendRejectionProjectNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<User> reportersToNotify = userService.findUser(issue.getReporter())
-        log.debug('Reporters to Notify', reportersToNotify)
+        Collection<String> reporter = new LinkedList<String>()
+        reporter.add(issue.getReporter())
+        Collection<User> reportersToNotify = userService.findUsers(reporter)
         Collection<String> pmEmails = usersToNotify.emailAddress
         Collection<String> reporterEmails = reportersToNotify.emailAddress
-        log.debug('Reporter Email', reporterEmails)
+        List<String> emails = new ArrayList<String>()
+        if (pmEmails != null && !pmEmails.isEmpty()) {
+            emails.add(pmEmails)
+        }
+        emails.add(reporterEmails)
         NotifyArguments arguments = new NotifyArguments(
-                toAddresses: [pmEmails, reporterEmails],
+                toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
                 ccAddresses: Collections.singletonList(getAdminRecipient()),
                 subject: issue.projectKey + " - Your ORSP submission has been disapproved by " + sessionUsername,
@@ -701,13 +711,18 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendClosedProjectNotification(Issue issue) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<User> reportersToNotify = userService.findUser(issue.getReporter())
-        log.debug('Reporters to Notify', reportersToNotify)
+        Collection<String> reporter = new LinkedList<String>()
+        reporter.add(issue.getReporter())
+        Collection<User> reportersToNotify = userService.findUsers(reporter)
         Collection<String> pmEmails = usersToNotify.emailAddress
         Collection<String> reporterEmails = reportersToNotify.emailAddress
-        log.debug('Reporter Email', reporterEmails)
+        List<String> emails = new ArrayList<String>()
+        if (pmEmails != null && !pmEmails.isEmpty()) {
+            emails.add(pmEmails)
+        }
+        emails.add(reporterEmails)
         NotifyArguments arguments = new NotifyArguments(
-                toAddresses: [pmEmails, reporterEmails],
+                toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
                 ccAddresses: [],
                 subject: "Closed: " + issue.projectKey,
