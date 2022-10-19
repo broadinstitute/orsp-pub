@@ -659,8 +659,9 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendApprovedNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<User> reportersToNotify = userService.findUser(issue.getReporter())
-        log.debug('Reporters to Notify', reportersToNotify)
+        Collection<String> reporter = new LinkedList<String>()
+        reporter.add(issue.getReporter())
+        Collection<User> reportersToNotify = userService.findUsers(reporter)
         Collection<String> pmEmails = usersToNotify.emailAddress
         Collection<String> reporterEmails = reportersToNotify.emailAddress
         List<String> emails = new ArrayList<String>()
@@ -684,8 +685,9 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendRejectionProjectNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<User> reportersToNotify = userService.findUser(issue.getReporter())
-        log.debug('Reporters to Notify', reportersToNotify)
+        Collection<String> reporter = new LinkedList<String>()
+        reporter.add(issue.getReporter())
+        Collection<User> reportersToNotify = userService.findUsers(reporter)
         Collection<String> pmEmails = usersToNotify.emailAddress
         Collection<String> reporterEmails = reportersToNotify.emailAddress
         List<String> emails = new ArrayList<String>()
@@ -709,8 +711,9 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendClosedProjectNotification(Issue issue) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<User> reportersToNotify = userService.findUser(issue.getReporter())
-        log.debug('Reporters to Notify', reportersToNotify)
+        Collection<String> reporter = new LinkedList<String>()
+        reporter.add(issue.getReporter())
+        Collection<User> reportersToNotify = userService.findUsers(reporter)
         Collection<String> pmEmails = usersToNotify.emailAddress
         Collection<String> reporterEmails = reportersToNotify.emailAddress
         List<String> emails = new ArrayList<String>()
