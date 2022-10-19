@@ -522,17 +522,9 @@ class NotifyService implements SendgridSupport, Status {
             sendEmail = true
         }
         if (sendEmail) {
-            Collection<User> reporter = userService.findUsers(issue.getReporter())
-            Collection<User> pm = userService.findUsers(issue.getPMs())
-            Collection<String> reporterEmails = reporter.emailAddress
-            Collection<String> pmEmails = pm.emailAddress
-            Collection<String> ccEmails
-            ccEmails.addAll(reporterEmails)
-            ccEmails.addAll(pmEmails)
             NotifyArguments arguments = new NotifyArguments(
                     toAddresses: Collections.singletonList(getSecurityRecipient()),
                     fromAddress: getDefaultFromAddress(),
-                    ccAddresses: ccEmails,
                     subject: subjectDisplayName + " added " + issue.projectKey + " - Required InfoSec Follow-up",
                     user: user,
                     issue: issue)
@@ -659,16 +651,7 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendApprovedNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<String> reporter = new LinkedList<String>()
-        reporter.add(issue.getReporter())
-        Collection<User> reportersToNotify = userService.findUsers(reporter)
-        Collection<String> pmEmails = usersToNotify.emailAddress
-        Collection<String> reporterEmails = reportersToNotify.emailAddress
-        List<String> emails = new ArrayList<String>()
-        if (pmEmails != null && !pmEmails.isEmpty()) {
-            emails.add(pmEmails)
-        }
-        emails.add(reporterEmails)
+        Collection<String> emails = usersToNotify.emailAddress
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
@@ -685,16 +668,7 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendRejectionProjectNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<String> reporter = new LinkedList<String>()
-        reporter.add(issue.getReporter())
-        Collection<User> reportersToNotify = userService.findUsers(reporter)
-        Collection<String> pmEmails = usersToNotify.emailAddress
-        Collection<String> reporterEmails = reportersToNotify.emailAddress
-        List<String> emails = new ArrayList<String>()
-        if (pmEmails != null && !pmEmails.isEmpty()) {
-            emails.add(pmEmails)
-        }
-        emails.add(reporterEmails)
+        Collection<String> emails = usersToNotify.emailAddress
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
@@ -711,16 +685,7 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendClosedProjectNotification(Issue issue) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<String> reporter = new LinkedList<String>()
-        reporter.add(issue.getReporter())
-        Collection<User> reportersToNotify = userService.findUsers(reporter)
-        Collection<String> pmEmails = usersToNotify.emailAddress
-        Collection<String> reporterEmails = reportersToNotify.emailAddress
-        List<String> emails = new ArrayList<String>()
-        if (pmEmails != null && !pmEmails.isEmpty()) {
-            emails.add(pmEmails)
-        }
-        emails.add(reporterEmails)
+        Collection<String> emails = usersToNotify.emailAddress
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
