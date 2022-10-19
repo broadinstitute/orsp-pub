@@ -663,7 +663,11 @@ class NotifyService implements SendgridSupport, Status {
         log.debug('Reporters to Notify', reportersToNotify)
         Collection<String> pmEmails = usersToNotify.emailAddress
         Collection<String> reporterEmails = reportersToNotify.emailAddress
-        log.debug('Reporter Email', reporterEmails)
+        List<String> emails = new ArrayList<String>()
+        if (pmEmails != null && !pmEmails.isEmpty()) {
+            emails.add(pmEmails)
+        }
+        emails.add(reporterEmails)
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: [pmEmails, reporterEmails],
                 fromAddress: getDefaultFromAddress(),
@@ -684,7 +688,11 @@ class NotifyService implements SendgridSupport, Status {
         log.debug('Reporters to Notify', reportersToNotify)
         Collection<String> pmEmails = usersToNotify.emailAddress
         Collection<String> reporterEmails = reportersToNotify.emailAddress
-        log.debug('Reporter Email', reporterEmails)
+        List<String> emails = new ArrayList<String>()
+        if (pmEmails != null && !pmEmails.isEmpty()) {
+            emails.add(pmEmails)
+        }
+        emails.add(reporterEmails)
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: [pmEmails, reporterEmails],
                 fromAddress: getDefaultFromAddress(),
@@ -705,7 +713,11 @@ class NotifyService implements SendgridSupport, Status {
         log.debug('Reporters to Notify', reportersToNotify)
         Collection<String> pmEmails = usersToNotify.emailAddress
         Collection<String> reporterEmails = reportersToNotify.emailAddress
-        log.debug('Reporter Email', reporterEmails)
+        List<String> emails = new ArrayList<String>()
+        if (pmEmails != null && !pmEmails.isEmpty()) {
+            emails.add(pmEmails)
+        }
+        emails.add(reporterEmails)
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: [pmEmails, reporterEmails],
                 fromAddress: getDefaultFromAddress(),
