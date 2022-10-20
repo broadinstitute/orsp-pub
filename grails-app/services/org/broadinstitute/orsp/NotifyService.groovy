@@ -523,7 +523,9 @@ class NotifyService implements SendgridSupport, Status {
         }
         if (sendEmail) {
             Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-            Collection<User> reporterToNotify = userService.findUser(issue.getReporter())
+            Collection<String> reporter = new LinkedList<String>()
+            reporter.add(issue.getReporter())
+            Collection<User> reporterToNotify = userService.findUsers(reporter)
             Collection<String> emails = usersToNotify.emailAddress
             String reporterEmail = reporterToNotify.emailAddress
             emails.add(reporterEmail)
@@ -657,10 +659,12 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendApprovedNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<User> reporterToNotify = userService.findUser(issue.getReporter())
+        Collection<String> reporter = new LinkedList<String>()
+        reporter.add(issue.getReporter())
+        Collection<User> reporterToNotify = userService.findUsers(reporter)
         Collection<String> emails = usersToNotify.emailAddress
         String reporterEmail = reporterToNotify.emailAddress
-        emails.addAll(reporterEmail)
+        emails.add(reporterEmail)
         log.info('Emails: ', emails)
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
@@ -678,7 +682,9 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendRejectionProjectNotification(Issue issue, String sessionUsername) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<User> reporterToNotify = userService.findUser(issue.getReporter())
+        Collection<String> reporter = new LinkedList<String>()
+        reporter.add(issue.getReporter())
+        Collection<User> reporterToNotify = userService.findUsers(reporter)
         Collection<String> emails = usersToNotify.emailAddress
         String reporterEmail = reporterToNotify.emailAddress
         emails.add(reporterEmail)
@@ -698,7 +704,9 @@ class NotifyService implements SendgridSupport, Status {
 
     Map<Boolean, String> sendClosedProjectNotification(Issue issue) {
         Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
-        Collection<User> reporterToNotify = userService.findUser(issue.getReporter())
+        Collection<String> reporter = new LinkedList<String>()
+        reporter.add(issue.getReporter())
+        Collection<User> reporterToNotify = userService.findUsers(reporter)
         Collection<String> emails = usersToNotify.emailAddress
         String reporterEmail = reporterToNotify.emailAddress
         emails.add(reporterEmail)
