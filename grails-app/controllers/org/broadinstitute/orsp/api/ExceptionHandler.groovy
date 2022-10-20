@@ -10,7 +10,7 @@ trait ExceptionHandler {
     def handleException(Exception e) {
         log.error("${e}")
         response.status = 500
-        render([error: e] as JSON)
+        render([error: e.message] as JSON)
     }
 
     def handleNotFound(String message) {
@@ -22,7 +22,7 @@ trait ExceptionHandler {
     def handleIllegalArgumentException(IllegalArgumentException e) {
         log.error("${e}")
         response.status = 400
-        render([error: e] as JSON)
+        render([error: e.message] as JSON)
     }
 
     def handleUnauthorized() {
