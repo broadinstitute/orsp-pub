@@ -75,6 +75,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       return prev;
     }, () => {
       if (this.isValid()) {
+
         this.setState(prev => {
           prev.disableBtn = true;
           return prev;
@@ -166,7 +167,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
     });
   };
 
-  setDroppedFilesToUpload = () => (e) => {
+  setDroppedFilesToUpload = () => {
     console.log('set dropped files worked')
     let selectedFile = this.state.dropEvent;
     console.log(selectedFile)
