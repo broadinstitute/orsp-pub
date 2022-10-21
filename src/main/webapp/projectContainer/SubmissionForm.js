@@ -70,7 +70,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         numberType: 'Required field'
       },
       dropEvent: {},
-      dropped: false
+      dropped: true
     };
   }
 
