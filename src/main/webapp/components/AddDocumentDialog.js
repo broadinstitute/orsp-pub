@@ -32,11 +32,21 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       currentValue: {
         label: ''
       },
-      dropEvent: this.props.dropEvent
+      dropEvent: {}
     };
     this.upload = this.upload.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
     this.setFilesToUpload = this.setFilesToUpload.bind(this);
+  }
+
+  componentDidMount() {
+    this.init();
+  }
+
+  init() {
+    this.setState({
+      dropEvent: this.props.dropEvent
+    })
   }
 
   handleClose = () => {
