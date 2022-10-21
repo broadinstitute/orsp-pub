@@ -69,8 +69,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         number: false,
         numberType: 'Required field'
       },
-      dropEvent: {},
-      dropped: true
+      dropEvent: {}
     };
   }
 
@@ -386,8 +385,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           emailUrl: this.props.emailUrl,
           userName: this.props.userName,
           documentHandler: this.setFilesToUpload,
-          dropEvent: this.state.dropEvent,
-          dropped: this.state.dropped
+          dropEvent: this.state.dropEvent
         }),
           h1({
             style: {'marginBottom':'20px'}

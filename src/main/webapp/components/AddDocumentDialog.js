@@ -32,7 +32,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       currentValue: {
         label: ''
       },
-      dropped: this.props.dropped
+      dropEvent: this.props.dropEvent
     };
     this.upload = this.upload.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
@@ -51,13 +51,14 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       prev.disableSendBtn = false;
       prev.alertMessage = '';
       prev.type = '';
-      prev.dropped = false;
+      prev.dropEvent = {}
       return prev;
     });
     this.props.closeModal();
   };
 
   upload = () => {
+    console.log('upload worked')
     this.setState(prev => {
       prev.submit = true;
       return prev;
@@ -68,9 +69,10 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
           return prev;
         });
         let file;
-        if (this.props.dropEvent) {
+        if (this.state.dropEvent) {
+          console.log('Drop event',this.state.dropEvent)
           this.setDroppedFilesToUpload();
-          file = { file: this.props.dropEvent, fileKey: this.state.type.label }
+          file = { file: this.state.dropEvent, fileKey: this.state.type.label }
         } else {
           file = { file: this.state.file, fileKey: this.state.type.label };
         }
@@ -153,6 +155,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   };
 
   setDroppedFilesToUpload = () => (e) => {
+    console.log('set dropped files worked')
     let selectedFile = this.props.dropEvent;
     console.log(selectedFile)
     e.target.value = '';
@@ -206,7 +209,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       prev.file = {
         name: ''
       };
-      prev.dropped = false;
+      prev.dropEvent = {}
       return prev;
     });
   }
@@ -238,7 +241,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
             id: "documentFile",
             name: "documentFile",
             callback: this.setFilesToUpload(this.state.documents),
-            fileName: this.state.file.name || (this.state.dropped && this.props.dropEvent && this.props.dropEvent['name']),
+            fileName: this.state.file.name || (this.state.dropEvent && this.state.dropEvent.name),
             required: true,
             error: this.state.fileError,
             errorMessage: this.state.errorMessage,
