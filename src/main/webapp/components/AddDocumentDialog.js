@@ -47,6 +47,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
     this.setState({
       dropEvent: this.props.dropEvent
     })
+    this.setDroppedFilesToUpload();
   }
 
   handleClose = () => {
