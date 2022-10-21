@@ -85,6 +85,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
           this.setDroppedFilesToUpload();
           file = { file: this.state.dropEvent, fileKey: this.state.type.label }
         } else {
+          console.log('upload else worked')
           file = { file: this.state.file, fileKey: this.state.type.label };
         }
         let files = [file];
