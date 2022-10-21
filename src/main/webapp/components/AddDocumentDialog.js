@@ -171,7 +171,6 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
     console.log('set dropped files worked')
     let selectedFile = this.state.dropEvent;
     console.log(selectedFile)
-    e.target.value = '';
     if(selectedFile.size > MAX_SIZE) {
       this.setState(prev => {
         prev.errorMessage = 'Size exceeded. Max file size 15.7 Mb.';
