@@ -156,7 +156,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
 
   setDroppedFilesToUpload = () => (e) => {
     console.log('set dropped files worked')
-    let selectedFile = this.props.dropEvent;
+    let selectedFile = this.state.dropEvent;
     console.log(selectedFile)
     e.target.value = '';
     if(selectedFile.size > MAX_SIZE) {
