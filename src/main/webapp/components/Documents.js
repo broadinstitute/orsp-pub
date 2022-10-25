@@ -174,7 +174,8 @@ export const Documents = hh(class Documents extends Component {
       showAddAdditionalDocuments: false,
       showRemoveDocuments: false,
       documentToRemove: null,
-      error: false
+      error: false,
+      dropEvent: {}
     };
     this.removeDocument = this.removeDocument.bind(this);
   }
@@ -190,7 +191,10 @@ export const Documents = hh(class Documents extends Component {
   };
 
   closeModal = () => {
-    this.setState({ showAddKeyDocuments: !this.state.showAddKeyDocuments });
+    this.setState({ 
+      showAddKeyDocuments: !this.state.showAddKeyDocuments,
+      dropEvent: {}
+    });
   };
 
   remove = (row) => {
@@ -230,10 +234,32 @@ export const Documents = hh(class Documents extends Component {
     this.props.handleDialogConfirm(uuid, 'Reject');
   };
 
+  dropHandler = (event) => {
+    event.preventDefault();
+    let file
+    if (event.dataTransfer.items) {
+        [...event.dataTransfer.items].forEach((item, i) => {
+            if (item.kind === 'file') {
+                file = item.getAsFile();
+            }
+        })
+    }
+    this.setState(prev => {
+      prev.dropEvent = file;
+    }, () => {
+      this.addDocuments();
+    })
+  }
+
+  dragOverHandler(event) {
+    event.preventDefault();
+  }
+
   render() {
     const { restriction = [] } = this.props;
     return div({}, [
       h(AddDocumentDialog, {
+        isRendered: this.state.showAddKeyDocuments,
         closeModal: this.closeModal,
         show: this.state.showAddKeyDocuments,
         options: this.props.options,
@@ -242,7 +268,8 @@ export const Documents = hh(class Documents extends Component {
         handleLoadDocuments: this.props.handleLoadDocuments,
         userName: this.props.userName,
         isConsentGroup: this.props.isConsentGroup,
-        deleteNoConsentReason: this.props.deleteNoConsentReason
+        deleteNoConsentReason: this.props.deleteNoConsentReason,
+        dropEvent: this.state.dropEvent
       }),
       ConfirmationDialog({
         closeModal: this.closeRemoveModal,
@@ -255,12 +282,15 @@ export const Documents = hh(class Documents extends Component {
 
       Panel({ title: "Documents" }, [
         p({ isRendered: this.props.docsClarification }, [this.props.docsClarification]),
-        button({
-          className: "btn buttonSecondary",
-          style: addDocumentBtn,
-          onClick: this.addDocuments,
+        div({
           isRendered: !component.isViewer,
-        }, ["Add Document"]),
+          id: 'drop_zone',
+          onDrop: this.dropHandler,
+          onDragOver: this.dragOverHandler,
+          style: {padding: '10px 0 10px 0', textAlign: 'center', border: '1px solid #ddd', width: '100%'}
+        }, [
+          p(['Drag and drop your documents here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
+        ]),
         TableComponent({
           remoteProp: false,
           data: this.props.documents,

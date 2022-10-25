@@ -341,9 +341,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         })
     }
     this.setState(prev => {
-      console.log('submission file: ', file)
-      prev.dropEvent = file
-      prev.dropped = true
+      prev.dropEvent = file;
     }, () => {
       this.addDocuments();
     })
@@ -459,12 +457,6 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             }, [
               p(['Drag and drop your documents here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
             ])
-            // button({
-            //   isRendered: !component.isViewer,
-            //   className: "btn buttonSecondary",
-            //   style: styles.addDocumentBtn,
-            //   onClick: this.addDocuments
-            // }, ["Add Document"])
           ]),
           Table({
             headers: headers,
