@@ -69,7 +69,6 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   };
 
   upload = () => {
-    console.log('upload worked')
     this.setState(prev => {
       prev.submit = true;
       return prev;
@@ -82,7 +81,6 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
         });
         let file;
         if (this.state.dropEvent) {
-          console.log('Drop event',this.state.dropEvent)
           this.setDroppedFilesToUpload();
           file = { file: this.state.dropEvent, fileKey: this.state.type.label }
         } else {
@@ -168,9 +166,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   };
 
   setDroppedFilesToUpload = () => {
-    console.log('set dropped files worked')
     let selectedFile = this.state.dropEvent;
-    console.log(selectedFile)
     if(selectedFile.size > MAX_SIZE) {
       this.setState(prev => {
         prev.errorMessage = 'Size exceeded. Max file size 15.7 Mb.';

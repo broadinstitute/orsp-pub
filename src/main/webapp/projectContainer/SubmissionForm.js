@@ -310,6 +310,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   closeModal = (type) => {
     this.setState(prev => {
       prev[type] = !this.state[type];
+      prev.dropEvent = {};
       return prev;
     });
   };
