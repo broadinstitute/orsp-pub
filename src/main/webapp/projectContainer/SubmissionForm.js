@@ -377,7 +377,6 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           actionLabel: 'Yes'
         }),
         h(AddDocumentDialog, {
-          isRendered: this.state.showAddDocuments,
           closeModal: () => this.closeModal("showAddDocuments"),
           show: this.state.showAddDocuments,
           options: this.state.docTypes,
