@@ -36,7 +36,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
       },
       documents: [],
       showAddDocuments: false,
-      dropEvent: {}
+      dropEvent: null
     };
     this.setFilesToUpload = this.setFilesToUpload.bind(this);
     this.removeFile = this.removeFile.bind(this);
@@ -88,7 +88,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
   closeModal = () => {
     this.setState({
       showAddDocuments: !this.state.showAddDocuments,
-      dropEvent: {}
+      dropEvent: null
     });
   };
 
