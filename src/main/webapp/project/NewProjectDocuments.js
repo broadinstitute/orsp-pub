@@ -35,7 +35,8 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
         attestation: false
       },
       documents: [],
-      showAddDocuments: false
+      showAddDocuments: false,
+      dropEvent: {}
     };
     this.setFilesToUpload = this.setFilesToUpload.bind(this);
     this.removeFile = this.removeFile.bind(this);
@@ -85,8 +86,32 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
   };
 
   closeModal = () => {
-    this.setState({ showAddDocuments: !this.state.showAddDocuments });
+    this.setState({
+      showAddDocuments: !this.state.showAddDocuments,
+      dropEvent: {}
+    });
   };
+
+  dropHandler = (event) => {
+    event.preventDefault();
+    let file
+    if (event.dataTransfer.items) {
+        [...event.dataTransfer.items].forEach((item, i) => {
+            if (item.kind === 'file') {
+                file = item.getAsFile();
+            }
+        })
+    }
+    this.setState(prev => {
+      prev.dropEvent = file
+    }, () => {
+      this.addDocuments();
+    })
+  }
+
+  dragOverHandler(event) {
+    event.preventDefault();
+  }
 
   render() {
 
@@ -114,6 +139,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
           div({ className: "questionnaireContainerLight" }, [
             p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your overall project, for example: IRB application form, protocol, Continuing Review form, etc. Documents related to a specific cohort, such as consent forms or attestations, should be uploaded in the Sample/Data Cohort tab."]),
             h(AddDocumentDialog, {
+              isRendered: this.state.showAddDocuments,
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,
               options: this.props.options,
@@ -122,14 +148,19 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               handleLoadDocuments: this.props.handleLoadDocuments,
               emailUrl: this.props.emailUrl,
               userName: this.props.userName,
-              documentHandler: this.setFilesToUpload
+              documentHandler: this.setFilesToUpload,
+              dropEvent: this.state.dropEvent
             }),
             div({ style: styles.addDocumentContainer }, [
-              button({
-                className: "btn buttonSecondary",
-                style: styles.addDocumentBtn,
-                onClick: this.addDocuments
-              }, ["Add Document"])
+              div({
+                isRendered: !component.isViewer,
+                id: 'drop_zone',
+                onDrop: this.dropHandler,
+                onDragOver: this.dragOverHandler,
+                style: {padding: '10px 0 10px 0', textAlign: 'center', border: '1px solid #ddd', width: '100%'}
+              }, [
+                p(['Drag and drop your documents here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
+              ]),
             ]),
             Table({
               headers: headers,

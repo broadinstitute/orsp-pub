@@ -45,7 +45,8 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       consentGroupIsLoading: false,
       startDate: null,
       endDate: null,
-      onGoingProcess: false
+      onGoingProcess: false,
+      dropEvent: {}
     };
   }
 
@@ -85,7 +86,10 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
   };
 
   closeModal = () => {
-    this.setState({ showAddDocuments: !this.state.showAddDocuments });
+    this.setState({
+      showAddDocuments: !this.state.showAddDocuments,
+      dropEvent: {}
+    });
   };
 
   static getDerivedStateFromError(error) {
@@ -232,6 +236,27 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     );
   };
 
+  dropHandler = (event) => {
+    event.preventDefault();
+    let file
+    if (event.dataTransfer.items) {
+        [...event.dataTransfer.items].forEach((item, i) => {
+            if (item.kind === 'file') {
+                file = item.getAsFile();
+            }
+        })
+    }
+    this.setState(prev => {
+      prev.dropEvent = file
+    }, () => {
+      this.addDocuments();
+    })
+  }
+
+  dragOverHandler(event) {
+    event.preventDefault();
+  }
+
   render() {
     let documents = this.props.files;
 
@@ -321,6 +346,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
           div({ className: "questionnaireContainerLight" }, [
             p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
             h(AddDocumentDialog, {
+              isRendered: this.state.showAddDocuments,
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,
               options: this.state.documentOptions,
@@ -331,13 +357,18 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
               emailUrl: this.props.emailUrl,
               userName: this.props.userName,
               documentHandler: this.setFilesToUpload,
+              dropEvent: this.state.dropEvent
             }),
             div({ style: styles.addDocumentContainer }, [
-              button({
-                className: "btn buttonSecondary",
-                style: styles.addDocumentBtn,
-                onClick: this.addDocuments
-              }, ["Add Document"])
+              div({
+                isRendered: !component.isViewer,
+                id: 'drop_zone',
+                onDrop: this.dropHandler,
+                onDragOver: this.dragOverHandler,
+                style: {padding: '10px 0 10px 0', textAlign: 'center', border: '1px solid #ddd', width: '100%'}
+              }, [
+                p(['Drag and drop your documents here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
+              ]),
             ]),
             Table({
               headers: headers,
