@@ -133,6 +133,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
     let fileError = false;
     let errorMessage = '';
     if (this.state.submit) {
+      console.log(this.state.file, this.state.dropEvent)
       if (this.state.file.name === '') {
         fileError = true;
         errorMessage = 'Required File';
@@ -164,6 +165,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
 
   setDroppedFilesToUpload = () => {
     if(this.state.dropEvent) {
+      console.log("set dropped files", this.state.dropEvent)
       let selectedFile = this.state.dropEvent;
       if(selectedFile.size > MAX_SIZE) {
         this.setState(prev => {

@@ -282,6 +282,7 @@ export const Documents = hh(class Documents extends Component {
 
       Panel({ title: "Documents" }, [
         p({ isRendered: this.props.docsClarification }, [this.props.docsClarification]),
+        br(),
         div({
           isRendered: !component.isViewer,
           id: 'drop_zone',
