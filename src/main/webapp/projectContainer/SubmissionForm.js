@@ -310,7 +310,6 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   closeModal = (type) => {
     this.setState(prev => {
       prev[type] = !this.state[type];
-      prev.dropEvent = {};
       return prev;
     });
   };
@@ -456,7 +455,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
               onDragOver: this.dragOverHandler,
               style: {padding: '10px 0 10px 0', textAlign: 'center', border: '1px solid #ddd', width: '100%'}
             }, [
-              p(['Drag and drop your documents here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
+              p(['Drag and drop your document here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
             ])
             // button({
             //   isRendered: !component.isViewer,
