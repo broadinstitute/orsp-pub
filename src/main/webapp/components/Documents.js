@@ -291,7 +291,7 @@ export const Documents = hh(class Documents extends Component {
           style: {padding: '10px 0 10px 0', textAlign: 'center', border: '1px solid #ddd', width: '100%'}
         }, [
           p(['Drag and drop your documents here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
-        ]),
+        ]),br(),
         TableComponent({
           remoteProp: false,
           data: this.props.documents,

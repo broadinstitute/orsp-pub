@@ -118,7 +118,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     let errors = false;
     return (
           div({ className: "questionnaireContainerLight" }, [
-            p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
+            p({ className: "col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
             h(AddDocumentDialog, {
               isRendered: this.state.showAddDocuments,
               closeModal: this.closeModal,
@@ -134,7 +134,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
               documentHandler: this.setFilesToUpload,
               dropEvent: this.state.dropEvent
             }),
-            br(),
+            br(),br(),
             div({ style: styles.addDocumentContainer }, [
               div({
                 isRendered: !component.isViewer,
@@ -145,7 +145,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
               }, [
                 p(['Drag and drop your documents here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
               ]),
-            ]),
+            ]),br(),
             Table({
               headers: headers,
               data: documents,

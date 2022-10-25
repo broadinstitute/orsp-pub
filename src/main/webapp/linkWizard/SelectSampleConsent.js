@@ -12,7 +12,7 @@ import { ConsentGroup, SampleCollections } from '../util/ajax';
 
 const styles = {
   addDocumentContainer: {
-    display: 'block', height: '40px', margin: '5px 0 15px 0'
+    display: 'block', height: '50px', margin: '5px 0 15px 0'
   },
   addDocumentBtn: {
     position: 'relative', float: 'right'
@@ -344,7 +344,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
           title: "Documents"
         }, [
           div({ className: "questionnaireContainerLight" }, [
-            p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
+            p({ className: "col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
             h(AddDocumentDialog, {
               isRendered: this.state.showAddDocuments,
               closeModal: this.closeModal,
@@ -359,7 +359,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
               documentHandler: this.setFilesToUpload,
               dropEvent: this.state.dropEvent
             }),
-            br(),
+            br(),br(),
             div({ style: styles.addDocumentContainer }, [
               div({
                 isRendered: !component.isViewer,
@@ -370,7 +370,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
               }, [
                 p(['Drag and drop your documents here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
               ]),
-            ]),
+            ]),br(),
             Table({
               headers: headers,
               data: documents,
