@@ -74,7 +74,6 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       return prev;
     }, () => {
       if (this.isValid()) {
-
         this.setState(prev => {
           prev.disableBtn = true;
           return prev;
