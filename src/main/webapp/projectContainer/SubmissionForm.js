@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { a, button, div, h, h1, hh, small, p } from 'react-hyperscript-helpers';
+import { a, button, div, h, h1, hh, small, p, br } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { Files, ProjectMigration } from '../util/ajax';
 import { InputFieldSelect } from '../components/InputFieldSelect';
