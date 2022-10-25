@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
-import { button, div, h, h1, hh, p } from 'react-hyperscript-helpers';
+import { button, div, h, h1, hh, p, a } from 'react-hyperscript-helpers';
 import AddDocumentDialog from '../components/AddDocumentDialog';
 import { Table } from '../components/Table';
 

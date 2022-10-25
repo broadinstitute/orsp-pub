@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { button, div, h, h3, hh, p } from 'react-hyperscript-helpers';
+import { button, div, h, h3, hh, p, a } from 'react-hyperscript-helpers';
 import { Panel } from './Panel';
 import AddDocumentDialog from './AddDocumentDialog'
 import { KeyDocumentsEnum } from '../util/KeyDocuments';
