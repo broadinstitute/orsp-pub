@@ -46,7 +46,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       startDate: null,
       endDate: null,
       onGoingProcess: false,
-      dropEvent: {}
+      dropEvent: null
     };
   }
 
@@ -88,7 +88,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
   closeModal = () => {
     this.setState({
       showAddDocuments: !this.state.showAddDocuments,
-      dropEvent: {}
+      dropEvent: null
     });
   };
 

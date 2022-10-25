@@ -69,7 +69,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         number: false,
         numberType: 'Required field'
       },
-      dropEvent: {}
+      dropEvent: null
     };
   }
 
@@ -310,7 +310,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   closeModal = (type) => {
     this.setState(prev => {
       prev[type] = !this.state[type];
-      prev.dropEvent = {};
+      prev.dropEvent = null;
       return prev;
     });
   };

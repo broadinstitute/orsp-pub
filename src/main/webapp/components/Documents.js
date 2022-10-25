@@ -175,7 +175,7 @@ export const Documents = hh(class Documents extends Component {
       showRemoveDocuments: false,
       documentToRemove: null,
       error: false,
-      dropEvent: {}
+      dropEvent: null
     };
     this.removeDocument = this.removeDocument.bind(this);
   }
@@ -193,7 +193,7 @@ export const Documents = hh(class Documents extends Component {
   closeModal = () => {
     this.setState({ 
       showAddKeyDocuments: !this.state.showAddKeyDocuments,
-      dropEvent: {}
+      dropEvent: null
     });
   };
 

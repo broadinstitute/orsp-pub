@@ -28,7 +28,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
       documents: [],
       showAddDocuments: false,
       documentOptions: [],
-      dropEvent: {}
+      dropEvent: null
     };
     this.setFilesToUpload = this.setFilesToUpload.bind(this);
     this.removeFile = this.removeFile.bind(this);
@@ -68,7 +68,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
   closeModal = () => {
     this.setState({ 
       showAddDocuments: !this.state.showAddDocuments,
-      dropEvent: {}
+      dropEvent: null
     });
   };
 
