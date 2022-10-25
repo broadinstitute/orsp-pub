@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, div, h, hh, p, a } from 'react-hyperscript-helpers';
+import { button, div, h, hh, p, a, br } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
@@ -359,6 +359,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
               documentHandler: this.setFilesToUpload,
               dropEvent: this.state.dropEvent
             }),
+            br(),
             div({ style: styles.addDocumentContainer }, [
               div({
                 isRendered: !component.isViewer,
