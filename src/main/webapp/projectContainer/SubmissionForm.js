@@ -19,7 +19,7 @@ const errorBorderStyle = {
 
 const styles = {
   addDocumentContainer: {
-    display: 'block', height: '40px', margin: '15px 0 10px 0'
+    display: 'block', height: '50px', margin: '15px 0 10px 0'
   },
   addDocumentBtn: {
     position: 'relative', float: 'right'
@@ -457,7 +457,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             }, [
               p(['Drag and drop your document here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
             ])
-          ]),
+          ]),br(),
           Table({
             headers: headers,
             data: this.state.documents,

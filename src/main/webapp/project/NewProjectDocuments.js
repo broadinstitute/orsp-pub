@@ -9,7 +9,7 @@ import AddDocumentDialog from '../components/AddDocumentDialog'
 
 const styles = {
   addDocumentContainer: {
-    display: 'block', height: '40px', margin: '15px 0 10px 0'
+    display: 'block', height: '50px', margin: '15px 0 10px 0'
   },
   addDocumentBtn: {
     position: 'relative', float: 'right'
@@ -137,7 +137,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
         error: this.props.generalError || this.props.errors.attestation || this.props.submitError
       }, [
           div({ className: "questionnaireContainerLight" }, [
-            p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your overall project, for example: IRB application form, protocol, Continuing Review form, etc. Documents related to a specific cohort, such as consent forms or attestations, should be uploaded in the Sample/Data Cohort tab."]),
+            p({ className: "col-12"},["Please upload any documents related to your overall project, for example: IRB application form, protocol, Continuing Review form, etc. Documents related to a specific cohort, such as consent forms or attestations, should be uploaded in the Sample/Data Cohort tab."]),
             h(AddDocumentDialog, {
               isRendered: this.state.showAddDocuments,
               closeModal: this.closeModal,
@@ -151,7 +151,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               documentHandler: this.setFilesToUpload,
               dropEvent: this.state.dropEvent
             }),
-            br(),
+            br(),br(),
             div({ style: styles.addDocumentContainer }, [
               div({
                 isRendered: !component.isViewer,
@@ -162,7 +162,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               }, [
                 p(['Drag and drop your documents here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
               ]),
-            ]),
+            ]),br(),
             Table({
               headers: headers,
               data: documents,
