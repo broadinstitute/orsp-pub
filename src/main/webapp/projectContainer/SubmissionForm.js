@@ -291,7 +291,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
 
   setFilesToUpload = (doc) => {
     this.setState(prev => {
-      let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random() };
+      let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription };
       let documents = prev.documents;
       documents.push(document);
       prev.documents = documents;
