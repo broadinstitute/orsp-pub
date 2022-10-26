@@ -359,7 +359,6 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
               documentHandler: this.setFilesToUpload,
               dropEvent: this.state.dropEvent
             }),
-            br(),br(),
             div({ style: styles.addDocumentContainer }, [
               div({
                 isRendered: !component.isViewer,
