@@ -382,3 +382,19 @@ input[type=checkbox] {
 .tableContainer .table {
   margin-bottom: 0;
 }
+
+.modal-content {
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px !important;
+}
+
+.modal-header {
+  padding: 20px !important;
+}
+
+.modal-body {
+  padding: 20px !important;
+}
+
+.modal-footer {
+  padding: 20px !important;
+}
