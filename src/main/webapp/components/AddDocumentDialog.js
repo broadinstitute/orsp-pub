@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, h, hh } from 'react-hyperscript-helpers';
+import { button, h, hh, br } from 'react-hyperscript-helpers';
 import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
 import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
@@ -242,7 +242,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
             currentValue: this.state.currentValue,
             error: this.state.typeError,
             errorMessage: "Required field"
-          }),
+          }),br(),
           InputFieldFile({
             label: "File ",
             moreInfo: "(Max file size 15.7 Mb)",
@@ -257,7 +257,15 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
           }),
         ]),
         h(ModalFooter, {}, [
-          button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
+          button({ 
+            ref: el => {
+              if(el) {
+                  el.style.setProperty('background', 'none', 'important');
+                  el.style.setProperty('color', '#000000', 'important');
+              }
+            },
+            className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose,
+        }, ["Cancel"]),
           button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.upload }, [this.props.projectKey !== undefined ? "Upload" : "Add Document"])
         ])
       ])
