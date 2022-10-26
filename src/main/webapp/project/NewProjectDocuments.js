@@ -151,7 +151,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               documentHandler: this.setFilesToUpload,
               dropEvent: this.state.dropEvent
             }),
-            br(),br(),
+            br(),
             div({ style: styles.addDocumentContainer }, [
               div({
                 isRendered: !component.isViewer,
