@@ -242,7 +242,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
             currentValue: this.state.currentValue,
             error: this.state.typeError,
             errorMessage: "Required field"
-          }),
+          }),br(),
           InputFieldFile({
             label: "File ",
             moreInfo: "(Max file size 15.7 Mb)",
