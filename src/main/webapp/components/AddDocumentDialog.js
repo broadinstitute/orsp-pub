@@ -32,7 +32,8 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       currentValue: {
         label: ''
       },
-      dropEvent: null
+      dropEvent: null,
+      description: 'test description'
     };
     this.upload = this.upload.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
@@ -80,9 +81,9 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
         let file;
         if (this.state.dropEvent) {
           this.setDroppedFilesToUpload();
-          file = { file: this.state.dropEvent, fileKey: this.state.type.label }
+          file = { file: this.state.dropEvent, fileKey: this.state.type.label, fileDescription: this.state.description }
         } else {
-          file = { file: this.state.file, fileKey: this.state.type.label };
+          file = { file: this.state.file, fileKey: this.state.type.label, fileDescription: this.state.description };
         }
         let files = [file];
         if(this.props.projectKey !== undefined) {
