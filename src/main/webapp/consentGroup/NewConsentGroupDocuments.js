@@ -107,6 +107,13 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     event.preventDefault();
   }
 
+  setNameAndDate = (data) => {
+    this.setState(prev => {
+      prev.additionalDocData.user = data.user;
+      prev.additionalDocData.createdDate = data.createdDate;
+    })
+  }
+
   render() {
 
     if (this.state.hasError) {
@@ -132,7 +139,8 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
               emailUrl: this.props.emailUrl,
               userName: this.props.userName,
               documentHandler: this.setFilesToUpload,
-              dropEvent: this.state.dropEvent
+              dropEvent: this.state.dropEvent,
+              userAndDateHandler: this.setNameAndDate
             }),
             div({ style: styles.addDocumentContainer }, [
               div({
