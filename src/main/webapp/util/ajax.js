@@ -538,7 +538,8 @@ export const ProjectMigration = {
       if (file.file != null) {
         const fileData = {
           fileType: file.fileType,
-          name: file.fileName
+          name: file.fileName,
+          fileDescription: file.fileDescription
         };
         data.append('files', file.file, file.fileName);
         data.append('fileTypes', JSON.stringify(fileData));
