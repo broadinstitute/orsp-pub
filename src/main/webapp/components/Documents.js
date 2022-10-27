@@ -109,7 +109,7 @@ const columns = (_this) => [
     }
   }, {
     dataField: 'creationDate',
-    text: 'Created',
+    text: 'Created On',
     sort: true,
     sortFunc: (a, b, order, dataField, rowA, rowB) => {
       const dateA = new Date(a);
