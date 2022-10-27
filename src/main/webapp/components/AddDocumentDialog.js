@@ -70,6 +70,13 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   };
 
   upload = () => {
+    if (this.props.userAndDateHandler) {
+      User.getUserSession().then(user => {
+        let name = user.data.displayName;
+        let createdDate = new Date().toISOString().substring(0,10);
+        this.props.userAndDateHandler({name, createdDate});
+      })
+    }
     this.setState(prev => {
       prev.submit = true;
       return prev;
