@@ -306,7 +306,13 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     })
   }
 
-  setFilesToUpload = (doc) => {
+  setFilesToUpload = async (doc) => {
+    let name, createdDate;
+    await User.getUserSession().then(user => {
+      name = user.data.displayName;
+      createdDate = new Date().toISOString().substring(0,10);
+      console.log(name, createdDate)
+    })
     let viewDocDetail = {};
     this.setState(prev => {
       let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription };
@@ -314,8 +320,8 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
       viewDocDetail['file'] = doc.file;
       viewDocDetail['fileName'] = doc.file.name;
       viewDocDetail['fileDescription'] = doc.fileDescription;
-      viewDocDetail['displayName'] = this.state.additionalDocData.user;
-      viewDocDetail['createdDate'] = this.state.additionalDocData.createdDate;
+      viewDocDetail['displayName'] = name;
+      viewDocDetail['createdDate'] = createdDate;
       let documents = prev.documents;
       documents.push(document);
       prev.documents = documents;
