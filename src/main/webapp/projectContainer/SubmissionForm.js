@@ -35,7 +35,7 @@ const headers =
     { name: 'Document Type', value: 'fileType' },
     { name: 'File Name', value: 'fileName' },
     { name: 'Document Description', value: 'fileDescription' },
-    { name: 'Author', value: 'name' },
+    { name: 'Author', value: 'displayName' },
     { name: 'Created On', value: 'createdDate' },
     { name: 'Remove', value: 'removeFile' },
   ];
@@ -73,7 +73,11 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         numberType: 'Required field'
       },
       dropEvent: null,
-      viewDocDetails: []
+      viewDocDetails: [],
+      additionalDocData: {
+        user: '',
+        createdDate: ''
+      }
     };
   }
 
@@ -294,15 +298,23 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     this.props.hideSpinner();
   };
 
+  setNameAndDate = (data) => {
+    this.setState(prev => {
+      prev.additionalDocData.user = data.user;
+      prev.additionalDocData.createdDate = data.createdDate;
+    })
+  }
+
   setFilesToUpload = (doc) => {
     let viewDocDetail = {};
     this.setState(prev => {
       let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription };
-      viewDocDetail = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription, };
-      User.getUserSession().then(user => {
-        viewDocDetail['name'] = user.data.displayName;
-        viewDocDetail['createdDate'] = new Date().toISOString().substring(0,10);
-      })
+      viewDocDetail['fileType'] = doc.fileKey;
+      viewDocDetail['file'] = doc.file;
+      viewDocDetail['fileName'] = doc.file.name;
+      viewDocDetail['fileDescription'] = doc.fileDescription;
+      viewDocDetail['displayName'] = this.state.additionalDocData.user;
+      viewDocDetail['createdDate'] = this.state.additionalDocData.createdDate;
       let documents = prev.documents;
       documents.push(document);
       prev.documents = documents;
@@ -400,7 +412,8 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           emailUrl: this.props.emailUrl,
           userName: this.props.userName,
           documentHandler: this.setFilesToUpload,
-          dropEvent: this.state.dropEvent
+          dropEvent: this.state.dropEvent,
+          userAndDateHandler: this.setNameAndDate
         }),
           h1({
             style: {'marginBottom':'20px'}
