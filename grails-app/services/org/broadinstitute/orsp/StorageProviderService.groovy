@@ -200,7 +200,7 @@ class StorageProviderService implements Status {
      * @param files The multipart files
      * @return
      */
-    StorageDocument saveFileItem(String displayName, String userName, String issueKey, String type, DiskFileItem file) {
+    StorageDocument saveFileItem(String displayName, String userName, String issueKey, String type, DiskFileItem file, String description) {
         StorageDocument document = new StorageDocument(
                 projectKey: issueKey,
                 fileName: file.name,
@@ -210,7 +210,8 @@ class StorageProviderService implements Status {
                 creator: displayName,
                 username: userName,
                 creationDate: new Date(),
-                status: DocumentStatus.PENDING
+                status: DocumentStatus.PENDING,
+                description: description
         )
         log.info('file:',file)
         if (saveStorageDocument(document, file.getInputStream())) {

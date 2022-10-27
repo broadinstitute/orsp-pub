@@ -7,6 +7,7 @@ import { Files } from '../util/ajax';
 import './ConfirmationDialog.css';
 import LoadingWrapper from './LoadingWrapper';
 import { KeyDocumentsEnum } from "../util/KeyDocuments";
+import { InputFieldText } from './InputFieldText';
 
 const MAX_SIZE = 15700000;
 
@@ -33,7 +34,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
         label: ''
       },
       dropEvent: null,
-      description: 'test description'
+      description: ''
     };
     this.upload = this.upload.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
@@ -164,6 +165,13 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
     });
   };
 
+  handleDescriptionChange = (e) => {
+    console.log(e.target)
+    this.setState({
+      description: e.target.value
+    })
+  }
+
   setDroppedFilesToUpload = () => {
     if(this.state.dropEvent) {
       console.log("set dropped files", this.state.dropEvent)
@@ -243,6 +251,16 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
             currentValue: this.state.currentValue,
             error: this.state.typeError,
             errorMessage: "Required field"
+          }),
+          InputFieldText({
+            id: "docDescription",
+            name: "description",
+            label: "Document Description",
+            value: this.state.description,
+            disabled: false,
+            require: false,
+            onChange: this.handleDescriptionChange,
+            error: false
           }),
           InputFieldFile({
             label: "File ",
