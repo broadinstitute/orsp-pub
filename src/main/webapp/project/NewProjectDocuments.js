@@ -5,6 +5,7 @@ import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { Panel } from '../components/Panel';
 import { Table } from '../components/Table';
 import AddDocumentDialog from '../components/AddDocumentDialog'
+import { User } from '../util/ajax';
 
 
 const styles = {

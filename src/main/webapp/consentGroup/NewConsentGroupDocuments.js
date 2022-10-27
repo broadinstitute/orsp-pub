@@ -3,6 +3,7 @@ import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { button, div, h, h1, hh, p, a, br } from 'react-hyperscript-helpers';
 import AddDocumentDialog from '../components/AddDocumentDialog';
 import { Table } from '../components/Table';
+import { User } from '../util/ajax';
 
 const styles = {
   addDocumentContainer: {
