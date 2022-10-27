@@ -213,6 +213,7 @@ class StorageProviderService implements Status {
                 status: DocumentStatus.PENDING,
                 description: description
         )
+        log.info('file:',file)
         if (saveStorageDocument(document, file.getInputStream())) {
             if (document.projectKey != null) {
                 persistenceService.saveEvent(
