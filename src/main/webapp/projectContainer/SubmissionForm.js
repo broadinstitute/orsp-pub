@@ -298,10 +298,11 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     this.props.hideSpinner();
   };
 
-  setNameAndDate = (data) => {
+  setNameAndDate = (name, createdDate) => {
     this.setState(prev => {
-      prev.additionalDocData.user = data.user;
-      prev.additionalDocData.createdDate = data.createdDate;
+      console.log(name, createdDate)
+      prev.additionalDocData.user = name;
+      prev.additionalDocData.createdDate = createdDate;
     })
   }
 
