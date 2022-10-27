@@ -3,7 +3,7 @@ import { button, h, hh, br } from 'react-hyperscript-helpers';
 import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
 import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
-import { Files } from '../util/ajax';
+import { Files, User } from '../util/ajax';
 import './ConfirmationDialog.css';
 import LoadingWrapper from './LoadingWrapper';
 import { KeyDocumentsEnum } from "../util/KeyDocuments";
