@@ -35,7 +35,7 @@ const headers =
     { name: 'Document Type', value: 'fileType' },
     { name: 'File Name', value: 'fileName' },
     { name: 'Document Description', value: 'fileDescription' },
-    { name: 'Author', value: 'username' },
+    { name: 'Author', value: 'name' },
     { name: 'Created On', value: 'createdDate' },
     { name: 'Remove', value: 'removeFile' },
   ];
@@ -295,13 +295,15 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   };
 
   setFilesToUpload = (doc) => {
+    console.log('set files upload worked')
     let viewDocDetail = {};
     this.setState(prev => {
       let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription };
       viewDocDetail = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription, };
       User.getUserSession().then(user => {
-        viewDocDetail['username'] = user.userName;
-        viewDocDetail['createdDate'] = new Date();
+        console.log(user);
+        viewDocDetail['name'] = user.displayName;
+        viewDocDetail['createdDate'] = new Date().toISOString().substring(0,10);
       })
       let documents = prev.documents;
       documents.push(document);
