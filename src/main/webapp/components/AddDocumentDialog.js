@@ -88,7 +88,6 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
         }
         let files = [file];
         if(this.props.projectKey !== undefined) {
-          console.log('file uploaded in submission')
           this.props.showSpinner();
           Files.upload(files, this.props.projectKey, this.props.user.displayName, this.props.user.userName)
             .then(resp => {
@@ -117,7 +116,6 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
             });
           });
         } else {
-          console.log('file passed to documentHandler')
           this.props.documentHandler(file);
           this.setState(prev => {
             prev.submit = false;
