@@ -255,13 +255,6 @@ export const Documents = hh(class Documents extends Component {
     event.preventDefault();
   }
 
-  setNameAndDate = (data) => {
-    this.setState(prev => {
-      prev.additionalDocData.user = data.user;
-      prev.additionalDocData.createdDate = data.createdDate;
-    })
-  }
-
   render() {
     const { restriction = [] } = this.props;
     return div({}, [
@@ -277,7 +270,6 @@ export const Documents = hh(class Documents extends Component {
         isConsentGroup: this.props.isConsentGroup,
         deleteNoConsentReason: this.props.deleteNoConsentReason,
         dropEvent: this.state.dropEvent,
-        userAndDateHandler: this.setNameAndDate
       }),
       ConfirmationDialog({
         closeModal: this.closeRemoveModal,
