@@ -69,16 +69,7 @@ const columns = (_this) => [
     formatter: (cell, row, rowIndex, colIndex) => {
       return downloadUrlDocument(cell, row)
     }
-  },
-  {
-    dataField: 'fileDescription',
-    text: 'File Description',
-    sort: true,
-    headerStyle: (column, colIndex) => {
-      return { width: tableStyles.columns.documentFileNameWidth };
-    },
-  }
-  , {
+  }, {
     dataField: 'creator',
     text: 'Author',
     sort: true,
