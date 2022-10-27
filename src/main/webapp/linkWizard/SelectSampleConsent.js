@@ -46,7 +46,8 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       startDate: null,
       endDate: null,
       onGoingProcess: false,
-      dropEvent: null
+      dropEvent: null,
+      viewDocDetails: []
     };
   }
 
@@ -97,12 +98,27 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     return { hasError: true }
   }
 
-  setFilesToUpload = (doc) => {
+  setFilesToUpload = async (doc) => {
+    let name, createdDate;
+    await User.getUserSession().then(user => {
+      name = user.data.displayName;
+      createdDate = new Date().toISOString().substring(0,10);
+    })
+    let viewDocDetail = {};
     let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random() };
+    viewDocDetail['fileType'] = doc.fileKey;
+      viewDocDetail['file'] = doc.file;
+      viewDocDetail['fileName'] = doc.file.name;
+      viewDocDetail['fileDescription'] = doc.fileDescription;
+      viewDocDetail['displayName'] = name;
+      viewDocDetail['createdDate'] = createdDate;
     this.setState(prev => {
       let documents = prev.documents;
       documents.push(document);
       prev.documents = documents;
+      let viewDocDetails = prev.viewDocDetails;
+      viewDocDetails.push(viewDocDetail);
+      prev.viewDocDetails = viewDocDetails;
       return prev;
     }, () => {
       this.props.fileHandler(this.state.documents);
@@ -255,13 +271,6 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
 
   dragOverHandler(event) {
     event.preventDefault();
-  }
-
-  setNameAndDate = (data) => {
-    this.setState(prev => {
-      prev.additionalDocData.user = data.user;
-      prev.additionalDocData.createdDate = data.createdDate;
-    })
   }
 
   render() {

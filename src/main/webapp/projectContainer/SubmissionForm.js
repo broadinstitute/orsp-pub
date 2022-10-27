@@ -73,11 +73,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         numberType: 'Required field'
       },
       dropEvent: null,
-      viewDocDetails: [],
-      additionalDocData: {
-        user: '',
-        createdDate: ''
-      }
+      viewDocDetails: []
     };
   }
 
@@ -298,20 +294,11 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     this.props.hideSpinner();
   };
 
-  setNameAndDate = (name, createdDate) => {
-    this.setState(prev => {
-      console.log(name, createdDate)
-      prev.additionalDocData.user = name;
-      prev.additionalDocData.createdDate = createdDate;
-    })
-  }
-
   setFilesToUpload = async (doc) => {
     let name, createdDate;
     await User.getUserSession().then(user => {
       name = user.data.displayName;
       createdDate = new Date().toISOString().substring(0,10);
-      console.log(name, createdDate)
     })
     let viewDocDetail = {};
     this.setState(prev => {
@@ -328,7 +315,6 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
       let viewDocDetails = prev.viewDocDetails;
       viewDocDetails.push(viewDocDetail);
       prev.viewDocDetails = viewDocDetails;
-      console.log(viewDocDetails)
       return prev;
     }, () => {
       this.closeModal("showAddDocuments");
