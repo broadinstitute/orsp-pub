@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { a, button, div, h, h1, hh, small, p, br } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
-import { Files, ProjectMigration } from '../util/ajax';
+import { Files, ProjectMigration, User } from '../util/ajax';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import InputFieldNumber from '../components/InputFieldNumber';
 import { Table } from '../components/Table';
@@ -34,7 +34,10 @@ const headers =
   [
     { name: 'Document Type', value: 'fileType' },
     { name: 'File Name', value: 'fileName' },
-    { name: 'Remove', value: 'removeFile' }
+    { name: 'Document Description', value: 'fileDescription' },
+    { name: 'Author', value: 'username' },
+    { name: 'Created On', value: 'createdDate' },
+    { name: 'Remove', value: 'removeFile' },
   ];
 
 const SubmissionForm = hh(class SubmissionForm extends Component {
@@ -69,7 +72,8 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         number: false,
         numberType: 'Required field'
       },
-      dropEvent: null
+      dropEvent: null,
+      viewDocDetails: []
     };
   }
 
@@ -284,17 +288,27 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   updateDocuments = () => {
     this.setState(prev => {
       prev.documents = prev.documents.filter(doc => doc.id !== this.state.fileToRemove.id);
+      prev.viewDocDetails = prev.viewDocDetails.filter(doc => doc.id !== this.state.fileToRemove.id);
       return prev;
     });
     this.props.hideSpinner();
   };
 
   setFilesToUpload = (doc) => {
+    let viewDocDetail = {};
     this.setState(prev => {
       let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription };
+      viewDocDetail = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription, };
+      User.getUserSession().then(user => {
+        viewDocDetail['username'] = user.userName;
+        viewDocDetail['createdDate'] = new Date();
+      })
       let documents = prev.documents;
       documents.push(document);
       prev.documents = documents;
+      let viewDocDetails = prev.viewDocDetails;
+      viewDocDetails.push(viewDocDetail);
+      prev.viewDocDetails = viewDocDetails;
       return prev;
     }, () => {
       this.closeModal("showAddDocuments");
@@ -460,7 +474,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           ]),br(),
           Table({
             headers: headers,
-            data: this.state.documents,
+            data: this.state.viewDocDetails,
             sizePerPage: 10,
             paginationSize: 10,
             remove: this.removeFileDialog,
