@@ -69,7 +69,16 @@ const columns = (_this) => [
     formatter: (cell, row, rowIndex, colIndex) => {
       return downloadUrlDocument(cell, row)
     }
-  }, {
+  },
+  {
+    dataField: 'fileDescription',
+    text: 'File Description',
+    sort: true,
+    headerStyle: (column, colIndex) => {
+      return { width: tableStyles.columns.documentFileNameWidth };
+    },
+  }
+  , {
     dataField: 'creator',
     text: 'Author',
     sort: true,
@@ -255,13 +264,6 @@ export const Documents = hh(class Documents extends Component {
     event.preventDefault();
   }
 
-  setNameAndDate = (data) => {
-    this.setState(prev => {
-      prev.additionalDocData.user = data.user;
-      prev.additionalDocData.createdDate = data.createdDate;
-    })
-  }
-
   render() {
     const { restriction = [] } = this.props;
     return div({}, [
@@ -277,7 +279,6 @@ export const Documents = hh(class Documents extends Component {
         isConsentGroup: this.props.isConsentGroup,
         deleteNoConsentReason: this.props.deleteNoConsentReason,
         dropEvent: this.state.dropEvent,
-        userAndDateHandler: this.setNameAndDate
       }),
       ConfirmationDialog({
         closeModal: this.closeRemoveModal,

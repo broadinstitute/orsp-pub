@@ -405,8 +405,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           emailUrl: this.props.emailUrl,
           userName: this.props.userName,
           documentHandler: this.setFilesToUpload,
-          dropEvent: this.state.dropEvent,
-          userAndDateHandler: this.setNameAndDate
+          dropEvent: this.state.dropEvent
         }),
           h1({
             style: {'marginBottom':'20px'}

@@ -3,6 +3,7 @@ import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { button, div, h, h1, hh, p, a, br } from 'react-hyperscript-helpers';
 import AddDocumentDialog from '../components/AddDocumentDialog';
 import { Table } from '../components/Table';
+import { User } from '../util/ajax';
 
 const styles = {
   addDocumentContainer: {
@@ -148,8 +149,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
               emailUrl: this.props.emailUrl,
               userName: this.props.userName,
               documentHandler: this.setFilesToUpload,
-              dropEvent: this.state.dropEvent,
-              userAndDateHandler: this.setNameAndDate
+              dropEvent: this.state.dropEvent
             }),
             div({ style: styles.addDocumentContainer }, [
               div({

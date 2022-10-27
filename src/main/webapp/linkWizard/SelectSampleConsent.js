@@ -8,7 +8,7 @@ import { Panel } from '../components/Panel';
 import AddDocumentDialog from '../components/AddDocumentDialog';
 import { Table } from '../components/Table';
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
-import { ConsentGroup, SampleCollections } from '../util/ajax';
+import { ConsentGroup, SampleCollections, User } from '../util/ajax';
 
 const styles = {
   addDocumentContainer: {
@@ -373,8 +373,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
               emailUrl: this.props.emailUrl,
               userName: this.props.userName,
               documentHandler: this.setFilesToUpload,
-              dropEvent: this.state.dropEvent,
-              userAndDateHandler: this.setNameAndDate
+              dropEvent: this.state.dropEvent
             }),
             div({ style: styles.addDocumentContainer }, [
               div({

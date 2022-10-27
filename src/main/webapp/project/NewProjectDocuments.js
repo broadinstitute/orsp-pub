@@ -5,6 +5,7 @@ import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { Panel } from '../components/Panel';
 import { Table } from '../components/Table';
 import AddDocumentDialog from '../components/AddDocumentDialog'
+import { User } from '../util/ajax';
 
 
 const styles = {
@@ -165,8 +166,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
               emailUrl: this.props.emailUrl,
               userName: this.props.userName,
               documentHandler: this.setFilesToUpload,
-              dropEvent: this.state.dropEvent,
-              userAndDateHandler: this.setNameAndDate
+              dropEvent: this.state.dropEvent
             }),
             div({ style: styles.addDocumentContainer }, [
               div({
