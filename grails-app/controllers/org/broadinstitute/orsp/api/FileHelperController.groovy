@@ -30,7 +30,6 @@ class FileHelperController extends AuthenticatedController{
 
         if (jsonFileDescription.jsonArray) {
             fileData = jsonFileDescription.asJsonArray
-            log.info(fileData)
         }
 
         List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
