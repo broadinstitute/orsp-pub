@@ -25,11 +25,12 @@ class FileHelperController extends AuthenticatedController{
 
     def attachDocument() {
         JsonParser parser = new JsonParser()
-        JsonElement jsonFileDescription = parser.parse(request?.parameterMap["fileDescription"].toString())
+        JsonElement jsonFileDescription = parser.parse(request?.parameterMap["fileData"].toString())
         JsonArray fileData
 
         if (jsonFileDescription.jsonArray) {
             fileData = jsonFileDescription.asJsonArray
+            log.info(fileData)
         }
 
         List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
