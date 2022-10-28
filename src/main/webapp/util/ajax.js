@@ -171,10 +171,10 @@ export const Files = {
       if (file.file != null) {
         data.append(file.fileKey, file.file, file.file.name);
         const fileData = {
-          fileName: file.fileName,
+          fileName: file.file.name,
           fileDescription: file.fileDescription
         }
-        data.append('fileDescription', JSON.stringify(fileData));
+        data.append('fileData', JSON.stringify(fileData));
       }
     });
 
