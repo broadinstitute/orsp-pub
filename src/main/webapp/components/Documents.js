@@ -28,12 +28,13 @@ const styles = {
 
 const tableStyles = {
   columns: {
-    documentTypeWidth: '179px',
-    documentFileNameWidth: '323px',
+    documentTypeWidth: '140px',
+    documentFileNameWidth: '240px',
+    documentDescrptionNameWidth: '170px',
     documentCreatorWidth: '130px',
     documentVersionWidth: '90px',
-    documentStatusWidth: '140px',
-    documentCreationDateWidth: '140px'
+    documentStatusWidth: '100px',
+    documentCreationDateWidth: '120px'
   },
   buttonToolbarCell: {
     position: 'absolute',
@@ -65,6 +66,16 @@ const columns = (_this) => [
     sort: true,
     headerStyle: (column, colIndex) => {
       return { width: tableStyles.columns.documentFileNameWidth };
+    },
+    formatter: (cell, row, rowIndex, colIndex) => {
+      return downloadUrlDocument(cell, row)
+    }
+  }, {
+    dataField: 'description',
+    text: 'File Description',
+    sort: true,
+    headerStyle: (column, colIndex) => {
+      return { width: tableStyles.columns.documentDescrptionNameWidth };
     },
     formatter: (cell, row, rowIndex, colIndex) => {
       return downloadUrlDocument(cell, row)
@@ -194,7 +205,7 @@ export const Documents = hh(class Documents extends Component {
     this.setState({ 
       showAddKeyDocuments: !this.state.showAddKeyDocuments,
       dropEvent: null
-    });
+    }, () => console.log(this.props.documents));
   };
 
   remove = (row) => {
