@@ -170,6 +170,11 @@ export const Files = {
     files.forEach(file => {
       if (file.file != null) {
         data.append(file.fileKey, file.file, file.file.name);
+        const fileData = {
+          fileName: file.fileName,
+          fileDescription: file.fileDescription
+        }
+        data.append('fileDescription', JSON.stringify(fileData));
       }
     });
 
