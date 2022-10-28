@@ -76,9 +76,6 @@ const columns = (_this) => [
     sort: true,
     headerStyle: (column, colIndex) => {
       return { width: tableStyles.columns.documentDescrptionNameWidth };
-    },
-    formatter: (cell, row, rowIndex, colIndex) => {
-      return downloadUrlDocument(cell, row)
     }
   }, {
     dataField: 'creator',
