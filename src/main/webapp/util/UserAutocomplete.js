@@ -2,6 +2,7 @@ import React from 'react';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { UrlConstants } from "./UrlConstants";
 import { Search } from './ajax';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 class UserAutocomplete extends React.Component {
     constructor(props) {
