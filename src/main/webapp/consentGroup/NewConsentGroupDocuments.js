@@ -18,9 +18,6 @@ const headers =
   [
     { name: 'Document Type', value: 'fileKey' },
     { name: 'File Name', value: 'fileName' },
-    { name: 'File Description', value: 'fileDescription' },
-    { name: 'Author', value: 'displayName' },
-    { name: 'Created On', value: 'createdDate' },
     { name: '', value: 'remove' }
   ];
 
@@ -57,7 +54,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     let viewDocDetail = {};
     this.setState(prev => {
       let documents = prev.documents;
-      let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription };
+      let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random() };
       viewDocDetail['fileType'] = doc.fileKey;
       viewDocDetail['file'] = doc.file;
       viewDocDetail['fileName'] = doc.file.name;
@@ -81,7 +78,6 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
     var documentsToUpdate = this.state.documents.filter(doc => doc.id !== row.id);
     this.setState(prev => {
       prev.documents = documentsToUpdate;
-      prev.viewDocDetails = prev.viewDocDetails.filter(doc => doc.id !== row.id);
       return prev;
     }, () => this.props.fileHandler(this.state.documents));
   }
@@ -168,7 +164,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
             ]),br(),
             Table({
               headers: headers,
-              data: this.state.viewDocDetails,
+              data: documents,
               sizePerPage: 10,
               paginationSize: 10,
               handleDialogConfirm: this.props.handleDialogConfirm,
