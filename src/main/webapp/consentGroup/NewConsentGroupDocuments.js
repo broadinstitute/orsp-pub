@@ -16,7 +16,7 @@ const styles = {
 
 const headers =
   [
-    { name: 'Document Type', value: 'fileKey' },
+    { name: 'Document Type', value: 'fileType' },
     { name: 'File Name', value: 'fileName' },
     { name: 'File Description', value: 'fileDescription' },
     { name: 'Author', value: 'displayName' },
