@@ -185,7 +185,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
             ]),br(),
             Table({
               headers: headers,
-              data: this.viewDocDetails,
+              data: this.state.viewDocDetails,
               sizePerPage: 10,
               paginationSize: 10,
               handleDialogConfirm: this.props.handleDialogConfirm,
