@@ -61,6 +61,11 @@ export const ConsentGroup = {
     files.forEach(file => {
       if (file.file != null) {
         data.append(file.fileKey, file.file, file.file.name);
+        const fileData = {
+          fileName: file.file.name,
+          fileDescription: file.fileDescription
+        }
+        data.append('fileData', JSON.stringify(fileData));
       }
     });
 
@@ -207,6 +212,11 @@ export const Project = {
     files.forEach(file => {
       if (file.file != null) {
         data.append(file.fileKey, file.file, file.file.name);
+        const fileData = {
+          fileName: file.file.name,
+          fileDescription: file.fileDescription
+        };
+        data.append('fileData', JSON.stringify(fileData));
       }
     });
     data.append('displayName', displayName);
@@ -433,6 +443,11 @@ export const ConsentCollectionLink = {
     files.forEach(file => {
       if (file.file != null) {
         data.append(file.fileKey, file.file, file.file.name);
+        const fileData = {
+          fileName: file.file.name,
+          fileDescription: file.fileDescription
+        };
+        data.append('fileData', JSON.stringify(fileData));
       }
     });
     data.append('dataConsentCollection', JSON.stringify(dataConsentCollection));

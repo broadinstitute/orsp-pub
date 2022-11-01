@@ -11,6 +11,7 @@ import { LoginText, SampleCollections } from "../util/ajax";
 import { isEmpty } from '../util/Utils';
 import "./style.css";
 import { PortalMessage } from "../components/PortalMessage";
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "On Hold"];
 
