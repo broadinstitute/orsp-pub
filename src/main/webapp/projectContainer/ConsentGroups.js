@@ -43,8 +43,10 @@ const columns = (cThis) => [{
   style: { pointerEvents: 'auto' },
   formatter: (cell, row, rowIndex, colIndex) =>
     a(formatUrlDocument(row), [row.fileName])
-},
-{
+},{
+  dataField: 'description',
+  text: 'File Description'
+},{
   dataField: 'creator',
   text: 'Author'
 },
