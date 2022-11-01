@@ -1,7 +1,6 @@
 import React from 'react';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { UrlConstants } from "./UrlConstants";
-import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 class SampleCollectionAutocomplete extends React.Component {
     constructor(props) {
