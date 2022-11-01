@@ -166,7 +166,7 @@ class StorageProviderService implements Status {
      * @param files The multipart files
      * @return
      */
-    StorageDocument saveMultipartFile(String displayName, String userName, String issueKey, String type, MultipartFile file, ConsentCollectionLink consentCollectionLink) {
+    StorageDocument saveMultipartFile(String displayName, String userName, String issueKey, String type, MultipartFile file, ConsentCollectionLink consentCollectionLink, description) {
         StorageDocument document = new StorageDocument(
                 projectKey: issueKey,
                 fileName: file.originalFilename,
@@ -177,7 +177,8 @@ class StorageProviderService implements Status {
                 username: userName,
                 creationDate: new Date(),
                 status: DocumentStatus.PENDING.status,
-                consentCollectionLinkId: consentCollectionLink?.id
+                consentCollectionLinkId: consentCollectionLink?.id,
+                description: description
         )
         if (saveStorageDocument(document, file.getInputStream())) {
             persistenceService.saveEvent(

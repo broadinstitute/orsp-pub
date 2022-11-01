@@ -1,6 +1,7 @@
 package org.broadinstitute.orsp.api
 
 import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import grails.converters.JSON
 import grails.rest.Resource
@@ -57,9 +58,14 @@ class NewConsentGroupController extends AuthenticatedController {
             JsonParser parser = new JsonParser()
             JsonArray dataProjectJson = parser.parse(request.parameterMap["dataProject"].toString())
             JsonArray dataConsentCollectionJson = parser.parse(request.parameterMap["dataConsentCollection"].toString())
+            JsonElement jsonFileDescription = parser.parse(request?.parameterMap["fileData"].toString())
+            JsonArray fileData
             Issue issue = IssueUtils.getJson(Issue.class, dataProjectJson[0])
             consentCollectionLink = IssueUtils.getJson(ConsentCollectionLink.class, dataConsentCollectionJson[0])
             Issue source = queryService.findByKey(issue.getSource())
+            if (jsonFileDescription.jsonArray) {
+                fileData = jsonFileDescription.asJsonArray
+            }
             if (source != null) {
                 issue.setRequestDate(new Date())
                 consent = issueService.createIssue(IssueType.CONSENT_GROUP, issue)
@@ -73,7 +79,8 @@ class NewConsentGroupController extends AuthenticatedController {
                 }
                 if (!files?.isEmpty()) {
                     files.forEach {
-                        storageProviderService.saveMultipartFile(user.displayName, user.userName, consent?.projectKey, it.name, it, consentCollectionLink)
+                        String description = fileData.find {data -> data.fileName.value == it.originalFilename }.fileDescription.value
+                        storageProviderService.saveMultipartFile(user.displayName, user.userName, consent?.projectKey, it.name, it, consentCollectionLink, description)
                     }
                 }
                 notifyService.consentGroupCreation(issue, consentCollectionLink)
