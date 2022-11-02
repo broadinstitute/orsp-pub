@@ -34,7 +34,8 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
         label: ''
       },
       dropEvent: null,
-      description: ''
+      description: '',
+      descriptionError: false
     };
     this.upload = this.upload.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
@@ -64,6 +65,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       prev.alertMessage = '';
       prev.type = '';
       prev.dropEvent = null;
+      prev.descriptionError = false;
       return prev;
     });
     this.props.closeModal();
@@ -133,6 +135,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   isValid() {
     let typeError = false;
     let fileError = false;
+    let descriptionError = false;
     let errorMessage = '';
     if (this.state.submit) {
       if (this.state.file.name === '') {
@@ -142,14 +145,18 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       if (this.state.type === '') {
         typeError = true;
       }
+      if (this.state.description === '') {
+        descriptionError = true
+      }
       this.setState(prev => {
         prev.typeError = typeError;
         prev.fileError = fileError;
         prev.errorMessage = errorMessage;
+        prev.descriptionError = descriptionError;
         return prev;
       });
     }
-    return !typeError && !fileError;
+    return !typeError && !fileError && !descriptionError;
   }
 
   handleTypeSelect = () => (selectedOption) => {
@@ -166,7 +173,8 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
 
   handleDescriptionChange = (e) => {
     this.setState({
-      description: e.target.value
+      description: e.target.value,
+      descriptionError: false
     })
   }
 
@@ -257,7 +265,8 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
             disabled: false,
             require: false,
             onChange: this.handleDescriptionChange,
-            error: false
+            error: this.state.descriptionError,
+            errorMessage: 'Required field'
           }),
           InputFieldFile({
             label: "File ",
