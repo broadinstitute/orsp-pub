@@ -83,22 +83,7 @@ export const TableComponent = hh(class TableComponent extends Component {
                 defaultSorted= { this.props.defaultSorted }
                 onTableChange= { this.props.onTableChange }
                 {...props.baseProps }
-                >
-                {
-                  this.props.columns.map((column, index) => {
-                    isKey = (index === 0)
-                    if (column.dataField === 'description') {
-                      return (
-                        <TableHeaderColumn
-                          key={column.text}
-                          dataField={column.dataField}
-                          dataFormat={this.documentDescriptionEdit}
-                        >{column.text}</TableHeaderColumn>
-                      )
-                    }
-                  })
-                }
-              </BootstrapTable>
+                ></BootstrapTable>
             </div>
           }
         </ToolkitProvider>
