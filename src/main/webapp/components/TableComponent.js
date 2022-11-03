@@ -23,6 +23,7 @@ export const TableComponent = hh(class TableComponent extends Component {
 
   render() {
     const { remoteProp } = this.props;
+    let isKey = false;
 
     return(
       h(Fragment, {}, [
