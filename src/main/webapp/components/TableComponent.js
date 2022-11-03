@@ -17,8 +17,13 @@ const { SearchBar } = Search;
 
 export const TableComponent = hh(class TableComponent extends Component {
 
+  documentDescriptionEdit = (cell, row) => {
+    this.props.documentDescriptionEdit(row);
+  }
+
   render() {
     const { remoteProp } = this.props;
+    let isKey = false;
 
     return(
       h(Fragment, {}, [
