@@ -263,14 +263,6 @@ export const Documents = hh(class Documents extends Component {
     event.preventDefault();
   }
 
-  documentDescriptionEdit = (data) => {
-    console.log(data);
-    const indexButton = a({
-      className: 'btn btn-default btn-xs pull-left link-btn',
-    }, [!component.isViewer ? 'Edit': undefined]);
-    return h(Fragment, {}, [indexButton]);
-  }
-
   render() {
     const { restriction = [] } = this.props;
     return div({}, [
@@ -321,8 +313,7 @@ export const Documents = hh(class Documents extends Component {
           pagination: true,
           showExportButtons: false,
           hideXlsxColumns: [],
-          showSearchBar: true,
-          documentDescriptionEdit: this.documentDescriptionEdit
+          showSearchBar: true
         })
       ]),
 
