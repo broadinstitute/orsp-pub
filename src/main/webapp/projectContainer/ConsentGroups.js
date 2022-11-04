@@ -259,21 +259,12 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
             unlinkHandler: this.unlink,
             submittedToIRBHandler: this.submittedToIRB,
             requestClarificationHandler: this.requestClarification
-          },
-          documentDescriptionEdit: this.documentDescriptionEdit
+          }
         }
       });
     }
     return parsedArray;
   };
-
-  documentDescriptionEdit = (data) => {
-    console.log(data);
-    const indexButton = a({
-      className: 'btn btn-default btn-xs pull-left link-btn',
-    }, [!component.isViewer ? 'Edit': undefined]);
-    return h(Fragment, {}, [indexButton]);
-  }
 
   redirect = (action) => {
     const path = action === 'new' ? UrlConstants.newConsentGroupUrl + '?projectKey='+ this.props.projectKey : UrlConstants.useExistingConsentGroupUrl+ '?projectKey='+ this.props.projectKey;
