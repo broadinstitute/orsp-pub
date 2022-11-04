@@ -279,6 +279,7 @@ class Search extends React.Component {
             <div className="form-group col-md-6">
               <label className="inputFieldLabel">Type</label>
               <Typeahead
+                id="issueType"
                 ref={"issueType"}
                 align={"left"}
                 multiple={true}
@@ -322,6 +323,7 @@ class Search extends React.Component {
             <div className="form-group col-md-6">
               <label className="inputFieldLabel">Status</label>
               <Typeahead
+                id="issueStatus"
                 ref={"issueStatus"}
                 align={"left"}
                 multiple={true}
@@ -350,6 +352,7 @@ class Search extends React.Component {
             <div className="form-group col-md-6">
               <label className="inputFieldLabel">IRB of Record</label>
               <Typeahead
+                id="irbOfRecord"
                 ref={"irbOfRecord"}
                 align={"left"}
                 multiple={true}

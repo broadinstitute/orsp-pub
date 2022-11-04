@@ -41,6 +41,7 @@ class SampleCollectionAutocomplete extends React.Component {
         return (
             <div>
                 <AsyncTypeahead
+                    id="sampleCollection"
                     ref="sampleCollection"
                     labelKey={option => SampleCollectionAutocomplete.formatLabel(option)}
                     align={'left'}
