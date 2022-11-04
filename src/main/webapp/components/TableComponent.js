@@ -10,13 +10,20 @@ import './Btn.css';
 import './TableComponent.css'
 import { Export } from "./Export";
 import { EXPORT_FILE } from "../util/TableUtil";
+import { TableHeaderColumn } from 'react-bootstrap-table';
+
 const { ExportCSVButton } = CSVExport;
 const { SearchBar } = Search;
 
 export const TableComponent = hh(class TableComponent extends Component {
 
+  documentDescriptionEdit = (cell, row) => {
+    this.props.documentDescriptionEdit(row);
+  }
+
   render() {
     const { remoteProp } = this.props;
+    let isKey = false;
 
     return(
       h(Fragment, {}, [
@@ -76,7 +83,7 @@ export const TableComponent = hh(class TableComponent extends Component {
                 defaultSorted= { this.props.defaultSorted }
                 onTableChange= { this.props.onTableChange }
                 {...props.baseProps }
-              />
+                ></BootstrapTable>
             </div>
           }
         </ToolkitProvider>

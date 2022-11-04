@@ -33,10 +33,10 @@ class ProjectController extends AuthenticatedController {
     def save() {
         List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
         User user = getUser()
+        JsonParser parser = new JsonParser()
         String dataProject = request.parameterMap["dataProject"].toString()
         JsonElement jsonFileDescription = parser.parse(request?.parameterMap["fileData"].toString())
         JsonArray fileData
-        JsonParser parser = new JsonParser()
         JsonArray dataProjectJson = parser.parse(dataProject)
         String projectKey
         if (jsonFileDescription.jsonArray) {
