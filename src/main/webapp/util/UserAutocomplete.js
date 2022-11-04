@@ -42,6 +42,7 @@ class UserAutocomplete extends React.Component {
         return (
             <div>
                 <AsyncTypeahead
+                    id="userName"
                     ref="userName"
                     labelKey={option => UserAutocomplete.formatLabel(option)}
                     align={'left'}
