@@ -35,6 +35,10 @@ class Search extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.userAutocomplete = React.createRef();
     this.projectAutocomplete = React.createRef();
+    this.issueTypeRef = React.createRef();
+    this.issueStatusRef = React.createRef();
+    this.irbOfRecordRef = React.createRef();
+    this.searchRef = React.createRef();
     this.state = {
       // setup data
       data: [],
@@ -73,7 +77,7 @@ class Search extends React.Component {
       this.state.statuses.length > 0 ||
       this.state.irb.length > 0
     ) {
-      this.refs.search.click();
+      this.searchRef.current.click();
     }
     this.checkDefault();
   }
@@ -144,12 +148,12 @@ class Search extends React.Component {
     }));
     this.userAutocomplete.clear();
     this.projectAutocomplete.clear();
-    this.refs.issueType.getInstance().clear();
-    this.refs.issueType.getInstance().blur();
-    this.refs.issueStatus.getInstance().clear();
-    this.refs.issueStatus.getInstance().blur();
-    this.refs.irbOfRecord.getInstance().clear();
-    this.refs.irbOfRecord.getInstance().blur();
+    this.issueTypeRef.current.clear();
+    this.issueTypeRef.current.blur();
+    this.issueStatusRef.current.clear();
+    this.issueStatusRef.current.blur();
+    this.irbOfRecordRef.current.clear();
+    this.irbOfRecordRef.current.blur();
     this.saveStateToLocalStorage();
   }
 
@@ -280,7 +284,7 @@ class Search extends React.Component {
               <label className="inputFieldLabel">Type</label>
               <Typeahead
                 id="issueType"
-                ref={"issueType"}
+                ref={this.issueTypeRef}
                 align={"left"}
                 multiple={true}
                 options={component.issueTypes}
@@ -324,7 +328,7 @@ class Search extends React.Component {
               <label className="inputFieldLabel">Status</label>
               <Typeahead
                 id="issueStatus"
-                ref={"issueStatus"}
+                ref={this.issueStatusRef}
                 align={"left"}
                 multiple={true}
                 options={component.issueStatuses}
@@ -353,7 +357,7 @@ class Search extends React.Component {
               <label className="inputFieldLabel">IRB of Record</label>
               <Typeahead
                 id="irbOfRecord"
-                ref={"irbOfRecord"}
+                ref={this.irbOfRecordRef}
                 align={"left"}
                 multiple={true}
                 labelKey={option => `${option.value}`}
@@ -399,7 +403,7 @@ class Search extends React.Component {
                 type={"submit"}
                 className={"btn btn-primary"}
                 value={"Search"}
-                ref={"search"}
+                ref={this.searchRef}
                 style={{ marginRight: "1rem" }}
               />
               <input
