@@ -52,11 +52,13 @@ const columns = (_this) => [
     dataField: 'id',
     text: 'Id',
     hidden: true,
+    editable: false,
     csvExport : false
   }, {
     dataField: 'fileType',
     text: 'Document Type',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: tableStyles.columns.documentTypeWidth };
     }
@@ -64,6 +66,7 @@ const columns = (_this) => [
     dataField: 'fileName',
     text: 'File Name',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: tableStyles.columns.documentFileNameWidth };
     },
@@ -81,6 +84,7 @@ const columns = (_this) => [
     dataField: 'creator',
     text: 'Author',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: tableStyles.columns.documentCreatorWidth };
     }
@@ -88,6 +92,7 @@ const columns = (_this) => [
     dataField: 'docVersion',
     text: 'Version',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: tableStyles.columns.documentVersionWidth };
     }
@@ -95,6 +100,7 @@ const columns = (_this) => [
     dataField: 'status',
     text: 'Status',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: tableStyles.columns.documentStatusWidth };
     },
@@ -119,6 +125,7 @@ const columns = (_this) => [
     dataField: 'creationDate',
     text: 'Created On',
     sort: true,
+    editable: false,
     sortFunc: (a, b, order, dataField, rowA, rowB) => {
       const dateA = new Date(a);
       const dateB = new Date(b);
@@ -137,6 +144,7 @@ const columns = (_this) => [
     dataField: '',
     text: '',
     align: 'center',
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) => {
       return Btn({
         action: {
@@ -153,16 +161,19 @@ const associatedProjectColumns = [
     dataField: 'id',
     text: 'Id',
     hidden: true,
+    editable: false
   },
   {
     dataField: 'type',
     text: 'Type',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'summary',
     text: 'Summary',
     sort: true,
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) => {
       return createLinkToProject(cell, row)
     }
@@ -183,7 +194,121 @@ export const Documents = hh(class Documents extends Component {
       showRemoveDocuments: false,
       documentToRemove: null,
       error: false,
-      dropEvent: null
+      dropEvent: null,
+      showSaveAndCancel: false,
+      columns: [
+        {
+          dataField: 'id',
+          text: 'Id',
+          hidden: true,
+          editable: false,
+          csvExport : false
+        }, {
+          dataField: 'fileType',
+          text: 'Document Type',
+          sort: true,
+          editable: false,
+          headerStyle: (column, colIndex) => {
+            return { width: tableStyles.columns.documentTypeWidth };
+          }
+        }, {
+          dataField: 'fileName',
+          text: 'File Name',
+          sort: true,
+          editable: false,
+          headerStyle: (column, colIndex) => {
+            return { width: tableStyles.columns.documentFileNameWidth };
+          },
+          formatter: (cell, row, rowIndex, colIndex) => {
+            return downloadUrlDocument(cell, row)
+          }
+        }, {
+          dataField: 'description',
+          text: 'File Description',
+          sort: true,
+          headerStyle: (column, colIndex) => {
+            return { width: tableStyles.columns.documentDescrptionNameWidth };
+          },
+          events: {
+            onClick: (e) => {
+              e.detail === 2 ? this.saveAndCancelToggle() : undefined
+            }
+          }
+        }, {
+          dataField: 'creator',
+          text: 'Author',
+          sort: true,
+          editable: false,
+          headerStyle: (column, colIndex) => {
+            return { width: tableStyles.columns.documentCreatorWidth };
+          }
+        }, {
+          dataField: 'docVersion',
+          text: 'Version',
+          sort: true,
+          editable: false,
+          headerStyle: (column, colIndex) => {
+            return { width: tableStyles.columns.documentVersionWidth };
+          }
+        }, {
+          dataField: 'status',
+          text: 'Status',
+          sort: true,
+          editable: false,
+          headerStyle: (column, colIndex) => {
+            return { width: tableStyles.columns.documentStatusWidth };
+          },
+          formatter: (cell, row, rowIndex, colIndex) => {
+            if (row.status === 'Pending' && component.isAdmin) {
+              return h(ButtonToolbar, { style: buttonToolbarCell }, [
+                h(DropdownButton, {
+                  style: styles.dropDownBtn,
+                  title: 'Pending',
+                  key: 0,
+                  id: `dropdown-basic-0`
+                },[
+                  h(MenuItem, { onSelect: _this.actionApprove, eventKey: row.uuid },['Approve']),
+                  h(MenuItem, { onSelect: _this.actionReject, eventKey: row.uuid },['Reject'])
+                ])
+              ])
+            } else {
+              return row.status;
+            }
+          }
+        }, {
+          dataField: 'creationDate',
+          text: 'Created On',
+          sort: true,
+          editable: false,
+          sortFunc: (a, b, order, dataField, rowA, rowB) => {
+            const dateA = new Date(a);
+            const dateB = new Date(b);
+            if (order === 'asc') {
+              return dateA > dateB ? -1 : dateA < dateB ? 1 : 0
+            }
+            else return dateB > dateA ? -1 : dateB < dateA ? 1 : 0
+          },
+          headerStyle: (column, colIndex) => {
+            return { width: tableStyles.columns.documentCreationDateWidth };
+          },
+          formatter: (cell, row, rowIndex, colIndex) => {
+            return moment(cell).format('MM/DD/YY')
+          }
+        }, {
+          dataField: '',
+          text: '',
+          align: 'center',
+          editable: false,
+          formatter: (cell, row, rowIndex, colIndex) => {
+            return Btn({
+              action: {
+                labelClass: "glyphicon glyphicon-remove",
+                handler: () => _this.remove(row)
+              }
+            })
+          }
+        }
+      ]
     };
     this.removeDocument = this.removeDocument.bind(this);
   }
@@ -263,6 +388,21 @@ export const Documents = hh(class Documents extends Component {
     event.preventDefault();
   }
 
+  saveAndCancelToggle() {
+    this.setState({
+      showSaveAndCancel: !this.state.showSaveAndCancel
+    })
+  }
+
+  saveHandler(data) {
+    this.saveAndCancelToggle();
+    console.log(data);
+  }
+
+  cancelHandler() {
+    this.saveAndCancelToggle();
+  }
+
   render() {
     const { restriction = [] } = this.props;
     return div({}, [
@@ -303,7 +443,7 @@ export const Documents = hh(class Documents extends Component {
         TableComponent({
           remoteProp: false,
           data: this.props.documents,
-          columns: columns(this),
+          columns: this.state.columns,
           keyField: 'id',
           search: true,
           fileName: 'ORSP',
@@ -314,6 +454,9 @@ export const Documents = hh(class Documents extends Component {
           showExportButtons: false,
           hideXlsxColumns: [],
           showSearchBar: true,
+          showSaveAndCancel: this.state.showSaveAndCancel,
+          saveHandler: this.saveHandler,
+          cancelHandler: this.cancelHandler 
         })
       ]),
 

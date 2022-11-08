@@ -18,19 +18,23 @@ const columns = [{
     dataField: 'id',
     text: 'Id',
     hidden: true,
+    editable: false,
     csvExport : false
   }, {
     dataField: 'author',
     text: 'Author',
-    sort: true
+    sort: true,
+    editable: false
   }, {
     dataField: 'date',
     text: 'Date',
-    sort: true
+    sort: true,
+    editable: false
   }, {
     dataField: 'comment',
     text: 'Comment',
     sort: true,
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) =>
       div({dangerouslySetInnerHTML: { __html: cell } },[]),
     csvFormatter: (cell, row, rowIndex, colIndex) =>
@@ -40,27 +44,33 @@ const columns = [{
 const columnsCopy = [{
   dataField: 'project',
   text: 'Project',
-  sort: true
+  sort: true,
+  editable: false
 }, {
   dataField: 'title',
   text: 'Title',
-  sort: true
+  sort: true,
+  editable: false
 }, {
   dataField: 'status',
   text: 'Status',
-  sort: true
+  sort: true,
+  editable: false
 }, {
   dataField: 'type',
   text: 'Type',
-  sort: true
+  sort: true,
+  editable: false
 }, {
   dataField: 'updated',
   text: 'Updated',
-  sort: true
+  sort: true,
+  editable: false
 }, {
   dataField: 'expiration',
   text: 'Expiration',
-  sort: true
+  sort: true,
+  editable: false
 }];
 
 const Comments = hh(class Comments extends Component {

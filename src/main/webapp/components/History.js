@@ -10,26 +10,31 @@ import { formatDataPrintableFormat } from '../util/TableUtil';
 
 const defaultSorted = [{
   dataField: 'date',
-  order: 'desc'
+  order: 'desc',
+  editable: false
 }];
 
 const columns = [{
     dataField: 'id',
     text: 'Id',
     hidden: true,
+    editable: false,
     csvExport : false
   }, {
     dataField: 'author',
     text: 'Author',
+    editable: false,
     sort: true
   }, {
     dataField: 'created',
     text: 'Date',
-    sort: true
+    sort: true,
+    editable: false
   }, {
     dataField: 'summary',
     text: 'Summary',
     sort: true,
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) =>
       div({dangerouslySetInnerHTML: { __html: cell } },[]),
     csvFormatter: (cell, row, rowIndex, colIndex) =>
