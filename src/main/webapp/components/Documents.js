@@ -47,7 +47,7 @@ const buttonToolbarCell = {
   marginTop: '-2px'
 };
 
-const columns = (_this) => [
+const columns = [
   {
     dataField: 'id',
     text: 'Id',
