@@ -6,6 +6,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 class SampleCollectionAutocomplete extends React.Component {
     constructor(props) {
         super(props);
+        this.sampleCollectionRef = React.createRef();
         this.state = {
             onChange: props.onChange,
             allowNew: false,
@@ -18,15 +19,15 @@ class SampleCollectionAutocomplete extends React.Component {
     }
 
     clear() {
-        this.refs.sampleCollection.getInstance().clear();
-        this.refs.sampleCollection.getInstance().blur();
+        this.sampleCollectionRef.current.clear()
+        this.sampleCollectionRef.current.blur()
     }
 
     componentDidMount() {
         const defaultOptions = this.state.options;
         if (defaultOptions.length === 1) {
             const option = defaultOptions[0];
-            const instance = this.refs.sampleCollection.getInstance();
+            const instance = this.sampleCollectionRef.current;
             instance.setState({
                 text: SampleCollectionAutocomplete.formatLabel(option)
             })
@@ -41,7 +42,8 @@ class SampleCollectionAutocomplete extends React.Component {
         return (
             <div>
                 <AsyncTypeahead
-                    ref="sampleCollection"
+                    id="sampleCollection"
+                    ref={this.sampleCollectionRef}
                     labelKey={option => SampleCollectionAutocomplete.formatLabel(option)}
                     align={'left'}
                     isLoading={this.state.isLoading}

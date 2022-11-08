@@ -7,6 +7,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.css';
 class UserAutocomplete extends React.Component {
     constructor(props) {
         super(props);
+        this.userNameRef = React.createRef();
         this.state = {
             onChange: props.onChange,
             allowNew: false,
@@ -19,15 +20,15 @@ class UserAutocomplete extends React.Component {
     }
 
     clear() {
-        this.refs.userName.getInstance().clear();
-        this.refs.userName.getInstance().blur();
+        this.userNameRef.current.clear()
+        this.userNameRef.current.blur()
     }
 
     componentDidMount() {
         const defaultOptions = this.state.options;
         if (defaultOptions.length === 1) {
             const option = defaultOptions[0];
-            const instance = this.refs.userName.getInstance();
+            const instance = this.userNameRef.current;
             instance.setState({
                 text: UserAutocomplete.formatLabel(option)
             })
@@ -42,7 +43,8 @@ class UserAutocomplete extends React.Component {
         return (
             <div>
                 <AsyncTypeahead
-                    ref="userName"
+                    id="userName"
+                    ref={this.userNameRef}
                     labelKey={option => UserAutocomplete.formatLabel(option)}
                     align={'left'}
                     isLoading={this.state.isLoading}
