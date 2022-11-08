@@ -196,7 +196,7 @@ export const Documents = hh(class Documents extends Component {
       error: false,
       dropEvent: null,
       showSaveAndCancel: false,
-      columns: [
+      columns: (_this) => [
         {
           dataField: 'id',
           text: 'Id',
@@ -443,7 +443,7 @@ export const Documents = hh(class Documents extends Component {
         TableComponent({
           remoteProp: false,
           data: this.props.documents,
-          columns: this.state.columns,
+          columns: this.state.columns(this),
           keyField: 'id',
           search: true,
           fileName: 'ORSP',

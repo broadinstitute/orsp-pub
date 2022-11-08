@@ -87,7 +87,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
       issue: {},
       showSuccessClarification: false,
       showSaveAndCancel: false,
-      columns: [{
+      columns: (_this) => [{
         dataField: 'id',
         text: 'Id',
         hidden: true,
@@ -309,7 +309,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
           search : false,
           remoteProp : false,
           data: consent.attachments,
-          columns: this.state.columns,
+          columns: this.state.columns(this),
           keyField: 'id',
           defaultSorted: defaultSorted,
           fileName: '_',
