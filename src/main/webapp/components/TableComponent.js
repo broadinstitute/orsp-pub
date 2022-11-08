@@ -1,6 +1,7 @@
 import React from 'react';
 import { Component, Fragment } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
+import cellEditFactory from 'react-bootstrap-table2-editor';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { CSVExport, Search } from 'react-bootstrap-table2-toolkit';
 import { h, div, hh, span } from 'react-hyperscript-helpers';
