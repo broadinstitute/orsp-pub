@@ -25,12 +25,14 @@ const columns = [
     dataField: 'id',
     text: 'id',
     hidden: true,
+    editable: false,
     csvExport: false
   },
   {
     dataField: 'projectKey',
     text: 'Project',
     sort: true,
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) => {
       return div({}, [
         h(Link, { to: { pathname: '/project/main', search: '?projectKey=' + row.projectKey}}, [row.projectKey])
@@ -41,6 +43,7 @@ const columns = [
     dataField: 'consentKey',
     text: 'Consent',
     sort: true,
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) => {
       return div({}, [
         h(Link, { to: { pathname: '/newConsentGroup/main', search: '?consentKey=' + row.consentKey}}, [row.consentKey])
@@ -51,6 +54,7 @@ const columns = [
     dataField: 'sampleCollectionId',
     text: 'Sample Collection',
     sort: true,
+    editable: false,
     csvFormatter: (cell, row, rowIndex, colIndex) =>
      !isEmpty(cell) ? cell : ''
   }, 
@@ -58,6 +62,7 @@ const columns = [
     dataField: 'status',
     text: 'Status',
     sort: true,
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) =>
       span({ title: row.status }, [row.status]),
     csvFormatter: (cell, row, rowIndex, colIndex) =>

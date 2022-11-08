@@ -25,12 +25,14 @@ const columns = [
     dataField: 'id',
     text: 'Id',
     hidden: true,
+    editable: false,
     csvExport : false
   } ,
   {
     dataField: 'type',
     text: 'Issue Type',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.fundingReport.issueTypeWidth};
     } 
@@ -39,6 +41,7 @@ const columns = [
     dataField: 'projectKey',
     text: 'Project Key',
     sort: true,
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) =>
       div({},[
         a({ href: handleRedirectToProject(component.serverURL, row.projectKey) },[row.projectKey])
@@ -50,6 +53,7 @@ const columns = [
   dataField: 'summary',
     text: 'Title',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.fundingReport.titleWidth };
     }
@@ -57,6 +61,7 @@ const columns = [
     dataField: 'status',
     text: 'Status',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.fundingReport.statusWidth };
     }
@@ -64,6 +69,7 @@ const columns = [
     dataField: 'protocol',
     text: 'Protocol',
     sort: false,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.fundingReport.protocolWidth };
     },
@@ -73,6 +79,7 @@ const columns = [
     dataField: 'pis',
     text: 'PIs',
     sort: false,
+    editable: false,
     classes: 'ellipsis-column',
     formatter: (cell, row, rowIndex, colIndex) =>
       span({title: [row.pis]},[
@@ -87,6 +94,7 @@ const columns = [
     dataField: 'source',
     text: 'Funding Source',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.fundingReport.generalWidth };
     }
@@ -94,6 +102,7 @@ const columns = [
     dataField: 'name',
     text: 'Funding Name',
     sort: true,
+    editable: false,
     classes: 'ellipsis-column',
     formatter: (cell, row, rowIndex, colIndex) =>
       span({title: [row.name]},[
@@ -106,6 +115,7 @@ const columns = [
     dataField: 'awardNumber',
     text: 'Award Number',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.fundingReport.generalWidth };
     },

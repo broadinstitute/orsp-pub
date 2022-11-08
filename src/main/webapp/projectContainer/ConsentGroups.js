@@ -16,12 +16,14 @@ const columns = (cThis) => [{
   dataField: 'id',
   text: 'Id',
   hidden: true,
+  editable: false,
   csvExport : false
 },
 {
   dataField: 'uuid',
   text: '',
   style: { pointerEvents: 'auto' },
+  editable: false,
   headerStyle: (column, colIndex) => {
     return {
       width: '65px',
@@ -36,11 +38,13 @@ const columns = (cThis) => [{
 },
 {
   dataField: 'fileType',
-  text: 'Attachment Type'
+  text: 'Attachment Type',
+  editable: false
 }, {
   dataField: 'fileName',
   text: 'File Name',
   style: { pointerEvents: 'auto' },
+  editable: false,
   formatter: (cell, row, rowIndex, colIndex) =>
     a(formatUrlDocument(row), [row.fileName])
 },{
@@ -48,11 +52,13 @@ const columns = (cThis) => [{
   text: 'File Description'
 },{
   dataField: 'creator',
-  text: 'Author'
+  text: 'Author',
+  editable: false
 },
 {
   dataField: 'creationDate',
   text: 'Created',
+  editable: false,
   formatter: (cell, row, rowIndex, colIndex) =>
     isEmpty(row.creationDate) ? '' : parseDate(row.creationDate)
 }
@@ -79,7 +85,64 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
       actionConsentKey: '',
       fileIdToRemove: '',
       issue: {},
-      showSuccessClarification: false
+      showSuccessClarification: false,
+      showSaveAndCancel: false,
+      columns: [{
+        dataField: 'id',
+        text: 'Id',
+        hidden: true,
+        editable: false,
+        csvExport : false
+      },
+      {
+        dataField: 'uuid',
+        text: '',
+        style: { pointerEvents: 'auto' },
+        editable: false,
+        headerStyle: (column, colIndex) => {
+          return {
+            width: '65px',
+          };
+        },
+        formatter: (cell, row, rowIndex, colIndex) =>
+          button({
+            isRendered: component.isAdmin,
+            className: 'btn btn-default btn-xs link-btn',
+            onClick: () => cThis.removeAttachedDocument(row)
+          },["Delete"])
+      },
+      {
+        dataField: 'fileType',
+        text: 'Attachment Type',
+        editable: false
+      }, {
+        dataField: 'fileName',
+        text: 'File Name',
+        style: { pointerEvents: 'auto' },
+        editable: false,
+        formatter: (cell, row, rowIndex, colIndex) =>
+          a(formatUrlDocument(row), [row.fileName])
+      },{
+        dataField: 'description',
+        text: 'File Description',
+        events: {
+          onClick: (e) => {
+            e.detail === 2 ? this.saveAndCancelToggle() : undefined
+          }
+        }
+      },{
+        dataField: 'creator',
+        text: 'Author',
+        editable: false
+      },
+      {
+        dataField: 'creationDate',
+        text: 'Created',
+        editable: false,
+        formatter: (cell, row, rowIndex, colIndex) =>
+          isEmpty(row.creationDate) ? '' : parseDate(row.creationDate)
+      }
+      ]
     };
   }
 
@@ -246,7 +309,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
           search : false,
           remoteProp : false,
           data: consent.attachments,
-          columns: columns(this),
+          columns: this.state.columns,
           keyField: 'id',
           defaultSorted: defaultSorted,
           fileName: '_',
@@ -260,7 +323,9 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
             submittedToIRBHandler: this.submittedToIRB,
             requestClarificationHandler: this.requestClarification
           },
-          documentDescriptionEdit: this.documentDescriptionEdit
+          showSaveAndCancel: this.state.showSaveAndCancel,
+          saveHandler: this.saveHandler,
+          cancelHandler: this.cancelHandler
         }
       });
     }
@@ -287,6 +352,21 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
       prev.showConfirmationModal = true;
       return prev;
     });
+  }
+
+  saveAndCancelToggle() {
+    this.setState({
+      showSaveAndCancel: !this.state.showSaveAndCancel
+    })
+  }
+
+  saveHandler(data) {
+    this.saveAndCancelToggle();
+    console.log(data);
+  }
+
+  cancelHandler() {
+    this.saveAndCancelToggle();
   }
 
   render() {

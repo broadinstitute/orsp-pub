@@ -67,11 +67,13 @@ export const QA_REPORT_COLUMNS = [{
   dataField: 'id',
   text: 'Id',
   hidden: true,
+  editable: false,
   csvExport : false
 }, {
   dataField: 'projectKey',
   text: 'Project',
   sort: true,
+  editable: false,
   formatter: (cell, row, rowIndex, colIndex) =>
     h(Link,{
       to: '/statusEvent/projectReport?projectKey=' + row.projectKey
@@ -79,15 +81,18 @@ export const QA_REPORT_COLUMNS = [{
 }, {
   dataField: 'type',
   text: 'Type',
-  sort: true
+  sort: true,
+  editable: false
 }, {
   dataField: 'status',
   text: 'Status',
-  sort: true
+  sort: true,
+  editable: false
 }, {
   dataField: 'age',
   text: 'Days since approval',
   sort: true,
+  editable: false,
   formatter: (cell, row, rowIndex, colIndex) =>
     formatAge(row.age),
   csvFormatter: (cell, row, rowIndex, colIndex) =>
@@ -95,7 +100,8 @@ export const QA_REPORT_COLUMNS = [{
 }, {
   dataField: 'actor',
   text: 'Assignees',
-  sort: true
+  sort: true,
+  editable: false
 }];
 
 export const SIZE_PER_PAGE_LIST = [
@@ -105,7 +111,8 @@ export const SIZE_PER_PAGE_LIST = [
 
 export const defaultSorted = [{
   dataField: 'date',
-  order: 'desc'
+  order: 'desc',
+  editable: false
 }];
 
 export const COLUMNS_TO_HIDE_FROM_EXCEL = ['attachments', 'reporter', 'requestDate', 'reviewCategory', 'summary', 'issueStatus'];
@@ -124,11 +131,13 @@ export const PROJECT_COLUMNS = [{
   dataField: PROJECT_DATA_FIELD.ID,
   text: 'Id',
   hidden: true,
+  editable: false,
   csvExport : false
 }, {
   dataField: PROJECT_DATA_FIELD.SUMMARY,
   text: 'Status',
   sort: true,
+  editable: false,
   headerStyle: (column, colIndex) => {
     return {
       width: '484px',
@@ -138,6 +147,7 @@ export const PROJECT_COLUMNS = [{
   dataField: PROJECT_DATA_FIELD.AUTHOR,
   text: 'Author',
   sort: true,
+  editable: false,
   headerStyle: (column, colIndex) => {
     return {
       width: '139px',
@@ -147,6 +157,7 @@ export const PROJECT_COLUMNS = [{
   dataField: PROJECT_DATA_FIELD.CREATED,
   text: 'Status Date',
   sort: true,
+  editable: false,
   headerStyle: (column, colIndex) => {
     return {
       width: '241px',
@@ -159,6 +170,7 @@ export const PROJECT_COLUMNS = [{
   dataField: PROJECT_DATA_FIELD.DURATION,
   text: 'Duration',
   sort: true,
+  editable: false,
   headerStyle: (column, colIndex) => {
     return {
       width: '235px',
@@ -184,71 +196,85 @@ export const COMPLIANCE_REPORT_COLUMNS = [
   {
     dataField: 'projectKey',
     text: 'Project',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'firstNameOfInvestigator',
     text: 'First name of investigator',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'lastNameOfInvestigator',
     text: 'Last name of investigator',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'degree',
     text: 'Degree(s) of investigator',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'typeOfInitialReview',
     text: 'Type of initial review',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'biomedical',
     text: 'Biomedical or Non-Biomedical study',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'submittedDate',
     text: 'Date submitted',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'approveDate',
     text: 'Date approved',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'daysFromSubmissionToApproval',
     text: 'Time in days from submission to approval',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'funding',
     text: 'Funding source(s)',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'numberofOtherEvents',
     text: 'Number of "Other Events" reported for each IRB project',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'eventCreatedDates',
     text: 'Dates that Other Events were entered',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'financialConflict',
     text: 'Financial conflict',
-    sort: true
+    sort: true,
+    editable: false
   },
   {
     dataField: 'financialConflictDescription',
     text: 'Financial Conflict Description',
-    sort: true
+    sort: true,
+    editable: false
   }
 ]

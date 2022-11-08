@@ -24,12 +24,14 @@ const columns = [
     dataField: 'id',
     text: 'id',
     hidden: true,
+    editable: false,
     csvExport : false
   } ,
   {
     dataField: 'projectKey',
     text: 'Project',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.reviewCategories.projectKeyWidth};
     },
@@ -49,15 +51,17 @@ const columns = [
     dataField: 'summary',
     text: 'Summary',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.reviewCategories.summaryWidth};
     },
     formatter: (cell, row, rowIndex, colIndex) =>
     span({title: row.summary},[row.summary])
   }, {
-  dataField: 'status',
+    dataField: 'status',
     text: 'Status',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.reviewCategories.statusWidth};
     },
@@ -67,6 +71,7 @@ const columns = [
     dataField: 'reviewCategory',
     text: 'Review Category',
     sort: false,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.reviewCategories.reviewCategoryWidth};
     } ,

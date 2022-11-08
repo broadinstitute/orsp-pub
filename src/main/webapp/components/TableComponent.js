@@ -62,16 +62,19 @@ export const TableComponent = hh(class TableComponent extends Component {
                     </button>
                     : ''}
                   <hr/>
+                  { this.props.showSaveAndCancel ? <button onClick={() => this.props.saveHandler(his.node.table.props.data)} className={ "btn buttonSecondary pull-right" }>Save</button> : undefined }
+                  { this.props.showSaveAndCancel ? <button onClick={() => this.props.cancelHandler()} className={ "btn buttonSecondary pull-right" }>Cancel</button> : undefined }
                 </span>
                 : ''
               }
               <BootstrapTable
+                ref={n => {this.node = n}}
                 remote= {{
                   filter: remoteProp,
                   pagination: remoteProp,
                   sort: remoteProp,
-                  cellEdit: false
                 }}
+                cellEdit={ !component.isViewer ? cellEditFactory({ mode: 'dbclick', blurToSave: true }) : false }
                 pagination= {
                   this.props.pagination ?
                   paginationFactory({
