@@ -59,11 +59,11 @@ export const TableComponent = hh(class TableComponent extends Component {
                     </button>
                     : ''}
                   <hr/>
-                  { this.props.showSaveAndCancel ? <button onClick={() => this.props.saveHandler(his.node.table.props.data)} className={ "btn buttonSecondary pull-right" }>Save</button> : undefined }
-                  { this.props.showSaveAndCancel ? <button onClick={() => this.props.cancelHandler()} className={ "btn buttonSecondary pull-right" }>Cancel</button> : undefined }
                 </span>
                 : ''
               }
+              { this.props.showSaveAndCancel ? <button onClick={() => this.props.saveHandler(this.node.table.props.data)} className={ "btn buttonSecondary pull-right" }>Save</button> : undefined }
+              { this.props.showSaveAndCancel ? <button onClick={() => this.props.cancelHandler()} className={ "btn buttonSecondary pull-right" }>Cancel</button> : undefined }
               <BootstrapTable
                 ref={n => {this.node = n}}
                 remote= {{
