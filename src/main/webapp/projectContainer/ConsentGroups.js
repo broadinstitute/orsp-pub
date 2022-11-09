@@ -127,7 +127,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
         text: 'File Description',
         events: {
           onClick: (e) => {
-            e.detail === 2 ? this.saveAndCancelToggle() : undefined
+            e.detail === 2 ? this.saveAndCancelShow() : undefined
           }
         }
       },{
@@ -346,20 +346,20 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
     });
   }
 
-  saveAndCancelToggle() {
+  saveAndCancelShow() {
     this.setState({
       showSaveAndCancel: true
     })
   }
 
-  saveHandler(data) {
+  saveHandler = (data) => {
     this.setState({
       showSaveAndCancel: false
     })
     console.log(data);
   }
 
-  cancelHandler() {
+  cancelHandler = () => {
     this.setState({
       showSaveAndCancel: false
     })
