@@ -348,17 +348,21 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
 
   saveAndCancelToggle() {
     this.setState({
-      showSaveAndCancel: !this.state.showSaveAndCancel
+      showSaveAndCancel: true
     })
   }
 
   saveHandler(data) {
-    this.saveAndCancelToggle();
+    this.setState({
+      showSaveAndCancel: false
+    })
     console.log(data);
   }
 
   cancelHandler() {
-    this.saveAndCancelToggle();
+    this.setState({
+      showSaveAndCancel: false
+    })
   }
 
   render() {
