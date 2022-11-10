@@ -4,7 +4,7 @@ import { Panel } from './Panel';
 import AddDocumentDialog from './AddDocumentDialog'
 import { KeyDocumentsEnum } from '../util/KeyDocuments';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import { DocumentDescription, DocumentHandler } from '../util/ajax';
+import { DocumentDescription, DocumentHandler, User } from '../util/ajax';
 import DataUseLetter from './DataUseLetterLink';
 import './Documents.css';
 import './Table.css';
@@ -559,4 +559,4 @@ const Documents = hh(class Documents extends Component {
   }
 });
 
-export default LoadingWrapper(Documents, true)
+export default LoadingWrapper(Documents)
