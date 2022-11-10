@@ -54,6 +54,9 @@ enum EventType {
     // Data Use Letter Events
     SUBMIT_DUL,
     SEND_DUL_LINK_BY_EMAIL,
-    COPY_DUL_LINK_TO_CLIPBOARD
+    COPY_DUL_LINK_TO_CLIPBOARD,
+
+    //Document description Event
+    DESCRIPTION_UPDATED
 }
 
