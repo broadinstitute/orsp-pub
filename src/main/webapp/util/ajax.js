@@ -609,9 +609,3 @@ export const LoginText = {
     return axios.get(UrlConstants.LoginTextResponseUrl);
   }
 };
-
-export const DocumentDescription = {
-  updateDocumentDescription(uuid, description, projectKey, creator) {
-    return axios.put(UrlConstants.updateDocumentDescription, {uuid: uuid, description: description, projectKey: projectKey, creator: creator})
-  }
-}
