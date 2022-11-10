@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { a, button, h, h3, hh } from 'react-hyperscript-helpers';
-import { ConsentCollectionLink, ConsentGroup, DocumentDescription, DocumentHandler, User } from '../util/ajax';
+import { ConsentCollectionLink, ConsentGroup, DocumentHandler } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import RequestClarificationDialog from '../components/RequestClarificationDialog';
 import { CollapsibleElements } from '../CollapsiblePanel/CollapsibleElements';
@@ -355,31 +355,8 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
   saveHandler = (data) => {
     this.setState({
       showSaveAndCancel: false
-    }, async () => {
-      let name;
-      await User.getUserSession().then(user => {
-        name = user.data.displayName;
-      })
-      if (this.props.documents) {
-        this.props.document.forEach(doc => {
-          data.forEach(editedDoc => {
-            if (doc.uuid === editedDoc.uuid) {
-              if (doc.description !== editedDoc.description) {
-                console.log(editedDoc);
-                this.props.showSpinner();
-                DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name)
-                .then(() => this.props.hideSpinner())
-                .catch(err => {
-                  console.log(err)
-                  this.props.hideSpinner();
-                  throw err;
-                })
-              }
-            }
-          })
-        })
-      }
     })
+    console.log(data);
   }
 
   cancelHandler = () => {
