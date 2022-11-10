@@ -1913,4 +1913,13 @@ class QueryService implements Status {
         result
     }
 
+    void updateDocumentDescriptionByUuid(String uuid, String description) {
+        final session = sessionFactory.currentSession
+        final String query = 'UPDATE storage_document SET description= :description where uuid= :uuid'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('description', description)
+        sqlQuery.setParameter('uuid', uuid)
+        sqlQuery.executeUpdate()
+    }
+
 }
