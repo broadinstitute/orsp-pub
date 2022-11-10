@@ -15,7 +15,6 @@ import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.StorageDocument
-import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
 
 
@@ -174,22 +173,5 @@ class FileHelperController extends AuthenticatedController{
             response.status = 400
             render(['message': 'Unable to delete a file with no Id.'] as JSON)
         }
-    }
-
-    def updateDocumentDescriptionByUuid() {
-        Map<String, Object> docEditDetails = IssueUtils.getJson(Map.class, request.JSON)
-        String uuid = docEditDetails.get('uuid')
-        String description = docEditDetails.get('description')
-        String projectKey = docEditDetails.get('projectKey')
-        String creator = docEditDetails.get('creator')
-        try {
-            if (queryService.updateDocumentDescriptionByUuid(uuid, description)) {
-                persistenceService.saveEvent(projectKey, creator, "Document Description updated to"+description, "DESCRIPTION_UPDATED")
-            }
-            response.status = 200
-        } catch (Exception e) {
-            handleException(e)
-        }
-
     }
 }

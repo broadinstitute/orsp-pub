@@ -4,7 +4,7 @@ import { Panel } from './Panel';
 import AddDocumentDialog from './AddDocumentDialog'
 import { KeyDocumentsEnum } from '../util/KeyDocuments';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import { DocumentDescription, DocumentHandler, User } from '../util/ajax';
+import { DocumentHandler } from '../util/ajax';
 import DataUseLetter from './DataUseLetterLink';
 import './Documents.css';
 import './Table.css';
@@ -15,8 +15,6 @@ import { createLinkToProject, DEFAULT_SORTED, downloadUrlDocument } from '../uti
 import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import moment from 'moment';
 import { Btn } from './Btn';
-import LoadingWrapper from './LoadingWrapper';
-import { async } from 'regenerator-runtime';
 
 const styles = {
   buttonWithLink: {
@@ -186,7 +184,7 @@ const addDocumentBtn = {
   position: 'absolute', right: '15px', zIndex: '1'
 };
 
-const Documents = hh(class Documents extends Component {
+export const Documents = hh(class Documents extends Component {
 
   constructor(props) {
     super(props);
@@ -329,7 +327,7 @@ const Documents = hh(class Documents extends Component {
     this.setState({ 
       showAddKeyDocuments: !this.state.showAddKeyDocuments,
       dropEvent: null
-    });
+    }, () => console.log(this.props.documents));
   };
 
   remove = (row) => {
@@ -399,30 +397,8 @@ const Documents = hh(class Documents extends Component {
   saveHandler = (data) => {
     this.setState({
       showSaveAndCancel: false
-    }, async () => {
-      let name;
-      await User.getUserSession().then(user => {
-        name = user.data.displayName;
-      })
-      if (this.props.documents) {
-        this.props.document.forEach(doc => {
-          data.forEach(editedDoc => {
-            if (doc.uuid === editedDoc.uuid) {
-              if (doc.description !== editedDoc.description) {
-                this.props.showSpinner();
-                DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name)
-                .then(() => this.props.hideSpinner())
-                .catch(err => {
-                  console.log(err)
-                  this.props.hideSpinner();
-                  throw err;
-                })
-              }
-            }
-          })
-        })
-      }
     })
+    console.log(data);
   }
 
   cancelHandler = () => {
@@ -558,5 +534,3 @@ const Documents = hh(class Documents extends Component {
     ])
   }
 });
-
-export default LoadingWrapper(Documents)
