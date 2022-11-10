@@ -365,7 +365,6 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
           data.forEach(editedDoc => {
             if (doc.uuid === editedDoc.uuid) {
               if (doc.description !== editedDoc.description) {
-                console.log(editedDoc);
                 this.props.showSpinner();
                 DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name)
                 .then(() => this.props.hideSpinner())
