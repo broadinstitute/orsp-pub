@@ -25,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile
 class FileHelperController extends AuthenticatedController{
 
     ConsentService consentService
+    QueryService queryService
+    PersistenceService persistenceService
 
     def attachDocument() {
         JsonParser parser = new JsonParser()
