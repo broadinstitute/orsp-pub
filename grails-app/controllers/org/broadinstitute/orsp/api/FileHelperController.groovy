@@ -25,8 +25,6 @@ import org.springframework.web.multipart.MultipartFile
 class FileHelperController extends AuthenticatedController{
 
     ConsentService consentService
-    QueryService queryService
-    PersistenceService persistenceService
 
     def attachDocument() {
         JsonParser parser = new JsonParser()
@@ -180,18 +178,4 @@ class FileHelperController extends AuthenticatedController{
         }
     }
 
-    def updateDocumentDescriptionByUuid() {
-        Map<String, Object> docEditDetails = IssueUtils.getJson(Map.class, request.JSON)
-        String uuid = docEditDetails.get('uuid')
-        String description = docEditDetails.get('description')
-        try {
-            if (queryService.updateDocumentDescriptionByUuid(uuid, description)) {
-                persistenceService.saveEvent(docEditDetails.get('projectKey'), docEditDetails.get('creator'), "Document Description updated to "+description, "DESCRIPTION_UPDATED")
-            }
-            response.status = 200
-        } catch (Exception e) {
-            handleException(e)
-        }
-
-    }
 }
