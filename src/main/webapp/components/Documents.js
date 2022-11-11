@@ -15,6 +15,7 @@ import { createLinkToProject, DEFAULT_SORTED, downloadUrlDocument } from '../uti
 import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import moment from 'moment';
 import { Btn } from './Btn';
+import LoadingWrapper from './LoadingWrapper';
 
 const styles = {
   buttonWithLink: {
@@ -554,3 +555,4 @@ export const Documents = hh(class Documents extends Component {
     ])
   }
 });
+
