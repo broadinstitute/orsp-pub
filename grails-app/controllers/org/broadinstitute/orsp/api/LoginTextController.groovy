@@ -47,20 +47,19 @@ class LoginTextController {
     }
 
     def updateDocumentDescriptionByUuid() {
-//        Map<String, Object> docEditDetails = IssueUtils.getJson(Map.class, request.JSON)
-//        String uuid = docEditDetails.get('uuid')
-//        String description = docEditDetails.get('description')
-//        String projectKey = docEditDetails.get('projectKey')
-//        String creator = docEditDetails.get('creator')
-//        try {
-//            if (queryService.updateDocumentDescriptionByUuid(uuid, description)) {
-//                persistenceService.saveEvent(projectKey, creator, "Document Description updated to"+description, EventType.DESCRIPTION_UPDATED)
-//            }
-//            response.status = 200
-//        } catch (Exception e) {
-//            handleException(e)
-//        }
-//
+        Map<String, Object> docEditDetails = IssueUtils.getJson(Map.class, request.JSON)
+        String uuid = docEditDetails.get('uuid')
+        String description = docEditDetails.get('description')
+        String projectKey = docEditDetails.get('projectKey')
+        String creator = docEditDetails.get('creator')
+        try {
+            if (queryService.updateDocumentDescriptionByUuid(uuid, description)) {
+                persistenceService.saveEvent(projectKey, creator, "Document Description updated to"+description, EventType.DESCRIPTION_UPDATED)
+            }
+            response.status = 200
+        } catch (Exception e) {
+            handleException(e)
+        }
     }
 
 }

@@ -151,7 +151,7 @@ class UrlMappings {
         '/api/login-text-response'(controller: 'loginText', action: 'getLoginTextResponse', method: 'GET')
 
         // Document description updating endpoint
-        //'api/update-doc-description'(controller: 'loginText', action: 'updateDocumentDescriptionByUuid', method: 'PUT')
+        '/api/update-document-description'(controller: 'loginText', action: 'updateDocumentDescriptionByUuid', method: 'PUT')
 
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
