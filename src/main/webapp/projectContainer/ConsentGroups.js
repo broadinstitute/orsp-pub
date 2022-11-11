@@ -362,7 +362,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
         name = user.data.displayName;
       })
       if (documents) {
-        document.forEach(doc => {
+        documents.forEach(doc => {
           data.forEach(editedDoc => {
             if (doc.uuid === editedDoc.uuid) {
               if (doc.description !== editedDoc.description) {
