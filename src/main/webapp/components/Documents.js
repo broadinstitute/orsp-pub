@@ -402,6 +402,7 @@ export const Documents = hh(class Documents extends Component {
       await User.getUserSession().then(user => {
         name = user.data.displayName;
       })
+      console.log(this.props.documents)
       if (this.props.documents) {
         this.props.documents.forEach(doc => {
           data.forEach(editedDoc => {
