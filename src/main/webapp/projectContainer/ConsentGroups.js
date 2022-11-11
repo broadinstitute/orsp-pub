@@ -357,12 +357,11 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
       showSaveAndCancel: false
     }, async () => {
       let name;
-      let documents = this.props.documents
       await User.getUserSession().then(user => {
         name = user.data.displayName;
       })
-      if (documents) {
-        documents.forEach(doc => {
+      if (this.props.documents) {
+        this.props.documents.forEach(doc => {
           data.forEach(editedDoc => {
             if (doc.uuid === editedDoc.uuid) {
               if (doc.description !== editedDoc.description) {

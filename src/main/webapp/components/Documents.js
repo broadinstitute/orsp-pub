@@ -15,7 +15,6 @@ import { createLinkToProject, DEFAULT_SORTED, downloadUrlDocument } from '../uti
 import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import moment from 'moment';
 import { Btn } from './Btn';
-import LoadingWrapper from './LoadingWrapper';
 
 const styles = {
   buttonWithLink: {
@@ -400,12 +399,11 @@ export const Documents = hh(class Documents extends Component {
       showSaveAndCancel: false
     }, async () => {
       let name;
-      let documents = this.props.documents
       await User.getUserSession().then(user => {
         name = user.data.displayName;
       })
-      if (documents) 
-        documents.forEach(doc => {
+      if (this.props.documents) {
+        this.props.documents.forEach(doc => {
           data.forEach(editedDoc => {
             if (doc.uuid === editedDoc.uuid) {
               if (doc.description !== editedDoc.description) {
@@ -556,4 +554,3 @@ export const Documents = hh(class Documents extends Component {
     ])
   }
 });
-
