@@ -404,7 +404,7 @@ export const Documents = hh(class Documents extends Component {
       await User.getUserSession().then(user => {
         name = user.data.displayName;
       })
-      if (documents) {
+      if (documents) 
         documents.forEach(doc => {
           data.forEach(editedDoc => {
             if (doc.uuid === editedDoc.uuid) {
