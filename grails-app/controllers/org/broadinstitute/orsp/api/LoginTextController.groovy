@@ -46,7 +46,7 @@ class LoginTextController {
         }
     }
 
-//    def updateDocumentDescriptionByUuid() {
+    def updateDocumentDescriptionByUuid() {
 //        Map<String, Object> docEditDetails = IssueUtils.getJson(Map.class, request.JSON)
 //        String uuid = docEditDetails.get('uuid')
 //        String description = docEditDetails.get('description')
@@ -61,6 +61,6 @@ class LoginTextController {
 //            handleException(e)
 //        }
 //
-//    }
+    }
 
 }
