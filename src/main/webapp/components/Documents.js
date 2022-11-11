@@ -185,7 +185,7 @@ const addDocumentBtn = {
   position: 'absolute', right: '15px', zIndex: '1'
 };
 
-const Documents = hh(class Documents extends Component {
+export const Documents = hh(class Documents extends Component {
 
   constructor(props) {
     super(props);
@@ -409,12 +409,9 @@ const Documents = hh(class Documents extends Component {
             if (doc.uuid === editedDoc.uuid) {
               if (doc.description !== editedDoc.description) {
                 console.log(editedDoc);
-                this.props.showSpinner();
                 DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name)
-                .then(() => this.props.hideSpinner())
                 .catch(err => {
                   console.log(err)
-                  this.props.hideSpinner();
                   throw err;
                 })
               }
@@ -559,4 +556,3 @@ const Documents = hh(class Documents extends Component {
   }
 });
 
-export default LoadingWrapper(Documents)
