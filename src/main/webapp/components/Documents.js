@@ -406,7 +406,7 @@ export const Documents = hh(class Documents extends Component {
       await User.getUserSession().then(user => {
         name = user.data.displayName;
       })
-      DocumentHandler.attachedDocuments(this.props.docments[0].projectKey).then((docData) => {
+      DocumentHandler.attachedDocuments(this.props.documents[0].projectKey).then((docData) => {
         console.log(docData);
         docData.forEach(doc => {
           data.forEach(editedDoc => {
