@@ -410,12 +410,10 @@ export const Documents = hh(class Documents extends Component {
       })
       DocumentHandler.attachedDocuments(this.props.documents[0].projectKey).then((docData) => {
         let documentsData = JSON.parse(docData.data.documents);
-        console.log(documentsData);
         documentsData.forEach(doc => {
           editedDocsData.forEach(editedDoc => {
             if(doc.uuid === editedDoc.uuid) {
               if (doc.description !== editedDoc.description) {
-                console.log(editedDoc);
                 DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name).then(() => {
                   this.setState({
                     alert: 'Description updated successfully',

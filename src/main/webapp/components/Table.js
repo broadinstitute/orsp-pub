@@ -267,7 +267,6 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
-                width={styles.submissionComments}
               >{header.name}</TableHeaderColumn>
             }
             if (header.value === 'status') {
