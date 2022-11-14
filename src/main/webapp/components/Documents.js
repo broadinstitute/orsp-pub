@@ -16,6 +16,7 @@ import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import moment from 'moment';
 import { Btn } from './Btn';
 import { AlertMessage } from './AlertMessage';
+import LoadingWrapper from './LoadingWrapper';
 
 const styles = {
   buttonWithLink: {
@@ -185,7 +186,7 @@ const addDocumentBtn = {
   position: 'absolute', right: '15px', zIndex: '1'
 };
 
-export const Documents = hh(class Documents extends Component {
+const Documents = hh(class Documents extends Component {
 
 
   constructor(props) {
