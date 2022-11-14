@@ -397,19 +397,19 @@ export const Documents = hh(class Documents extends Component {
     })
   }
 
-  saveHandler = (data) => {
+  saveHandler = (editedDocsData) => {
     this.setState({
       showSaveAndCancel: false
     }, async () => {
       let name;
-      let documents = []
       await User.getUserSession().then(user => {
         name = user.data.displayName;
       })
       DocumentHandler.attachedDocuments(this.props.documents[0].projectKey).then((docData) => {
-        console.log(docData);
-        docData.forEach(doc => {
-          data.forEach(editedDoc => {
+        let documentsData = JSON.parse(docData.data.documents);
+        console.log(documentsData);
+        documentsData.forEach(doc => {
+          editedDocsData.forEach(editedDoc => {
             if(doc.uuid === editedDoc.uuid) {
               if (doc.description !== editedDoc.description) {
                 console.log(editedDoc);
