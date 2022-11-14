@@ -1,5 +1,5 @@
 import { Component, Fragment } from 'react';
-import Documents from '../components/Documents'
+import { Documents } from '../components/Documents'
 import { DocumentHandler, Project, User } from '../util/ajax';
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
