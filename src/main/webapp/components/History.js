@@ -45,7 +45,25 @@ export const History = hh(class History extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      history: []
+    }
   }
+
+  componentDidMount() {
+    this.getHistory();
+  }
+
+  getHistory() {
+    ProjectMigration.getHistory(this.props.projectKey).then(resp => {
+      if (this._isMounted) {
+        this.setState(prev => {
+          prev.history = resp.data;
+          return prev;
+        });
+      }
+    });
+  };
 
   printHistory = () => {
     let cols = columns.filter(el => el.dataField !== 'id');
@@ -61,7 +79,7 @@ export const History = hh(class History extends Component {
       h(Fragment, {}, [
         TableComponent({
           remoteProp: false,
-          data: this.props.history,
+          data: this.state.history || this.props.history,
           columns: columns,
           keyField: 'id',
           search: true,
