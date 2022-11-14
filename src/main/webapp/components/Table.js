@@ -244,7 +244,7 @@ export const Table = hh(class Table extends Component {
     let isKey = false;
     return (
       <BootstrapTable data={this.props.data}
-        cellEdit={cellEditProp}
+        cellEdit={ !component.isViewer ? cellEditProp : false }
         striped
         hover
         className='tableContainer'

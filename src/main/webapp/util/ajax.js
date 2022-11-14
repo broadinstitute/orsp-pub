@@ -611,7 +611,7 @@ export const LoginText = {
 };
 
 export const DocumentDescription = {
-  updateDocumentDescription(uuid, description, projectKey, creator) {
-    return axios.put(UrlConstants.updateDocumentDescription, {uuid: uuid, description: description, projectKey: projectKey, creator: creator})
+  updateDocumentDescription(uuid, description, projectKey, creator, fileType) {
+    return axios.put(UrlConstants.updateDocumentDescription, {uuid: uuid, description: description, projectKey: projectKey, creator: creator, fileType: fileType})
   }
 };
