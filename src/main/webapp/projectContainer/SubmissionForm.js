@@ -189,6 +189,18 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         comments: this.state.submissionInfo.comments,
         projectKey: this.state.submissionInfo.projectKey
       };
+      let editedDocs = this.state.viewDocDetails;
+      let documents = this.state.documents
+      editedDocs.forEach(editedDoc => {
+        documents.forEach(doc => {
+          if (doc.fileName === editedDoc.fileName && doc.fileDescription !== editedDoc.fileDescription) {
+            doc.fileDescription = editedDoc.fileDescription
+          }
+        })
+      })
+      this.setState({
+        documents: documents
+      })
 
       ProjectMigration.saveSubmission(submissionData, this.state.documents, this.state.params.submissionId).then(resp => {
         this.backToProject();
@@ -302,11 +314,12 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     })
     let viewDocDetail = {};
     this.setState(prev => {
-      viewDocDetail['fileDescription'] = doc.fileDescription;
-      let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: viewDocDetail.fileDescription };
+    
+      let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription };
       viewDocDetail['fileType'] = doc.fileKey;
       viewDocDetail['file'] = doc.file;
       viewDocDetail['fileName'] = doc.file.name;
+      viewDocDetail['fileDescription'] = doc.fileDescription;
       viewDocDetail['displayName'] = name;
       viewDocDetail['createdDate'] = createdDate;
       let documents = prev.documents;

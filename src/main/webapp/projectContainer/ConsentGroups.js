@@ -367,22 +367,26 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
       })
       DocumentHandler.attachedDocuments(this.props.documents[0].projectKey).then((docData) => {
         let documentsData = JSON.parse(docData.data.documents);
-        console.log(documentsData);
         documentsData.forEach(doc => {
           editedDocsData.forEach(editedDoc => {
             if(doc.uuid === editedDoc.uuid) {
               if (doc.description !== editedDoc.description) {
-                console.log(editedDoc);
+                this.props.showSpinner();
                 DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name).then(() => {
                   this.setState({
                     alert: 'Description updated successfully',
                     type: 'success'
+                  }, () => {
+                    this.props.hideSpinner();
                   })
                 }).catch(err => {
                   this.setState({
                     alert: 'Unexpected error occured',
                     type: 'danger'
-                  },() => console.log(err))
+                  },() => {
+                    console.log(err);
+                    this.props.hideSpinner();
+                  })
                 })
               }
             }
