@@ -53,9 +53,8 @@ class LoginTextController {
         String projectKey = docEditDetails.get('projectKey')
         String creator = docEditDetails.get('creator')
         try {
-            if (queryService.updateDocumentDescriptionByUuid(uuid, description)) {
-                persistenceService.saveEvent(projectKey, creator, "Document Description updated to"+description, EventType.DESCRIPTION_UPDATED)
-            }
+            queryService.updateDocumentDescriptionByUuid(uuid, description)
+            persistenceService.saveEvent(projectKey, creator, "Document Description updated to"+description, EventType.DESCRIPTION_UPDATED)
             response.status = 200
         } catch (Exception e) {
             handleException(e)

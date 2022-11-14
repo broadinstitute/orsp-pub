@@ -36,6 +36,12 @@ const styles = {
   }
 };
 
+const cellEditProp = {
+  mode: 'dbclick',
+  blurToSave: true,
+  // afterSaveCell: onAfterSaveCell  // a hook for after saving cell
+};
+
 export const Table = hh(class Table extends Component {
 
   constructor(props) {
@@ -238,6 +244,7 @@ export const Table = hh(class Table extends Component {
     let isKey = false;
     return (
       <BootstrapTable data={this.props.data}
+        cellEdit={cellEditProp}
         striped
         hover
         className='tableContainer'
@@ -255,11 +262,20 @@ export const Table = hh(class Table extends Component {
         {
           this.props.headers.map((header, index) => {
             isKey = (index === 0);
+            if(header.value === 'fileDescription') {
+              return <TableHeaderColumn
+                key={header.name}
+                dataField={header.value}
+                dataSort={true}
+                width={styles.submissionComments}
+              >{header.name}</TableHeaderColumn>
+            }
             if (header.value === 'status') {
               return <TableHeaderColumn key={header.name}
                 dataField={header.value}
                 dataFormat={this.formatStatusColumn}
                 dataSort={true}
+                editable={ false }
                 width={styles.statusWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'fileType') {
               return <TableHeaderColumn 
@@ -267,6 +283,7 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
+                editable={ false }
                 width={styles.fileTypeWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'docVersion') {
               return <TableHeaderColumn 
@@ -274,6 +291,7 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
+                editable={ false }
                 width={styles.docVersionWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'creator') {
               return <TableHeaderColumn 
@@ -281,29 +299,34 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
+                editable={ false }
                 width={styles.creatorWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'userName') {
               return <TableHeaderColumn 
                 isKey={isKey}
                 key={header.name}
                 dataField={header.value}
+                editable={ false }
                 width={styles.userNameWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'fileName') {
               return <TableHeaderColumn key={header.name}
                 dataField={header.value}
                 dataFormat={this.formatUrlDocument}
+                editable={ false }
                 dataSort={true}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'projectKey') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
                 dataField={header.value}
                 dataFormat={this.unlinkProject}
+                editable={ false }
                 dataSort={true}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'summary') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
                 dataField={header.value}
                 dataFormat={this.redirectToProject}
+                editable={ false }
                 dataSort={ true }>{header.name}</TableHeaderColumn>
             } else if (header.value === 'infoLink') {
               return <TableHeaderColumn isKey={isKey}
@@ -311,6 +334,7 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.redirectToInfoLink}
                 dataSort={ true }
+                editable={ false }
                 width={styles.infoLinkWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'creationDate') {
               return <TableHeaderColumn isKey={isKey}
@@ -318,41 +342,48 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.parseCreateDate}
                 dataSort={ true }
+                editable={ false }
                 width={styles.creationDateWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'remove') {
               return <TableHeaderColumn isKey={isKey}
                 dataField={header.value}
                 key={header.value}
                 dataFormat={this.formatRemoveBtn}
+                editable={ false }
                 width={styles.removeWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'removeFile') {
               return <TableHeaderColumn isKey={isKey}
                 dataField={header.value}
                 key={header.value}
                 dataFormat={this.formatRemoveBtn}
+                editable={ false }
                 width={styles.removeWidthFile}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'unlinkSampleCollection') {
               return <TableHeaderColumn isKey={isKey}
                 key={index.toString()}
                 dataField={header.value}
                 dataFormat={this.unlinkSampleCollectionButton}
+                editable={ false }
                 width={styles.unlinkSampleCollectionWidth}>{"Unlink"}</TableHeaderColumn>
             } else if (header.value === 'linkedProjectKey') {
               return <TableHeaderColumn isKey= {isKey}
                 key={header.name}
                 dataField={header.value}
+                editable={ false }
                 dataFormat={this.redirectToSampleCollectionLinkedProject}
                 dataSort={ true }>{header.name}</TableHeaderColumn>
             } else if (header.value === 'roles') {
               return <TableHeaderColumn isKey= {isKey}
                 key={header.name}
                 dataField={header.value}
+                editable={ false }
                 dataFormat={this.roleSelection}
                 >{header.name}</TableHeaderColumn>
             } else if (header.value === 'name') {
                 return <TableHeaderColumn isKey= {isKey}
                   key={header.name}
                   dataField={header.value}
+                  editable={ false }
                   dataFormat={this.organizationSelection}
                   >{header.name}</TableHeaderColumn>
             } else if (header.value ==='collectionName') {
@@ -360,17 +391,20 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.formatTooltip}
                 key={header.value}
+                editable={ false }
                 width={styles.collectionNameWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value ==='number') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
                 dataField={header.value}
+                editable={ false }
                 dataSort={ true }
                 width={styles.numberWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'comments') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
                 dataField={header.value}
+                editable={ false }
                 dataFormat={this.submissionEdit}
                 dataSort={ true }
                 width={styles.submissionComments}>{header.name}</TableHeaderColumn>
@@ -378,6 +412,7 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn
                 key={header.value}
                 dataField={header.value}
+                editable={ false }
                 dataFormat={this.documentLink}
                 dataSort={ true }
                 width={styles.submissionDocumentsWidth}>{header.name}</TableHeaderColumn>
@@ -385,6 +420,7 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
                 dataField={header.value}
+                editable={ false }
                 dataFormat={this.parseCreateDate}
                 dataSort={ true }
                 width={styles.createdWidth}>{header.name}</TableHeaderColumn>
@@ -392,6 +428,7 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
                 dataField={header.value}
+                editable={ false }
                 dataSort={true}>{header.name}</TableHeaderColumn>
             }
           })
