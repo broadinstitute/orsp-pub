@@ -402,6 +402,7 @@ export const Documents = hh(class Documents extends Component {
       showSaveAndCancel: false
     }, async () => {
       let name;
+      let documents = []
       await User.getUserSession().then(user => {
         name = user.data.displayName;
       })
