@@ -234,7 +234,10 @@ export const Documents = hh(class Documents extends Component {
           },
           events: {
             onClick: (e) => {
-              e.detail === 2 ? this.saveAndCancelShow() : undefined
+              e.detail === 2 ? this.saveAndCancelShow() : undefined;
+              this.setState({
+                alert: ''
+              })
             }
           }
         }, {
