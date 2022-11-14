@@ -7,7 +7,6 @@ import './Btn.css';
 import { exportData } from '../util/Utils';
 import { TableComponent } from './TableComponent';
 import { formatDataPrintableFormat } from '../util/TableUtil';
-import { ProjectMigration } from '../util/ajax';
 
 const defaultSorted = [{
   dataField: 'date',
@@ -55,17 +54,6 @@ export const History = hh(class History extends Component {
     this.getHistory();
   }
 
-  getHistory() {
-    ProjectMigration.getHistory(this.props.projectKey).then(resp => {
-      if (this._isMounted) {
-        this.setState(prev => {
-          prev.history = resp.data;
-          return prev;
-        });
-      }
-    });
-  };
-
   printHistory = () => {
     let cols = columns.filter(el => el.dataField !== 'id');
     let historyArray = formatDataPrintableFormat(this.props.history, cols);
@@ -80,7 +68,7 @@ export const History = hh(class History extends Component {
       h(Fragment, {}, [
         TableComponent({
           remoteProp: false,
-          data: this.state.history || this.props.history,
+          data:  this.props.history,
           columns: columns,
           keyField: 'id',
           search: true,
