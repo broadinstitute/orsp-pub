@@ -188,6 +188,7 @@ const addDocumentBtn = {
 
 const Documents = hh(class Documents extends Component {
 
+
   constructor(props) {
     super(props);
     this.state = {
@@ -573,5 +574,3 @@ const Documents = hh(class Documents extends Component {
     ])
   }
 });
-
-export default LoadingWrapper(Documents)

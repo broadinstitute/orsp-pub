@@ -1,5 +1,4 @@
 import { Component, Fragment } from 'react';
-import Documents from '../components/Documents';
 import { ConsentGroup, DocumentHandler, User } from '../util/ajax';
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
@@ -7,6 +6,7 @@ import { h, hh } from 'react-hyperscript-helpers';
 import '../index.css';
 import { AlertMessage } from '../components/AlertMessage';
 import LoadingWrapper from '../components/LoadingWrapper';
+import { Documents } from '../components/Documents';
 
 const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Component {
 
