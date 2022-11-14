@@ -15,6 +15,7 @@ import { createLinkToProject, DEFAULT_SORTED, downloadUrlDocument } from '../uti
 import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
 import moment from 'moment';
 import { Btn } from './Btn';
+import { AlertMessage } from './AlertMessage';
 
 const styles = {
   buttonWithLink: {
@@ -196,6 +197,8 @@ export const Documents = hh(class Documents extends Component {
       error: false,
       dropEvent: null,
       showSaveAndCancel: false,
+      alert: '',
+      alertType: '',
       columns: (_this) => [
         {
           dataField: 'id',
@@ -403,30 +406,36 @@ export const Documents = hh(class Documents extends Component {
       await User.getUserSession().then(user => {
         name = user.data.displayName;
       })
-      console.log(this.props.documents)
-      if (this.props.documents) {
-        documents = this.props.documents
-        documents.forEach(doc => {
+      DocumentHandler.attachedDocuments(this.props.docments[0].projectKey).then((docData) => {
+        console.log(docData);
+        docData.forEach(doc => {
           data.forEach(editedDoc => {
-            if (doc.uuid === editedDoc.uuid) {
+            if(doc.uuid === editedDoc.uuid) {
               if (doc.description !== editedDoc.description) {
                 console.log(editedDoc);
-                DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name)
-                .catch(err => {
-                  console.log(err)
-                  throw err;
+                DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name).then(() => {
+                  this.setState({
+                    alert: 'Description updated successfully',
+                    type: 'success'
+                  })
+                }).catch(err => {
+                  this.setState({
+                    alert: 'Unexpected error occured',
+                    type: 'danger'
+                  },() => console.log(err))
                 })
               }
             }
           })
         })
-      }
+      })
     })
   }
 
   cancelHandler = () => {
     this.setState({
-      showSaveAndCancel: false
+      showSaveAndCancel: false,
+      alert: ''
     })
   }
 
@@ -467,6 +476,11 @@ export const Documents = hh(class Documents extends Component {
         }, [
           p(['Drag and drop your documents here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
         ]),br(),
+        AlertMessage({
+          msg: this.state.alert,
+          show: this.state.alert !== '' ? true : false,
+          type: this.state.type
+        }),
         TableComponent({
           remoteProp: false,
           data: this.props.documents,
