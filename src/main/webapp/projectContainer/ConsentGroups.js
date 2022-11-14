@@ -358,6 +358,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
   }
 
   saveHandler = (editedDocsData) => {
+    this.props.showSpinner();
     this.setState({
       showSaveAndCancel: false
     }, async () => {
@@ -371,7 +372,6 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
           editedDocsData.forEach(editedDoc => {
             if(doc.uuid === editedDoc.uuid) {
               if (doc.description !== editedDoc.description) {
-                this.props.showSpinner();
                 DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name).then(() => {
                   this.setState({
                     alert: 'Description updated successfully',
