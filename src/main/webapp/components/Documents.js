@@ -186,7 +186,7 @@ const addDocumentBtn = {
   position: 'absolute', right: '15px', zIndex: '1'
 };
 
-const Documents = hh(class Documents extends Component {
+export const Documents = hh(class Documents extends Component {
 
 
   constructor(props) {
