@@ -302,11 +302,11 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
     })
     let viewDocDetail = {};
     this.setState(prev => {
-      let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription };
+      viewDocDetail['fileDescription'] = doc.fileDescription;
+      let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: viewDocDetail.fileDescription };
       viewDocDetail['fileType'] = doc.fileKey;
       viewDocDetail['file'] = doc.file;
       viewDocDetail['fileName'] = doc.file.name;
-      viewDocDetail['fileDescription'] = doc.fileDescription;
       viewDocDetail['displayName'] = name;
       viewDocDetail['createdDate'] = createdDate;
       let documents = prev.documents;
