@@ -1,5 +1,5 @@
 import { Component, Fragment } from 'react';
-import { Documents } from '../components/Documents';
+import Documents from '../components/Documents';
 import { ConsentGroup, DocumentHandler, User } from '../util/ajax';
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
