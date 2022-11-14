@@ -1,10 +1,10 @@
 import { Component, Fragment } from 'react';
-import { Documents } from '../components/Documents'
 import { DocumentHandler, Project, User } from '../util/ajax';
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { h, hh } from 'react-hyperscript-helpers';
 import { AlertMessage } from '../components/AlertMessage';
+import { Documents } from '../components/Documents';
 import LoadingWrapper from '../components/LoadingWrapper';
 
 const ProjectDocument = hh(class ProjectDocument extends Component {
