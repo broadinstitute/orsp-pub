@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { a, button, h, h3, hh } from 'react-hyperscript-helpers';
-import { ConsentCollectionLink, ConsentGroup, DocumentDescription, DocumentHandler, User } from '../util/ajax';
+import { ConsentCollectionLink, ConsentGroup, DocumentDescription, DocumentHandler, ProjectMigration, User } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import RequestClarificationDialog from '../components/RequestClarificationDialog';
 import { CollapsibleElements } from '../CollapsiblePanel/CollapsibleElements';
@@ -86,68 +86,6 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
       fileIdToRemove: '',
       issue: {},
       showSuccessClarification: false,
-      showSaveAndCancel: false,
-      alert: '',
-      alertType: '',
-      columns: (_this) => [{
-        dataField: 'id',
-        text: 'Id',
-        hidden: true,
-        editable: false,
-        csvExport : false
-      },
-      {
-        dataField: 'uuid',
-        text: '',
-        style: { pointerEvents: 'auto' },
-        editable: false,
-        headerStyle: (column, colIndex) => {
-          return {
-            width: '65px',
-          };
-        },
-        formatter: (cell, row, rowIndex, colIndex) =>
-          button({
-            isRendered: component.isAdmin,
-            className: 'btn btn-default btn-xs link-btn',
-            onClick: () => cThis.removeAttachedDocument(row)
-          },["Delete"])
-      },
-      {
-        dataField: 'fileType',
-        text: 'Attachment Type',
-        editable: false
-      }, {
-        dataField: 'fileName',
-        text: 'File Name',
-        style: { pointerEvents: 'auto' },
-        editable: false,
-        formatter: (cell, row, rowIndex, colIndex) =>
-          a(formatUrlDocument(row), [row.fileName])
-      },{
-        dataField: 'description',
-        text: 'File Description',
-        events: {
-          onClick: (e) => {
-            e.detail === 2 ? this.saveAndCancelShow() : undefined;
-            this.setState({
-              alert: ''
-            })
-          }
-        }
-      },{
-        dataField: 'creator',
-        text: 'Author',
-        editable: false
-      },
-      {
-        dataField: 'creationDate',
-        text: 'Created',
-        editable: false,
-        formatter: (cell, row, rowIndex, colIndex) =>
-          isEmpty(row.creationDate) ? '' : parseDate(row.creationDate)
-      }
-      ]
     };
   }
 
@@ -314,7 +252,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
           search : false,
           remoteProp : false,
           data: consent.attachments,
-          columns: this.state.columns(this),
+          columns: columns(this),
           keyField: 'id',
           defaultSorted: defaultSorted,
           fileName: '_',
@@ -327,10 +265,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
             unlinkHandler: this.unlink,
             submittedToIRBHandler: this.submittedToIRB,
             requestClarificationHandler: this.requestClarification
-          },
-          showSaveAndCancel: this.state.showSaveAndCancel,
-          saveHandler: this.saveHandler,
-          cancelHandler: this.cancelHandler
+          }
         }
       });
     }
@@ -349,57 +284,6 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
       prev.showConfirmationModal = true;
       return prev;
     });
-  }
-
-  saveAndCancelShow() {
-    this.setState({
-      showSaveAndCancel: true
-    })
-  }
-
-  saveHandler = (editedDocsData) => {
-    this.props.showSpinner();
-    this.setState({
-      showSaveAndCancel: false
-    }, async () => {
-      let name;
-      await User.getUserSession().then(user => {
-        name = user.data.displayName;
-      })
-      DocumentHandler.attachedDocuments(this.props.documents[0].projectKey).then((docData) => {
-        let documentsData = JSON.parse(docData.data.documents);
-        documentsData.forEach(doc => {
-          editedDocsData.forEach(editedDoc => {
-            if(doc.uuid === editedDoc.uuid) {
-              if (doc.description !== editedDoc.description) {
-                DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name).then(() => {
-                  this.setState({
-                    alert: 'Description updated successfully',
-                    type: 'success'
-                  }, () => {
-                    this.props.hideSpinner();
-                  })
-                }).catch(err => {
-                  this.setState({
-                    alert: 'Unexpected error occured',
-                    type: 'danger'
-                  },() => {
-                    console.log(err);
-                    this.props.hideSpinner();
-                  })
-                })
-              }
-            }
-          })
-        })
-      })
-    })
-  }
-
-  cancelHandler = () => {
-    this.setState({
-      showSaveAndCancel: false
-    })
   }
 
   render() {

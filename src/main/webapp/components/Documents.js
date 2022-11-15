@@ -4,7 +4,7 @@ import { Panel } from './Panel';
 import AddDocumentDialog from './AddDocumentDialog'
 import { KeyDocumentsEnum } from '../util/KeyDocuments';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import { DocumentDescription, DocumentHandler, User } from '../util/ajax';
+import { DocumentDescription, DocumentHandler, ProjectMigration, User } from '../util/ajax';
 import DataUseLetter from './DataUseLetterLink';
 import './Documents.css';
 import './Table.css';
@@ -17,6 +17,7 @@ import moment from 'moment';
 import { Btn } from './Btn';
 import { AlertMessage } from './AlertMessage';
 import LoadingWrapper from './LoadingWrapper';
+import { History } from './History';
 
 const styles = {
   buttonWithLink: {
@@ -190,6 +191,7 @@ export const Documents = hh(class Documents extends Component {
 
 
 
+
   constructor(props) {
     super(props);
     this.state = {
@@ -202,6 +204,7 @@ export const Documents = hh(class Documents extends Component {
       showSaveAndCancel: false,
       alert: '',
       alertType: '',
+      history: [],
       columns: (_this) => [
         {
           dataField: 'id',
@@ -417,7 +420,14 @@ export const Documents = hh(class Documents extends Component {
           editedDocsData.forEach(editedDoc => {
             if(doc.uuid === editedDoc.uuid) {
               if (doc.description !== editedDoc.description) {
-                DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name).then(() => {
+                DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name, doc.fileType)
+                .then(() => {
+                  ProjectMigration.getHistory(this.props.projectKey).then(resp => {
+                    this.setState(prev => {
+                      prev.history = resp.data;
+                      return prev;
+                    });
+                  });
                   this.setState({
                     alert: 'Description updated successfully',
                     type: 'success'
@@ -502,6 +512,12 @@ export const Documents = hh(class Documents extends Component {
           showSaveAndCancel: this.state.showSaveAndCancel,
           saveHandler: this.saveHandler,
           cancelHandler: this.cancelHandler 
+        })
+      ]),
+      div({hidden},[
+        History({
+          history: this.state.history,
+          projectKey: this.props.projectKey,
         })
       ]),
 
