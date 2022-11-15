@@ -203,8 +203,6 @@ export const Documents = hh(class Documents extends Component {
       error: false,
       dropEvent: null,
       showSaveAndCancel: false,
-      alert: '',
-      alertType: '',
       history: [],
       columns: (_this) => [
         {
@@ -242,9 +240,6 @@ export const Documents = hh(class Documents extends Component {
           events: {
             onClick: (e) => {
               e.detail === 2 ? this.saveAndCancelShow() : undefined;
-              this.setState({
-                alert: ''
-              })
             }
           }
         }, {
@@ -429,15 +424,8 @@ export const Documents = hh(class Documents extends Component {
                       return prev;
                     });
                   });
-                  this.setState({
-                    alert: 'Description updated successfully',
-                    type: 'success'
-                  })
                 }).catch(err => {
-                  this.setState({
-                    alert: 'Unexpected error occured',
-                    type: 'danger'
-                  },() => console.log(err))
+                  console.log(err)
                 })
               }
             }
@@ -449,8 +437,7 @@ export const Documents = hh(class Documents extends Component {
 
   cancelHandler = () => {
     this.setState({
-      showSaveAndCancel: false,
-      alert: ''
+      showSaveAndCancel: false
     })
   }
 
@@ -491,11 +478,6 @@ export const Documents = hh(class Documents extends Component {
         }, [
           p(['Drag and drop your documents here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
         ]),br(),
-        AlertMessage({
-          msg: this.state.alert,
-          show: this.state.alert !== '' ? true : false,
-          type: this.state.type
-        }),
         TableComponent({
           remoteProp: false,
           data: this.props.documents,

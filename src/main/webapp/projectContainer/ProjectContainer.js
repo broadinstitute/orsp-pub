@@ -96,6 +96,9 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   handleTabChange = async (tab) => {
     await this.setState({ activeTab: tab });
+    if(tab === 'history') {
+      this.getHistory();
+    }
   };
 
   render() {
@@ -163,8 +166,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               ]),
               div({
                 key: "history",
-                title: "History",
-                onClick: this.getHistory
+                title: "History"
               }, [
                 History({
                   history: this.state.history,
