@@ -512,7 +512,9 @@ const Documents = hh(class Documents extends Component {
           cancelHandler: this.cancelHandler 
         })
       ]),
-      div({hidden},[
+      div({
+        style:{ 'display': 'none' }
+      },[
         History({
           history: this.state.history,
           projectKey: this.props.projectKey,
