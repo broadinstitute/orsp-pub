@@ -57,8 +57,14 @@ const ConsentGroupDocuments = hh(class ConsentGroupDocuments extends Component {
       User.getUserSession().then(user => {
         if (this._isMounted) {
           this.props.consentFormDocument(JSON.parse(resp.data.documents));
+          let docs = JSON.parse(resp.data.documents);
+          docs.forEach(doc => {
+            if(!doc.description) {
+              doc.description = '';
+            }
+          })
           this.setState(prev => {
-              prev.documents = JSON.parse(resp.data.documents);
+              prev.documents = docs;
               prev.user = user.data;
               return prev;
             }, () => {
