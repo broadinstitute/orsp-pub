@@ -164,6 +164,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               div({
                 key: "history",
                 title: "History",
+                onClick: this.getHistory
               }, [
                 History({
                   history: this.state.history,
