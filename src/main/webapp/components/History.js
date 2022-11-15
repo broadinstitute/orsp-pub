@@ -51,10 +51,6 @@ export const History = hh(class History extends Component {
     }
   }
 
-  componentDidMount() {
-    this.getHistory();
-  }
-
   printHistory = () => {
     let cols = columns.filter(el => el.dataField !== 'id');
     let historyArray = formatDataPrintableFormat(this.props.history, cols);
