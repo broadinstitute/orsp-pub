@@ -48,8 +48,14 @@ const ProjectDocument = hh(class ProjectDocument extends Component {
     DocumentHandler.attachedDocuments(this.props.projectKey).then(resp => {
       User.getUserSession().then(user => {
         if (this._isMounted) {
+          let docs = JSON.parse(resp.data.documents);
+          docs.forEach(doc => {
+            if(!doc.description) {
+              doc.description = '';
+            }
+          })
           this.setState(prev => {
-              prev.documents = JSON.parse(resp.data.documents);
+              prev.documents = docs;
               prev.user = user.data;
               return prev;
             }, () => {

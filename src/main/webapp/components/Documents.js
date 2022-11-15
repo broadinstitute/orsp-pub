@@ -189,10 +189,6 @@ const addDocumentBtn = {
 
 export const Documents = hh(class Documents extends Component {
 
-
-
-
-
   constructor(props) {
     super(props);
     this.state = {
@@ -413,8 +409,14 @@ export const Documents = hh(class Documents extends Component {
       DocumentHandler.attachedDocuments(this.props.documents[0].projectKey).then((docData) => {
         let documentsData = JSON.parse(docData.data.documents);
         documentsData.forEach(doc => {
+          if (!doc.description) {
+            doc.description = '';
+          }
           editedDocsData.forEach(editedDoc => {
             if(doc.uuid === editedDoc.uuid) {
+              if (!editedDoc.description) {
+                editedDoc.description = ''
+              }
               if (doc.description !== editedDoc.description) {
                 DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name, doc.fileType)
                 .then(() => {
