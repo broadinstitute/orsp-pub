@@ -515,14 +515,6 @@ export const Documents = hh(class Documents extends Component {
           cancelHandler: this.cancelHandler 
         })
       ]),
-      div({
-        style:{ 'display': 'none' }
-      },[
-        History({
-          history: this.state.history,
-          projectKey: this.props.projectKey,
-        })
-      ]),
 
       Panel({
         title: "Data Use Limitation Record Request",
