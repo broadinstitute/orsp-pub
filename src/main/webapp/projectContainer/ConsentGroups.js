@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { a, button, h, h3, hh } from 'react-hyperscript-helpers';
-import { ConsentCollectionLink, ConsentGroup, DocumentDescription, DocumentHandler, User } from '../util/ajax';
+import { ConsentCollectionLink, ConsentGroup, DocumentDescription, DocumentHandler, ProjectMigration, User } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import RequestClarificationDialog from '../components/RequestClarificationDialog';
 import { CollapsibleElements } from '../CollapsiblePanel/CollapsibleElements';
@@ -372,7 +372,14 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
           editedDocsData.forEach(editedDoc => {
             if(doc.uuid === editedDoc.uuid) {
               if (doc.description !== editedDoc.description) {
-                DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name).then(() => {
+                DocumentDescription.updateDocumentDescription(editedDoc.uuid, editedDoc.description, editedDoc.projectKey, name, doc.fileType)
+                .then(() => {
+                  ProjectMigration.getHistory(this.props.projectKey).then(resp => {
+                    this.setState(prev => {
+                      prev.history = resp.data;
+                      return prev;
+                    });
+                  });
                   this.setState({
                     alert: 'Description updated successfully',
                     type: 'success'
