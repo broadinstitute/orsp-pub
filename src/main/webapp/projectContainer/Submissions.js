@@ -12,7 +12,9 @@ const headers =
   [
     { name: 'Number', value: 'number' },
     { name: 'Description', value: 'comments' },
-    { name: 'Documents', value: 'documents' },
+    { name: 'File Name', value: 'documents' },
+    { name: 'File Description', value: 'documents.description' },
+    { name: 'Author', value: 'documents.author' },
     { name: 'Created', value: 'createDate' },
   ];
 
@@ -85,8 +87,8 @@ export const Submissions = hh(class Submissions extends Component {
       _.map(submissions, (data, title) => {
         data.forEach(submisionData => {
           submisionData.documents.forEach(document => {
-            Files.getDocument(document.id).then(resp => {
-              document.document = resp.data.document;
+            Files.getDocument(document.id).then(doc => {
+              document.document = doc.data.document;
             });
           });
         });
