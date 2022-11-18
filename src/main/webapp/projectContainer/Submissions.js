@@ -81,7 +81,7 @@ export const Submissions = hh(class Submissions extends Component {
 
   getDisplaySubmissions = () => {
     let submissions = {};
-    let documentDetails = 
+    let documentDetails;
     ProjectMigration.getDisplaySubmissions(this.props.projectKey).then(resp => {
       submissions = resp.data.groupedSubmissions;
 
