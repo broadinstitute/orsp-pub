@@ -284,6 +284,21 @@ export const Table = hh(class Table extends Component {
                 dataSort={true}
                 editable={ false }
                 width={styles.fileTypeWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'author') {
+              return <TableHeaderColumn 
+                isKey={isKey}
+                key={header.name}
+                dataField={header.value}
+                dataSort={true}
+                editable={ false }
+                width={'100'}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'description') {
+              return <TableHeaderColumn 
+                isKey={isKey}
+                key={header.name}
+                dataField={header.value}
+                dataSort={true}
+                width={'200'}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'docVersion') {
               return <TableHeaderColumn 
                 isKey={isKey}
