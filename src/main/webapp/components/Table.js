@@ -23,11 +23,11 @@ const styles = {
   removeWidthFile: '80',
   unlinkSampleCollectionWidth: '80',
   collectionNameWidth: '270',
-  numberWidth: '30',
+  numberWidth: '85',
   createDateWidth: '15',
-  submissionDocumentsWidth: '100',
-  submissionComments: '75',
-  createdWidth: '30',
+  submissionDocumentsWidth: '175',
+  submissionComments: '200',
+  createdWidth: '120',
   linkOverflowEllipsis: {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
@@ -284,6 +284,21 @@ export const Table = hh(class Table extends Component {
                 dataSort={true}
                 editable={ false }
                 width={styles.fileTypeWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'author') {
+              return <TableHeaderColumn 
+                isKey={isKey}
+                key={header.name}
+                dataField={header.value}
+                dataSort={true}
+                editable={ false }
+                width={'100'}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'description') {
+              return <TableHeaderColumn 
+                isKey={isKey}
+                key={header.name}
+                dataField={header.value}
+                dataSort={true}
+                width={'200'}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'docVersion') {
               return <TableHeaderColumn 
                 isKey={isKey}
