@@ -13,7 +13,7 @@ const headers =
     { name: 'Number', value: 'number' },
     { name: 'Description', value: 'comments' },
     { name: 'File Name', value: 'documents' },
-    { name: 'File Description', value: 'description' },
+    { name: 'File Description', value: 'fileDescription' },
     { name: 'Author', value: 'author' },
     { name: 'Created', value: 'createDate' },
   ];
@@ -84,9 +84,10 @@ export const Submissions = hh(class Submissions extends Component {
     let documentDetails;
     ProjectMigration.getDisplaySubmissions(this.props.projectKey).then(resp => {
       submissions = resp.data.groupedSubmissions;
-
+      console.log(submissions)
       _.map(submissions, (data, title) => {
         data.forEach(submisionData => {
+          console.log('Submission data: ', submisionData);
           submisionData.documents.forEach(document => {
             Files.getDocument(document.id).then(doc => {
               documentDetails = doc.data.document;
@@ -94,9 +95,11 @@ export const Submissions = hh(class Submissions extends Component {
             });
             if (document.id === documentDetails.id) {
               submisionData.author = documentDetails.creator;
-              submisionData.description = documentDetails.description;
+              submisionData.fileDescription = documentDetails.description;
             }
           });
+          console.log('Submission data 2: ', submisionData);
+          console.log('document: ', documentDetails);
         });
       });
 
