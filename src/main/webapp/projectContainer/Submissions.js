@@ -155,12 +155,14 @@ export const Submissions = hh(class Submissions extends Component {
       submissionData.documents.forEach(document => {
         Files.getDocument(document.id).then(doc => {
           let docum = doc.data.document
-          DocumentDescription.updateDocumentDescription(
-            docum.uuid,
-            submissionData.fileDescription,
-            docum.projectKey,
-            docum.creator,
-            docum.fileType);
+          if (docum.description !== submissionData.fileDescription) {
+            DocumentDescription.updateDocumentDescription(
+              docum.uuid,
+              submissionData.fileDescription,
+              docum.projectKey,
+              docum.creator,
+              docum.fileType);
+          }
         })
       })
     })
