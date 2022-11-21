@@ -81,25 +81,19 @@ export const Submissions = hh(class Submissions extends Component {
 
   getDisplaySubmissions = () => {
     let submissions = {};
-    let documentDetails;
     ProjectMigration.getDisplaySubmissions(this.props.projectKey).then(resp => {
       submissions = resp.data.groupedSubmissions;
       console.log(submissions)
       _.map(submissions, (data, title) => {
         data.forEach(submisionData => {
-          console.log('Submission data: ', submisionData);
           submisionData.documents.forEach(document => {
             Files.getDocument(document.id).then(doc => {
-              documentDetails = doc.data.document;
               document.document = doc.data.document;
+              submisionData['auhtor'] = doc.data.document.creator;
+              submisionData['fileDescription'] = doc.data.document.description;
             });
-            if (document.id === documentDetails.id) {
-              submisionData.author = documentDetails.creator;
-              submisionData.fileDescription = documentDetails.description;
-            }
           });
-          console.log('Submission data 2: ', submisionData);
-          console.log('document: ', documentDetails);
+          console.log('Submission data: ', submisionData);
         });
       });
 
