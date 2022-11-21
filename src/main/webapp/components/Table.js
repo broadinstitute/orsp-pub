@@ -25,7 +25,7 @@ const styles = {
   collectionNameWidth: '270',
   numberWidth: '85',
   createDateWidth: '15',
-  submissionDocumentsWidth: '175',
+  submissionDocumentsWidth: '200',
   submissionComments: '200',
   createdWidth: '120',
   linkOverflowEllipsis: {
