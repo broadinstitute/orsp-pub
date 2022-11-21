@@ -25,7 +25,7 @@ const styles = {
   collectionNameWidth: '270',
   numberWidth: '85',
   createDateWidth: '15',
-  submissionDocumentsWidth: '200',
+  submissionDocumentsWidth: '175',
   submissionComments: '200',
   createdWidth: '120',
   linkOverflowEllipsis: {
@@ -36,12 +36,6 @@ const styles = {
   }
 };
 
-const cellEditProp = {
-  mode: 'dbclick',
-  blurToSave: true,
-  afterSaveCell: this.props.onAfterSaveCell  // a hook for after saving cell
-};
-
 export const Table = hh(class Table extends Component {
 
   constructor(props) {
@@ -50,7 +44,7 @@ export const Table = hh(class Table extends Component {
       cellEditProp: {
         mode: 'dbclick',
         blurToSave: true,
-        afterSaveCell: onAfterSaveCell  // a hook for after saving cell
+        afterSaveCell: this.props.onAfterSaveCell  // a hook for after saving cell
       }
     }
     this.formatUrlDocument = this.formatUrlDocument.bind(this);
