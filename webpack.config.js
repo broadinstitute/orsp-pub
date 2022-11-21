@@ -1,10 +1,8 @@
 const path = require('path');
 
 module.exports = {
-  resolve: {
-    fallback: {
-      fs: false
-    }
+  node: {
+    fs: "empty"
   },
   entry: {
     linkWizard: './src/main/webapp/linkWizard/index.js',
