@@ -154,12 +154,13 @@ export const Submissions = hh(class Submissions extends Component {
     this.state.submissions[this.state.activeTab].forEach(submissionData => {
       submissionData.documents.forEach(document => {
         Files.getDocument(document.id).then(doc => {
+          let docum = doc.data.document
           DocumentDescription.updateDocumentDescription(
-            document.document.uuid,
+            docum.uuid,
             submissionData.fileDescription,
-            document.document.projectKey,
-            document.document.creator,
-            document.document.fileType);
+            docum.projectKey,
+            docum.creator,
+            docum.fileType);
         })
       })
     })
