@@ -4,6 +4,7 @@ module.exports = {
   node: {
     fs: "empty"
   },
+
   entry: {
     linkWizard: './src/main/webapp/linkWizard/index.js',
     mainIndex: './src/main/webapp/main/main_index.js'
