@@ -6,6 +6,11 @@ module.exports = {
     __filename: true,
     __dirname: true,
   },
+  resolve: {
+    fallback: {
+      fs: false
+    }
+  },
   entry: {
     linkWizard: './src/main/webapp/linkWizard/index.js',
     mainIndex: './src/main/webapp/main/main_index.js'
