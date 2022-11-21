@@ -7,6 +7,7 @@ import { Table } from "../components/Table";
 import { Files } from "../util/ajax";
 import _ from 'lodash';
 import { UrlConstants } from "../util/UrlConstants";
+import { id } from 'date-fns/locale';
 
 const headers =
   [
@@ -90,7 +91,6 @@ export const Submissions = hh(class Submissions extends Component {
           submisionData.documents.forEach(document => {
             Files.getDocument(document.id).then(doc => {
               document.document = doc.data.document;
-              submisionData['auhtor'] = doc.data.document.creator;
               submisionData['fileDescription'] = doc.data.document.description;
             });
           });
@@ -152,7 +152,13 @@ export const Submissions = hh(class Submissions extends Component {
 
   saveDocumentDescription = () => {
     console.log(this.state.submissions);
-    // DocumentDescription.updateDocumentDescription();
+    this.state.submissions[this.state.activeTab].forEach(submissionData => {
+      submissionData.documents.forEach(document => {
+        Files.getDocument(document.id).then(doc => {
+          DocumentDescription.updateDocumentDescription(doc.uuid, submissionData.fileDescription, doc.projectKey, doc.creator, doc.fileType);
+        })
+      })
+    })
   }
 
   render() {
