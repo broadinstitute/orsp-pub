@@ -25,7 +25,7 @@ const styles = {
   collectionNameWidth: '270',
   numberWidth: '85',
   createDateWidth: '15',
-  submissionDocumentsWidth: '175',
+  submissionDocumentsWidth: '200',
   submissionComments: '200',
   createdWidth: '120',
   linkOverflowEllipsis: {
@@ -39,13 +39,20 @@ const styles = {
 const cellEditProp = {
   mode: 'dbclick',
   blurToSave: true,
-  // afterSaveCell: onAfterSaveCell  // a hook for after saving cell
+  afterSaveCell: this.props.onAfterSaveCell  // a hook for after saving cell
 };
 
 export const Table = hh(class Table extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      cellEditProp: {
+        mode: 'dbclick',
+        blurToSave: true,
+        afterSaveCell: onAfterSaveCell  // a hook for after saving cell
+      }
+    }
     this.formatUrlDocument = this.formatUrlDocument.bind(this);
   }
 
@@ -244,7 +251,7 @@ export const Table = hh(class Table extends Component {
     let isKey = false;
     return (
       <BootstrapTable data={this.props.data}
-        cellEdit={ !component.isViewer ? cellEditProp : false }
+        cellEdit={ !component.isViewer ? this.state.cellEditProp : false }
         striped
         hover
         className='tableContainer'
