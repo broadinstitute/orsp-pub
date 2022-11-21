@@ -1,11 +1,8 @@
 const path = require('path');
 
 module.exports = {
-  
-  resolve: {
-    fallback: {
-      fs: false
-    }
+  node: {
+    fs: "empty"
   },
 
   entry: {
