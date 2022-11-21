@@ -86,6 +86,7 @@ export const Submissions = hh(class Submissions extends Component {
       console.log(submissions)
       _.map(submissions, (data, title) => {
         data.forEach(submisionData => {
+          console.log('Submission data: ', submisionData);
           submisionData.documents.forEach(document => {
             Files.getDocument(document.id).then(doc => {
               document.document = doc.data.document;
