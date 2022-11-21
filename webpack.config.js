@@ -2,9 +2,10 @@ const path = require('path');
 
 module.exports = {
   node: {
-    fs: "empty"
+    global: true,
+    __filename: true,
+    __dirname: true,
   },
-
   entry: {
     linkWizard: './src/main/webapp/linkWizard/index.js',
     mainIndex: './src/main/webapp/main/main_index.js'
