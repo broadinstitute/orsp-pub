@@ -1,10 +1,7 @@
 import React from 'react'
-import { saveAs } from 'file-saver';
-import { utils, write } from 'xlsx';
-import { formatExcelData } from "../util/TableUtil";
-import * as XLSX from 'xlsx';
-import * as cptable from 'xlsx/dist/cpexcel.full.mjs';
-XLSX.set_cptable(cptable);
+// import { saveAs } from 'file-saver';
+// import { utils, write } from 'xlsx';
+// import { formatExcelData } from "../util/TableUtil";
 
 /**
  *
@@ -18,12 +15,12 @@ XLSX.set_cptable(cptable);
  */
 export const Export = ({csvData, columns, fileName, fileType, fileExtension, hide}) => {
   const exportToExcel = (csvData, columns, fileName, hide) => {
-    let formatedCsvData = formatExcelData(csvData, columns, hide);
-    let ws = utils.json_to_sheet(formatedCsvData,{skipHeader:true});
-    const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-    const excelBuffer = write(wb, { bookType: fileExtension, type: 'array' });
-    const excelData = new Blob([excelBuffer], {type: fileType});
-    saveAs(excelData, fileName + '.' + fileExtension);
+    // let formatedCsvData = formatExcelData(csvData, columns, hide);
+    // let ws = utils.json_to_sheet(formatedCsvData,{skipHeader:true});
+    // const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+    // const excelBuffer = write(wb, { bookType: fileExtension, type: 'array' });
+    // const excelData = new Blob([excelBuffer], {type: fileType});
+    // saveAs(excelData, fileName + '.' + fileExtension);
   };
 
   return (
