@@ -1,11 +1,8 @@
 const path = require('path');
 
 module.exports = {
-  
   node: {
-    global: true,
-    __filename: true,
-    __dirname: true,
+    fs: "empty"
   },
 
   resolve: {
