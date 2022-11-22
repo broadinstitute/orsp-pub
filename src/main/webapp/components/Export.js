@@ -2,8 +2,9 @@ import React from 'react'
 import { saveAs } from 'file-saver';
 import { utils, write } from 'xlsx';
 import { formatExcelData } from "../util/TableUtil";
+import * as XLSX from 'xlsx';
 import * as cptable from 'xlsx/dist/cpexcel.full.mjs';
-set_cptable(cptable);
+XLSX.set_cptable(cptable);
 
 /**
  *
