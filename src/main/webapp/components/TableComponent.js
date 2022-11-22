@@ -37,14 +37,14 @@ export const TableComponent = hh(class TableComponent extends Component {
               {this.props.showSearchBar ? <SearchBar { ...props.searchProps } /> : ''}
               {this.props.showExportButtons ?
                 <span name={'exportButtons'}>
-                  <Export
+                  {/* <Export
                     csvData={this.props.data}
                     columns={this.props.columns}
                     fileName={this.props.fileName}
                     fileType={EXPORT_FILE.XLSX.mimeType}
                     fileExtension={EXPORT_FILE.XLSX.extension}
                     hide={this.props.hideXlsxColumns}
-                  />
+                  /> */}
                   <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
                     <span>
                       <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Download CSV

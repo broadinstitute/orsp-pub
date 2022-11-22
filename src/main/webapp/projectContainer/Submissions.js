@@ -150,21 +150,22 @@ export const Submissions = hh(class Submissions extends Component {
   };
 
   saveDocumentDescription = () => {
-    console.log(this.state.submissions);
-    // this.state.submissions[this.state.activeTab].forEach(submissionData => {
-    //   submissionData.documents.forEach(document => {
-    //     Files.getDocument(document.id).then(doc => {
-
-    //       DocumentDescription.updateDocumentDescription(
-    //         document.document.uuid,
-    //         submissionData.fileDescription,
-    //         document.document.projectKey,
-    //         document.document.creator,
-    //         document.document.fileType);
-
-    //     })
-    //   })
-    // })
+    this.state.submissions[this.state.activeTab].forEach(submissionData => {
+      submissionData.documents.forEach(document => {
+        Files.getDocument(document.id).then(doc => {
+          let docum = doc.data.document
+          if (docum.description !== submissionData.fileDescription) {
+            DocumentDescription.updateDocumentDescription(
+              docum.uuid,
+              submissionData.fileDescription,
+              docum.projectKey,
+              docum.creator,
+              docum.fileType
+              );
+            }
+        })
+      })
+    })
   }
 
   render() {
