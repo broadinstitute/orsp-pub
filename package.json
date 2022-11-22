@@ -83,6 +83,6 @@
     "rxjs": "7.5.6",
     "sanitize-html": "^2.7.1",
     "xlsx": "0.18.5",
-    "xlsx-style-correct": "1.0.0"
+    "tempa-xlsx": "0.8.20"
   }
 }
