@@ -1,15 +1,18 @@
 const path = require('path');
 
 module.exports = {
+  // node: {
+  //   global: true,
+  //   __filename: true,
+  //   __dirname: true,
+  // },
+  // resolve: {
+  //   fallback: {
+  //     fs: false
+  //   }
+  // },
   node: {
-    global: true,
-    __filename: true,
-    __dirname: true,
-  },
-  resolve: {
-    fallback: {
-      fs: false
-    }
+    fs: 'empty'
   },
   entry: {
     linkWizard: './src/main/webapp/linkWizard/index.js',
