@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+  
   node: {
     global: true,
     __filename: true,
@@ -11,6 +12,7 @@ module.exports = {
       fs: false
     }
   },
+
   entry: {
     linkWizard: './src/main/webapp/linkWizard/index.js',
     mainIndex: './src/main/webapp/main/main_index.js'
