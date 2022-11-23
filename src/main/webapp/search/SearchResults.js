@@ -13,6 +13,7 @@ const styles = {
 class SearchResults extends Component {
   excelData = [];
   formattedProjectData = [];
+  exportExcelData = [];
 
   excelDataSet = [
     {
@@ -92,6 +93,7 @@ class SearchResults extends Component {
 
   loadData = projectData => {
     this.formattedProjectData = [];
+    this.exportExcelData = [];
     projectData.map(project => {
       const dataColumnValues = [
         { value: project.key, style: { font: { sz: "10" } } },
@@ -125,7 +127,21 @@ class SearchResults extends Component {
         extraProperties: project.extraProperties,
         projectAccessContact: project.projectAccessContact
       };
+      let excelData = {
+        "Project Key": project.key,
+        "Title":
+          project.title != null
+            ? project.title.replace(/,/g, " ")
+            : project.title,
+        "Project Type": project.type,
+        "Status": project.type === 'Consent Group' ? '' : project.status,
+        "Update Date": project.updated,
+        "Expiration Date": project.expiration,
+        "Reporter": project.reporter,
+        "Project Access Contact": project.projectAccessContact
+      };
       this.formattedProjectData.push(row);
+      this.exportExcelData.push(excelData);
     });
   };
   renderPaginationShowsTotal(start, to, total) {
@@ -178,6 +194,11 @@ class SearchResults extends Component {
               spanClassName="fa glyphicon glyphicon-export fa-download"
               excelDataSet={this.excelDataSet}
               sheetName="search-result"
+            />
+            <Export
+              excelData={this.exportExcelData}
+              fileName={"search-results"}
+              btnClassName={ "btn btn-success btn-export-excel" }
             />
           </div>
           <BootstrapTable
