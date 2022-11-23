@@ -17,6 +17,7 @@
     "test": "jest"
   },
   "license": "SEE LICENSE IN LICENSE.txt",
+
   "devDependencies": {
     "babel-core": "6.26.3",
     "babel-jest": "29.0.2",
@@ -38,8 +39,8 @@
     "style-loader": "0.23.1",
     "url-loader": "0.5.8",
     "webpack": "4.46.0"
-
   },
+
   "dependencies": {
     "@tinymce/tinymce-react": "4.2.0",
     "axios": "0.27.2",
@@ -69,6 +70,7 @@
     "react-bootstrap-table2-toolkit": "2.1.2",
     "react-bootstrap-typeahead": "6.0.0",
     "react-bootstrap-table2-editor": "^1.4.0",
+    "react-data-export": "0.6.0",
     "react-datepicker": "2.8.0",
     "react-dom": "16.14.0",
     "react-google-login": "5.0.5",
@@ -81,6 +83,6 @@
     "react-quill": "^2.0.0",
     "rxjs": "7.5.6",
     "sanitize-html": "^2.7.1",
-    "sheetjs-style": "^0.15.8"
+    "xlsx": "0.17.0"
   }
 }

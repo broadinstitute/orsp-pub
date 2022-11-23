@@ -1,30 +1,30 @@
-import * as FileSaver from 'file-saver';
-import XLSX from 'sheetjs-style'
+import React from 'react'
+import { saveAs } from 'file-saver';
+import { utils, write } from 'xlsx';
+import { formatExcelData } from "../util/TableUtil";
 
-const Export = ({excelData, fileName, btnClassName}) => {
+/**
+ *
+ * @param csvData Data to be exported to excel
+ * @param columns Columns header's name
+ * @param fileName  File name to be used when saving into the hhd
+ * @param fileType MimeType to be used
+ * @param fileExtension eg: .xlsx
+ * @param hide String array, containing the data object's property names to be hidden from the export
+ * @returns {*} An excel data form
+ */
+export const Export = ({csvData, columns, fileName, fileType, fileExtension, hide}) => {
+  const exportToExcel = (csvData, columns, fileName, hide) => {
+    let formatedCsvData = formatExcelData(csvData, columns, hide);
+    let ws = utils.json_to_sheet(formatedCsvData,{skipHeader:true});
+    const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+    const excelBuffer = write(wb, { bookType: fileExtension, type: 'array' });
+    const excelData = new Blob([excelBuffer], {type: fileType});
+    saveAs(excelData, fileName + '.' + fileExtension);
+  };
 
-    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    const fileExtension = '.xlsx';
-
-    const exportToExcel = async () => {
-        const ws = XLSX.utils.json_to_sheet(excelData);
-        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        const data = new Blob([excelBuffer], { type: fileType });
-        FileSaver.saveAs(data, fileName + fileExtension)
-    }
-
-    return (
-        <div>
-            <button
-                className= { btnClassName }
-                style= {{ marginLeft:'15px' }}
-                onClick={e => {exportToExcel(fileName)}}
-            >Export to Excel</button>
-        </div>
-    )
-
-}
-
-export default Export
-
+  return (
+    <button className= { "btn buttonSecondary pull-right" } style= {{ marginLeft:'15px' }} onClick={(e) => exportToExcel(csvData, columns, fileName, hide)}>
+      <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Excel</button>
+  )
+};
