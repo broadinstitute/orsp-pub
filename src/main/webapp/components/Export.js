@@ -15,13 +15,13 @@ const Export = ({excelData, fileName, btnClassName}) => {
     }
 
     return (
-        <>
+        <div>
             <button
                 className= { btnClassName }
                 style= {{ marginLeft:'15px' }}
                 onClick={e => {exportToExcel(fileName)}}
             >Export to Excel</button>
-        </>
+        </div>
     )
 
 }
