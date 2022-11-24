@@ -1,6 +1,6 @@
 import React from 'react'
 import { formatExcelData } from "../util/TableUtil";
-import { JsonToExcel } from "react-json-to-excel";
+import { JsonToExcel } from "./ExportExcelComponent";
 
 /**
  *
