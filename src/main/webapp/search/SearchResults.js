@@ -13,6 +13,16 @@ const styles = {
 class SearchResults extends Component {
   excelData = [];
   formattedProjectData = [];
+  excelExportData = []
+  columns = [
+    {
+      dataField: 'Project key',
+      Text: 'Project key'
+    },
+    {
+      
+    }
+  ]
 
   excelDataSet = [
     {
@@ -92,6 +102,7 @@ class SearchResults extends Component {
 
   loadData = projectData => {
     this.formattedProjectData = [];
+    this.excelExportData = [];
     projectData.map(project => {
       const dataColumnValues = [
         { value: project.key, style: { font: { sz: "10" } } },
@@ -125,7 +136,21 @@ class SearchResults extends Component {
         extraProperties: project.extraProperties,
         projectAccessContact: project.projectAccessContact
       };
+      let excelData = {
+        "Project key": project.key,
+        "Title":
+          project.title != null
+            ? project.title.replace(/,/g, " ")
+            : project.title,
+        "Type": project.type,
+        "Status": project.type === 'Consent Group' ? '' : project.status,
+        "Updated": project.updated,
+        "Expiration": project.expiration,
+        "Reporter": project.reporter,
+        "Project Access Contact": project.projectAccessContact
+      };
       this.formattedProjectData.push(row);
+      this.excelExportData.push(excelData)
     });
   };
   renderPaginationShowsTotal(start, to, total) {
@@ -172,14 +197,22 @@ class SearchResults extends Component {
         <div className={"position-relative"}>
           <h2>Results</h2>
           <div>
-
-            <ExportExcel
+            <Export
+              csvData={this.excelExportData}
+              columns={this.props.columns}
+              fileName={"search-results"}
+              fileType={EXPORT_FILE.XLSX.mimeType}
+              fileExtension={EXPORT_FILE.XLSX.extension}
+              hide={this.props.hideXlsxColumns}
+              btnClassName={"btn btn-success btn-export-excel"}
+            />
+            {/* <ExportExcel
               filename="search-results"
               buttonClassName="btn btn-success btn-export-excel"
               spanClassName="fa glyphicon glyphicon-export fa-download"
               excelDataSet={this.excelDataSet}
               sheetName="search-result"
-            />
+            /> */}
             
           </div>
           <BootstrapTable

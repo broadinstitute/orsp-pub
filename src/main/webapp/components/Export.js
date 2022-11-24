@@ -1,15 +1,6 @@
 import React from 'react'
 import { formatExcelData } from "../util/TableUtil";
-import { read, writeFileXLSX } from "xlsx";
-import * as XLSX from 'xlsx/xlsx.mjs';
-import { Readable } from 'stream';
-import * as cpexcel from 'xlsx/dist/cpexcel.full.mjs';
-import { set_cptable } from "xlsx";
-import * as cptable from 'xlsx/dist/cpexcel.full.mjs';
-
-XLSX.stream.set_readable(Readable);
-XLSX.set_cptable(cpexcel);
-set_cptable(cptable);
+import { JsonToExcel } from "react-json-to-excel";
 
 /**
  *
@@ -21,28 +12,21 @@ set_cptable(cptable);
  * @param hide String array, containing the data object's property names to be hidden from the export
  * @returns {*} An excel data form
  */
-export const Export = ({csvData, columns, fileName, fileType, fileExtension, hide}) => {
+export const Export = ({csvData, columns, fileName, fileType, fileExtension, hide, btnClassName}) => {
 
-  const exportToExcel = (csvData, columns, fileName, hide) => {
-
-    let formatedCsvData = formatExcelData(csvData, columns, hide);
-    console.log(formatedCsvData);
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.json_to_sheet(formatedCsvData);
-    XLSX.utils.book_append_sheet(workbook, worksheet, fileName);
-    let data = XLSX.write(workbook, { type: "array", bookType: "xlsx" });
-    XLSX.writeFileXLSX(workbook, fileName + fileExtension);
-
-    // let ws = utils.json_to_sheet(formatedCsvData,{skipHeader:true});
-    // const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-    // const excelBuffer = write(wb, { bookType: fileExtension, type: 'array' });
-    // const excelData = new Blob([excelBuffer], {type: fileType});
-    // saveAs(excelData, fileName + '.' + fileExtension);
-  };
-
+  let formatedCsvData
+  formatedCsvData = formatExcelData(csvData, columns, hide);
+  console.log(formatedCsvData);
+  
   return (
-    <button className= { "btn buttonSecondary pull-right" } style= {{ marginLeft:'15px' }} onClick={(e) => exportToExcel(csvData, columns, fileName, hide)}>
-      <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Excel</button>
+
+    <JsonToExcel
+        title={'Export Excel'}
+        data={formatedCsvData}
+        fileName={fileName}
+        btnClassName={btnClassName}
+    />
   )
   
 };
+
