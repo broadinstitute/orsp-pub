@@ -19,7 +19,6 @@
     <script>
         if (location.protocol !== "https:") location.protocol = "https:";
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
     <g:layoutHead/>
 </head>
 <body style="margin-top: 0; padding-top: 70px;">

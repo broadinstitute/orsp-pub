@@ -45,9 +45,8 @@ export const TableComponent = hh(class TableComponent extends Component {
                     fileType={EXPORT_FILE.XLSX.mimeType}
                     fileExtension={EXPORT_FILE.XLSX.extension}
                     hide={this.props.hideXlsxColumns}
-                    btnClassName={"btn buttonSecondary pull-right"}
                   />
-
+                  
                   <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
                     <span>
                       <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Download CSV
