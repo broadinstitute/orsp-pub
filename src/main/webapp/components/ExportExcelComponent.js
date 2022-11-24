@@ -12,7 +12,7 @@ export const JsonToExcel = ({
   btnClassName
 }) => {
   const exportToExcel = () => {
-    const ws = window.XLS.utils.json_to_sheet(data);
+    const ws = window.XLS.utils.json_to_sheet(data, { skipHeader: true });
     const wb = {
       Sheets: {
         data: ws
