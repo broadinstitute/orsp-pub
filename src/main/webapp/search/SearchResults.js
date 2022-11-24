@@ -3,6 +3,7 @@ import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import ExportExcel from "./ExportExcel";
 import { User } from "../util/ajax";
 import { Export } from "../components/Export"
+import { EXPORT_FILE } from "../util/TableUtil";
 
 const styles = {
   projectTitleWidth: '220',
