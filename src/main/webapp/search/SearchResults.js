@@ -17,10 +17,35 @@ class SearchResults extends Component {
   columns = [
     {
       dataField: 'Project key',
-      Text: 'Project key'
+      text: 'Project key'
     },
     {
-      
+      dataField: 'Title',
+      text: 'Title'
+    },
+    {
+      dataField: 'Type',
+      text: 'Type'
+    },
+    {
+      dataField: 'Status',
+      text: 'Status'
+    },
+    {
+      dataField: 'Updated',
+      text: 'Updated'
+    },
+    {
+      dataField: 'Expiration',
+      text: 'Expiration'
+    },
+    {
+      dataField: 'Reporter',
+      text: 'Reporter'
+    },
+    {
+      dataField: 'Project Access Contact',
+      text: 'Project Access Contact'
     }
   ]
 
@@ -199,11 +224,10 @@ class SearchResults extends Component {
           <div>
             <Export
               csvData={this.excelExportData}
-              columns={this.props.columns}
+              columns={this.columns}
               fileName={"search-results"}
               fileType={EXPORT_FILE.XLSX.mimeType}
               fileExtension={EXPORT_FILE.XLSX.extension}
-              hide={this.props.hideXlsxColumns}
               btnClassName={"btn btn-success btn-export-excel"}
             />
             {/* <ExportExcel

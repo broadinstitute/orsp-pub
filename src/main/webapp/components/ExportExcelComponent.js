@@ -9,8 +9,7 @@ export const JsonToExcel = ({
   data,
   title,
   fileName,
-  btnClassName,
-  btnColor = "#4CAF50"
+  btnClassName
 }) => {
   const exportToExcel = () => {
     const ws = window.XLS.utils.json_to_sheet(data);
@@ -31,9 +30,6 @@ export const JsonToExcel = ({
       <button
         className={`${btnClassName}`}
         onClick={exportToExcel}
-        style={{
-          background: btnColor
-        }}
       >
         {title || "Download"}
       </button>
