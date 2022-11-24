@@ -15,11 +15,11 @@ import { JsonToExcel } from "./ExportExcelComponent";
 export const Export = ({csvData, columns, fileName, fileType, fileExtension, hide, btnClassName}) => {
 
   let formatedCsvData
-  formatedCsvData = formatExcelData(csvData, columns, hide);
-  console.log(formatedCsvData);
+  if (csvData) {
+    formatedCsvData = formatExcelData(csvData, columns, hide);
+  }
   
   return (
-
     <JsonToExcel
         title={'Export Excel'}
         data={formatedCsvData}

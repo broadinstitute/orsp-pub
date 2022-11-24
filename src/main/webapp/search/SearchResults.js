@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
-import ExportExcel from "./ExportExcel";
 import { User } from "../util/ajax";
 import { Export } from "../components/Export"
 import { EXPORT_FILE } from "../util/TableUtil";
@@ -232,13 +231,6 @@ class SearchResults extends Component {
               fileExtension={EXPORT_FILE.XLSX.extension}
               btnClassName={"btn btn-success btn-export-excel"}
             />
-            {/* <ExportExcel
-              filename="search-results"
-              buttonClassName="btn btn-success btn-export-excel"
-              spanClassName="fa glyphicon glyphicon-export fa-download"
-              excelDataSet={this.excelDataSet}
-              sheetName="search-result"
-            /> */}
             
           </div>
           <BootstrapTable
