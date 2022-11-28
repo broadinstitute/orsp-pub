@@ -17,3 +17,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.button-right-align {
+    text-align: right;
+}
