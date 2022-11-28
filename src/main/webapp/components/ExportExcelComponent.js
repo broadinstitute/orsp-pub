@@ -11,6 +11,7 @@ export const JsonToExcel = ({
   fileName,
   btnClassName
 }) => {
+  
   const exportToExcel = () => {
     const ws = window.XLS.utils.json_to_sheet(data, { skipHeader: true });
     const wb = {
@@ -26,11 +27,13 @@ export const JsonToExcel = ({
   };
 
   return (
+    <div>
       <button
         className={`${btnClassName}`}
         onClick={exportToExcel}
       >
         {title || "Download"}
       </button>
+    </div>
   );
 };
