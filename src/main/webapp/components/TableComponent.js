@@ -36,7 +36,7 @@ export const TableComponent = hh(class TableComponent extends Component {
             <div>
               {this.props.showSearchBar ? <SearchBar { ...props.searchProps } /> : ''}
               {this.props.showExportButtons ?
-                <span name={'exportButtons'} className={"button-right-align"}>
+                <span name={'exportButtons'} className={"pull-right exportButtons"}>
                   <Export
                     csvData={this.props.data}
                     columns={this.props.columns}

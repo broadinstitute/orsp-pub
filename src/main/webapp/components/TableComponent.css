@@ -18,6 +18,10 @@
     text-overflow: ellipsis;
 }
 
-.button-right-align {
-    text-align: right;
+.react-bootstrap-table {
+    margin-top: 10px;
+}
+
+.exportButtons button {
+    margin-right: 8px;
 }

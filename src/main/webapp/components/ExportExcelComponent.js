@@ -1,16 +1,11 @@
 import React from "react";
 import saveAs from "file-saver";
 
-const EXCEL_TYPE =
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+const EXCEL_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
 const EXCEL_EXTENSION = ".xlsx";
 
-export const JsonToExcel = ({
-  data,
-  title,
-  fileName,
-  btnClassName
-}) => {
+export const JsonToExcel = ({ data, title, fileName, btnClassName }) => {
+
   const exportToExcel = () => {
     const ws = window.XLS.utils.json_to_sheet(data, { skipHeader: true });
     const wb = {
@@ -27,7 +22,7 @@ export const JsonToExcel = ({
 
   return (
       <button
-        className={`${btnClassName}`}
+        className={btnClassName}
         onClick={exportToExcel}
       >
         {title || "Download"}
