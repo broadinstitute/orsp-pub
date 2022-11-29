@@ -59,7 +59,7 @@ export const TableComponent = hh(class TableComponent extends Component {
                       <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> PDF
                     </button>
                     : ''}
-                  <hr/>
+                  
                 </span>
                 : ''
               }
