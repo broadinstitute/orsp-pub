@@ -22,12 +22,14 @@ export const JsonToExcel = ({ data, title, fileName, btnClassName }) => {
   };
 
   return (
+
       <button
         className={btnClassName}
         onClick={exportToExcel}
       >
         {title || "Download"}
       </button>
+      
   );
-  
+
 };
