@@ -44,18 +44,18 @@ export const TableComponent = hh(class TableComponent extends Component {
                     fileType={EXPORT_FILE.XLSX.mimeType}
                     fileExtension={EXPORT_FILE.XLSX.extension}
                     hide={this.props.hideXlsxColumns}
-                    btnClassName={"btn buttonSecondary"}
+                    btnClassName={"btn buttonSecondary pull-right"}
                   />
-                  <ExportCSVButton { ...props.csvProps }>
+                  <ExportCSVButton className={"pull-right"} { ...props.csvProps }>
                     <span>
                       <i style={{ marginRight:'5px' }} className= { "fa fa-download" }></i> Download CSV
                     </span>
                   </ExportCSVButton>
-                  { this.props.showPrintButton ? <button onClick= { this.props.printComments } className= { "btn buttonSecondary" } style= {{ marginRight:'15px' }}>
+                  { this.props.showPrintButton ? <button onClick= { this.props.printComments } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
                     <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> Print
                   </button> : ''}
                   {this.props.showPdfExport ?
-                    <button onClick= { this.props.downloadPdf } className= { "btn buttonSecondary" } style= {{ marginRight:'15px' }}>
+                    <button onClick= { this.props.downloadPdf } className= { "btn buttonSecondary pull-right" } style= {{ marginRight:'15px' }}>
                       <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> PDF
                     </button>
                     : ''}
