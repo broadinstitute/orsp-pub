@@ -27,13 +27,14 @@ export const JsonToExcel = ({
   };
 
   return (
-    <div>
+
       <button
         className={`${btnClassName}`}
         onClick={exportToExcel}
       >
         {title || "Download"}
       </button>
-    </div>
+      
   );
+
 };

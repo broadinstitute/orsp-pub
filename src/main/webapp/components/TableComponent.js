@@ -36,7 +36,7 @@ export const TableComponent = hh(class TableComponent extends Component {
             <div>
               {this.props.showSearchBar ? <SearchBar { ...props.searchProps } /> : ''}
               {this.props.showExportButtons ?
-                <span name={'exportButtons'}>
+                <span name={'exportButtons'} className={"pull-right exportButtons"}>
                   <Export
                     csvData={this.props.data}
                     columns={this.props.columns}
@@ -59,7 +59,7 @@ export const TableComponent = hh(class TableComponent extends Component {
                       <i style={{ marginRight:'5px' }} className= { "fa fa-print" }></i> PDF
                     </button>
                     : ''}
-                  <hr/>
+                  
                 </span>
                 : ''
               }
