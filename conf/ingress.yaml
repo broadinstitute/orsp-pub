@@ -18,7 +18,7 @@ spec:
     http:
       paths:
         pathType: ImplementationSpecific
-      - backend:
+        backend:
           service:
             name: ${REPO_NAME}-service
             port: 
