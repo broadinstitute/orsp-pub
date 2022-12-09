@@ -17,8 +17,7 @@ spec:
   - host: ${HOST_NAME}
     http:
       paths:
-      - path: /
-        pathType: ImplementationSpecific
+      - pathType: ImplementationSpecific
         backend:
           service:
             name: ${REPO_NAME}-service
