@@ -115,6 +115,10 @@ commands:
             gcloud --quiet config set project ${GOOGLE_PROJECT}
             gcloud --quiet config set compute/zone ${GOOGLE_ZONE}
             gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER}
+            gke-gcloud-auth-plugin --version
+            echo "export USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> ~/.bashrc
+            source ~/.bashrc
+            gcloud components update
       - run:
           name: Deploy to Kubernetes
           no_output_timeout: 30m
