@@ -124,6 +124,7 @@ commands:
             gke-gcloud-auth-plugin --version
             echo "export USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> ~/.bashrc
             source ~/.bashrc
+            gcloud components update
       - run:
           name: Deploy to Kubernetes
           no_output_timeout: 30m
