@@ -116,8 +116,8 @@ commands:
             gcloud --quiet config set compute/zone ${GOOGLE_ZONE}
             gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER}
       - run: apt-get update
-      - run: apt-get remove -y google-cloud-cli-gke-gcloud-auth-plugin
-      - run: apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
+      - run: apt-get remove -y google-cloud-cli-gke-gcloud-auth-plugin google-cloud-cli google-cloud-cli-app-engine-python google-cloud-cli-kpt google-cloud-cli-local-extract google-cloud-cli-app-engine-go google-cloud-cli-app-engine-java google-cloud-cli-app-engine-python-extras google-cloud-cli-bigtable-emulator google-cloud-cli-cbt
+      - run: apt-get install -y google-cloud-sdk-spanner-emulator google-cloud-sdk-kpt google-cloud-sdk-kubectl-oidc google-cloud-sdk-datastore-emulator google-cloud-sdk-bigtable-emulator google-cloud-sdk-nomos google-cloud-sdk-skaffold google-cloud-sdk-app-engine-grpc google-cloud-sdk-cbt google-cloud-sdk google-cloud-sdk-datalab google-cloud-sdk-firestore-emulator google-cloud-sdk-gke-gcloud-auth-plugin google-cloud-sdk-minikube google-cloud-sdk-config-connector google-cloud-sdk-package-go-module google-cloud-sdk-app-engine-python google-cloud-sdk-app-engine-go google-cloud-sdk-app-engine-java google-cloud-sdk-anthos-auth google-cloud-sdk-harbourbridge google-cloud-sdk-pubsub-emulator google-cloud-sdk-terraform-tools google-cloud-sdk-cloud-build-local google-cloud-sdk-local-extract google-cloud-sdk-log-streaming google-cloud-sdk-app-engine-python-extras kubectl google-cloud-sdk-cloud-run-proxy
       - run:
           name: GKE-AUTH
           command: |
