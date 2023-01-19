@@ -1,12 +1,12 @@
-import { Component, useEffect, useState } from "react";
+import { Component } from "react";
 
-function GoogleLoginAuth() {
+const GoogleLoginAuth = hh( class GoogleLoginAuth extends Component {
 
-    function onSuccess(response) {
+    onSuccess = (response) => {
         this.props.onSuccess(response.credential);
     }
 
-    useEffect(() => {
+    componentDidMount = () => {
         /* global google */
         google.accounts.id.initialize({
           client_id: component.client_id,
@@ -17,12 +17,14 @@ function GoogleLoginAuth() {
           document.getElementById("signInDiv"),
           { theme: "outline", size: "large" }
         )
-      }, [])
+    }
 
-      return (
-        <div id="signInDiv"></div>
-      )
+    render() {
+        return (
+            <div id="signInDiv"></div>
+        )
+    }
 
-}
+})
 
 export default GoogleLoginAuth
