@@ -6,7 +6,7 @@ const GoogleLoginAuth = hh( class GoogleLoginAuth extends Component {
         this.props.onSuccess(response.credential);
     }
 
-    componentDidMount = (() => {
+    componentDidMount = () => {
         /* global google */
         google.accounts.id.initialize({
           client_id: component.client_id,
@@ -17,7 +17,7 @@ const GoogleLoginAuth = hh( class GoogleLoginAuth extends Component {
           document.getElementById("signInDiv"),
           { theme: "outline", size: "large" }
         )
-    }, [])
+    }
 
     render() {
         return (
