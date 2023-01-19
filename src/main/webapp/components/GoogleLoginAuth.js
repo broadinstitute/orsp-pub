@@ -2,13 +2,13 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import React, { Component } from "react";
 
-function GoogleAuth() {
+function GoogleAuth(props) {
     return (
         <div>
             <GoogleOAuthProvider clientId={component.clientId} >
             <GoogleLogin 
                 onSuccess={credentialResponse => {
-                    this.props.onSuccess(credentialResponse)
+                    props.onSuccess(credentialResponse)
                   }}
                   onError={(err) => {
                     console.log(err, 'Login Failed');
