@@ -7,8 +7,8 @@ function GoogleAuth(props) {
         <div>
             <GoogleOAuthProvider clientId={component.clientId} >
             <GoogleLogin 
-                onSuccess={credentialResponse => {
-                    props.onSuccess(credentialResponse)
+                onSuccess={response => {
+                    props.onSuccess(response.credential)
                   }}
                   onError={(err) => {
                     console.log(err, 'Login Failed');
