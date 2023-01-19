@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { hh } from 'react-hyperscript-helpers'
 
 const GoogleLoginAuth = hh( class GoogleLoginAuth extends Component {
