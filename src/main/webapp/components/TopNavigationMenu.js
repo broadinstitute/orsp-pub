@@ -12,6 +12,7 @@ import ResponsiveMenu from 'react-responsive-navbar';
 import './TopNavigationMenu.css';
 import get from 'lodash/get';
 import GoogleLoginAuth from "./GoogleLoginAuth";
+import { googleLogout } from '@react-oauth/google';
 
 function ColorValue(isDisabled, isFocused) {
   let color = '#000000';
@@ -125,6 +126,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
   };
 
   signOut = async () => {
+    googleLogout();
     await User.signOut();
     Storage.clearStorage();
     component.isBroad = null;
@@ -282,7 +284,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 //   onSuccess: this.onSuccess
                 // }),
                 GoogleLoginAuth({
-                  isRendered: !this.state.isLogged || !Storage.userIsLogged(),
+                  isRendered: !this.state.isLogged,
                   onSuccess: this.onSuccess
                 })
               ])
