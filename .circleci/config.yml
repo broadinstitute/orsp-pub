@@ -122,7 +122,6 @@ commands:
             echo 'export USE_GKE_GCLOUD_AUTH_PLUGIN=True' >> "$BASH_ENV"
             source "$BASH_ENV"
             echo $USE_GKE_GCLOUD_AUTH_PLUGIN
-      - run: echo $USE_GKE_GCLOUD_AUTH_PLUGIN
       - run:
           name: Deploy to Kubernetes
           no_output_timeout: 30m
