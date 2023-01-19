@@ -128,14 +128,23 @@ commands:
           no_output_timeout: 30m
           command: |
             envsubst < ${HOME}/project/conf/k8s.yml > ${HOME}/patched_k8s.yml
+            echo "--------------------------"
             envsubst < ${HOME}/project/conf/service.yaml > ${HOME}/patched_service.yml
+            echo "--------------------------"
             envsubst < ${HOME}/project/conf/ingress.yaml > ${HOME}/patched_ingress.yml
+            echo "--------------------------"
             cat ${HOME}/patched_k8s.yml
+            echo "--------------------------"
             kubectl config set-context --current --namespace=${NAMESPACE}
+            echo "--------------------------"
             kubectl apply -f ${HOME}/patched_k8s.yml
+            echo "--------------------------"
             kubectl apply -f ${HOME}/patched_service.yml
+            echo "--------------------------"
             kubectl apply -f ${HOME}/patched_ingress.yml
+            echo "--------------------------"
             kubectl rollout status deployment/${REPO_NAME}
+            echo "--------------------------"
 
 jobs:
   deploy-dev:
