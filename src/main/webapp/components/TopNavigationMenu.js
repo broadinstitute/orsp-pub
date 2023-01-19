@@ -11,6 +11,7 @@ import LoadingWrapper from '../components/LoadingWrapper';
 import ResponsiveMenu from 'react-responsive-navbar';
 import './TopNavigationMenu.css';
 import get from 'lodash/get';
+import GoogleLoginAuth from "./GoogleLoginAuth";
 
 function ColorValue(isDisabled, isFocused) {
   let color = '#000000';
@@ -275,9 +276,13 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                     ])
                   ])
                 ]),
-                GoogleLoginButton({
+                // GoogleLoginButton({
+                //   isRendered: !this.state.isLogged || !Storage.userIsLogged(),
+                //   clientId: component.clientId,
+                //   onSuccess: this.onSuccess
+                // }),
+                GoogleLoginAuth({
                   isRendered: !this.state.isLogged || !Storage.userIsLogged(),
-                  clientId: component.clientId,
                   onSuccess: this.onSuccess
                 })
               ])
