@@ -3,7 +3,7 @@ import { GoogleLogin } from "@react-oauth/google";
 
 function GoogleAuth() {
     return (
-        <>
+        <div>
             <GoogleOAuthProvider clientId={component.clientId} >
             <GoogleLogin 
                 onSuccess={credentialResponse => {
@@ -14,7 +14,7 @@ function GoogleAuth() {
                   }}
             />
             </GoogleOAuthProvider>
-        </>
+        </div>
     )
 }
 
