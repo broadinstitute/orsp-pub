@@ -116,34 +116,18 @@ commands:
             gcloud --quiet config set compute/zone ${GOOGLE_ZONE}
             gcloud --quiet container clusters get-credentials ${GOOGLE_CLUSTER}
       - run:
-          name: GKE-AUTH
-          command: |
-            gke-gcloud-auth-plugin --version
-            echo 'export USE_GKE_GCLOUD_AUTH_PLUGIN=True' >> "$BASH_ENV"
-            source "$BASH_ENV"
-            echo $USE_GKE_GCLOUD_AUTH_PLUGIN
-      - run:
           name: Deploy to Kubernetes
           no_output_timeout: 30m
           command: |
             envsubst < ${HOME}/project/conf/k8s.yml > ${HOME}/patched_k8s.yml
-            echo "--------------------------"
             envsubst < ${HOME}/project/conf/service.yaml > ${HOME}/patched_service.yml
-            echo "--------------------------"
             envsubst < ${HOME}/project/conf/ingress.yaml > ${HOME}/patched_ingress.yml
-            echo "--------------------------"
             cat ${HOME}/patched_k8s.yml
-            echo "--------------------------"
             kubectl config set-context --current --namespace=${NAMESPACE}
-            echo "--------------------------"
             kubectl apply -f ${HOME}/patched_k8s.yml
-            echo "--------------------------"
             kubectl apply -f ${HOME}/patched_service.yml
-            echo "--------------------------"
             kubectl apply -f ${HOME}/patched_ingress.yml
-            echo "--------------------------"
             kubectl rollout status deployment/${REPO_NAME}
-            echo "--------------------------"
 
 jobs:
   deploy-dev:
