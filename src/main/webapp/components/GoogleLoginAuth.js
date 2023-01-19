@@ -13,7 +13,7 @@ function GoogleAuth(props) {
                   onError={(err) => {
                     console.log(err, 'Login Failed');
                   }}
-                  useOneTap
+                  
             />
             </GoogleOAuthProvider>
         </div>

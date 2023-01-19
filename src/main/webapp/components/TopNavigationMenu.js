@@ -283,10 +283,15 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 //   clientId: component.clientId,
                 //   onSuccess: this.onSuccess
                 // }),
-                GoogleLoginAuth({
-                  isRendered: !this.state.isLogged,
-                  onSuccess: this.onSuccess
-                })
+                div({
+                  isRendered: !this.state.isLogged || !Storage.userIsLogged(),
+                  style: { float: 'right', marginTop: '0.8rem' }
+                }, [
+                  GoogleLoginAuth({
+                    onSuccess: this.onSuccess
+                  })
+                ])
+                
               ])
           })
         ])
