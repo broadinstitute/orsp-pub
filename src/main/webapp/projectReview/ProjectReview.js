@@ -1499,7 +1499,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
         Panel({ isRendered: this.state.enabledQuestionsWizard === true, title: "Determination Questions"}, [
           div({ style: { 'marginTop': '55px' }}, [
-            QuestionnaireWorkflow({ questions: this.state.questions, determination: this.state.determination, handler: this.determinationHandler }),
+            QuestionnaireWorkflow({ questions: this.state.questions, determination: this.state.determination, handler: this.determinationHandler, internationalCohorts: false }),
               div({ isRendered: this.state.readOnly === false, className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
                 button({
                   className: "btn buttonSecondary",
