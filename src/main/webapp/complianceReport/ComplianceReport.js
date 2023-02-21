@@ -4,7 +4,7 @@ import {hh, div, button, h1} from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import DatePicker from 'react-datepicker';
 import { formatDataPrintableFormat } from '../util/TableUtil';
-import { exportData } from '../util/Utils';
+import { exportData, isEmpty } from '../util/Utils';
 import LoadingWrapper from '../components/LoadingWrapper';
 
 import './ComplianceReport.css';
@@ -29,8 +29,8 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
         this.setState({
             showTable: false
         })
-        let afterDateStr = this.state.afterDate.toISOString().substring(0, 10);
-        let beforeDateStr = this.state.beforeDate.toISOString().substring(0, 10);
+        let afterDateStr = this.state.afterDate.toISOString().substring(0, 10) || "";
+        let beforeDateStr = this.state.beforeDate.toISOString().substring(0, 10) || "";
         await Reports.getComplianceReportData(afterDateStr, beforeDateStr).then(data => {
             let complianceData = data.data[0];
             let complianceDataArr = [];
@@ -240,7 +240,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                     onClick: this.clearFilterPanel
                     }, ['Clear'])
                 ]),
-                div({ isRendered: this.state.showTable, className: "compliance-table" }, [
+                div({ isRendered: this.state.showTable && this.state.complianceReportData, className: "compliance-table" }, [
                     <TableComponent
                         remoteProp= {false}
                         data= {this.state.complianceReportData}
@@ -259,7 +259,11 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                         showPdfExport= {true}
                         className= "compliance-table"
                     ></TableComponent>
-                ])
+                ]),
+                div({
+                    isRendered: isEmpty(this.state.complianceReportData),
+                    className: 'no-data'
+                }, ['No Data Found'])
             ])
         )
     }
