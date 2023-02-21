@@ -36,3 +36,15 @@
     text-overflow: unset;
     padding-left: 4px;
 }
+
+.react-datepicker-popper {
+    z-index: 3;
+}
+
+.no-data {
+    border: 1px solid rgb(165 165 165);
+    border-radius: 3px;
+    margin: 1% 0;
+    padding: 1%;
+    font-weight: bold
+}
