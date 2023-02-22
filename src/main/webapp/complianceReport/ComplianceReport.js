@@ -23,19 +23,6 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
             beforeDate: null,
             showTable: false,
             noDataFound: false,
-            projects: [
-                'All',
-                'IRB',
-                'NHSR',
-                'Exempt',
-                'Not Engaged'
-            ],
-            projectShortForm: {
-                IRB: 'IRB',
-                NHSR: 'NHSR',
-                Exempt: 'EX',
-                'Not Engaged': 'NE'
-            },
             projectType: 'All'
         }
     }
@@ -207,7 +194,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
         } else {
             reportForFiltering.forEach(element => {
                 projKey = element.projectKey.split('-')
-                if (projKey[0] == projectShortForm[this.state.projectType] || projKey[1] == projectShortForm[this.state.projectType]) {
+                if (projKey[0] == this.state.projectType || projKey[1] == this.state.projectType) {
                     filteredReport.push(element)
                 }
             })
@@ -274,21 +261,15 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                         </div>
                     ])
                     ]),
-                    InputFieldSelect({
-                        label: "Project Type:",
-                        id: "projectType",
-                        name: "projectType",
-                        options: this.state.projects,
-                        value: this.state.projectType,
-                        onChange: (e) => {
-                            this.setState({ 
-                                projectType: e.target.value,
-                            })
-                        },
-                        placeholder: "Select...",
-                        readOnly: !this.state.isAdmin,
-                        edit: false
-                    }),
+                    div({}, [
+                        <select onChange={(e) => {this.setState({projectType: e.target.value})}}>
+                            <option value="All">All</option>
+                            <option value="IRB">IRB</option>
+                            <option value="NHSR">NHSR</option>
+                            <option value="EX">Exempt</option>
+                            <option value="NE">Not Engaged</option>
+                        </select>
+                    ]),
                     button({
                     className: "btn buttonPrimary",
                     style: { marginTop: '20px', marginRight: '10px' },
