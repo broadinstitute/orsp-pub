@@ -321,7 +321,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                     ></TableComponent>
                 ]),
                 div({
-                    isRendered: isEmpty(this.state.complianceReportData) && noDataFound,
+                    isRendered: isEmpty(this.state.complianceReportData) && this.state.noDataFound,
                     className: 'no-data'
                 }, ['No Data Found'])
             ])
