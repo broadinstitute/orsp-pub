@@ -29,7 +29,6 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
     }
 
     applyFilterPanel = async () => {
-        this.props.showSpinner();
         this.setState({
             showTable: false
         })
@@ -38,6 +37,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                 dateWarning: true
             })
         } else {
+            this.props.showSpinner();
             this.setState({
                 dateWarning: false
             })
