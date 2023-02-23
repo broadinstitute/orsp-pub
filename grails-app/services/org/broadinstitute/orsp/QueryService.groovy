@@ -1875,14 +1875,14 @@ class QueryService implements Status {
         result
     }
 
-    List getComplianceDetails(String startDate, String endDate) {
+    List getComplianceDetails(String startDate, String endDate, String projectType) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final String query = new StringBuilder().append('SELECT t1.project_key, t1.request_date, t1.type, t2.name, t2.value, t3.source ')
                                                 .append('FROM issue_extra_property t2 ')
                                                 .append('INNER JOIN issue t1 ON t1.project_key = t2.project_key ')
                                                 .append('INNER JOIN funding t3 ON t1.project_key = t3.project_key ')
-                                                .append('WHERE date(t1.request_date) >= :startDate and date(t1.request_date) <= :endDate').toString()
+                                                .append('WHERE date(t1.request_date) >= :startDate and date(t1.request_date) <= :endDate and t1.project_key LIKE :projectType').toString()
 //        final String query = 'SELECT t1.project_key, t1.request_date, t1.type, t2.name, t2.value, t3.source ' +
 //                            'FROM issue_extra_property t2 ' +
 //                            'INNER JOIN issue t1 ON t1.project_key = t2.project_key ' +
@@ -1891,6 +1891,7 @@ class QueryService implements Status {
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setParameter("startDate", startDate+'%')
         sqlQuery.setParameter("endDate", endDate+'%')
+        sqlQuery.setParameter("projectType", '%'+ projectType +'%')
         final result = sqlQuery.with{
             list()
         }
