@@ -176,7 +176,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                 })
                 reportDataArr.unshift(tempSave[0])
                 this.setState(prev => {
-                    prev.complianceReportData = projectFilter(reportDataArr);
+                    prev.complianceReportData = this.projectFilter(reportDataArr);
                     prev.showTable = true
                 }, () => {
                     this.props.hideSpinner();
