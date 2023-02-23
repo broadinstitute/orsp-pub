@@ -35,7 +35,8 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
         let afterDateStr = this.state.afterDate ? this.state.afterDate.toISOString().substring(0, 10) : "";
         let beforeDateStr = this.state.beforeDate ? this.state.beforeDate.toISOString().substring(0, 10) : "";
         await Reports.getComplianceReportData(afterDateStr, beforeDateStr).then(data => {
-            if(data.length == undefined || !data ) {
+            let dataLength = data.data[0].complianceReportData.length
+            if(dataLength == 0 ) {
                 this.setState({
                     noDataFound: true
                 }, () => {
@@ -49,9 +50,13 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                 let complianceDataArr = [];
                 let submissionDataArr = [];
 
+                /*
+                    Note for Dev: The operations you see below are 
+                    due to the unformatted data we recieve from backend
+                */
                 /* 
                     Converting array of strings to array of objects,
-                    array of strings is received from the api call
+                    data recieved from api call is an array of strings
                 */
                 const complianceReportData = complianceData.complianceReportData;
                 complianceReportData.forEach(complianceReportDataElement => {
@@ -219,7 +224,8 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
             afterDate: null,
             beforeDate: null,
             showTable: false,
-            projectType: 'All'
+            projectType: 'All',
+            noDataFound: false
         })
     }
 
@@ -262,13 +268,16 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                     ])
                     ]),
                     div({}, [
-                        <select onChange={(e) => {this.setState({projectType: e.target.value})}}>
-                            <option value="All">All</option>
-                            <option value="IRB">IRB</option>
-                            <option value="NHSR">NHSR</option>
-                            <option value="EX">Exempt</option>
-                            <option value="NE">Not Engaged</option>
-                        </select>
+                        <div>
+                            <label className='option-label'>Project Type</label><br></br>
+                            <select className='project-select' onChange={(e) => {this.setState({projectType: e.target.value})}}>
+                                <option value="All">All</option>
+                                <option value="IRB">IRB</option>
+                                <option value="NHSR">NHSR</option>
+                                <option value="EX">Exempt</option>
+                                <option value="NE">Not Engaged</option>
+                            </select>
+                        </div>
                     ]),
                     button({
                     className: "btn buttonPrimary",

@@ -48,3 +48,15 @@
     padding: 1%;
     font-weight: bold
 }
+
+.option-label {
+    color: #286090;
+    margin-top: 20px;
+}
+
+.project-select {
+    min-height: 38px;
+    border: 1px solid #ced4da;
+    min-width: 37.3rem;
+    outline: none
+}
