@@ -60,3 +60,14 @@
     min-width: 37.3rem;
     outline: none
 }
+
+.date-warning {
+    margin-top: 10px;
+    display: block;
+    background-color: #ffe4e8;
+    padding: 3px 10px;
+    margin-right: 2rem;
+    border: 1px solid #f58181;
+    border-radius: 3px;
+    font-weight: bold;
+}
