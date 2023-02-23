@@ -250,7 +250,11 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                                 className="DatePicker"
                             ></DatePicker>
                         </div>
-                    ])
+                    ]),
+                    div({
+                        isRendered: !this.state.afterDate || !this.state.beforeDate,
+                        className: "date-warning"
+                    }, ['Please select a date'])
                     ]),
                     div({}, [
                         <div>
@@ -296,7 +300,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                     ></TableComponent>
                 ]),
                 div({
-                    isRendered: isEmpty(this.state.complianceReportData) && this.state.noDataFound,
+                    isRendered: this.state.noDataFound,
                     className: 'no-data'
                 }, ['No Data Found'])
             ])
