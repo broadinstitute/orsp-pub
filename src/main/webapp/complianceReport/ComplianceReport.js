@@ -32,7 +32,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
         this.setState({
             showTable: false
         })
-        if (!this.state.afterDate && !this.state.beforeDate) {
+        if (!this.state.beforeDate) {
             this.setState({
                 dateWarning: true
             })
@@ -267,7 +267,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                     div({
                         isRendered: this.state.dateWarning,
                         className: "date-warning"
-                    }, ['Please select a date']),
+                    }, ['Please select "Created Before" date']),
                     div({}, [
                         <div>
                             <label className='option-label'>Project Type</label><br></br>
