@@ -527,8 +527,8 @@ export const Reports = {
     })
   },
 
-  getComplianceReportData(startDate, endDate) {
-    return axios.get(UrlConstants.complianceReportUrl + "?startDate=" + startDate + "&endDate=" + endDate);
+  getComplianceReportData(startDate, endDate, projectType) {
+    return axios.get(UrlConstants.complianceReportUrl + "?startDate=" + startDate + "&endDate=" + endDate + "&projectType" + projectType);
     // return axios.post(UrlConstants.complianceReportUrl, {startDate: startDate, endDate: endDate});
   }
 };

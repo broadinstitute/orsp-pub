@@ -34,7 +34,8 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
         })
         let afterDateStr = this.state.afterDate ? this.state.afterDate.toISOString().substring(0, 10) : "";
         let beforeDateStr = this.state.beforeDate ? this.state.beforeDate.toISOString().substring(0, 10) : "";
-        await Reports.getComplianceReportData(afterDateStr, beforeDateStr).then(data => {
+        let projectType = this.state.projectType === 'All' ? '' : this.state.projectType;
+        await Reports.getComplianceReportData(afterDateStr, beforeDateStr, projectType).then(data => {
             let dataLength = data.data[0].complianceReportData.length
             if(dataLength == 0 ) {
                 this.setState({
@@ -176,7 +177,7 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                 })
                 reportDataArr.unshift(tempSave[0])
                 this.setState(prev => {
-                    prev.complianceReportData = this.projectFilter(reportDataArr);
+                    prev.complianceReportData = reportDataArr;
                     prev.showTable = true
                 }, () => {
                     this.props.hideSpinner();
@@ -189,22 +190,6 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
             this.props.hideSpinner();
             console.log(err);
         })
-    }
-
-    projectFilter(reportForFiltering) {
-        let projKey = []
-        let filteredReport = []
-        if (this.state.projectType === 'All') {
-            return reportForFiltering
-        } else {
-            reportForFiltering.forEach(element => {
-                projKey = element.projectKey.split('-')
-                if (projKey[0] == this.state.projectType || projKey[1] == this.state.projectType) {
-                    filteredReport.push(element)
-                }
-            })
-            return filteredReport;
-        }
     }
 
     setBeforeDate(date) {
