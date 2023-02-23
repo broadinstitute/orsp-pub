@@ -23,7 +23,8 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
             beforeDate: null,
             showTable: false,
             noDataFound: false,
-            projectType: 'All'
+            projectType: 'All',
+            dateWarning: false
         }
     }
 
@@ -32,164 +33,173 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
         this.setState({
             showTable: false
         })
-        let afterDateStr = this.state.afterDate ? this.state.afterDate.toISOString().substring(0, 10) : "";
-        let beforeDateStr = this.state.beforeDate ? this.state.beforeDate.toISOString().substring(0, 10) : "";
-        let projectType = this.state.projectType === 'All' ? '' : this.state.projectType;
-        await Reports.getComplianceReportData(afterDateStr, beforeDateStr, projectType).then(data => {
-            let dataLength = data.data[0].complianceReportData.length
-            if(dataLength == 0 ) {
-                this.setState({
-                    noDataFound: true
-                }, () => {
-                    this.props.hideSpinner();
-                })
-            } else {
-                this.setState({
-                    noDataFound: false
-                })
-                let complianceData = data.data[0];
-                let complianceDataArr = [];
-                let submissionDataArr = [];
-
-                /*
-                    Note for Dev: The operations you see below are 
-                    due to the unformatted data we recieve from backend
-                */
-                /* 
-                    Converting array of strings to array of objects,
-                    data recieved from api call is an array of strings
-                */
-                const complianceReportData = complianceData.complianceReportData;
-                complianceReportData.forEach(complianceReportDataElement => {
-                    let tempComplianceData = {
-                        eventTypeCount: 0,
-                        eventCreatedDate: [],
-                    }
-                    tempComplianceData['projectKey'] = complianceReportDataElement[0];
-                    tempComplianceData['requestDate'] = complianceReportDataElement[1].slice(0,10);
-                    tempComplianceData['type'] = complianceReportDataElement[2];
-                    tempComplianceData['name'] = complianceReportDataElement[3];
-                    tempComplianceData['value'] = complianceReportDataElement[4];
-                    tempComplianceData['funding'] = complianceReportDataElement[5];
-                    complianceDataArr.push(tempComplianceData);
-                })
-
-                /* 
-                    Converting array of strings to array of objects
-                    array of strings is received from the api call that filters
-                    using IRB project type and Other event type
-                */
-                const submissionReportData = complianceData.submissionData;
-                submissionReportData.forEach(submissionReportDataElement => {
-                    let submissionData = {};
-                    submissionData['projectKey'] = submissionReportDataElement[0];
-                    submissionData['projectType'] = submissionReportDataElement[1];
-                    submissionData['createdDate'] = submissionReportDataElement[2].slice(0, 10);
-                    submissionData['eventType'] = submissionReportDataElement[3];
-                    submissionDataArr.push(submissionData);
-                })
-
-                /*
-                    Taking required values from submission details above
-                    and joining it with the complianceReportData
-                */
-                submissionDataArr.forEach(submissionDataArrElement => {
-                    complianceDataArr.forEach(complianceDataArrElement => {
-                    if (submissionDataArrElement.projectKey === complianceDataArrElement.projectKey) {
-                            complianceDataArrElement.eventTypeCount = complianceDataArrElement.eventTypeCount + 1;
-                            complianceDataArrElement.eventCreatedDate.push(submissionDataArrElement.createdDate);
-                        }
-                    })
-                })
-
-                /*
-                    Converting resultant data from above operation to get required data
-                    by adding new fields needed for the report
-                */
-                let reportDataArr = [];
-
-                complianceDataArr.forEach(complDataArrElement => {
-                    let reportData = {
-                        projectKey: '',
-                        submittedDate: '',
-                        funding: '',
-                        numberofOtherEvents: '',
-                        eventCreatedDates: '',
-                        firstNameOfInvestigator: '',
-                        lastNameOfInvestigator: '',
-                        degree: '',
-                        typeOfInitialReview: '',
-                        biomedical: '',
-                        approveDate: '',
-                        financialConflict: '',
-                        financialConflictDescription: '',
-                        daysFromSubmissionToApproval: ''
-                    };
-                    let tempReportData = []
-                    complianceDataArr.forEach(complianceElement => {
-                        if (complDataArrElement.projectKey === complianceElement.projectKey) {
-                            tempReportData.push(complianceElement);   
-                        }
-                    })
-                    tempReportData.forEach(tempData => {
-                        reportData["projectKey"] = tempData.projectKey;
-                            reportData["submittedDate"] = tempData.requestDate;
-                            reportData["funding"] = tempData.funding;
-                            reportData["numberofOtherEvents"] = tempData.eventTypeCount;
-                            reportData["eventCreatedDates"] = tempData.eventCreatedDate;
-
-                            if (tempData.name == 'investigatorFirstName') 
-                                reportData["firstNameOfInvestigator"] = tempData.value;
-                            if (tempData.name == 'investigatorLastName')
-                                reportData["lastNameOfInvestigator"] = tempData.value;
-                            if (tempData.name == "degree")
-                                reportData["degree"] = tempData.value;
-                            if (tempData.name == "initialReviewType")
-                                reportData["typeOfInitialReview"] = (tempData.value[0] == "{") ? JSON.parse(tempData.value).label : tempData.value;
-                            if (tempData.name == "bioMedical")
-                                reportData["biomedical"] = tempData.value;
-                            if (tempData.name == "initialDate")
-                                reportData["approveDate"] = tempData.value;
-                            if (tempData.name == "financialConflict")
-                                reportData["financialConflict"] = tempData.value;
-                            if (tempData.name == "financialConflictDescription")
-                                reportData["financialConflictDescription"] = tempData.value;
-                            let daysCount = Math.round((new Date(reportData.approveDate).getTime() - new Date(reportData.submittedDate).getTime()) / (1000*3600*24))
-                            reportData["daysFromSubmissionToApproval"] = isNaN(daysCount) ? 'Not yet approved' : daysCount;
-                    })
-                    reportDataArr.push(reportData);
-                })
-
-                /*
-                    Removing duplicate objects from the above resultant
-                */
-                let startIndex = 0
-                let tempSave = [].concat(reportDataArr[0])
-                reportDataArr.forEach(arrElement => {
-                    let endIndex = 0
-                    reportDataArr.forEach(element => {
-                        if (arrElement.projectKey === element.projectKey) {
-                            endIndex += 1
-                        }
-                    })
-                    reportDataArr.splice(startIndex, endIndex)
-                    startIndex += 1
-                })
-                reportDataArr.unshift(tempSave[0])
-                this.setState(prev => {
-                    prev.complianceReportData = reportDataArr;
-                    prev.showTable = true
-                }, () => {
-                    this.props.hideSpinner();
-                })
-            }
-        }).catch(err => {
+        if (!this.state.afterDate && !this.state.beforeDate) {
             this.setState({
-                showTable: false
+                dateWarning: true
             })
-            this.props.hideSpinner();
-            console.log(err);
-        })
+        } else {
+            this.setState({
+                dateWarning: false
+            })
+            let afterDateStr = this.state.afterDate ? this.state.afterDate.toISOString().substring(0, 10) : "";
+            let beforeDateStr = this.state.beforeDate ? this.state.beforeDate.toISOString().substring(0, 10) : "";
+            let projectType = this.state.projectType === 'All' ? '' : this.state.projectType;
+            await Reports.getComplianceReportData(afterDateStr, beforeDateStr, projectType).then(data => {
+                let dataLength = data.data[0].complianceReportData.length
+                if(dataLength == 0 ) {
+                    this.setState({
+                        noDataFound: true
+                    }, () => {
+                        this.props.hideSpinner();
+                    })
+                } else {
+                    this.setState({
+                        noDataFound: false
+                    })
+                    let complianceData = data.data[0];
+                    let complianceDataArr = [];
+                    let submissionDataArr = [];
+
+                    /*
+                        Note for Dev: The operations you see below are 
+                        due to the unformatted data we recieve from backend
+                    */
+                    /* 
+                        Converting array of strings to array of objects,
+                        data recieved from api call is an array of strings
+                    */
+                    const complianceReportData = complianceData.complianceReportData;
+                    complianceReportData.forEach(complianceReportDataElement => {
+                        let tempComplianceData = {
+                            eventTypeCount: 0,
+                            eventCreatedDate: [],
+                        }
+                        tempComplianceData['projectKey'] = complianceReportDataElement[0];
+                        tempComplianceData['requestDate'] = complianceReportDataElement[1].slice(0,10);
+                        tempComplianceData['type'] = complianceReportDataElement[2];
+                        tempComplianceData['name'] = complianceReportDataElement[3];
+                        tempComplianceData['value'] = complianceReportDataElement[4];
+                        tempComplianceData['funding'] = complianceReportDataElement[5];
+                        complianceDataArr.push(tempComplianceData);
+                    })
+
+                    /* 
+                        Converting array of strings to array of objects
+                        array of strings is received from the api call that filters
+                        using IRB project type and Other event type
+                    */
+                    const submissionReportData = complianceData.submissionData;
+                    submissionReportData.forEach(submissionReportDataElement => {
+                        let submissionData = {};
+                        submissionData['projectKey'] = submissionReportDataElement[0];
+                        submissionData['projectType'] = submissionReportDataElement[1];
+                        submissionData['createdDate'] = submissionReportDataElement[2].slice(0, 10);
+                        submissionData['eventType'] = submissionReportDataElement[3];
+                        submissionDataArr.push(submissionData);
+                    })
+
+                    /*
+                        Taking required values from submission details above
+                        and joining it with the complianceReportData
+                    */
+                    submissionDataArr.forEach(submissionDataArrElement => {
+                        complianceDataArr.forEach(complianceDataArrElement => {
+                        if (submissionDataArrElement.projectKey === complianceDataArrElement.projectKey) {
+                                complianceDataArrElement.eventTypeCount = complianceDataArrElement.eventTypeCount + 1;
+                                complianceDataArrElement.eventCreatedDate.push(submissionDataArrElement.createdDate);
+                            }
+                        })
+                    })
+
+                    /*
+                        Converting resultant data from above operation to get required data
+                        by adding new fields needed for the report
+                    */
+                    let reportDataArr = [];
+
+                    complianceDataArr.forEach(complDataArrElement => {
+                        let reportData = {
+                            projectKey: '',
+                            submittedDate: '',
+                            funding: '',
+                            numberofOtherEvents: '',
+                            eventCreatedDates: '',
+                            firstNameOfInvestigator: '',
+                            lastNameOfInvestigator: '',
+                            degree: '',
+                            typeOfInitialReview: '',
+                            biomedical: '',
+                            approveDate: '',
+                            financialConflict: '',
+                            financialConflictDescription: '',
+                            daysFromSubmissionToApproval: ''
+                        };
+                        let tempReportData = []
+                        complianceDataArr.forEach(complianceElement => {
+                            if (complDataArrElement.projectKey === complianceElement.projectKey) {
+                                tempReportData.push(complianceElement);   
+                            }
+                        })
+                        tempReportData.forEach(tempData => {
+                            reportData["projectKey"] = tempData.projectKey;
+                                reportData["submittedDate"] = tempData.requestDate;
+                                reportData["funding"] = tempData.funding;
+                                reportData["numberofOtherEvents"] = tempData.eventTypeCount;
+                                reportData["eventCreatedDates"] = tempData.eventCreatedDate;
+
+                                if (tempData.name == 'investigatorFirstName') 
+                                    reportData["firstNameOfInvestigator"] = tempData.value;
+                                if (tempData.name == 'investigatorLastName')
+                                    reportData["lastNameOfInvestigator"] = tempData.value;
+                                if (tempData.name == "degree")
+                                    reportData["degree"] = tempData.value;
+                                if (tempData.name == "initialReviewType")
+                                    reportData["typeOfInitialReview"] = (tempData.value[0] == "{") ? JSON.parse(tempData.value).label : tempData.value;
+                                if (tempData.name == "bioMedical")
+                                    reportData["biomedical"] = tempData.value;
+                                if (tempData.name == "initialDate")
+                                    reportData["approveDate"] = tempData.value;
+                                if (tempData.name == "financialConflict")
+                                    reportData["financialConflict"] = tempData.value;
+                                if (tempData.name == "financialConflictDescription")
+                                    reportData["financialConflictDescription"] = tempData.value;
+                                let daysCount = Math.round((new Date(reportData.approveDate).getTime() - new Date(reportData.submittedDate).getTime()) / (1000*3600*24))
+                                reportData["daysFromSubmissionToApproval"] = isNaN(daysCount) ? 'Not yet approved' : daysCount;
+                        })
+                        reportDataArr.push(reportData);
+                    })
+
+                    /*
+                        Removing duplicate objects from the above resultant
+                    */
+                    let startIndex = 0
+                    let tempSave = [].concat(reportDataArr[0])
+                    reportDataArr.forEach(arrElement => {
+                        let endIndex = 0
+                        reportDataArr.forEach(element => {
+                            if (arrElement.projectKey === element.projectKey) {
+                                endIndex += 1
+                            }
+                        })
+                        reportDataArr.splice(startIndex, endIndex)
+                        startIndex += 1
+                    })
+                    reportDataArr.unshift(tempSave[0])
+                    this.setState(prev => {
+                        prev.complianceReportData = reportDataArr;
+                        prev.showTable = true
+                    }, () => {
+                        this.props.hideSpinner();
+                    })
+                }
+            }).catch(err => {
+                this.setState({
+                    showTable: false
+                })
+                this.props.hideSpinner();
+                console.log(err);
+            })
+        }
     }
 
     setBeforeDate(date) {
@@ -251,11 +261,11 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                             ></DatePicker>
                         </div>
                     ]),
-                    div({
-                        isRendered: !this.state.afterDate || !this.state.beforeDate,
-                        className: "date-warning"
-                    }, ['Please select a date'])
                     ]),
+                    div({
+                        isRendered: this.state.dateWarning,
+                        className: "date-warning"
+                    }, ['Please select a date']),
                     div({}, [
                         <div>
                             <label className='option-label'>Project Type</label><br></br>
