@@ -204,13 +204,15 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
 
     setBeforeDate(date) {
         this.setState({
-            beforeDate: date
+            beforeDate: date,
+            dateWarning: false
         })
     }
 
     setAfterDate(date) {
         this.setState({
-            afterDate: date
+            afterDate: date,
+            dateWarning: false
         })
     }
 
