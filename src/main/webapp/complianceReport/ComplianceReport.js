@@ -251,7 +251,10 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                             ></DatePicker>
                         </div>
                     ]),
-                    div({className: "date-warning"}, ['Please select a date'])
+                    div({
+                        isRendered: !this.state.afterDate || !this.state.beforeDate,
+                        className: "date-warning"
+                    }, ['Please select a date'])
                     ]),
                     div({}, [
                         <div>
