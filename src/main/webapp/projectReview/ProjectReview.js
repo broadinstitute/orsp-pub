@@ -1374,7 +1374,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 readOnly: true,
                 onChange: () => { }
               }),
-              InputFieldText({
+              InputFieldTextArea({
                 isRendered: this.state.formData.projectExtraProps.broadInvestigator == "false" || this.state.formData.projectExtraProps.broadInvestigator == false,
                 id: "broadInvestigatorTextValue",
                 name: "broadInvestigatorTextValue",
