@@ -226,6 +226,7 @@
   font-size: 1rem;
   font-style: italic;
   padding: 9px 40px 9px 12px;
+  word-wrap: break-word;
 }
 
 .inputFieldWrapper,
