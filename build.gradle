@@ -114,7 +114,7 @@ dependencies {
     // DB Libraries
     compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '3.0.7'
     compile 'org.grails.plugins:database-migration:3.0.4'
-    compile 'org.liquibase:liquibase-core:3.9.0'
+    compile 'org.liquibase:liquibase-core:4.21.0'
 
     // Google Cloud BigQuery, to sync users
     compile 'com.google.cloud:google-cloud-bigquery:2.15.0'
