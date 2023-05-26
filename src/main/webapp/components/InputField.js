@@ -20,7 +20,7 @@ export const InputField = hh(class InputField extends Component {
         ]),
         div({ isRendered: !readOnly }, [children]),
         div({ isRendered: readOnly }, 
-          p([value])
+          p([(currentValueStr != null) ? currentValueStr : currentValue])
         ),
         div({ isRendered: edited, className: "inputFieldCurrent" }, [(currentValueStr != null) ? currentValueStr : currentValue]),
         small({ isRendered: error, className: "errorMessage" }, [errorMessage])
