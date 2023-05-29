@@ -139,7 +139,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               index: this.props.index,
               name: this.props.name,
               className: "form-control inputFieldText",
-              value: (this.props.value === undefined || this.props.value === '') ? '' : this.props.value,
+              value: (this.props.value === undefined || this.props.value === '') ? '' : this.props.value.label,
               placeholder: ((this.props.placeholder === undefined || this.props.placeholder === '') && this.props.readOnly) ? '--' : this.props.placeholder,
               disabled: this.props.disabled,
               onBlur: this.props.focusOut
