@@ -115,8 +115,9 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
         currentValueStr: currentValueStr,
         edited : edited
       }, [
-          div({ 
-            className: "inputFieldSelectWrapper" 
+          div({
+            className: "inputFieldSelectWrapper",
+            isRendered: !this.props.readOnly
           }, [
             h(Select, {
               id: this.props.id,
@@ -132,7 +133,13 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               isClearable: this.props.isClearable,
               isLoading: isLoading,
               styles: selectWithLabels,
-            })
+            }),
+            div({
+              isRendered: this.props.readOnly,
+              className: 'inputField'
+            }, [
+              (currentValueStr === undefined || currentValueStr === '') ? '--' : currentValueStr
+            ])
           ]),
         ])
     )
