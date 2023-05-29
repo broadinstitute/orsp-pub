@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import Select from 'react-select';
-import { hh, h, div, p } from 'react-hyperscript-helpers';
+import { hh, h, div } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import './InputField.css';
 import get from 'lodash/get';
@@ -115,9 +115,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
         currentValueStr: currentValueStr,
         edited : edited
       }, [
-          div({
-            className: "inputFieldSelectWrapper",
-          }, [
+          div({ className: "inputFieldSelectWrapper" }, [
             h(Select, {
               isRendered: !this.props.readOnly,
               id: this.props.id,
@@ -133,20 +131,8 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               isClearable: this.props.isClearable,
               isLoading: isLoading,
               styles: selectWithLabels,
-            }),
-            div({
-              isRendered: this.props.readOnly
-            }, [
-              p({
-                id: this.props.id,
-                index: this.props.index,
-                name: this.props.name,
-                value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
-                className: "inputFieldSelect",
-                styles: selectWithLabels,
-              })
-            ])
-          ]),
+            })
+          ])
         ])
     )
   }

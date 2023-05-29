@@ -17,7 +17,13 @@ export const InputField = hh(class InputField extends Component {
         p({ className: "inputFieldLabel" }, [
           label,
           span({ isRendered: moreInfo !== undefined, className: "italic" }, [moreInfo])
-        ]),children,
+        ]),
+        div({
+          isRendered: !readOnly
+        }, [children]),
+        div({
+          isRendered: readOnly,
+        }, [(value.label ? value.label : value)]),
         div({ isRendered: edited, className: "inputFieldCurrent" }, [(currentValueStr != null) ? currentValueStr : currentValue]),
         small({ isRendered: error, className: "errorMessage" }, [errorMessage])
       ])
