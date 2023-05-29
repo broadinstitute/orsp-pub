@@ -135,10 +135,16 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               styles: selectWithLabels,
             }),
             div({
-              isRendered: this.props.readOnly,
-              className: 'inputField'
+              isRendered: this.props.readOnly
             }, [
-              (currentValueStr === undefined || currentValueStr === '') ? '--' : currentValueStr
+              p({
+                id: this.props.id,
+                index: this.props.index,
+                name: this.props.name,
+                value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
+                className: "inputFieldSelect",
+                styles: selectWithLabels,
+              })
             ])
           ]),
         ])
