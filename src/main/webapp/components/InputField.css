@@ -19,7 +19,7 @@
 }
 
 .inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker{
-  pointer-events: auto;
+  user-select: text;
   caret-color: white;
   cursor: auto;
 }
