@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import Select from 'react-select';
-import { hh, h, div } from 'react-hyperscript-helpers';
+import { hh, h, div, input } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import './InputField.css';
 import get from 'lodash/get';
