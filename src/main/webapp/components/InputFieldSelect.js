@@ -139,7 +139,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
             isRendered: this.props.readOnly,
             className: 'inputField'
           }, [
-            p([(this.props.value === undefined || this.props.value === '') ? '--' : this.props.value])
+            (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value
           ])
         ])
     )
