@@ -13,7 +13,7 @@ export const InputField = hh(class InputField extends Component {
     const { value, label, additionalClass, error, errorMessage, moreInfo, children, readOnly, currentValue = null, currentValueStr, edited = false } = this.props;
 
     if(readOnly) {
-      const element = document.getElementsByClassName('inputFieldReadOnly');
+      const element = document.getElementsByClassName('inputFieldText');
       element[0].setAttribute('readonly', true);
     }
 
