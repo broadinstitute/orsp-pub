@@ -12,6 +12,11 @@ export const InputField = hh(class InputField extends Component {
   render() {
     const { value, label, additionalClass, error, errorMessage, moreInfo, children, readOnly, currentValue = null, currentValueStr, edited = false } = this.props;
 
+    if(readOnly) {
+      const element = document.getElementsByClassName('inputFieldReadOnly');
+      element[0].setAttribute('readonly', true);
+    }
+
     return (
       div({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated ' : '') + (additionalClass !== undefined ? additionalClass : '') }, [
         p({ className: "inputFieldLabel" }, [
