@@ -17,7 +17,7 @@ export const InputField = hh(class InputField extends Component {
   }
 
   handleClick(event) {
-    if(readOnly) {
+    if(this.state.readOnly) {
       event.target.setAttribute('readonly', true);
     }
   }
