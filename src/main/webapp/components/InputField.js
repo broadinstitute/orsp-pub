@@ -9,16 +9,32 @@ export const InputField = hh(class InputField extends Component {
     return { hasError: true }
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      readOnly: false
+    }
+  }
+
+  handleClick(event) {
+    if(readOnly) {
+      event.target.setAttribute('readonly', true);
+    }
+  }
+
   render() {
     const { value, label, additionalClass, error, errorMessage, moreInfo, children, readOnly, currentValue = null, currentValueStr, edited = false } = this.props;
 
-    if(readOnly) {
-      const element = document.getElementsByClassName('inputFieldText');
-      element[0].setAttribute('readonly', true);
+    if (readOnly) {
+      this.setState({
+        readOnly: true
+      })
     }
 
     return (
-      div({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated ' : '') + (additionalClass !== undefined ? additionalClass : '') }, [
+      div({ className: "inputField " + (error === true ? 'inputFieldError ' : '') + (readOnly ? 'inputFieldReadOnly ' : '') + (edited ? 'inputFieldUpdated ' : '') + (additionalClass !== undefined ? additionalClass : ''),
+        onClick: () => handleClick()
+      }, [
         p({ className: "inputFieldLabel" }, [
           label,
           span({ isRendered: moreInfo !== undefined, className: "italic" }, [moreInfo])
