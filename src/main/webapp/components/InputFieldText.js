@@ -30,7 +30,6 @@ export const InputFieldText = hh(class InputFieldText extends Component {
               required: this.props.required,
               onChange: this.props.onChange,
               onBlur: this.props.focusOut,
-              readonly: this.props.readOnly
             })
           ])
         ])
