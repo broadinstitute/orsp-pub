@@ -9,7 +9,7 @@ import LoadingWrapper from './LoadingWrapper';
 import { KeyDocumentsEnum } from "../util/KeyDocuments";
 import { InputFieldText } from './InputFieldText';
 
-const MAX_SIZE = 15700000;
+const MAX_SIZE = 31457280;
 
 const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   constructor(props) {
@@ -183,7 +183,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       let selectedFile = this.state.dropEvent;
       if(selectedFile.size > MAX_SIZE) {
         this.setState(prev => {
-          prev.errorMessage = 'Size exceeded. Max file size 15.7 Mb.';
+          prev.errorMessage = 'Size exceeded. Max file size 30 Mb.';
           prev.fileError = true;
           prev.file = { name: '' };
           return prev;
@@ -207,7 +207,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
     e.target.value = '';
     if(selectedFile.size > MAX_SIZE) {
       this.setState(prev => {
-        prev.errorMessage = 'Size exceeded. Max file size 15.7 Mb.';
+        prev.errorMessage = 'Size exceeded. Max file size 30 Mb.';
         prev.fileError = true;
         prev.file = { name: '' };
         return prev;
@@ -270,7 +270,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
           }),
           InputFieldFile({
             label: "File ",
-            moreInfo: "(Max file size 15.7 Mb)",
+            moreInfo: "(Max file size 30 Mb)",
             id: "documentFile",
             name: "documentFile",
             callback: this.setFilesToUpload(this.state.documents),
