@@ -231,6 +231,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
         Panel({ title: "Funding*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [
           Fundings({
+            readOnly: false,
             fundings: this.state.formData.fundings,
             updateFundings: this.handleUpdateFundings,
             error: this.props.errors.fundings,
