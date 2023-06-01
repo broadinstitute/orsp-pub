@@ -300,6 +300,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             isMulti: false,
             edit: false,
             isLoading: this.state.consentGroupIsLoading,
+            readOnly: false
           }),
         ]),
         Panel({
@@ -316,7 +317,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             isMulti: false,
             edit: false,
             isLoading: this.state.sampleCollectionIsLoading,
-
+            readOnly: false
           }),
         ]),
         Panel({ title: "Sample Collection Date Range*" }, [
