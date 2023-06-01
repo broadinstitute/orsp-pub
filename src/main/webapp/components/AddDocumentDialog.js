@@ -255,7 +255,8 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
             onChange: this.handleTypeSelect,
             currentValue: this.state.currentValue,
             error: this.state.typeError,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+            readOnly: false
           }),
           InputFieldText({
             id: "docDescription",
