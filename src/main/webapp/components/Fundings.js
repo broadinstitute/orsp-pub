@@ -158,7 +158,7 @@ export const Fundings = hh(class Fundings extends Component {
   getIdentifierError = (element) => {
     let identifierHasError = false;
     const source = this.props.edit ? element.future.source : element.source;
-    if (this.props.fundingAwardNumberError && source.value === 'federal_prime' || source.value === 'federal_sub-award') {
+    if (this.props.fundingAwardNumberError && source.value === 'federal_prime' || source.value === 'federal_sub-award' && this.props.error) {
       identifierHasError = this.props.edit ? isEmpty(element.future.identifier): isEmpty(element.identifier)
     }
     return identifierHasError;
@@ -167,7 +167,7 @@ export const Fundings = hh(class Fundings extends Component {
   getSponsorError = (element) => {
     let sponsorHasError = false;
     if (!this.props.edit && element.source.value) {
-      sponsorHasError = !element.sponsor ? true : false;
+      sponsorHasError = !element.sponsor && this.props.error ? true : false;
     }
     return sponsorHasError;
   }
