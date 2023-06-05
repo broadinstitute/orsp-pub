@@ -166,7 +166,7 @@ export const Fundings = hh(class Fundings extends Component {
 
   getSponsorError = (element) => {
     let sponsorHasError = false;
-    if ( this.props.edit && element.future.source.value ) {
+    if ( !this.props.readOnly && element.future.source.value ) {
       sponsorHasError = !element.current.sponsor || !element.future.sponsor ? true : false;
     }
     return sponsorHasError;
