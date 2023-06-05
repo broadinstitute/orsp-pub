@@ -9,8 +9,6 @@ import LoadingWrapper from './LoadingWrapper';
 import { KeyDocumentsEnum } from "../util/KeyDocuments";
 import { InputFieldText } from './InputFieldText';
 
-const MAX_SIZE = 31457280;
-
 const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   constructor(props) {
     super(props);
@@ -180,39 +178,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
 
   setDroppedFilesToUpload = () => {
     if(this.state.dropEvent) {
-      let selectedFile = this.state.dropEvent;
-      if(selectedFile.size > MAX_SIZE) {
-        this.setState(prev => {
-          prev.errorMessage = 'Size exceeded. Max file size 30 Mb.';
-          prev.fileError = true;
-          prev.file = { name: '' };
-          return prev;
-        });
-      } else {      
-        this.setState(prev => {
-          prev.alertMessage = '';
-          prev.errorMessage = '';
-          prev.disableBtn = false;
-          prev.showAlert = false;
-          prev.fileError = false;
-          prev.file = selectedFile;
-          return prev;
-        });
-      }
-    }
-  };
-
-  setFilesToUpload = () => (e) => {
-    let selectedFile = e.target.files[0];
-    e.target.value = '';
-    if(selectedFile.size > MAX_SIZE) {
-      this.setState(prev => {
-        prev.errorMessage = 'Size exceeded. Max file size 30 Mb.';
-        prev.fileError = true;
-        prev.file = { name: '' };
-        return prev;
-      });
-    } else {      
+      let selectedFile = this.state.dropEvent;    
       this.setState(prev => {
         prev.alertMessage = '';
         prev.errorMessage = '';
@@ -223,7 +189,20 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
         return prev;
       });
     }
-    
+  };
+
+  setFilesToUpload = () => (e) => {
+    let selectedFile = e.target.files[0];
+    e.target.value = '';
+    this.setState(prev => {
+      prev.alertMessage = '';
+      prev.errorMessage = '';
+      prev.disableBtn = false;
+      prev.showAlert = false;
+      prev.fileError = false;
+      prev.file = selectedFile;
+      return prev;
+    });
   };
 
   removeFile() {
@@ -270,7 +249,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
           }),
           InputFieldFile({
             label: "File ",
-            moreInfo: "(Max file size 30 Mb)",
+            moreInfo: "",
             id: "documentFile",
             name: "documentFile",
             callback: this.setFilesToUpload(this.state.documents),
