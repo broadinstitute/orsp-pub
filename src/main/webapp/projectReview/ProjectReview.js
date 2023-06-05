@@ -1131,7 +1131,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
           successClarification: this.successNotification,
         }),
 
-        div({ id: "notesToORSP" }, [
+        /*div({ id: "notesToORSP" }, [
             Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false || !isEmpty(this.state.formData.projectExtraProps.editDescription) }, [
               div({ isRendered: this.projectType === "IRB Project" }, [
                 InputFieldRadio({
@@ -1166,7 +1166,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                   errorMessage: "Required field"
                 })
             ])
-          ]),
+          ]),*/
 
           div({ id: "requestor" }, [
             Panel({ title: "Requestor" }, [
