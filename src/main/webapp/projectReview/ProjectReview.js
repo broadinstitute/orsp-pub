@@ -937,8 +937,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
         || (idx === 0 && isEmpty(obj.future.source.label) && isEmpty(obj.current.source.label))) {
         fundingErrorIndex.push(idx);
         return true
-      } else if (obj.future.source.value === 'federal_prime' || obj.future.source.value === 'federal_sub-award' && isEmpty(obj.future.identifier)) {
-        fundingAwardNumber = (obj.future.source.value === 'federal_prime' || obj.future.source.value === 'federal_sub-award') && isEmpty(obj.future.identifier);
+      } else if (obj.future.source.value === 'federal_prime' && isEmpty(obj.future.identifier)) {
+        fundingAwardNumber = obj.future.source.value === 'federal_prime' && isEmpty(obj.future.identifier);
         return true;
       } else {
         return false;
@@ -1525,7 +1525,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
             onChange: this.handleAttestationCheck,
             label: "I confirm",
             checked: this.state.formData.projectExtraProps.attestation === true || this.state.formData.projectExtraProps.attestation === "true",
-            readOnly: true,
+            readOnly: this.state.readOnly ? true : false,
           }),
         ]),
         AlertMessage({
