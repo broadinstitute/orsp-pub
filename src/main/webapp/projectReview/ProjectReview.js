@@ -1525,7 +1525,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
             onChange: this.handleAttestationCheck,
             label: "I confirm",
             checked: this.state.formData.projectExtraProps.attestation === true || this.state.formData.projectExtraProps.attestation === "true",
-            readOnly: this.state.readOnly ? true : false,
+            readOnly: true,
           }),
         ]),
         AlertMessage({
