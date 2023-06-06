@@ -155,26 +155,25 @@ export const Fundings = hh(class Fundings extends Component {
     return hasError
   };
 
+  getIdentifierError = (element) => {
+    let identifierHasError = false;
+    const source = this.props.edit ? element.future.source : element.source;
+    if (this.props.fundingAwardNumberError && source.value === 'federal_prime' || source.value === 'federal_sub-award') {
+      identifierHasError = this.props.edit ? isEmpty(element.future.identifier): isEmpty(element.identifier);
+    }
+    if (element.future.identifierError && !this.props.readOnly) identifierHasError = true;
+    
+    return identifierHasError;
+  };
+
   getSponsorError = (element) => {
     let sponsorHasError = false;
     if (!this.props.edit && element.source.value) {
       sponsorHasError = !element.sponsor ? true : false;
     }
-    if(element.future) {
-      sponsorHasError = this.props.sponsorError ? this.props.sponsorError : false;
-    }
-
+    if (element.future.sponsorError && !this.props.readOnly) sponsorHasError = true;
     return sponsorHasError;
   }
-
-  getIdentifierError = (element) => {
-    let identifierHasError = false;
-    const source = this.props.edit ? element.future.source : element.source;
-    if (this.props.fundingAwardNumberError && source.value === 'federal_sub-award' || source.value === 'federal_prime' ) {
-      identifierHasError = this.props.edit ? isEmpty(element.future.identifier): isEmpty(element.identifier)
-    }
-    return identifierHasError;
-  };
 
   render() {
     let {
