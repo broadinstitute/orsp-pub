@@ -156,7 +156,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
         endState: false
       },
       questions: null,
-      enabledQuestionsWizard: false
+      enabledQuestionsWizard: false,
+      sponsorError: false,
+      identifierError: false
     };
     this.state.questions = initQuestions();
     this.rejectProject = this.rejectProject.bind(this);
@@ -807,11 +809,24 @@ const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   handleUpdateFundings = (updated) => {
+    let fundings = updated;
+    let sponsorError = false;
+    let identifierError = false;
+    fundings.forEach(element => {
+      if(element.future.source.value === 'federal_prime' || element.future.source.value === 'federal_sub-award') {
+        identifierError = element.future.identifier ? false : true;
+      }
+      if(element.future.source.value) {
+        sponsorError = element.future.sponsor ? false : true;
+      }
+    });
     this.setState(prev => {
       prev.formData.fundings = updated;
       prev.fundingAwardNumberError = false;
       prev.generalError = false;
       prev.fundingError = false;
+      prev.sponsorError = sponsorError;
+      prev.identifierError = identifierError;
       return prev;
     });
   };
@@ -1259,7 +1274,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
               fundingAwardNumberError: this.state.fundingAwardNumberError,
               setError: this.changeFundingError,
               errorMessage: "Required field",
-              edit: true
+              edit: true,
+              sponsorError: this.state.sponsorError,
+              identifierError: this.state.identifierError
             })
           ])
         ]),
