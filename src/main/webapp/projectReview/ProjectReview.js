@@ -814,10 +814,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
     let identifierError = false;
     fundings.forEach(element => {
       if(element.future.source.value === 'federal_prime' || element.future.source.value === 'federal_sub-award') {
-        identifierError = element.future.identifier ? false : true;
+        identifierError = element.future.identifier && !this.state.readOnly ? false : true;
       }
       if(element.future.source.value) {
-        sponsorError = element.future.sponsor ? false : true;
+        sponsorError = element.future.sponsor && !this.state.readOnly ? false : true;
       }
     });
     this.setState(prev => {
