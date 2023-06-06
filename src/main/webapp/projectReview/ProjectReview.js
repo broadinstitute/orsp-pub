@@ -1539,8 +1539,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
           ])
         ]),
 
-        Panel({ 
-          isRendered: this.state.readOnly,
+        Panel({
           title: "Broad Responsible Party (or Designee) Attestation*" 
         }, [
           p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
