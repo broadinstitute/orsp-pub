@@ -947,6 +947,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     let generalError = false;
     let questions = false;
     let fundingAwardNumber = false;
+    let fundingDataError = false;
     let fundingError = this.state.formData.fundings.filter((obj, idx) => {
       if (isEmpty(obj.future.source.label) && (!isEmpty(obj.future.sponsor) || !isEmpty(obj.future.identifier))
         || (idx === 0 && isEmpty(obj.future.source.label) && isEmpty(obj.current.source.label))) {
@@ -980,6 +981,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
       attestationError = true;
       generalError = true;
     }
+    if(this.state.sponsorError || this.state.identifierError) {
+      fundingDataError = true;
+      generalError = true;
+    }
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
@@ -1000,7 +1005,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       !editDescriptionError &&
       !fundingError &&
       !questions &&
-      !fundingAwardNumber;
+      !fundingAwardNumber &&
+      !fundingDataError;
   }
 
   changeFundingError = () => {
