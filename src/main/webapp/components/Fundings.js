@@ -162,13 +162,13 @@ export const Fundings = hh(class Fundings extends Component {
     }
     if (element.future) {
       sponsorHasError = this.props.sponsorError ? this.props.sponsorError : false;
+      // adding identifier field validation here
+      // since source change triggers this function
+      if(element.future.source.value === 'federal_prime' || element.future.source.value === 'federal_sub-award') {
+        this.props.identifierError ? this.getIdentifierError(element) : undefined;
+      }
     }
 
-    // for source change this funtion is getting called
-    // so adding identifier field validation here
-    if(element.future.source.value === 'federal_prime' || element.future.source.value === 'federal_sub-award') {
-      this.props.identifierError ? getIdentifierError(element) : undefined;
-    }
     return sponsorHasError;
   }
 
