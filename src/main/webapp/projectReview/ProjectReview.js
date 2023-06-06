@@ -817,7 +817,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         identifierError = element.future.identifier && !this.state.readOnly ? false : true;
       }
       if(element.future.source.value) {
-        sponsorError = element.future.sponsor && !this.state.readOnly ? false : true;
+        sponsorError = element.future.sponsor && this.state.readOnly ? false : true;
       }
     });
     this.setState(prev => {
