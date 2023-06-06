@@ -175,6 +175,9 @@ export const Fundings = hh(class Fundings extends Component {
     if(!this.props.readOnly) {
       sponsorHasError = this.props.sponsorError;
     }
+    if (!this.props.readOnly) {
+      sponsorHasError = this.props.sponsorError;
+    }
     return sponsorHasError;
   }
 
