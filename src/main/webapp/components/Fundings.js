@@ -170,7 +170,7 @@ export const Fundings = hh(class Fundings extends Component {
   getIdentifierError = (element) => {
     let identifierHasError = false;
     const source = this.props.edit ? element.future.source : element.source;
-    if (this.props.fundingAwardNumberError && (source.value === 'federal_prime' || source.value === 'federal_sub-award')) {
+    if (this.props.fundingAwardNumberError && source.value === 'federal_sub-award' || source.value === 'federal_prime' ) {
       identifierHasError = this.props.edit ? isEmpty(element.future.identifier): isEmpty(element.identifier)
     }
     return identifierHasError;
