@@ -156,7 +156,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
         endState: false
       },
       questions: null,
-      enabledQuestionsWizard: false
+      enabledQuestionsWizard: false,
+      sponsorError: false,
+      identifierError: false
     };
     this.state.questions = initQuestions();
     this.rejectProject = this.rejectProject.bind(this);
@@ -807,11 +809,24 @@ const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   handleUpdateFundings = (updated) => {
+    let fundings = updated;
+    let sponsorError = false;
+    let identifierError = false;
+    fundings.forEach(element => {
+      if(element.future.source.value === 'federal_prime' || element.future.source.value === 'federal_sub-award') {
+        identifierError = element.future.identifier && !this.state.readOnly ? false : true;
+      }
+      if(element.future.source.value) {
+        sponsorError = element.future.sponsor && !this.state.readOnly ? false : true;
+      }
+    });
     this.setState(prev => {
       prev.formData.fundings = updated;
       prev.fundingAwardNumberError = false;
       prev.generalError = false;
       prev.fundingError = false;
+      prev.sponsorError = sponsorError;
+      prev.identifierError = identifierError;
       return prev;
     });
   };
@@ -932,6 +947,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     let generalError = false;
     let questions = false;
     let fundingAwardNumber = false;
+    let fundingDataError = false;
     let fundingError = this.state.formData.fundings.filter((obj, idx) => {
       if (isEmpty(obj.future.source.label) && (!isEmpty(obj.future.sponsor) || !isEmpty(obj.future.identifier))
         || (idx === 0 && isEmpty(obj.future.source.label) && isEmpty(obj.current.source.label))) {
@@ -965,6 +981,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
       attestationError = true;
       generalError = true;
     }
+    if(this.state.sponsorError || this.state.identifierError) {
+      fundingDataError = true;
+      generalError = true;
+    }
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
@@ -985,7 +1005,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       !editDescriptionError &&
       !fundingError &&
       !questions &&
-      !fundingAwardNumber;
+      !fundingAwardNumber &&
+      !fundingDataError;
   }
 
   changeFundingError = () => {
@@ -1259,7 +1280,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
               fundingAwardNumberError: this.state.fundingAwardNumberError,
               setError: this.changeFundingError,
               errorMessage: "Required field",
-              edit: true
+              edit: true,
+              sponsorError: this.state.sponsorError,
+              identifierError: this.state.identifierError
             })
           ])
         ]),
@@ -1516,7 +1539,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
           ])
         ]),
 
-        Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
+        Panel({ 
+          isRendered: this.state.readOnly,
+          title: "Broad Responsible Party (or Designee) Attestation*" 
+        }, [
           p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
           p({}, '[If obtaining coded specimens/data] I certify that no Broad staff or researchers working on this project will have access to information that would enable the identification of individuals from whom coded samples and/or data were derived. I also certify that Broad staff and researchers will make no attempt to ascertain information about these individuals.'),
           InputFieldCheckbox({

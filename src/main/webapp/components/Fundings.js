@@ -155,22 +155,26 @@ export const Fundings = hh(class Fundings extends Component {
     return hasError
   };
 
+  getSponsorError = (element) => {
+    let sponsorHasError = false;
+    if (!this.props.edit && element.source.value) {
+      sponsorHasError = !element.sponsor ? true : false;
+    }
+    if(element.future) {
+      sponsorHasError = this.props.sponsorError ? this.props.sponsorError : false;
+    }
+
+    return sponsorHasError;
+  }
+
   getIdentifierError = (element) => {
     let identifierHasError = false;
-    const source = this.props.edit ? element.future.source : element.current.source;
-    if ( this.props.fundingAwardNumberError && source.value === 'federal_prime' || source.value === 'federal_sub-award' ) {
-      identifierHasError = this.props.edit && element.future.identifier ? false : element.current.identifier ? false : true;
+    const source = this.props.edit ? element.future.source : element.source;
+    if (this.props.fundingAwardNumberError && source.value === 'federal_sub-award' || source.value === 'federal_prime' ) {
+      identifierHasError = this.props.edit ? isEmpty(element.future.identifier): isEmpty(element.identifier)
     }
     return identifierHasError;
   };
-
-  getSponsorError = (element) => {
-    let sponsorHasError = false;
-    if ( !this.props.readOnly && element.future.source.value ) {
-      sponsorHasError = !element.current.sponsor || !element.future.sponsor ? true : false;
-    }
-    return sponsorHasError;
-  }
 
   render() {
     let {
@@ -247,7 +251,7 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "identifier",
                       label: "",
-                      error: this.props.edit ? false : this.getIdentifierError(rd),
+                      error: this.props.readOnly ? false : this.getIdentifierError(rd),
                       errorMessage: this.props.errorMessage,
                       value: this.props.edit ? rd.future.identifier: rd.identifier,
                       currentValue: this.props.edit ? current[idx].current.identifier : rd.identifier,

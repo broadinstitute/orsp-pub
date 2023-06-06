@@ -213,6 +213,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
         return prev;
       });
     } else {      
+
       this.setState(prev => {
         prev.alertMessage = '';
         prev.errorMessage = '';
@@ -223,7 +224,20 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
         return prev;
       });
     }
-    
+  };
+
+  setFilesToUpload = () => (e) => {
+    let selectedFile = e.target.files[0];
+    e.target.value = '';
+    this.setState(prev => {
+      prev.alertMessage = '';
+      prev.errorMessage = '';
+      prev.disableBtn = false;
+      prev.showAlert = false;
+      prev.fileError = false;
+      prev.file = selectedFile;
+      return prev;
+    });
   };
 
   removeFile() {
