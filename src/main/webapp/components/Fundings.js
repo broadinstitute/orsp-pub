@@ -164,9 +164,9 @@ export const Fundings = hh(class Fundings extends Component {
       sponsorHasError = this.props.sponsorError ? this.props.sponsorError : false;
       // adding identifier field validation here
       // since source change triggers this function
-      if(element.future.source.value === 'federal_prime' || element.future.source.value === 'federal_sub-award') {
-        this.props.identifierError ? this.getIdentifierError(element) : undefined;
-      }
+      // if(element.future.source.value === 'federal_prime' || element.future.source.value === 'federal_sub-award') {
+      //   this.props.identifierError ? this.getIdentifierError(element) : undefined;
+      // }
     }
 
     return sponsorHasError;
@@ -256,7 +256,7 @@ export const Fundings = hh(class Fundings extends Component {
                       index: idx,
                       name: "identifier",
                       label: "",
-                      error: this.props.edit ? false : this.getIdentifierError(rd),
+                      error: this.props.edit ? false : (this.getIdentifierError(rd) || this.props.identifierError),
                       errorMessage: this.props.errorMessage,
                       value: this.props.edit ? rd.future.identifier: rd.identifier,
                       currentValue: this.props.edit ? current[idx].current.identifier : rd.identifier,
