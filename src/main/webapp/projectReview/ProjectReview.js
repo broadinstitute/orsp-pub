@@ -816,6 +816,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
         this.setState({
           identifierHasError: element.future.identifier ? false : true
         })
+      } else {
+        element.future['identifierError'] = false;
       }
       if (element.future.source) {
         element.future['sponsorError'] = element.future.sponsor ? false : true;
