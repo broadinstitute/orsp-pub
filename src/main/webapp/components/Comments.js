@@ -87,7 +87,7 @@ const Comments = hh(class Comments extends Component {
         TableComponent({
           remoteProp: false,
           data: this.props.comments,
-          columns: columns,
+          columns: this.state.columns,
           keyField: 'id',
           search: true,
           fileName: 'ORSP',
