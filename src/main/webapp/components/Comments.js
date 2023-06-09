@@ -39,44 +39,82 @@ const columns = [{
       div({dangerouslySetInnerHTML: { __html: cell } },[]),
     csvFormatter: (cell, row, rowIndex, colIndex) =>
       cell.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')
-}];
-
-const columnsCopy = [{
-  dataField: 'project',
-  text: 'Project',
-  sort: true,
-  editable: false
-}, {
-  dataField: 'title',
-  text: 'Title',
-  sort: true,
-  editable: false
-}, {
-  dataField: 'status',
-  text: 'Status',
-  sort: true,
-  editable: false
-}, {
-  dataField: 'type',
-  text: 'Type',
-  sort: true,
-  editable: false
-}, {
-  dataField: 'updated',
-  text: 'Updated',
-  sort: true,
-  editable: false
-}, {
-  dataField: 'expiration',
-  text: 'Expiration',
-  sort: true,
-  editable: false
-}];
+  }, {
+    dataField: 'Actions',
+    text: 'Actions',
+    sort: false,
+    formatter: (cell, row, rowIndex, formatExtraData) => {
+      return (
+        <>
+          <button className='btnPrimary'>
+            <span className='glyphicon glyphicon-pencil'></span>
+          </button>
+          <button className='btnPrimary'>
+            <span className='glyphicon glyphicon-remove'></span>
+          </button>
+        </>
+      )
+    }
+  }
+];
 
 const Comments = hh(class Comments extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      columns: [{
+        dataField: 'id',
+        text: 'Id',
+        hidden: true,
+        editable: false,
+        csvExport : false
+      }, {
+        dataField: 'author',
+        text: 'Author',
+        sort: true,
+        editable: false
+      }, {
+        dataField: 'date',
+        text: 'Date',
+        sort: true,
+        editable: false
+      }, {
+        dataField: 'comment',
+        text: 'Comment',
+        sort: true,
+        editable: false,
+        formatter: (cell, row, rowIndex, colIndex) =>
+          div({dangerouslySetInnerHTML: { __html: cell } },[]),
+        csvFormatter: (cell, row, rowIndex, colIndex) =>
+          cell.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')
+      }, {
+        dataField: 'Actions',
+        text: 'Actions',
+        sort: false,
+        formatter: (cell, row, rowIndex, formatExtraData) => {
+          return (
+            <>
+              <button className='btnPrimary' onClick={this.editComments(rowIndex)}>
+                <span className='glyphicon glyphicon-pencil'></span>
+              </button>
+              <button className='btnPrimary'>
+                <span className='glyphicon glyphicon-remove'></span>
+              </button>
+            </>
+          )
+        }
+      }],
+      commentAddMode: true
+    }
+  }
+
+  editComments = (index) => {
+    this.setState({
+      commentAddMode: false
+    })
+    console.log(this.props.comments);
+    console.log('rowData of index ', index, this.props.comments[index]);
   }
 
   printComments = () => {
@@ -92,13 +130,19 @@ const Comments = hh(class Comments extends Component {
     return (
       h(Fragment, {}, [
         h(TextEditor, {
+          isRendered: this.state.commentAddMode,
+          id: this.props.id,
+          loadComments: this.props.updateContent
+        }),
+        h(TextEditor, {
+          isRendered: !this.state.commentAddMode,
           id: this.props.id,
           loadComments: this.props.updateContent
         }),
         TableComponent({
           remoteProp: false,
           data: this.props.comments,
-          columns: columns,
+          columns: this.state.columns,
           keyField: 'id',
           search: true,
           fileName: 'ORSP',
