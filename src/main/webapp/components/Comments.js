@@ -14,53 +14,58 @@ const defaultSorted = [{
   order: 'desc'
 }];
 
-const columns = [{
-    dataField: 'id',
-    text: 'Id',
-    hidden: true,
-    editable: false,
-    csvExport : false
-  }, {
-    dataField: 'author',
-    text: 'Author',
-    sort: true,
-    editable: false
-  }, {
-    dataField: 'date',
-    text: 'Date',
-    sort: true,
-    editable: false
-  }, {
-    dataField: 'comment',
-    text: 'Comment',
-    sort: true,
-    editable: false,
-    formatter: (cell, row, rowIndex, colIndex) =>
-      div({dangerouslySetInnerHTML: { __html: cell } },[]),
-    csvFormatter: (cell, row, rowIndex, colIndex) =>
-      cell.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')
-  }, {
-    dataField: 'Actions',
-    text: 'Actions',
-    sort: false,
-    formatter: (cell, row, rowIndex, formatExtraData) => {
-      return (
-        <>
-          <button className='btnPrimary'>
-            <span className='glyphicon glyphicon-pencil'></span>
-          </button>
-          <button className='btnPrimary'>
-            <span className='glyphicon glyphicon-remove'></span>
-          </button>
-        </>
-      )
-    }
-  }];
-
 const Comments = hh(class Comments extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      columns: [{
+        dataField: 'id',
+        text: 'Id',
+        hidden: true,
+        editable: false,
+        csvExport : false
+      }, {
+        dataField: 'author',
+        text: 'Author',
+        sort: true,
+        editable: false
+      }, {
+        dataField: 'date',
+        text: 'Date',
+        sort: true,
+        editable: false
+      }, {
+        dataField: 'comment',
+        text: 'Comment',
+        sort: true,
+        editable: false,
+        formatter: (cell, row, rowIndex, colIndex) =>
+          div({dangerouslySetInnerHTML: { __html: cell } },[]),
+        csvFormatter: (cell, row, rowIndex, colIndex) =>
+          cell.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')
+      }, {
+        dataField: 'Actions',
+        text: 'Actions',
+        sort: false,
+        formatter: (cell, row, rowIndex, formatExtraData) => {
+          return (
+            <div>
+              <button className='btnPrimary' onClick={this.editComment(rowIndex)}>
+                <span className='glyphicon glyphicon-pencil'></span>
+              </button>
+              <button className='btnPrimary'>
+                <span className='glyphicon glyphicon-remove'></span>
+              </button>
+            </div>
+          )
+        }
+      }]
+    }
+  }
+
+  editComment = (index) => {
+    console.log('row index ', index, this.props.comments)
   }
 
   printComments = () => {
