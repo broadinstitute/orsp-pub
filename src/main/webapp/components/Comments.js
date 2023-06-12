@@ -39,7 +39,7 @@ const Comments = hh(class Comments extends Component {
         dataField: 'comment',
         text: 'Comment',
         sort: true,
-        editable: false,
+        editable: true,
         formatter: (cell, row, rowIndex, colIndex) =>
           div({dangerouslySetInnerHTML: { __html: cell } },[]),
         csvFormatter: (cell, row, rowIndex, colIndex) =>
@@ -70,6 +70,11 @@ const Comments = hh(class Comments extends Component {
               })
             ])
           )
+        },
+        events: {
+          onClick: (e) => {
+            console.log('clicked ', e);
+          }
         }
       }],
       editMode: false,
