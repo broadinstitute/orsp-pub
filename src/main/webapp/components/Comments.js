@@ -19,7 +19,7 @@ const Comments = hh(class Comments extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      columns: [{
+      columns: (_this) => [{
         dataField: 'id',
         text: 'Id',
         hidden: true,
@@ -44,26 +44,31 @@ const Comments = hh(class Comments extends Component {
           div({dangerouslySetInnerHTML: { __html: cell } },[]),
         csvFormatter: (cell, row, rowIndex, colIndex) =>
           cell.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' '),
-        events: {
-          onClick: (e) => {
-            e.detail === 2 ? this.saveAndCancelShow() : undefined;
-          }
-        }
       }, {
         dataField: '',
-        text: '',
+        text: 'Actions',
         sort: false,
         editable: false,
         headerStyle: (column, colIndex) => {
-          return { width: '65px' };
+          return { width: '120px' };
         },
         formatter: (cell, row, rowIndex, formatExtraData) => {
           return (
-            <div>
-              <button className='btnPrimary'>
-                <span className='glyphicon glyphicon-remove'></span>
-              </button>
-            </div>
+            div({}, [
+              Btn({
+                style: {'margin-right': '5px'},
+                action: {
+                  labelClass: "glyphicon glyphicon-pencil",
+                  handler: () => _this.editComment(row, rowIndex)
+                }
+              }),
+              Btn({
+                action: {
+                  labelClass: "glyphicon glyphicon-remove",
+                  handler: () => _this.removeComment(row, rowIndex)
+                }
+              })
+            ])
           )
         },
         events: {
@@ -72,25 +77,58 @@ const Comments = hh(class Comments extends Component {
           }
         }
       }],
-      showSaveAndCancel: false
+      editMode: false,
+      comment: 'test',
+      showError: false
     }
   }
 
-  saveAndCancelShow() {
+  handleEditorChange = (comment, editor) => {
+    this.setState(prev => {
+      prev.comment =  comment;
+      return prev;
+    });
+  };
+
+  editComment = (row, index) => {
     this.setState({
-      showSaveAndCancel: !this.state.showSaveAndCancel
+      editMode: true
+    }, () => {
+      let element = document.getElementById('editComment');
+      element.scrollIntoView();
     })
+    console.log(row, index);
   }
 
-  saveHandler = (editedCommentData) => {
-    console.log(editedCommentData);
+  updateComment = () => {
+    console.log('update clicked ', this.state.comment)
+    // this.props.showSpinner();
+    // Review.addComments(this.props.id, this.state.comment).then(
+    //   response => {
+    //     this.props.hideSpinner();
+    //     this.setState(prev => {
+    //       prev.comment = '';
+    //       return prev;
+    //     });
+    //     this.props.loadComments();
+    //   }
+    // ).catch(error =>
+    //   this.setState(prev => {
+    //     prev.showError = true;
+    //   },()=> this.props.hideSpinner())
+    // )
+  };
+
+  removeComment = (row, index) => {
+
   }
 
-  cancelHandler = () => {
-    this.setState({
-      showSaveAndCancel: false
+  closeAlertHandler = () => {
+    this.setState(prev => {
+      prev.showError = false;
+      return prev;
     })
-  }
+  };
 
   printComments = () => {
     let cols = this.state.columns.filter(el => el.dataField !== 'id');
@@ -105,13 +143,50 @@ const Comments = hh(class Comments extends Component {
     return (
       h(Fragment, {}, [
         h(TextEditor, {
+          isRendered: !this.state.editMode,
           id: this.props.id,
           loadComments: this.props.updateContent
         }),
+        div({
+          id: 'editComment',
+          isRendered: this.state.editMode,
+          className: "well"
+        },[
+          label({},["Edit comment"]),
+          h(Editor, {
+            init: {
+              width: '100%',
+              menubar: false,
+              statusbar: false,
+              plugins: "paste",
+              paste_data_images: false
+            },
+            value: this.state.comment,
+            onEditorChange: this.handleEditorChange
+          }, []),
+          button({
+            className: "btn btn-primary",
+            style: {marginTop:"15px"},
+            isRendered: true,
+            onClick: this.updateComment,
+            disabled: isEmpty(this.state.comment)
+          }, ["Save"]),
+          div({
+            style: {marginTop:"15px"}
+            },[
+            AlertMessage({
+              msg: 'Error trying to save comments, please try again later.',
+              show: this.state.showError,
+              type: 'danger',
+              closeable: true,
+              closeAlertHandler: this.closeAlertHandler
+            })
+          ])
+        ]),
         TableComponent({
           remoteProp: false,
           data: this.props.comments,
-          columns: this.state.columns,
+          columns: this.state.columns(this),
           keyField: 'id',
           search: true,
           fileName: 'ORSP',
