@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import { div, h, hh } from 'react-hyperscript-helpers';
+import { div, h, hh, label, button } from 'react-hyperscript-helpers';
 import TextEditor from './TextEditor';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import { Btn } from './Btn';
 import './Btn.css';
 import { exportData } from '../util/Utils';
 import { TableComponent } from './TableComponent';
@@ -148,8 +149,8 @@ const Comments = hh(class Comments extends Component {
           loadComments: this.props.updateContent
         }),
         div({
-          id: 'editComment',
           isRendered: this.state.editMode,
+          id: 'editComment',
           className: "well"
         },[
           label({},["Edit comment"]),
