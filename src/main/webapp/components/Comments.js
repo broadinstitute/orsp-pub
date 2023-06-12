@@ -148,8 +148,8 @@ const Comments = hh(class Comments extends Component {
           loadComments: this.props.updateContent
         }),
         div({
-          id: 'editComment',
           isRendered: this.state.editMode,
+          id: 'editComment',
           className: "well"
         },[
           label({},["Edit comment"]),
