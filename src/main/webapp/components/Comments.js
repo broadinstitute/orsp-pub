@@ -39,33 +39,57 @@ const Comments = hh(class Comments extends Component {
         dataField: 'comment',
         text: 'Comment',
         sort: true,
-        editable: false,
+        editable: true,
         formatter: (cell, row, rowIndex, colIndex) =>
           div({dangerouslySetInnerHTML: { __html: cell } },[]),
         csvFormatter: (cell, row, rowIndex, colIndex) =>
-          cell.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')
+          cell.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' '),
+        events: {
+          onClick: (e) => {
+            e.detail === 2 ? this.saveAndCancelShow() : undefined;
+          }
+        }
       }, {
-        dataField: 'Actions',
-        text: 'Actions',
+        dataField: '',
+        text: '',
         sort: false,
+        editable: false,
+        headerStyle: (column, colIndex) => {
+          return { width: '65px' };
+        },
         formatter: (cell, row, rowIndex, formatExtraData) => {
           return (
             <div>
-              <button className='btnPrimary' onClick={this.editComment(rowIndex)}>
-                <span className='glyphicon glyphicon-pencil'></span>
-              </button>
               <button className='btnPrimary'>
                 <span className='glyphicon glyphicon-remove'></span>
               </button>
             </div>
           )
+        },
+        events: {
+          onClick: (e) => {
+            console.log('clicked ', e);
+          }
         }
-      }]
+      }],
+      showSaveAndCancel: false
     }
   }
 
-  editComment = (index) => {
-    console.log('row index ', index, this.props.comments)
+  saveAndCancelShow() {
+    this.setState({
+      showSaveAndCancel: !this.state.showSaveAndCancel
+    })
+  }
+
+  saveHandler = (editedCommentData) => {
+    console.log(editedCommentData);
+  }
+
+  cancelHandler = () => {
+    this.setState({
+      showSaveAndCancel: false
+    })
   }
 
   printComments = () => {
@@ -97,7 +121,10 @@ const Comments = hh(class Comments extends Component {
           pagination: true,
           showExportButtons: true,
           hideXlsxColumns: [],
-          showSearchBar: true
+          showSearchBar: true,
+          showSaveAndCancel: this.state.showSaveAndCancel,
+          saveHandler: this.saveHandler,
+          cancelHandler: this.cancelHandler
         })
       ])
     )
