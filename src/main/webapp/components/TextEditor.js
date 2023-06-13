@@ -44,6 +44,12 @@ const TextEditor = hh(class TextEditor extends Component {
     )
   };
 
+  clearComment = () => {
+    this.setState({
+      comment: ''
+    });
+  }
+
   closeAlertHandler = () => {
     this.setState(prev => {
       prev.showError = false;
@@ -73,6 +79,18 @@ const TextEditor = hh(class TextEditor extends Component {
           onClick: this.addComment,
           disabled: isEmpty(this.state.comment)
         }, ["Add"]),
+        button({
+          className: "btn buttonSecondary",
+          style: {marginTop:"15px", marginLeft: "5px"},
+          ref: el => {
+            if(el) {
+                el.style.setProperty('background', 'none', 'important');
+                el.style.setProperty('color', '#000000', 'important');
+            }
+          },
+          isRendered: true,
+          onClick: this.clearComment
+        }, ["Cancel"]),
         div({
           style: {marginTop:"15px"}
           },[
