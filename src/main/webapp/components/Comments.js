@@ -36,17 +36,23 @@ const Comments = hh(class Comments extends Component {
         dataField: 'author',
         text: 'Author',
         sort: true,
-        editable: false
+        editable: false,
+        headerStyle: (column, colIndex) => {
+          return { width: '150px' };
+        },
       }, {
         dataField: 'date',
         text: 'Date',
         sort: true,
-        editable: false
+        editable: false,
+        headerStyle: (column, colIndex) => {
+          return { width: '180px' };
+        },
       }, {
         dataField: 'comment',
         text: 'Comment',
         sort: true,
-        editable: true,
+        editable: false,
         formatter: (cell, row, rowIndex, colIndex) =>
           div({dangerouslySetInnerHTML: { __html: cell } },[]),
         csvFormatter: (cell, row, rowIndex, colIndex) =>
@@ -57,22 +63,22 @@ const Comments = hh(class Comments extends Component {
         sort: false,
         editable: false,
         headerStyle: (column, colIndex) => {
-          return { width: '120px' };
+          return { width: '90px' };
         },
         formatter: (cell, row, rowIndex, formatExtraData) => {
           return (
             div({}, [
               Btn({
-                style: {'margin-right': '5px'},
+                style: {marginRight: '4px', padding: '4px 9px'},
                 action: {
                   labelClass: "glyphicon glyphicon-pencil",
-                  handler: () => _this.editComment(row, rowIndex)
+                  handler: () => _this.editComment(row)
                 }
               }),
               Btn({
                 action: {
                   labelClass: "glyphicon glyphicon-remove",
-                  handler: () => _this.removeComment(row, rowIndex)
+                  handler: () => _this.removeComment(row)
                 }
               })
             ])
@@ -85,7 +91,7 @@ const Comments = hh(class Comments extends Component {
         }
       }],
       editMode: false,
-      comment: 'test',
+      comment: {},
       showError: false
     }
   }
@@ -97,14 +103,14 @@ const Comments = hh(class Comments extends Component {
     });
   };
 
-  editComment = (row, index) => {
+  editComment = (row) => {
     this.setState({
+      comment: row,
       editMode: true
     }, () => {
-      let element = document.getElementById('editComment');
+      let element = document.getElementById('comment');
       element.scrollIntoView();
     })
-    console.log(row, index);
   }
 
   updateComment = () => {
@@ -127,7 +133,13 @@ const Comments = hh(class Comments extends Component {
   };
 
   removeComment = (row, index) => {
+    console.log('remove clicked ', this.state.comment)
+  }
 
+  returnToAddComment = () => {
+    this.setState({
+      editMode: false
+    })
   }
 
   closeAlertHandler = () => {
@@ -148,7 +160,9 @@ const Comments = hh(class Comments extends Component {
 
   render() {
     return (
-      h(Fragment, {}, [
+      h(Fragment, {
+        id: 'comment',
+      }, [
         h(TextEditor, {
           isRendered: !this.state.editMode,
           id: this.props.id,
@@ -156,7 +170,6 @@ const Comments = hh(class Comments extends Component {
         }),
         div({
           isRendered: this.state.editMode,
-          id: 'editComment',
           className: "well"
         },[
           label({},["Edit comment"]),
@@ -168,7 +181,7 @@ const Comments = hh(class Comments extends Component {
               plugins: "paste",
               paste_data_images: false
             },
-            value: this.state.comment,
+            value: this.state.comment.comment,
             onEditorChange: this.handleEditorChange
           }, []),
           button({
@@ -178,6 +191,18 @@ const Comments = hh(class Comments extends Component {
             onClick: this.updateComment,
             disabled: isEmpty(this.state.comment)
           }, ["Save"]),
+          button({
+            className: "btn buttonSecondary",
+            style: {marginTop:"15px", marginLeft: "5px"},
+            ref: el => {
+              if(el) {
+                  el.style.setProperty('background', 'none', 'important');
+                  el.style.setProperty('color', '#000000', 'important');
+              }
+            },
+            isRendered: true,
+            onClick: this.returnToAddComment
+          }, ["Cancel"]),
           div({
             style: {marginTop:"15px"}
             },[
