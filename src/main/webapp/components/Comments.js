@@ -160,9 +160,7 @@ const Comments = hh(class Comments extends Component {
 
   render() {
     return (
-      h(Fragment, {
-        id: 'comment',
-      }, [
+      h(Fragment, [
         h(TextEditor, {
           isRendered: !this.state.editMode,
           id: this.props.id,
@@ -170,8 +168,8 @@ const Comments = hh(class Comments extends Component {
         }),
         div({
           isRendered: this.state.editMode,
-          id: 'editComment',
-          className: "well"
+          className: "well",
+          id: 'comment',
         },[
           label({},["Edit comment"]),
           h(Editor, {
