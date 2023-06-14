@@ -97,13 +97,14 @@ const Comments = hh(class Comments extends Component {
 
   handleEditorChange = (comment, editor) => {
     this.setState(prev => {
-      prev.newComment =  comment ? comment : '';
+      prev.newComment =  comment;
       return prev;
     });
   };
 
   editComment = (row) => {
     this.setState({
+      newComment: row.comment,
       comment: row,
       editMode: true
     }, () => {
@@ -127,7 +128,7 @@ const Comments = hh(class Comments extends Component {
           prev.errorType = 'success'
           return prev;
         }, () => {
-          this.props.loadComments();
+          this.props.updateContent();
           setTimeout(() => {
             this.setState({
               showAlert: false
@@ -163,7 +164,7 @@ const Comments = hh(class Comments extends Component {
           prev.errorType = 'success'
           return prev;
         }, () => {
-          this.props.loadComments();
+          this.props.updateContent();
           setTimeout(() => {
             this.setState({
               showAlert: false
@@ -234,7 +235,7 @@ const Comments = hh(class Comments extends Component {
               plugins: "paste",
               paste_data_images: false
             },
-            value: this.state.comment.comment,
+            value: this.state.newComment,
             onEditorChange: this.handleEditorChange
           }, []),
           button({
