@@ -63,8 +63,8 @@ class CommentsController extends AuthenticatedController {
     }
 
     def updateComment() {
-        Map<Object, Object> editedCommentData = IssueUtils.getJson(Map.class, request.JSON)
-        Integer id = editedCommentData.get('id')
+        Map<String, Object> editedCommentData = IssueUtils.getJson(Map.class, request.JSON)
+        String id = editedCommentData.get('id').toString()
         String comment = editedCommentData.get('comment')
         String author = editedCommentData.get('author')
         try {
