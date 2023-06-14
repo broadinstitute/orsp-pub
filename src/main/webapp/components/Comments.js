@@ -146,7 +146,8 @@ const Comments = hh(class Comments extends Component {
 
   returnToAddComment = () => {
     this.setState({
-      editMode: false
+      editMode: false,
+      showAlert: false
     })
   }
 
