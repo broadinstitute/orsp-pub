@@ -76,6 +76,7 @@ const Comments = hh(class Comments extends Component {
                 }
               }),
               Btn({
+                style: {marginRight: '4px', padding: '4px 9px'},
                 action: {
                   labelClass: "glyphicon glyphicon-remove",
                   handler: () => _this.removeComment(row)
@@ -92,7 +93,9 @@ const Comments = hh(class Comments extends Component {
       }],
       editMode: false,
       comment: {},
-      showError: false
+      showAlert: false,
+      errorMsg: '',
+      errorType: ''
     }
   }
 
@@ -115,21 +118,26 @@ const Comments = hh(class Comments extends Component {
 
   updateComment = () => {
     console.log('update clicked ', this.state.comment)
-    // this.props.showSpinner();
-    // Review.addComments(this.props.id, this.state.comment).then(
-    //   response => {
-    //     this.props.hideSpinner();
-    //     this.setState(prev => {
-    //       prev.comment = '';
-    //       return prev;
-    //     });
-    //     this.props.loadComments();
-    //   }
-    // ).catch(error =>
-    //   this.setState(prev => {
-    //     prev.showError = true;
-    //   },()=> this.props.hideSpinner())
-    // )
+    this.props.showSpinner();
+    Review.updateComment(this.state.comment).then(
+      response => {
+        this.props.hideSpinner();
+        this.setState(prev => {
+          prev.showAlert = true;
+          prev.comment = '';
+          prev.errorMsg = 'Comment updated succesfully';
+          prev.errorType = 'success'
+          return prev;
+        });
+        this.props.loadComments();
+      }
+    ).catch(error =>
+      this.setState(prev => {
+        prev.showAlert = true;
+        prev.errorMsg = 'Error trying to save comments, please try again later.';
+        prev.errorType = 'danger';
+      },()=> this.props.hideSpinner())
+    )
   };
 
   removeComment = (row, index) => {
@@ -144,7 +152,7 @@ const Comments = hh(class Comments extends Component {
 
   closeAlertHandler = () => {
     this.setState(prev => {
-      prev.showError = false;
+      prev.showAlert = false;
       return prev;
     })
   };
@@ -161,6 +169,9 @@ const Comments = hh(class Comments extends Component {
   render() {
     return (
       h(Fragment, [
+        div({
+          id: 'comment'
+        }),
         h(TextEditor, {
           isRendered: !this.state.editMode,
           id: this.props.id,
@@ -168,8 +179,7 @@ const Comments = hh(class Comments extends Component {
         }),
         div({
           isRendered: this.state.editMode,
-          className: "well",
-          id: 'comment',
+          className: "well"
         },[
           label({},["Edit comment"]),
           h(Editor, {
@@ -206,9 +216,9 @@ const Comments = hh(class Comments extends Component {
             style: {marginTop:"15px"}
             },[
             AlertMessage({
-              msg: 'Error trying to save comments, please try again later.',
-              show: this.state.showError,
-              type: 'danger',
+              msg: this.state.errorMsg,
+              show: this.state.showAlert,
+              type: this.state.errorType,
               closeable: true,
               closeAlertHandler: this.closeAlertHandler
             })

@@ -32,7 +32,9 @@ class PersistenceService {
                 projectKey: key,
                 author: author,
                 description: description,
-                created: new Date()
+                created: new Date(),
+                updated_author: author,
+                updated: new Date()
         ).save(flush: true)
     }
 

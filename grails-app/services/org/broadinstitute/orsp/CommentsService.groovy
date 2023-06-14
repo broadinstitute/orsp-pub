@@ -1,6 +1,8 @@
 package org.broadinstitute.orsp
 
 import groovy.util.logging.Slf4j
+import org.hibernate.SQLQuery
+import org.hibernate.SessionFactory
 
 @Slf4j
 class CommentsService implements UserInfo {
@@ -8,6 +10,7 @@ class CommentsService implements UserInfo {
     PersistenceService persistenceService
     NotifyService notifyService
     UserService userService
+    SessionFactory sessionFactory
 
     /**
      * @param issueId  Project or Sample Data Cohort element to associate comments
@@ -76,5 +79,17 @@ class CommentsService implements UserInfo {
             throw new IllegalArgumentException("Issue id is required.")
         }
         comments
+    }
+
+    void updateCommentById(Integer id, String comment, String author) {
+        final session = sessionFactory.currentSession
+        final String query = 'UPDATE comment SET description= :comment, updated_author= :author, updated= :updated WHERE id= :id'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('updated', new Date())
+        sqlQuery.setParameter('comment', comment)
+        sqlQuery.setParameter('author', author)
+        sqlQuery.setParameter('id', id)
+
+        sqlQuery.executeUpdate()
     }
 }

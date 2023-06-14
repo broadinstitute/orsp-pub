@@ -9,12 +9,16 @@ class Comment  implements LogicalDelete<Comment> {
     String author
     String description
     Date created
+    String updated_author
+    Date updated
 
     static constraints = {
         projectKey nullable: false
         author nullable: false
         description nullable: false
         created nullable: false
+        updated_author nullable: true
+        updated nullable: true
     }
 
     /**
