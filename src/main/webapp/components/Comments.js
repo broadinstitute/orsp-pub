@@ -101,7 +101,7 @@ const Comments = hh(class Comments extends Component {
 
   handleEditorChange = (comment, editor) => {
     this.setState(prev => {
-      prev.comment =  comment;
+      prev.comment.comment =  comment;
       return prev;
     });
   };
