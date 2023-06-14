@@ -90,7 +90,7 @@ class CommentsService implements UserInfo {
         sqlQuery.executeUpdate()
     }
 
-    void updateCommentById(Integer id, String comment, String author) {
+    void updateCommentById(String id, String comment, String author) {
         final session = sessionFactory.currentSession
         final String query = 'UPDATE comment SET description= :comment, updated_author= :author, updated= :updated WHERE id= :id'
         final SQLQuery sqlQuery = session.createSQLQuery(query)

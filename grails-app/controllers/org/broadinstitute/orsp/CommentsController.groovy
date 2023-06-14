@@ -53,7 +53,7 @@ class CommentsController extends AuthenticatedController {
 
     def deleteComment() {
         Map<String, Object> commentId = IssueUtils.getJson(Map.class, request.JSON)
-        Integer id = editedCommentData.get('id')
+        Integer id = commentId.get('id')
         try {
             CommentsService.deleteCommentById(id)
             response.status = 200
@@ -63,8 +63,8 @@ class CommentsController extends AuthenticatedController {
     }
 
     def updateComment() {
-        Map<Object, Object> editedCommentData = IssueUtils.getJson(Map.class, request.JSON)
-        Integer id = editedCommentData.get('id')
+        Map<String, Object> editedCommentData = IssueUtils.getJson(Map.class, request.JSON)
+        String id = editedCommentData.get('id').toString()
         String comment = editedCommentData.get('comment')
         String author = editedCommentData.get('author')
         try {
