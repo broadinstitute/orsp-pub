@@ -76,6 +76,7 @@ const Comments = hh(class Comments extends Component {
                 }
               }),
               Btn({
+                style: {marginRight: '4px', padding: '4px 9px'},
                 action: {
                   labelClass: "glyphicon glyphicon-remove",
                   handler: () => _this.removeComment(row)
@@ -115,21 +116,21 @@ const Comments = hh(class Comments extends Component {
 
   updateComment = () => {
     console.log('update clicked ', this.state.comment)
-    // this.props.showSpinner();
-    // Review.addComments(this.props.id, this.state.comment).then(
-    //   response => {
-    //     this.props.hideSpinner();
-    //     this.setState(prev => {
-    //       prev.comment = '';
-    //       return prev;
-    //     });
-    //     this.props.loadComments();
-    //   }
-    // ).catch(error =>
-    //   this.setState(prev => {
-    //     prev.showError = true;
-    //   },()=> this.props.hideSpinner())
-    // )
+    this.props.showSpinner();
+    Review.updateComment(this.state.comment).then(
+      response => {
+        this.props.hideSpinner();
+        this.setState(prev => {
+          prev.comment = '';
+          return prev;
+        });
+        this.props.loadComments();
+      }
+    ).catch(error =>
+      this.setState(prev => {
+        prev.showError = true;
+      },()=> this.props.hideSpinner())
+    )
   };
 
   removeComment = (row, index) => {
@@ -161,6 +162,9 @@ const Comments = hh(class Comments extends Component {
   render() {
     return (
       h(Fragment, [
+        div({
+          id: 'comment'
+        }),
         h(TextEditor, {
           isRendered: !this.state.editMode,
           id: this.props.id,
@@ -168,8 +172,7 @@ const Comments = hh(class Comments extends Component {
         }),
         div({
           isRendered: this.state.editMode,
-          className: "well",
-          id: 'comment',
+          className: "well"
         },[
           label({},["Edit comment"]),
           h(Editor, {

@@ -386,6 +386,10 @@ export const Review = {
 
   getComments(id) {
     return axios.get(UrlConstants.getCommentsUrl + '?id=' + id)
+  },
+
+  updateComment(commentData) {
+    return axios.put(UrlConstants.updateComment, commentData)
   }
 };
 
