@@ -72,7 +72,6 @@ class CommentsController extends AuthenticatedController {
             queryService.updateCommentById(id, comment, author)
             response.status = 200
         } catch (Exception e) {
-            log.error(e.printStackTrace())
             handleException(e)
         }
     }
