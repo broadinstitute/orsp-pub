@@ -81,6 +81,15 @@ class CommentsService implements UserInfo {
         comments
     }
 
+    void deleteCommentById(Integer id) {
+        final session = sessionFactory.currentSession
+        final String query = 'DELETE FROM comment WHERE id= :id'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('id', id)
+
+        sqlQuery.executeUpdate()
+    }
+
     void updateCommentById(Integer id, String comment, String author) {
         final session = sessionFactory.currentSession
         final String query = 'UPDATE comment SET description= :comment, updated_author= :author, updated= :updated WHERE id= :id'
