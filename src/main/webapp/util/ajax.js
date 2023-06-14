@@ -389,7 +389,11 @@ export const Review = {
   },
 
   updateComment(commentData) {
-    return axios.put(UrlConstants.updateComment, commentData)
+    return axios.put(UrlConstants.updateComment, {id: commentData.id, comment: commentData.comment, author: commentData.author})
+  },
+
+  deleteComment(id) {
+    return axios.put(UrlConstants.deleteComment, {id: id})
   }
 };
 

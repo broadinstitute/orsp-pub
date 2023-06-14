@@ -84,11 +84,6 @@ const Comments = hh(class Comments extends Component {
               })
             ])
           )
-        },
-        events: {
-          onClick: (e) => {
-            console.log('clicked ', e);
-          }
         }
       }],
       editMode: false,
@@ -117,7 +112,6 @@ const Comments = hh(class Comments extends Component {
   }
 
   updateComment = () => {
-    console.log('update clicked ', this.state.comment)
     this.props.showSpinner();
     Review.updateComment(this.state.comment).then(
       response => {
@@ -134,14 +128,33 @@ const Comments = hh(class Comments extends Component {
     ).catch(error =>
       this.setState(prev => {
         prev.showAlert = true;
-        prev.errorMsg = 'Error trying to save comments, please try again later.';
+        prev.errorMsg = 'Error trying to update comment, please try again later.';
         prev.errorType = 'danger';
       },()=> this.props.hideSpinner())
     )
   };
 
-  removeComment = (row, index) => {
-    console.log('remove clicked ', this.state.comment)
+  removeComment = (row) => {
+    this.props.showSpinner();
+    Review.deleteComment(row.id).then(
+      (response) => {
+        this.props.hideSpinner();
+        this.setState(prev => {
+          prev.showAlert = true;
+          prev.comment = '';
+          prev.errorMsg = 'Comment deleted succesfully';
+          prev.errorType = 'success'
+          return prev;
+        });
+        this.props.loadComments();
+      }
+    ).catch(error =>
+      this.setState(prev => {
+        prev.showAlert = true;
+        prev.errorMsg = 'Error trying to delete comment, please try again later.';
+        prev.errorType = 'danger';
+      },()=> this.props.hideSpinner())
+    )
   }
 
   returnToAddComment = () => {
