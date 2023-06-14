@@ -17,8 +17,8 @@ class Comment  implements LogicalDelete<Comment> {
         author nullable: false
         description nullable: false
         created nullable: false
-        updated_author nullable: true
-        updated nullable: true
+        updated_author nullable: false
+        updated nullable: false
     }
 
     /**
