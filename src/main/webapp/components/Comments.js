@@ -93,7 +93,7 @@ const Comments = hh(class Comments extends Component {
       }],
       editMode: false,
       comment: {},
-      showError: false,
+      showAlert: false,
       errorMsg: '',
       errorType: ''
     }
@@ -123,6 +123,7 @@ const Comments = hh(class Comments extends Component {
       response => {
         this.props.hideSpinner();
         this.setState(prev => {
+          prev.showAlert = true;
           prev.comment = '';
           prev.errorMsg = 'Comment updated succesfully';
           prev.errorType = 'success'
@@ -132,7 +133,7 @@ const Comments = hh(class Comments extends Component {
       }
     ).catch(error =>
       this.setState(prev => {
-        prev.showError = true;
+        prev.showAlert = true;
         prev.errorMsg = 'Error trying to save comments, please try again later.';
         prev.errorType = 'danger';
       },()=> this.props.hideSpinner())
@@ -151,7 +152,7 @@ const Comments = hh(class Comments extends Component {
 
   closeAlertHandler = () => {
     this.setState(prev => {
-      prev.showError = false;
+      prev.showAlert = false;
       return prev;
     })
   };
@@ -216,7 +217,7 @@ const Comments = hh(class Comments extends Component {
             },[
             AlertMessage({
               msg: this.state.errorMsg,
-              show: this.state.showError,
+              show: this.state.showAlert,
               type: this.state.errorType,
               closeable: true,
               closeAlertHandler: this.closeAlertHandler
