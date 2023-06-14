@@ -60,6 +60,7 @@ class CommentsController extends AuthenticatedController {
             CommentsService.updateCommentById(id, comment, author)
             response.status = 200
         } catch (Exception e) {
+            e.printStackTrace();
             handleException(e)
         }
     }
