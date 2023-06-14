@@ -1925,4 +1925,25 @@ class QueryService implements Status {
 
     }
 
+    void deleteCommentById(Integer id) {
+        final session = sessionFactory.currentSession
+        final String query = 'DELETE FROM comment WHERE id= :id'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('id', id)
+
+        sqlQuery.executeUpdate()
+    }
+
+    void updateCommentById(String id, String comment, String author) {
+        final session = sessionFactory.currentSession
+        final String query = 'UPDATE comment SET description= :comment, updated_author= :author, updated= :updated WHERE id= :id'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('updated', new Date())
+        sqlQuery.setParameter('comment', comment)
+        sqlQuery.setParameter('author', author)
+        sqlQuery.setParameter('id', id)
+
+        sqlQuery.executeUpdate()
+    }
+
 }

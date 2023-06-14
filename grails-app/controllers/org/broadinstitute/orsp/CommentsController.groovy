@@ -12,6 +12,7 @@ import org.broadinstitute.orsp.utils.UtilityClass
 class CommentsController extends AuthenticatedController {
 
     CommentsService commentsService
+    QueryService queryService
 
     def index = { list }
 
@@ -55,7 +56,7 @@ class CommentsController extends AuthenticatedController {
         Map<String, Object> commentId = IssueUtils.getJson(Map.class, request.JSON)
         Integer id = commentId.get('id')
         try {
-            CommentsService.deleteCommentById(id)
+            queryService.deleteCommentById(id)
             response.status = 200
         } catch (Exception e) {
             handleException(e)
@@ -68,7 +69,7 @@ class CommentsController extends AuthenticatedController {
         String comment = editedCommentData.get('comment')
         String author = editedCommentData.get('author')
         try {
-            CommentsService.updateCommentById(id, comment, author)
+            queryService.updateCommentById(id, comment, author)
             response.status = 200
         } catch (Exception e) {
             log.error(e.printStackTrace())
