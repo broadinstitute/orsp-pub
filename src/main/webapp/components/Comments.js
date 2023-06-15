@@ -117,6 +117,7 @@ const Comments = hh(class Comments extends Component {
     this.props.showSpinner();
     this.setState(prev => {
       prev.comment.comment = this.state.newComment;
+      prev.comment.author = JSON.parse(localStorage.getItem("CurrentUser")).displayName;
     }, () => {
       Review.updateComment(this.state.comment).then(
         response => {
