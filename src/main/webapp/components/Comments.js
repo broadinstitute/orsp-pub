@@ -113,43 +113,46 @@ const Comments = hh(class Comments extends Component {
     })
   }
 
-  updateComment = () => {
+  updateComment = async () => {
     this.props.showSpinner();
     this.setState(prev => {
       prev.comment.comment = this.state.newComment;
-    });
-    Review.updateComment(this.state.comment).then(
-      response => {
-        this.props.hideSpinner();
+    }, () => {
+      Review.updateComment(this.state.comment).then(
+        response => {
+          this.props.hideSpinner();
+          this.setState(prev => {
+            prev.showAlert = true;
+            prev.comment = '';
+            prev.errorMsg = 'Comment updated succesfully';
+            prev.errorType = 'success';
+            prev.editMode = false;
+            return prev;
+          }, () => {
+            this.props.updateContent();
+            setTimeout(() => {
+              this.setState({
+                showAlert: false
+              })
+            }, 4000);
+          });
+        }
+      ).catch(error =>
         this.setState(prev => {
           prev.showAlert = true;
-          prev.comment = '';
-          prev.errorMsg = 'Comment updated succesfully';
-          prev.errorType = 'success'
-          return prev;
-        }, () => {
-          this.props.updateContent();
+          prev.errorMsg = 'Error trying to update comment, please try again later.';
+          prev.errorType = 'danger';
+          prev.editMode = false;
+        },()=> {
+          this.props.hideSpinner();
           setTimeout(() => {
             this.setState({
               showAlert: false
             })
           }, 4000);
-        });
-      }
-    ).catch(error =>
-      this.setState(prev => {
-        prev.showAlert = true;
-        prev.errorMsg = 'Error trying to update comment, please try again later.';
-        prev.errorType = 'danger';
-      },()=> {
-        this.props.hideSpinner();
-        setTimeout(() => {
-          this.setState({
-            showAlert: false
-          })
-        }, 4000);
-      })
-    )
+        })
+      )
+    });
   };
 
   removeComment = (row) => {
@@ -161,7 +164,8 @@ const Comments = hh(class Comments extends Component {
           prev.showAlert = true;
           prev.comment = '';
           prev.errorMsg = 'Comment deleted succesfully';
-          prev.errorType = 'success'
+          prev.errorType = 'success';
+          prev.editMode = false;
           return prev;
         }, () => {
           this.props.updateContent();
@@ -177,6 +181,7 @@ const Comments = hh(class Comments extends Component {
         prev.showAlert = true;
         prev.errorMsg = 'Error trying to delete comment, please try again later.';
         prev.errorType = 'danger';
+        prev.editMode = false;
       },()=> {
         this.props.hideSpinner()
         setTimeout(() => {
