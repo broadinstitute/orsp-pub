@@ -100,9 +100,10 @@ const Comments = hh(class Comments extends Component {
   }
 
   handleEditorChange = (comment, editor) => {
-    this.setState(prev => {
-      prev.newComment =  comment;
-      return prev;
+    this.setState(val => {
+      val.comment.comment =  comment;
+      val.comment.author = JSON.parse(localStorage.getItem("CurrentUser")).displayName;
+      return val;
     });
   };
 
@@ -119,66 +120,54 @@ const Comments = hh(class Comments extends Component {
 
   updateComment = () => {
     this.props.showSpinner();
-    this.setState(prev => {
-      prev.comment.comment = this.state.newComment;
-      prev.comment.author = JSON.parse(localStorage.getItem("CurrentUser")).displayName;
-      return prev;
-    }, () => {
-      this.commentUpdateCall();
-    });
-  };
-
-  commentUpdateCall = () => {
     Review.updateComment(this.state.comment).then(
       response => {
         this.props.hideSpinner();
-        this.setState(prev => {
-          prev.showAlert = true;
-          prev.comment = '';
-          prev.errorMsg = 'Comment updated succesfully';
-          prev.errorType = 'success';
-          prev.editMode = false;
-          return prev;
+        this.setState({
+          showAlert: true,
+          comment: '',
+          errorMsg: 'Comment updated succesfully',
+          errorType: 'success',
+          editMode: false
         }, () => {
           this.props.updateContent();
         });
       }
     ).catch(error =>
-      this.setState(prev => {
-        prev.showAlert = true;
-        prev.errorMsg = 'Error trying to update comment, please try again later.';
-        prev.errorType = 'danger';
-        prev.editMode = false;
-        return prev;
+      this.setState({
+        showAlert: true,
+        errorMsg: 'Error trying to update comment, please try again later.',
+        errorType: 'danger',
+        editMode: false
       },()=> {
         this.props.hideSpinner();
       })
     )
-  }
+  };
 
   removeComment = (row) => {
     this.props.showSpinner();
     Review.deleteComment(row.id).then(
       (response) => {
         this.props.hideSpinner();
-        this.setState(prev => {
-          prev.showAlert = true;
-          prev.comment = '';
-          prev.errorMsg = 'Comment deleted succesfully';
-          prev.errorType = 'success';
-          prev.editMode = false;
-          return prev;
+        this.setState({
+          showAlert: true,
+          comment: '',
+          errorMsg: 'Comment deleted succesfully',
+          errorType: 'success',
+          editMode: false
+        }, () => {
+          this.props.updateContent();
         });
       }
     ).catch(error =>
-      this.setState(prev => {
-        prev.showAlert = true;
-        prev.errorMsg = 'Error trying to delete comment, please try again later.';
-        prev.errorType = 'danger';
-        prev.editMode = false;
-        return prev;
+      this.setState({
+        showAlert: true,
+        errorMsg: 'Error trying to update comment, please try again later.',
+        errorType: 'danger',
+        editMode: false
       },()=> {
-        this.props.hideSpinner()
+        this.props.hideSpinner();
       })
     )
   }

@@ -152,5 +152,5 @@ p.modal-large {
 
 .icon {
   color: #333;
-  font-size: 1rem;
+  font-size: 1rem !important;
 }
