@@ -122,6 +122,7 @@ const Comments = hh(class Comments extends Component {
     this.setState(prev => {
       prev.comment.comment = this.state.newComment;
       prev.comment.author = JSON.parse(localStorage.getItem("CurrentUser")).displayName;
+      return prev;
     }, () => {
       this.commentUpdateCall();
     });
@@ -140,11 +141,6 @@ const Comments = hh(class Comments extends Component {
           return prev;
         }, () => {
           this.props.updateContent();
-          setTimeout(() => {
-            this.setState({
-              showAlert: false
-            })
-          }, 4000);
         });
       }
     ).catch(error =>
@@ -153,13 +149,9 @@ const Comments = hh(class Comments extends Component {
         prev.errorMsg = 'Error trying to update comment, please try again later.';
         prev.errorType = 'danger';
         prev.editMode = false;
+        return prev;
       },()=> {
         this.props.hideSpinner();
-        setTimeout(() => {
-          this.setState({
-            showAlert: false
-          })
-        }, 4000);
       })
     )
   }
@@ -176,13 +168,6 @@ const Comments = hh(class Comments extends Component {
           prev.errorType = 'success';
           prev.editMode = false;
           return prev;
-        }, () => {
-          this.props.updateContent();
-          setTimeout(() => {
-            this.setState({
-              showAlert: false
-            })
-          }, 4000);
         });
       }
     ).catch(error =>
@@ -191,13 +176,9 @@ const Comments = hh(class Comments extends Component {
         prev.errorMsg = 'Error trying to delete comment, please try again later.';
         prev.errorType = 'danger';
         prev.editMode = false;
+        return prev;
       },()=> {
         this.props.hideSpinner()
-        setTimeout(() => {
-          this.setState({
-            showAlert: false
-          })
-        }, 4000);
       })
     )
   }
