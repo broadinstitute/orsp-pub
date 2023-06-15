@@ -131,13 +131,12 @@ const Comments = hh(class Comments extends Component {
     Review.updateComment(this.state.comment).then(
       response => {
         this.props.hideSpinner();
-        this.setState(prev => {
-          prev.showAlert = true;
-          prev.comment = '';
-          prev.errorMsg = 'Comment updated succesfully';
-          prev.errorType = 'success';
-          prev.editMode = false;
-          return prev;
+        this.setState({
+          showAlert: true,
+          comment: '',
+          errorMsg: 'Comment updated succesfully',
+          errorType: 'success',
+          editMode: false
         }, () => {
           this.props.updateContent();
           setTimeout(() => {
@@ -162,7 +161,7 @@ const Comments = hh(class Comments extends Component {
         }, 4000);
       })
     )
-  }
+  };
 
   removeComment = (row) => {
     this.props.showSpinner();
