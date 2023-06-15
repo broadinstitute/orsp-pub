@@ -69,18 +69,19 @@ const Comments = hh(class Comments extends Component {
           return (
             div({}, [
               Btn({
-                style: {marginRight: '4px', padding: '4px 9px', backgroundColor: '#fdfafa'},
+                className: '',
+                style: {marginRight: '4px', padding: '4px 9px', backgroundColor: 'none'},
                 title: 'Edit',
                 action: {
-                  labelClass: "glyphicon glyphicon-pencil",
+                  labelClass: "glyphicon glyphicon-pencil icon",
                   handler: () => _this.editComment(row)
                 }
               }),
               Btn({
-                style: {marginRight: '4px', padding: '4px 9px', backgroundColor: '#fdfafa'},
+                style: {marginRight: '4px', padding: '4px 9px', backgroundColor: 'none'},
                 title: 'Remove',
                 action: {
-                  labelClass: "glyphicon glyphicon-remove",
+                  labelClass: "glyphicon glyphicon-remove icon",
                   handler: () => _this.removeComment(row)
                 }
               })
@@ -121,7 +122,7 @@ const Comments = hh(class Comments extends Component {
       prev.comment.comment = this.state.newComment;
       prev.comment.author = JSON.parse(localStorage.getItem("CurrentUser")).displayName;
     }, () => {
-      commentUpdateCall();
+      this.commentUpdateCall();
     });
   };
 
