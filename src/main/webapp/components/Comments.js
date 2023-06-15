@@ -73,7 +73,7 @@ const Comments = hh(class Comments extends Component {
                 style: {marginRight: '4px', padding: '4px 9px', backgroundColor: 'rgba(0, 0, 0, 0)'},
                 title: 'Edit',
                 action: {
-                  labelClass: "glyphicon glyphicon-pencil",
+                  labelClass: "glyphicon glyphicon-pencil icon",
                   handler: () => _this.editComment(row)
                 }
               }),
@@ -82,7 +82,7 @@ const Comments = hh(class Comments extends Component {
                 style: {marginRight: '4px', padding: '4px 9px', backgroundColor: 'rgba(0, 0, 0, 0)'},
                 title: 'Remove',
                 action: {
-                  labelClass: "glyphicon glyphicon-remove",
+                  labelClass: "glyphicon glyphicon-remove icon",
                   handler: () => _this.removeComment(row)
                 }
               })
