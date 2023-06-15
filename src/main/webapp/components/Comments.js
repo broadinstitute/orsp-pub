@@ -69,7 +69,7 @@ const Comments = hh(class Comments extends Component {
           return (
             div({}, [
               Btn({
-                class: 'btnPrimary',
+                btnclass: 'btnPrimary',
                 style: {marginRight: '4px', padding: '4px 9px', backgroundColor: 'rgba(0, 0, 0, 0)'},
                 title: 'Edit',
                 action: {
@@ -78,7 +78,7 @@ const Comments = hh(class Comments extends Component {
                 }
               }),
               Btn({
-                class: 'btnPrimary',
+                btnclass: 'btnPrimary',
                 style: {marginRight: '4px', padding: '4px 9px', backgroundColor: 'rgba(0, 0, 0, 0)'},
                 title: 'Remove',
                 action: {

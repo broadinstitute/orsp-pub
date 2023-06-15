@@ -9,7 +9,7 @@ export const Btn = hh(class Btn extends Component {
     return (
       button({
         id: "btn",
-        className: this.props.class || "btnPrimary",
+        className: this.props.btnclass || "btnPrimary",
         style: this.props.style,
         onClick: this.props.action.handler,
         disabled: this.props.disabled,
