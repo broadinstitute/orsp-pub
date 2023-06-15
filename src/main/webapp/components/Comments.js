@@ -69,8 +69,8 @@ const Comments = hh(class Comments extends Component {
           return (
             div({}, [
               Btn({
-                className: '',
-                style: {marginRight: '4px', padding: '4px 9px', backgroundColor: 'none'},
+                class: 'btnPrimary',
+                style: {marginRight: '4px', padding: '4px 9px', backgroundColor: 'rgba(0, 0, 0, 0)'},
                 title: 'Edit',
                 action: {
                   labelClass: "glyphicon glyphicon-pencil icon",
@@ -78,7 +78,8 @@ const Comments = hh(class Comments extends Component {
                 }
               }),
               Btn({
-                style: {marginRight: '4px', padding: '4px 9px', backgroundColor: 'none'},
+                class: 'btnPrimary',
+                style: {marginRight: '4px', padding: '4px 9px', backgroundColor: 'rgba(0, 0, 0, 0)'},
                 title: 'Remove',
                 action: {
                   labelClass: "glyphicon glyphicon-remove icon",
@@ -277,7 +278,7 @@ const Comments = hh(class Comments extends Component {
               msg: this.state.errorMsg,
               show: this.state.showAlert,
               type: this.state.errorType,
-              closeable: false,
+              closeable: true,
               closeAlertHandler: this.closeAlertHandler
             })
           ])
