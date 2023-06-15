@@ -63,20 +63,22 @@ const Comments = hh(class Comments extends Component {
         sort: false,
         editable: false,
         headerStyle: (column, colIndex) => {
-          return { width: '90px' };
+          return { width: '95px' };
         },
         formatter: (cell, row, rowIndex, formatExtraData) => {
           return (
             div({}, [
               Btn({
-                style: {marginRight: '4px', padding: '4px 9px'},
+                style: {marginRight: '4px', padding: '4px 9px', backgroundColor: '#fdfafa'},
+                title: 'Edit',
                 action: {
                   labelClass: "glyphicon glyphicon-pencil",
                   handler: () => _this.editComment(row)
                 }
               }),
               Btn({
-                style: {marginRight: '4px', padding: '4px 9px'},
+                style: {marginRight: '4px', padding: '4px 9px', backgroundColor: '#fdfafa'},
+                title: 'Remove',
                 action: {
                   labelClass: "glyphicon glyphicon-remove",
                   handler: () => _this.removeComment(row)
@@ -113,48 +115,52 @@ const Comments = hh(class Comments extends Component {
     })
   }
 
-  updateComment = async () => {
+  updateComment = () => {
     this.props.showSpinner();
     this.setState(prev => {
       prev.comment.comment = this.state.newComment;
       prev.comment.author = JSON.parse(localStorage.getItem("CurrentUser")).displayName;
     }, () => {
-      Review.updateComment(this.state.comment).then(
-        response => {
-          this.props.hideSpinner();
-          this.setState(prev => {
-            prev.showAlert = true;
-            prev.comment = '';
-            prev.errorMsg = 'Comment updated succesfully';
-            prev.errorType = 'success';
-            prev.editMode = false;
-            return prev;
-          }, () => {
-            this.props.updateContent();
-            setTimeout(() => {
-              this.setState({
-                showAlert: false
-              })
-            }, 4000);
-          });
-        }
-      ).catch(error =>
+      commentUpdateCall();
+    });
+  };
+
+  commentUpdateCall = () => {
+    Review.updateComment(this.state.comment).then(
+      response => {
+        this.props.hideSpinner();
         this.setState(prev => {
           prev.showAlert = true;
-          prev.errorMsg = 'Error trying to update comment, please try again later.';
-          prev.errorType = 'danger';
+          prev.comment = '';
+          prev.errorMsg = 'Comment updated succesfully';
+          prev.errorType = 'success';
           prev.editMode = false;
-        },()=> {
-          this.props.hideSpinner();
+          return prev;
+        }, () => {
+          this.props.updateContent();
           setTimeout(() => {
             this.setState({
               showAlert: false
             })
           }, 4000);
-        })
-      )
-    });
-  };
+        });
+      }
+    ).catch(error =>
+      this.setState(prev => {
+        prev.showAlert = true;
+        prev.errorMsg = 'Error trying to update comment, please try again later.';
+        prev.errorType = 'danger';
+        prev.editMode = false;
+      },()=> {
+        this.props.hideSpinner();
+        setTimeout(() => {
+          this.setState({
+            showAlert: false
+          })
+        }, 4000);
+      })
+    )
+  }
 
   removeComment = (row) => {
     this.props.showSpinner();

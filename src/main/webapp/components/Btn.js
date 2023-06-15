@@ -12,7 +12,8 @@ export const Btn = hh(class Btn extends Component {
         className: "btnPrimary",
         style: this.props.style,
         onClick: this.props.action.handler,
-        disabled: this.props.disabled
+        disabled: this.props.disabled,
+        title: this.props.title
       }, [
         span({ className: this.props.action.labelClass }, [this.props.action.label]),
       ])
