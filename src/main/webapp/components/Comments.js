@@ -212,6 +212,7 @@ const Comments = hh(class Comments extends Component {
       (response) => {
         this.props.hideSpinner();
         this.setState(prev => {
+          prev.showDialog = false;
           prev.showAlert = true;
           prev.comment = '';
           prev.errorMsg = 'Comment deleted succesfully';
@@ -229,6 +230,7 @@ const Comments = hh(class Comments extends Component {
       }
     ).catch(error =>
       this.setState(prev => {
+        prev.showDialog = false;
         prev.showAlert = true;
         prev.errorMsg = 'Error trying to delete comment, please try again later.';
         prev.errorType = 'danger';
