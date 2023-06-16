@@ -12,6 +12,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { AlertMessage } from '../components/AlertMessage';
 import { isEmpty } from '../util/Utils';
 import { Review } from '../util/ajax';
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import '../components/Btn.css';
 import './Wizard.css';
 import LoadingWrapper from './LoadingWrapper';
@@ -20,6 +21,39 @@ const defaultSorted = [{
   dataField: 'date',
   order: 'desc'
 }];
+
+const columns = [{
+  dataField: 'id',
+  text: 'Id',
+  hidden: true,
+  editable: false,
+  csvExport : false
+}, {
+  dataField: 'author',
+  text: 'Author',
+  sort: true,
+  editable: false,
+  headerStyle: (column, colIndex) => {
+    return { width: '150px' };
+  },
+}, {
+  dataField: 'date',
+  text: 'Date',
+  sort: true,
+  editable: false,
+  headerStyle: (column, colIndex) => {
+    return { width: '180px' };
+  },
+}, {
+  dataField: 'comment',
+  text: 'Comment',
+  sort: true,
+  editable: false,
+  formatter: (cell, row, rowIndex, colIndex) =>
+    div({dangerouslySetInnerHTML: { __html: cell } },[]),
+  csvFormatter: (cell, row, rowIndex, colIndex) =>
+    cell.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' '),
+}]
 
 const Comments = hh(class Comments extends Component {
 
@@ -83,7 +117,7 @@ const Comments = hh(class Comments extends Component {
                 title: 'Remove',
                 action: {
                   labelClass: "glyphicon glyphicon-remove icon",
-                  handler: () => _this.removeComment(row)
+                  handler: () => _this.removehandler(row)
                 }
               })
             ])
@@ -95,7 +129,9 @@ const Comments = hh(class Comments extends Component {
       showAlert: false,
       errorMsg: '',
       errorType: '',
-      newComment: ''
+      newComment: '',
+      showDialog: false,
+      commentId: null
     }
   }
 
@@ -163,9 +199,16 @@ const Comments = hh(class Comments extends Component {
     )
   };
 
-  removeComment = (row) => {
+  removehandler = (row) => {
+    this.setState({
+      showDialog: true,
+      commentId: row.id
+    })
+  }
+
+  removeComment = () => {
     this.props.showSpinner();
-    Review.deleteComment(row.id).then(
+    Review.deleteComment(this.state.commentId).then(
       (response) => {
         this.props.hideSpinner();
         this.setState(prev => {
@@ -208,6 +251,13 @@ const Comments = hh(class Comments extends Component {
     })
   }
 
+  closeModal = () => {
+    this.setState({
+      showDialog: false,
+      commentId: null
+    })
+  }
+
   closeAlertHandler = () => {
     this.setState(prev => {
       prev.showAlert = false;
@@ -227,6 +277,14 @@ const Comments = hh(class Comments extends Component {
   render() {
     return (
       h(Fragment, [
+        ConfirmationDialog({
+          closeModal: this.closeModal,
+          show: this.state.showDialog,
+          handleOkAction: this.removeComment,
+          title: 'Comment Removal Confirmation',
+          bodyText: 'Are you sure you want to remove this comment?',
+          actionLabel: 'Yes'
+        }, []),
         div({
           id: 'comment'
         }),
@@ -285,7 +343,7 @@ const Comments = hh(class Comments extends Component {
         TableComponent({
           remoteProp: false,
           data: this.props.comments,
-          columns: this.state.columns(this),
+          columns: component.isAdmin ? this.state.columns(this) : columns,
           keyField: 'id',
           search: true,
           fileName: 'ORSP',
