@@ -21,14 +21,8 @@ const headers =
 
 const styles = {
   submissionComment: {
-    margin: '0 10px 10px 0',
-    paddingLeft: '20px',
-    width: 'calc(100% - 60px)',
-    display: 'inline-block',
-    overflow: 'visible',
     whiteSpace: 'normal',
-    textOverflow: 'initial',
-    wordBreak: 'break-word'
+    display: 'block'
   },
 
   addSubmission: {
