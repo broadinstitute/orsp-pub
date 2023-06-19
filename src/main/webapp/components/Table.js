@@ -179,6 +179,10 @@ export const Table = hh(class Table extends Component {
     return this.props.submissionEdit(row);
   };
 
+  submissionEditActions = (cell, row) => {
+    return this.props.submissionEditActions(row);
+  };
+
   redirectToSampleCollectionLinkedProject = (cell, row) => {
     const url = handleRedirectToProject(component.serverURL, row.linkedProjectKey);
     return a({
@@ -424,6 +428,14 @@ export const Table = hh(class Table extends Component {
                 editable={ false }
                 dataFormat={this.parseCreateDate}
                 dataSort={ true }
+                width={styles.createdWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'actions') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                editable={ false }
+                dataFormat={this.submissionEditActions}
+                dataSort={ false }
                 width={styles.createdWidth}>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
