@@ -54,7 +54,7 @@ export const Table = hh(class Table extends Component {
       cellEditProp: {
         mode: 'dbclick',
         blurToSave: true,
-        afterSaveCell: this.props.onAfterSaveCell  // a hook for after saving cell
+        afterSaveCell: this.props.onAfterSaveCell  //  a hook for after saving cell
       }
     }
     this.formatUrlDocument = this.formatUrlDocument.bind(this);
@@ -187,10 +187,6 @@ export const Table = hh(class Table extends Component {
 
   submissionEdit = (cell, row) => {
     return this.props.submissionEdit(row);
-  };
-
-  submissionEditActions = (cell, row) => {
-    return this.props.submissionEditActions(row);
   };
 
   redirectToSampleCollectionLinkedProject = (cell, row) => {
@@ -478,22 +474,6 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.parseCreateDate}
                 dataSort={ true }
                 width={styles.createdWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value === 'submissionsCreateDate') {
-              return <TableHeaderColumn isKey={isKey}
-                key={header.value}
-                dataField={header.value}
-                editable={ false }
-                dataFormat={this.parseCreateDate}
-                dataSort={ true }
-                width={styles.createdColumnWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value === 'submissionsActions') {
-              return <TableHeaderColumn isKey={isKey}
-                key={header.value}
-                dataField={header.value}
-                editable={ false }
-                dataFormat={this.submissionEditActions}
-                dataSort={ false }
-                width={styles.actionsColumnWidth}>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}

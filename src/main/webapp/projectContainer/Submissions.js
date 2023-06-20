@@ -10,19 +10,24 @@ import { UrlConstants } from "../util/UrlConstants";
 
 const headers =
   [
-    { name: '#', value: 'submissionsNumber' },
-    { name: 'Description', value: 'submissionsDesc' },
-    { name: 'File Name', value: 'submissionsFilename' },
-    { name: 'File Description', value: 'submissionsFileDesc' },
-    { name: 'Author', value: 'submissionsAuthor' },
-    { name: 'Created', value: 'submissionsCreateDate' },
-    { name: 'Actions', value: 'submissionsActions' },
+    { name: 'Number', value: 'number' },
+    { name: 'Description', value: 'comments' },
+    { name: 'File Name', value: 'documents' },
+    { name: 'File Description', value: 'fileDescription' },
+    { name: 'Author', value: 'author' },
+    { name: 'Created', value: 'createDate' },
   ];
 
 const styles = {
   submissionComment: {
+    margin: '0 10px 10px 0',
+    paddingLeft: '20px',
+    width: 'calc(100% - 60px)',
+    display: 'inline-block',
+    overflow: 'visible',
     whiteSpace: 'normal',
-    display: 'block'
+    textOverflow: 'initial',
+    wordBreak: 'break-word'
   },
 
   addSubmission: {
@@ -64,13 +69,6 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   submissionEdit = (data) => {
-    const submissionComment = span({style: styles.submissionComment}, [
-      span({dangerouslySetInnerHTML: { __html: data.comments } },[])
-    ]);
-    return h(Fragment, {}, [submissionComment]);
-  };
-
-  submissionEditActions = (data) => {
     const indexButton = a({
       className: 'btn btn-default btn-xs pull-left link-btn',
       onClick: () => this.redirectEditSubmission(data)
@@ -78,7 +76,7 @@ export const Submissions = hh(class Submissions extends Component {
     const submissionComment = span({style: styles.submissionComment}, [
       span({dangerouslySetInnerHTML: { __html: data.comments } },[])
     ]);
-    return h(Fragment, {}, [indexButton]);
+    return h(Fragment, {}, [indexButton, submissionComment]);
   };
 
   getDisplaySubmissions = () => {
@@ -132,8 +130,7 @@ export const Submissions = hh(class Submissions extends Component {
         pagination: true,
         reviewFlow: true,
         submissionEdit: this.submissionEdit,
-        submissionEditActions: this.submissionEditActions,
-        onAfterSaveCell: this.saveDocumentDescription,
+        onAfterSaveCell: this.saveDocumentDescription
       })
     ]);
   };
