@@ -10,13 +10,13 @@ import { UrlConstants } from "../util/UrlConstants";
 
 const headers =
   [
-    { name: '#', value: 'number' },
-    { name: 'Description', value: 'comments' },
-    { name: 'File Name', value: 'documents' },
-    { name: 'File Description', value: 'fileDescription' },
-    { name: 'Author', value: 'author' },
-    { name: 'Created', value: 'createDate' },
-    { name: 'Actions', value: 'actions' },
+    { name: '#', value: 'submissionsNumber' },
+    { name: 'Description', value: 'submissionsDesc' },
+    { name: 'File Name', value: 'submissionsFilename' },
+    { name: 'File Description', value: 'submissionsFileDesc' },
+    { name: 'Author', value: 'submissionsAuthor' },
+    { name: 'Created', value: 'submissionsCreateDate' },
+    { name: 'Actions', value: 'submissionsActions' },
   ];
 
 const styles = {
@@ -75,6 +75,9 @@ export const Submissions = hh(class Submissions extends Component {
       className: 'btn btn-default btn-xs pull-left link-btn',
       onClick: () => this.redirectEditSubmission(data)
     }, [!component.isViewer ? 'Edit': 'View']);
+    const submissionComment = span({style: styles.submissionComment}, [
+      span({dangerouslySetInnerHTML: { __html: data.comments } },[])
+    ]);
     return h(Fragment, {}, [indexButton]);
   };
 
