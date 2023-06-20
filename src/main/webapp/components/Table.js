@@ -14,6 +14,8 @@ import { Link } from 'react-router-dom';
 const styles = { 
   statusWidth: '140',
   fileTypeWidth: '170',
+  fileDescription: '7%',
+  fileName: '5%',
   userNameWidth: '180',
   docVersionWidth: '90',
   creatorWidth: '130',
@@ -23,11 +25,12 @@ const styles = {
   removeWidthFile: '80',
   unlinkSampleCollectionWidth: '80',
   collectionNameWidth: '270',
-  numberWidth: '85',
+  numberWidth: '2%',
   createDateWidth: '15',
   submissionDocumentsWidth: '200',
-  submissionComments: '200',
-  createdWidth: '120',
+  submissionComments: '20%',
+  submissionActions: '3%',
+  createdWidth: '4%',
   linkOverflowEllipsis: {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
@@ -179,6 +182,10 @@ export const Table = hh(class Table extends Component {
     return this.props.submissionEdit(row);
   };
 
+  submissionEditActions = (cell, row) => {
+    return this.props.submissionEditActions(row);
+  };
+
   redirectToSampleCollectionLinkedProject = (cell, row) => {
     const url = handleRedirectToProject(component.serverURL, row.linkedProjectKey);
     return a({
@@ -268,7 +275,7 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
-              >{header.name}</TableHeaderColumn>
+                width={styles.fileDescription}>{header.name}</TableHeaderColumn>
             }
             if (header.value === 'status') {
               return <TableHeaderColumn key={header.name}
@@ -314,7 +321,8 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.formatUrlDocument}
                 editable={ false }
-                dataSort={true}>{header.name}</TableHeaderColumn>
+                dataSort={true}
+                width={styles.fileName}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'projectKey') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
@@ -425,6 +433,14 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.parseCreateDate}
                 dataSort={ true }
                 width={styles.createdWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'actions') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                editable={ false }
+                dataFormat={this.submissionEditActions}
+                dataSort={ false }
+                width={styles.submissionActions}>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}

@@ -10,24 +10,19 @@ import { UrlConstants } from "../util/UrlConstants";
 
 const headers =
   [
-    { name: 'Number', value: 'number' },
+    { name: '#', value: 'number' },
     { name: 'Description', value: 'comments' },
     { name: 'File Name', value: 'documents' },
     { name: 'File Description', value: 'fileDescription' },
     { name: 'Author', value: 'author' },
     { name: 'Created', value: 'createDate' },
+    { name: 'Actions', value: 'actions' },
   ];
 
 const styles = {
   submissionComment: {
-    margin: '0 10px 10px 0',
-    paddingLeft: '20px',
-    width: 'calc(100% - 60px)',
-    display: 'inline-block',
-    overflow: 'visible',
     whiteSpace: 'normal',
-    textOverflow: 'initial',
-    wordBreak: 'break-word'
+    display: 'block'
   },
 
   addSubmission: {
@@ -69,14 +64,18 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   submissionEdit = (data) => {
+    const submissionComment = span({style: styles.submissionComment}, [
+      span({dangerouslySetInnerHTML: { __html: data.comments } },[])
+    ]);
+    return h(Fragment, {}, [submissionComment]);
+  };
+
+  submissionEditActions = (data) => {
     const indexButton = a({
       className: 'btn btn-default btn-xs pull-left link-btn',
       onClick: () => this.redirectEditSubmission(data)
     }, [!component.isViewer ? 'Edit': 'View']);
-    const submissionComment = span({style: styles.submissionComment}, [
-      span({dangerouslySetInnerHTML: { __html: data.comments } },[])
-    ]);
-    return h(Fragment, {}, [indexButton, submissionComment]);
+    return h(Fragment, {}, [indexButton]);
   };
 
   getDisplaySubmissions = () => {
@@ -130,6 +129,7 @@ export const Submissions = hh(class Submissions extends Component {
         pagination: true,
         reviewFlow: true,
         submissionEdit: this.submissionEdit,
+        submissionEditActions: this.submissionEditActions,
         onAfterSaveCell: this.saveDocumentDescription,
       })
     ]);

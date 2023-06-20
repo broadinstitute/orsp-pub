@@ -9,6 +9,7 @@ import org.grails.plugins.web.taglib.ApplicationTagLib
 import java.text.SimpleDateFormat
 
 
+
 @SuppressWarnings("GroovyAssignabilityCheck")
 class SearchController implements UserInfo {
 
