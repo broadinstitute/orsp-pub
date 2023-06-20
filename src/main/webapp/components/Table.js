@@ -14,8 +14,6 @@ import { Link } from 'react-router-dom';
 const styles = { 
   statusWidth: '140',
   fileTypeWidth: '170',
-  fileDescription: '7%',
-  fileName: '5%',
   userNameWidth: '180',
   docVersionWidth: '90',
   creatorWidth: '130',
@@ -25,18 +23,24 @@ const styles = {
   removeWidthFile: '80',
   unlinkSampleCollectionWidth: '80',
   collectionNameWidth: '270',
-  numberWidth: '2%',
+  numberWidth: '85',
   createDateWidth: '15',
   submissionDocumentsWidth: '200',
-  submissionComments: '20%',
-  submissionActions: '3%',
-  createdWidth: '4%',
+  submissionComments: '200',
+  createdWidth: '120',
   linkOverflowEllipsis: {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     color: '#337ab7'
-  }
+  },
+  numberColumnWidth: '2%',
+  descColumnWidth: '20%',
+  fileNameColumnWidth: '5%',
+  fileDescColumnWidth: '7%',
+  authorColumnWidth: '4%',
+  createdColumnWidth: '3%',
+  actionsColumnWidth: '3%'
 };
 
 export const Table = hh(class Table extends Component {
@@ -275,7 +279,14 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
-                width={styles.fileDescription}>{header.name}</TableHeaderColumn>
+              >{header.name}</TableHeaderColumn>
+            }
+            if(header.value === 'submissionsFileDesc') {
+              return <TableHeaderColumn
+                key={header.name}
+                dataField={header.value}
+                dataSort={true}
+              width={styles.fileDescColumnWidth}>{header.name}</TableHeaderColumn>
             }
             if (header.value === 'status') {
               return <TableHeaderColumn key={header.name}
@@ -309,6 +320,14 @@ export const Table = hh(class Table extends Component {
                 dataSort={true}
                 editable={ false }
                 width={styles.creatorWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'submissionsAuthor') {
+              return <TableHeaderColumn 
+                isKey={isKey}
+                key={header.name}
+                dataField={header.value}
+                dataSort={true}
+                editable={ false }
+                width={styles.authorColumnWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'userName') {
               return <TableHeaderColumn 
                 isKey={isKey}
@@ -321,8 +340,7 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.formatUrlDocument}
                 editable={ false }
-                dataSort={true}
-                width={styles.fileName}>{header.name}</TableHeaderColumn>
+                dataSort={true}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'projectKey') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
@@ -409,6 +427,13 @@ export const Table = hh(class Table extends Component {
                 editable={ false }
                 dataSort={ true }
                 width={styles.numberWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value ==='submissionsNumber') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                editable={ false }
+                dataSort={ true }
+                width={styles.numberColumnWidth}>{header.name}</TableHeaderColumn>            
             } else if (header.value === 'comments') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
@@ -417,6 +442,14 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.submissionEdit}
                 dataSort={ true }
                 width={styles.submissionComments}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'submissionsDesc') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                editable={ false }
+                dataFormat={this.submissionEdit}
+                dataSort={ true }
+                width={styles.descColumnWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'documents') {
               return <TableHeaderColumn
                 key={header.value}
@@ -425,6 +458,14 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.documentLink}
                 dataSort={ true }
                 width={styles.submissionDocumentsWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'submissionsFilename') {
+              return <TableHeaderColumn
+                key={header.value}
+                dataField={header.value}
+                editable={ false }
+                dataFormat={this.documentLink}
+                dataSort={ true }
+                width={styles.fileNameColumnWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'createDate') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
@@ -433,14 +474,22 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.parseCreateDate}
                 dataSort={ true }
                 width={styles.createdWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value === 'actions') {
+            } else if (header.value === 'submissionsCreateDate') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                editable={ false }
+                dataFormat={this.parseCreateDate}
+                dataSort={ true }
+                width={styles.createdColumnWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'submissionsActions') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
                 dataField={header.value}
                 editable={ false }
                 dataFormat={this.submissionEditActions}
                 dataSort={ false }
-                width={styles.submissionActions}>{header.name}</TableHeaderColumn>
+                width={styles.actionsColumnWidth}>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
