@@ -891,6 +891,7 @@ class QueryService implements Status {
 
         final List<Object[]> results = sqlQuery.with {
             setParameterList('issueIds', issueIds)
+
             list()
         }
         IssueSearchItemDTO.processResults(results);
