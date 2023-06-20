@@ -8,7 +8,7 @@ import org.grails.plugins.web.taglib.ApplicationTagLib
 
 import java.text.SimpleDateFormat
 
-@Slf4j
+
 @SuppressWarnings("GroovyAssignabilityCheck")
 class SearchController implements UserInfo {
 
@@ -161,7 +161,6 @@ class SearchController implements UserInfo {
             Set<Issue> issues = queryService.findIssues(options)
             Collection<Issue> consentGroups = issues.findAll { it.type == IssueType.CONSENT_GROUP.name }
             Map<String, Boolean>  isCollaboratorInRelatedProjects = queryService.isCollaboratorInRelatedProjects(consentGroups?.collect { it.projectKey }, userName)
-            log.info(options)
             rows = queryService.findIssues(options).collect {
                 Map<String, Object> arguments = IssueUtils.generateArgumentsForRedirect(it.type, it.projectKey, null)
                 String link = applicationTagLib.createLink([controller: arguments.get("controller"), action: arguments.get("action"), params: arguments.get("params"), absolute: true])

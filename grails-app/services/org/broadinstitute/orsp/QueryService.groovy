@@ -815,7 +815,7 @@ class QueryService implements Status {
         if (options.userName) {
             def q = ' (u.user_name like :userName or i.reporter like :userName)'
             query = andIfyQstring(query, q, params)
-            params.put('userName', "%" + options.userName + "%")
+            params.put('userName', options.userName.toString())
         }
         if (options.getIssueTypeNames() && !options.getIssueTypeNames().empty) {
             def q = orIfyCollection("i.type = :typeName", options.getIssueTypeNames())
