@@ -7,7 +7,6 @@ import { Table } from "../components/Table";
 import { Files } from "../util/ajax";
 import _ from 'lodash';
 import { UrlConstants } from "../util/UrlConstants";
-import Tooltip from 'react-bootstrap/Tooltip';
 
 const headers =
   [
@@ -80,19 +79,10 @@ export const Submissions = hh(class Submissions extends Component {
       className: 'btn btn-default btn-xs pull-left link-btn',
       onClick: () => this.redirectEditSubmission(data)
     }, [!component.isViewer ? 'Edit': 'View']);
-    const toolTipText = this.renderTooltip(data);
+    const toolTipText = span({"data-toggle": "tooltip", "data-placement": "bottom", "title": data.author }, [
+      span({className: 'glyphicon glyphicon-eye-open', "aria-hidden": "true"})
+    ]);
     return h(Fragment, {}, [indexButton, toolTipText]);
-  };
-
-  renderTooltip = (data) => {
-    return (
-      <Tooltip 
-      placement={"bottom"}
-      className={"in"} id={"tooltip-bottom"}
-      >
-      {data.author}
-      </Tooltip>
-    );
   };
 
   getDisplaySubmissions = () => {
