@@ -130,7 +130,8 @@ export const Submissions = hh(class Submissions extends Component {
         pagination: true,
         reviewFlow: true,
         submissionEdit: this.submissionEdit,
-        onAfterSaveCell: this.saveDocumentDescription
+        onAfterSaveCell: this.saveDocumentDescription,
+        isSubmissionTabActive: true
       })
     ]);
   };
