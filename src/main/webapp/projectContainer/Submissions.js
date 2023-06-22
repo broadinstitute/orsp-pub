@@ -14,8 +14,7 @@ const headers =
     { name: 'Description', value: 'comments' },
     { name: 'File Name', value: 'documents' },
     { name: 'File Description', value: 'fileDescription' },
-    { name: 'Author', value: 'author' },
-    { name: 'Created', value: 'createDate' },
+    { name: 'Actions', value: 'submissionActions' }
   ];
 
 const styles = {
@@ -69,14 +68,18 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   submissionEdit = (data) => {
+    const submissionComment = span({style: styles.submissionComment}, [
+      span({dangerouslySetInnerHTML: { __html: data.comments } },[])
+    ]);
+    return h(Fragment, {}, [submissionComment]);
+  };
+  
+  submissionActions = (data) => {
     const indexButton = a({
       className: 'btn btn-default btn-xs pull-left link-btn',
       onClick: () => this.redirectEditSubmission(data)
     }, [!component.isViewer ? 'Edit': 'View']);
-    const submissionComment = span({style: styles.submissionComment}, [
-      span({dangerouslySetInnerHTML: { __html: data.comments } },[])
-    ]);
-    return h(Fragment, {}, [indexButton, submissionComment]);
+    return h(Fragment, {}, [indexButton]);
   };
 
   getDisplaySubmissions = () => {

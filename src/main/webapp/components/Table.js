@@ -186,6 +186,10 @@ export const Table = hh(class Table extends Component {
     return this.props.submissionEdit(row);
   };
 
+  submissionActions = (cell, row) => {
+    return this.props.submissionActions(row);
+  };
+
   redirectToSampleCollectionLinkedProject = (cell, row) => {
     const url = handleRedirectToProject(component.serverURL, row.linkedProjectKey);
     return a({
@@ -443,6 +447,14 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.parseCreateDate}
                 dataSort={ true }
                 width={styles.createdWidth}>{header.name}</TableHeaderColumn>
+            }  else if (header.value === 'submissionActions') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                editable={ false }
+                dataFormat={this.submissionActions}
+                dataSort={ false }
+                width={styles.actionsColumnWidth}>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
