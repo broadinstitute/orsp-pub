@@ -290,7 +290,7 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataSort={true}
                 width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>
-            }            
+            }
             if (header.value === 'status') {
               return <TableHeaderColumn key={header.name}
                 dataField={header.value}
