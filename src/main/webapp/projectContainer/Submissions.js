@@ -93,7 +93,6 @@ export const Submissions = hh(class Submissions extends Component {
       {data.author}
       </Tooltip>
     );
-
   };
 
   getDisplaySubmissions = () => {
