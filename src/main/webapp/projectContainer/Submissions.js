@@ -134,7 +134,8 @@ export const Submissions = hh(class Submissions extends Component {
         reviewFlow: true,
         submissionEdit: this.submissionEdit,
         onAfterSaveCell: this.saveDocumentDescription,
-        isSubmissionTabActive: true
+        isSubmissionTabActive: true,
+        submissionActions: this.submissionActions
       })
     ]);
   };
