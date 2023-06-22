@@ -7,6 +7,7 @@ import { Table } from "../components/Table";
 import { Files } from "../util/ajax";
 import _ from 'lodash';
 import { UrlConstants } from "../util/UrlConstants";
+import Tooltip from 'react-bootstrap/Tooltip';
 
 const headers =
   [
@@ -83,6 +84,17 @@ export const Submissions = hh(class Submissions extends Component {
       span({className: 'glyphicon glyphicon-eye-open', "aria-hidden": "true"})
     ]);
     return h(Fragment, {}, [indexButton, toolTipText]);
+  };
+
+  renderTooltip = (data) => {
+    return (
+      <Tooltip 
+      placement={"bottom"}
+      className={"in"} id={"tooltip-bottom"}
+      >
+      {data.author}
+      </Tooltip>
+    );
   };
 
   getDisplaySubmissions = () => {
