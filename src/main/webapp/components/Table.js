@@ -250,11 +250,15 @@ export const Table = hh(class Table extends Component {
 
   render() {
     let isKey = false;
+    let fileDescriptionWidth = 'auto';
+    let authorWidth = 'auto';
     if(!!this.props.isSubmissionTabActive) {
       styles.numberWidth = '2%';
       styles.submissionComments = '20%';
-      styles.submissionDocumentsWidth = '4%';
+      styles.submissionDocumentsWidth = '5%';
       styles.createdWidth = '4%';
+      fileDescriptionWidth = '7%';
+      authorWidth = '4%';
     }
     return (
       <BootstrapTable data={this.props.data}
@@ -281,14 +285,7 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
-                >{header.name}</TableHeaderColumn>
-            }
-            if(header.value === 'submissionsFileDesc') {
-              return <TableHeaderColumn
-                key={header.name}
-                dataField={header.value}
-                dataSort={true}
-              width={styles.fileDescColumnWidth}>{header.name}</TableHeaderColumn>
+                width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>
             }
             if (header.value === 'status') {
               return <TableHeaderColumn key={header.name}
@@ -322,14 +319,6 @@ export const Table = hh(class Table extends Component {
                 dataSort={true}
                 editable={ false }
                 width={styles.creatorWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value === 'submissionsAuthor') {
-              return <TableHeaderColumn 
-                isKey={isKey}
-                key={header.name}
-                dataField={header.value}
-                dataSort={true}
-                editable={ false }
-                width={styles.authorColumnWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'userName') {
               return <TableHeaderColumn 
                 isKey={isKey}
@@ -430,13 +419,6 @@ export const Table = hh(class Table extends Component {
                 editable={ false }
                 dataSort={ true }
                 width={styles.numberWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value ==='submissionsNumber') {
-              return <TableHeaderColumn isKey={isKey}
-                key={header.value}
-                dataField={header.value}
-                editable={ false }
-                dataSort={ true }
-                width={styles.numberColumnWidth}>{header.name}</TableHeaderColumn>            
             } else if (header.value === 'comments') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
@@ -445,14 +427,6 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.submissionEdit}
                 dataSort={ true }
                 width={styles.submissionComments}>{header.name}</TableHeaderColumn>
-            } else if (header.value === 'submissionsDesc') {
-              return <TableHeaderColumn isKey={isKey}
-                key={header.value}
-                dataField={header.value}
-                editable={ false }
-                dataFormat={this.submissionEdit}
-                dataSort={ true }
-                width={styles.descColumnWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'documents') {
               return <TableHeaderColumn
                 key={header.value}
@@ -461,14 +435,6 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.documentLink}
                 dataSort={ true }
                 width={styles.submissionDocumentsWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value === 'submissionsFilename') {
-              return <TableHeaderColumn
-                key={header.value}
-                dataField={header.value}
-                editable={ false }
-                dataFormat={this.documentLink}
-                dataSort={ true }
-                width={styles.fileNameColumnWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'createDate') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
