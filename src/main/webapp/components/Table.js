@@ -250,6 +250,12 @@ export const Table = hh(class Table extends Component {
 
   render() {
     let isKey = false;
+    if(!!this.props.isSubmissionTabActive) {
+      styles.numberWidth = '2%';
+      styles.submissionComments = '20%';
+      styles.submissionDocumentsWidth = '4%';
+      styles.createdWidth = '4%';
+    }
     return (
       <BootstrapTable data={this.props.data}
         cellEdit={ !component.isViewer ? this.state.cellEditProp : false }
