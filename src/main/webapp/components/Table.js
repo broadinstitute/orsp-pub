@@ -187,19 +187,19 @@ export const Table = hh(class Table extends Component {
   };
 
   submissionActions = (cell, row) => {
-    const toolTipText = this.renderTooltip();
+    const toolTipText = this.renderTooltip(row);
     const indexButton =  this.props.submissionActions(row);
     return h(Fragment, {}, [indexButton, toolTipText]);
   };
 
-  renderTooltip = () => {
+  renderTooltip = (row) => {
     const tooltip = (
       <Tooltip id="tooltip">
-        Author details 
+        {row.name} on {row.createDate}
       </Tooltip>
     );
     const submissionTooltip = (
-        <OverlayTrigger placement="left" overlay={tooltip}>
+        <OverlayTrigger placement="bottom" overlay={tooltip}>
         <Glyphicon glyph="eye-open" />
         </OverlayTrigger>
     );    
