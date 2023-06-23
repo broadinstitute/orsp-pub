@@ -70,9 +70,9 @@ export const Submissions = hh(class Submissions extends Component {
   
   submissionActions = (data) => {
     const indexButton = a({
-      className: 'btn btn-default btn-xs pull-left link-btn',
+      className: '',
       onClick: () => this.redirectEditSubmission(data)
-    }, [!component.isViewer ? 'Edit': 'View']);    
+    }, [span({className: 'glyphicon glyphicon-pencil', "aria-hidden": "true"}),[]]);    
     return h(Fragment, {}, [indexButton]);
   };
 
