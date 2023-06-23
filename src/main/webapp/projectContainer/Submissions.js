@@ -1,7 +1,5 @@
-import React from 'react';
 import { Component, Fragment } from 'react';
 import { div, a, hh, h, button, span } from 'react-hyperscript-helpers';
-import { OverlayTrigger, Tooltip, ButtonToolbar, Button } from 'react-bootstrap';
 import { DocumentDescription, ProjectMigration } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import MultiTab from "../components/MultiTab";
@@ -80,26 +78,8 @@ export const Submissions = hh(class Submissions extends Component {
     const indexButton = a({
       className: 'btn btn-default btn-xs pull-left link-btn',
       onClick: () => this.redirectEditSubmission(data)
-    }, [!component.isViewer ? 'Edit': 'View']);
-    const toolTipText = this.renderTooltip(data);
-    return h(Fragment, {}, [indexButton, toolTipText]);
-  };
-
-  renderTooltip = (data) => {
-    const tooltip = (
-      <Tooltip id="tooltip">
-        Author details
-      </Tooltip>
-    );
-    const submissionTooltip = (
-      <ButtonToolbar>
-        <OverlayTrigger placement="left" overlay={tooltip}>
-          <Button bsStyle="default">Author</Button>
-        </OverlayTrigger>
-      </ButtonToolbar>
-    );
-    
-    render(submissionTooltip);
+    }, [!component.isViewer ? 'Edit': 'View']);    
+    return h(Fragment, {}, [indexButton]);
   };
 
   getDisplaySubmissions = () => {
