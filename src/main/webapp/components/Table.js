@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { format } from 'date-fns';
 import { a, button, div, hh, span, h } from 'react-hyperscript-helpers';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import { ButtonToolbar, DropdownButton, MenuItem, Tooltip, OverlayTrigger, Button } from 'react-bootstrap';
+import { ButtonToolbar, DropdownButton, MenuItem, Tooltip, OverlayTrigger, Button, Glyphicon } from 'react-bootstrap';
 import { Btn } from './Btn';
 import './Table.css';
 import { downloadSelectedFile, handleRedirectToProject } from "../util/Utils";
@@ -201,7 +201,7 @@ export const Table = hh(class Table extends Component {
     const submissionTooltip = (
       <ButtonToolbar>
         <OverlayTrigger placement="left" overlay={tooltip}>
-          <Button bsStyle="default">Author</Button>
+        <Glyphicon glyph="eye-open" />
         </OverlayTrigger>
       </ButtonToolbar>
     );    
