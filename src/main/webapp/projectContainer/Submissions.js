@@ -1,5 +1,7 @@
+import React from 'react';
 import { Component, Fragment } from 'react';
 import { div, a, hh, h, button, span } from 'react-hyperscript-helpers';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { DocumentDescription, ProjectMigration } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import MultiTab from "../components/MultiTab";
@@ -87,14 +89,12 @@ export const Submissions = hh(class Submissions extends Component {
   };
 
   renderTooltip = (data) => {
+    var tooltip = <Tooltip />;
     return (
-      <Tooltip 
-      placement={"bottom"}
-      className={"in"} id={"tooltip-bottom"}
-      >
-      {data.author}
-      </Tooltip>
-    );
+      <OverlayTrigger placement="top" overlay={tooltip}>
+          <span>tooltipContent</span>
+      </OverlayTrigger>
+  );
   };
 
   getDisplaySubmissions = () => {
