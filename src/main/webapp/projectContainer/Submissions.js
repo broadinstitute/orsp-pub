@@ -81,9 +81,7 @@ export const Submissions = hh(class Submissions extends Component {
       className: 'btn btn-default btn-xs pull-left link-btn',
       onClick: () => this.redirectEditSubmission(data)
     }, [!component.isViewer ? 'Edit': 'View']);
-    const toolTipText = span({"data-toggle": "tooltip", "data-placement": "bottom", "title": data.author }, [
-      span({className: 'glyphicon glyphicon-eye-open', "aria-hidden": "true"})
-    ]);
+    const toolTipText = this.renderTooltip(data);
     return h(Fragment, {}, [indexButton, toolTipText]);
   };
 
