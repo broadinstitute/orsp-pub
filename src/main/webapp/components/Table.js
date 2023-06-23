@@ -195,15 +195,13 @@ export const Table = hh(class Table extends Component {
   renderTooltip = () => {
     const tooltip = (
       <Tooltip id="tooltip">
-        Author details
+        Author details 
       </Tooltip>
     );
     const submissionTooltip = (
-      <ButtonToolbar>
         <OverlayTrigger placement="left" overlay={tooltip}>
         <Glyphicon glyph="eye-open" />
         </OverlayTrigger>
-      </ButtonToolbar>
     );    
     return submissionTooltip;
   };
