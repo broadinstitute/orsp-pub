@@ -195,12 +195,12 @@ export const Table = hh(class Table extends Component {
   renderTooltip = (row) => {
     const tooltip = (
       <Tooltip id="tooltip">
-        {row.name} on {row.createDate}
+        {row.author} on {this.parseCreateDate(row.createDate)}
       </Tooltip>
     );
     const submissionTooltip = (
         <OverlayTrigger placement="bottom" overlay={tooltip}>
-        <Glyphicon glyph="eye-open" />
+        <Glyphicon glyph="eye-open" className='tooltip-eye-icon' />
         </OverlayTrigger>
     );    
     return submissionTooltip;
