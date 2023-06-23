@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component, Fragment } from 'react';
 import { div, a, hh, h, button, span } from 'react-hyperscript-helpers';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip, ButtonToolbar, Button } from 'react-bootstrap';
 import { DocumentDescription, ProjectMigration } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import MultiTab from "../components/MultiTab";
@@ -9,7 +9,6 @@ import { Table } from "../components/Table";
 import { Files } from "../util/ajax";
 import _ from 'lodash';
 import { UrlConstants } from "../util/UrlConstants";
-import Tooltip from 'react-bootstrap/Tooltip';
 
 const headers =
   [
@@ -89,12 +88,20 @@ export const Submissions = hh(class Submissions extends Component {
   };
 
   renderTooltip = (data) => {
-    var tooltip = <Tooltip />;
-    return (
-      <OverlayTrigger placement="top" overlay={tooltip}>
-          <span>tooltipContent</span>
-      </OverlayTrigger>
-  );
+    const tooltip = (
+      <Tooltip id="tooltip">
+        Author details
+      </Tooltip>
+    );
+    const submissionTooltip = (
+      <ButtonToolbar>
+        <OverlayTrigger placement="left" overlay={tooltip}>
+          <Button bsStyle="default">Author</Button>
+        </OverlayTrigger>
+      </ButtonToolbar>
+    );
+    
+    render(submissionTooltip);
   };
 
   getDisplaySubmissions = () => {
