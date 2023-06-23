@@ -69,7 +69,8 @@ export const Submissions = hh(class Submissions extends Component {
   };
   
   submissionActions = (data) => {
-    const indexButton = a({      
+    const indexButton = a({
+      className: 'edit-pen-icon',
       onClick: () => this.redirectEditSubmission(data)
     }, [span({className: 'glyphicon glyphicon-pencil', "aria-hidden": "true"},[])]);    
     return h(Fragment, {}, [indexButton]);
