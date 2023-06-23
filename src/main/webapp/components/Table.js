@@ -207,7 +207,7 @@ export const Table = hh(class Table extends Component {
       </ButtonToolbar>
     );
     
-    render(submissionTooltip);
+    return submissionTooltip;
   };
 
   redirectToSampleCollectionLinkedProject = (cell, row) => {
