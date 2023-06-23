@@ -277,7 +277,7 @@ export const Table = hh(class Table extends Component {
       styles.submissionComments = '20%';
       styles.submissionDocumentsWidth = '5%';
       styles.createdWidth = '4%';
-      fileDescriptionWidth = '7%';
+      fileDescriptionWidth = '5%';
       authorWidth = '4%';
     }
     return (
