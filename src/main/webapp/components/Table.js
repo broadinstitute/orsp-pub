@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { format } from 'date-fns';
 import { a, button, div, hh, span, h } from 'react-hyperscript-helpers';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
+import { ButtonToolbar, DropdownButton, MenuItem, Tooltip, OverlayTrigger, Button } from 'react-bootstrap';
 import { Btn } from './Btn';
 import './Table.css';
 import { downloadSelectedFile, handleRedirectToProject } from "../util/Utils";
@@ -187,7 +187,27 @@ export const Table = hh(class Table extends Component {
   };
 
   submissionActions = (cell, row) => {
-    return this.props.submissionActions(row);
+
+    const toolTipText = this.renderTooltip();
+    const indexButton =  this.props.submissionActions(row);
+    return h(Fragment, {}, [indexButton, toolTipText]);
+  };
+
+  renderTooltip = () => {
+    const tooltip = (
+      <Tooltip id="tooltip">
+        Author details
+      </Tooltip>
+    );
+    const submissionTooltip = (
+      <ButtonToolbar>
+        <OverlayTrigger placement="left" overlay={tooltip}>
+          <Button bsStyle="default">Author</Button>
+        </OverlayTrigger>
+      </ButtonToolbar>
+    );
+    
+    render(submissionTooltip);
   };
 
   redirectToSampleCollectionLinkedProject = (cell, row) => {
