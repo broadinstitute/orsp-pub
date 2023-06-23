@@ -187,7 +187,6 @@ export const Table = hh(class Table extends Component {
   };
 
   submissionActions = (cell, row) => {
-
     const toolTipText = this.renderTooltip();
     const indexButton =  this.props.submissionActions(row);
     return h(Fragment, {}, [indexButton, toolTipText]);
@@ -205,8 +204,7 @@ export const Table = hh(class Table extends Component {
           <Button bsStyle="default">Author</Button>
         </OverlayTrigger>
       </ButtonToolbar>
-    );
-    
+    );    
     return submissionTooltip;
   };
 
