@@ -76,3 +76,6 @@
     padding: 5px;
     cursor: pointer;
 }
+.edit-pen-icon span {
+    color: #333 !important;
+}
