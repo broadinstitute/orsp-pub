@@ -12,6 +12,7 @@ import { isEmpty } from '../util/Utils';
 import "./style.css";
 import { PortalMessage } from "../components/PortalMessage";
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+import { InputFieldCheckbox } from "../components/InputFieldCheckbox";
 
 const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "On Hold"];
 
@@ -325,15 +326,18 @@ class Search extends React.Component {
                 }}
                 defaultSelected={this.state.defaultUserSelected}
               />
-              <input type="checkbox" className="mt-1"
-                checked={this.state.matchExactUser} 
-                onClick={() => {
+              <InputFieldCheckbox 
+                id={'matchExactUser'}
+                name={'matchUser'}
+                label={'Match Exact User'}
+                readonly={false}
+                checked={this.state.matchExactUser}
+                onChange= {() => {
                   this.setState({
                     matchExactUser: !this.state.matchExactUser
                   })
-                }} 
+                }}
               />
-              <label className="mt-1">Match Exact User</label>
             </div>
             <div className="form-group col-md-6">
               <label className="inputFieldLabel">Status</label>
