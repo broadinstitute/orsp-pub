@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { format } from 'date-fns';
 import { a, button, div, hh, span, h } from 'react-hyperscript-helpers';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
+import { ButtonToolbar, DropdownButton, MenuItem, Tooltip, OverlayTrigger, Button, Glyphicon } from 'react-bootstrap';
 import { Btn } from './Btn';
 import './Table.css';
 import { downloadSelectedFile, handleRedirectToProject } from "../util/Utils";
@@ -14,8 +14,6 @@ import { Link } from 'react-router-dom';
 const styles = { 
   statusWidth: '140',
   fileTypeWidth: '170',
-  fileDescription: '7%',
-  fileName: '5%',
   userNameWidth: '180',
   docVersionWidth: '90',
   creatorWidth: '130',
@@ -25,18 +23,24 @@ const styles = {
   removeWidthFile: '80',
   unlinkSampleCollectionWidth: '80',
   collectionNameWidth: '270',
-  numberWidth: '2%',
+  numberWidth: '85',
   createDateWidth: '15',
   submissionDocumentsWidth: '200',
-  submissionComments: '20%',
-  submissionActions: '3%',
-  createdWidth: '4%',
+  submissionComments: '200',
+  createdWidth: '120',
   linkOverflowEllipsis: {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     color: '#337ab7'
-  }
+  },
+  numberColumnWidth: '2%',
+  descColumnWidth: '20%',
+  fileNameColumnWidth: '5%',
+  fileDescColumnWidth: '7%',
+  authorColumnWidth: '4%',
+  createdColumnWidth: '3%',
+  actionsColumnWidth: '3%'
 };
 
 export const Table = hh(class Table extends Component {
@@ -47,7 +51,7 @@ export const Table = hh(class Table extends Component {
       cellEditProp: {
         mode: 'dbclick',
         blurToSave: true,
-        afterSaveCell: this.props.onAfterSaveCell  // a hook for after saving cell
+        afterSaveCell: this.props.onAfterSaveCell  //  a hook for after saving cell
       }
     }
     this.formatUrlDocument = this.formatUrlDocument.bind(this);
@@ -182,8 +186,24 @@ export const Table = hh(class Table extends Component {
     return this.props.submissionEdit(row);
   };
 
-  submissionEditActions = (cell, row) => {
-    return this.props.submissionEditActions(row);
+  submissionActions = (cell, row) => {
+    const toolTipText = this.renderTooltip(row);
+    const indexButton =  this.props.submissionActions(row);
+    return h(Fragment, {}, [indexButton, toolTipText]);
+  };
+
+  renderTooltip = (row) => {
+    const tooltip = (
+      <Tooltip id="tooltip">
+        {row.author} on {this.parseCreateDate(row.createDate)}
+      </Tooltip>
+    );
+    const submissionTooltip = (
+        <OverlayTrigger placement="bottom" overlay={tooltip}>
+        <Glyphicon glyph="eye-open" className='tooltip-eye-icon' />
+        </OverlayTrigger>
+    );    
+    return submissionTooltip;
   };
 
   redirectToSampleCollectionLinkedProject = (cell, row) => {
@@ -250,6 +270,16 @@ export const Table = hh(class Table extends Component {
 
   render() {
     let isKey = false;
+    let fileDescriptionWidth = 'auto';
+    let authorWidth = 'auto';
+    if(!!this.props.isSubmissionTabActive) {
+      styles.numberWidth = '2%';
+      styles.submissionComments = '20%';
+      styles.submissionDocumentsWidth = '5%';
+      styles.createdWidth = '4%';
+      fileDescriptionWidth = '5%';
+      authorWidth = '4%';
+    }
     return (
       <BootstrapTable data={this.props.data}
         cellEdit={ !component.isViewer ? this.state.cellEditProp : false }
@@ -275,7 +305,7 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
-                width={styles.fileDescription}>{header.name}</TableHeaderColumn>
+                width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>
             }
             if (header.value === 'status') {
               return <TableHeaderColumn key={header.name}
@@ -322,7 +352,7 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.formatUrlDocument}
                 editable={ false }
                 dataSort={true}
-                width={styles.fileName}>{header.name}</TableHeaderColumn>
+                >{header.name}</TableHeaderColumn>
             } else if (header.value === 'projectKey') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
@@ -433,14 +463,14 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.parseCreateDate}
                 dataSort={ true }
                 width={styles.createdWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value === 'actions') {
+            }  else if (header.value === 'submissionActions') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
                 dataField={header.value}
                 editable={ false }
-                dataFormat={this.submissionEditActions}
+                dataFormat={this.submissionActions}
                 dataSort={ false }
-                width={styles.submissionActions}>{header.name}</TableHeaderColumn>
+                width={styles.actionsColumnWidth}>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}

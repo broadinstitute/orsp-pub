@@ -68,3 +68,15 @@
 .custom-component .page-item .page-link {
     cursor: pointer;
 }
+.tooltip-eye-icon {
+    margin-left: 5px;
+}
+
+.edit-pen-icon {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.edit-pen-icon span {
+    color: #333 !important;
+}

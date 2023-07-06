@@ -14,15 +14,13 @@ const headers =
     { name: 'Description', value: 'comments' },
     { name: 'File Name', value: 'documents' },
     { name: 'File Description', value: 'fileDescription' },
-    { name: 'Author', value: 'author' },
-    { name: 'Created', value: 'createDate' },
-    { name: 'Actions', value: 'actions' },
+    { name: 'Actions', value: 'submissionActions' }
   ];
 
 const styles = {
   submissionComment: {
-    whiteSpace: 'normal',
-    display: 'block'
+    display: 'inline-block',
+    whiteSpace: 'normal'
   },
 
   addSubmission: {
@@ -69,12 +67,12 @@ export const Submissions = hh(class Submissions extends Component {
     ]);
     return h(Fragment, {}, [submissionComment]);
   };
-
-  submissionEditActions = (data) => {
+  
+  submissionActions = (data) => {
     const indexButton = a({
-      className: 'btn btn-default btn-xs pull-left link-btn',
+      className: 'edit-pen-icon',
       onClick: () => this.redirectEditSubmission(data)
-    }, [!component.isViewer ? 'Edit': 'View']);
+    }, [span({className: 'glyphicon glyphicon-pencil', "aria-hidden": "true"},[])]);    
     return h(Fragment, {}, [indexButton]);
   };
 
@@ -129,8 +127,9 @@ export const Submissions = hh(class Submissions extends Component {
         pagination: true,
         reviewFlow: true,
         submissionEdit: this.submissionEdit,
-        submissionEditActions: this.submissionEditActions,
         onAfterSaveCell: this.saveDocumentDescription,
+        isSubmissionTabActive: true,
+        submissionActions: this.submissionActions
       })
     ]);
   };
