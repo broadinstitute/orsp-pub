@@ -147,6 +147,11 @@ class SearchController implements UserInfo {
         if (params.status) options.getIssueStatusNames().addAll(params.status)
         if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
         if (params.collection) options.setCollection(params.collection)
+        if (params.matchExactUser) {
+            options.setMatchExactUser(params.matchExactUser )
+        } else {
+            options.setMatchExactUser(false)
+        }
         Collection rows = []
         Boolean isAdmin = isAdmin()
         Boolean isViewer = isViewer()
