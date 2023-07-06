@@ -148,7 +148,7 @@ class SearchController implements UserInfo {
         if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
         if (params.collection) options.setCollection(params.collection)
         log.info(params.matchExactUser)
-        if (params.matchExactUser == true) {
+        if (params.matchExactUser == "true") {
             options.setMatchExactUser("1")
         } else {
             options.setMatchExactUser("0")
