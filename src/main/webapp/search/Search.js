@@ -201,6 +201,7 @@ class Search extends React.Component {
     params.append("funding", this.state.funding);
     params.append("userName", this.state.userName);
     params.append("collection", !isEmpty(this.state.collection) ? this.state.collection.key : '');
+    params.append("matchExactUser", true);
     this.state.types.map(function (type, index) {
       params.append("type", type);
     });
