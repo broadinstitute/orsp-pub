@@ -64,7 +64,7 @@ class Search extends React.Component {
       irb: this.getLocalStorageState("irb", "array"),
       collection: '',
       defaultValueForAbout: 'default',
-      matchExactUser: false
+      matchExactUser: true
     };
   }
 
@@ -329,7 +329,7 @@ class Search extends React.Component {
               <InputFieldCheckbox 
                 id={'matchExactUser'}
                 name={'matchUser'}
-                label={'Match Exact User'}
+                label={'Match Exact Member'}
                 readonly={false}
                 checked={this.state.matchExactUser}
                 onChange= {() => {
@@ -424,7 +424,7 @@ class Search extends React.Component {
               <input
                 type={"reset"}
                 className={"btn btn-default"}
-                value={"Clear Cache for new Search"}
+                value={"Clear cache for new search"}
                 onClick={this.handleClear}
               />
             </div>
