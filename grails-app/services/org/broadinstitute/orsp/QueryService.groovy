@@ -815,7 +815,7 @@ class QueryService implements Status {
         if (options.userName) {
             def q = ' (u.user_name like :userName or i.reporter like :userName)'
             query = andIfyQstring(query, q, params)
-            if (options.matchExactUser == "1") {
+            if (options.matchExactUser == "true") {
                 params.put('userName', options.userName.toString())
             } else {
                 params.put('userName', "%" + options.userName + "%")
