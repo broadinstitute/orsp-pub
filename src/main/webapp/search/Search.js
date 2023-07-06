@@ -62,7 +62,8 @@ class Search extends React.Component {
       statuses: this.getLocalStorageState("statuses", "array"),
       irb: this.getLocalStorageState("irb", "array"),
       collection: '',
-      defaultValueForAbout: 'default'
+      defaultValueForAbout: 'default',
+      matchExactUser: false
     };
   }
 
@@ -201,7 +202,7 @@ class Search extends React.Component {
     params.append("funding", this.state.funding);
     params.append("userName", this.state.userName);
     params.append("collection", !isEmpty(this.state.collection) ? this.state.collection.key : '');
-    params.append("matchExactUser", true);
+    params.append("matchExactUser", this.state.matchExactUser);
     this.state.types.map(function (type, index) {
       params.append("type", type);
     });
@@ -324,6 +325,15 @@ class Search extends React.Component {
                 }}
                 defaultSelected={this.state.defaultUserSelected}
               />
+              <input type="checkbox" className="mt-1"
+                checked={this.state.matchExactUser} 
+                onClick={() => {
+                  this.setState({
+                    matchExactUser: !this.state.matchExactUser
+                  })
+                }} 
+              />
+              <label className="mt-1">Match Exact User</label>
             </div>
             <div className="form-group col-md-6">
               <label className="inputFieldLabel">Status</label>
