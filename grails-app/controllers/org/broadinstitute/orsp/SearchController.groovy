@@ -148,9 +148,9 @@ class SearchController implements UserInfo {
         if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
         if (params.collection) options.setCollection(params.collection)
         if (params.matchExactUser) {
-            options.setMatchExactUser(params.matchExactUser )
+            options.setMatchExactUser("1")
         } else {
-            options.setMatchExactUser(false)
+            options.setMatchExactUser("0")
         }
         Collection rows = []
         Boolean isAdmin = isAdmin()
