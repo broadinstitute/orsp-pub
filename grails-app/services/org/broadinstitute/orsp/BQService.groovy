@@ -48,7 +48,7 @@ class BQService {
                         .getService()
 
         QueryJobConfiguration queryConfig = QueryJobConfiguration
-                .newBuilder("SELECT username, broad_email, first_name, last_name FROM `broad-bits.data_warehouse.people`")
+                .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view`")
                 .setUseLegacySql(false).build()
 
         // Create a job ID .
@@ -68,11 +68,9 @@ class BQService {
             TableResult result = queryJob.getQueryResults()
             // iterate over results to build BroadUser list
             for (FieldValueList row : result.iterateAll()) {
-                String email = row.get("broad_email").getStringValue()
+                String email = row.get("email").getStringValue()
                 String userName = row.get("username").getStringValue()
-                String firstName = row.get("first_name").getStringValue()
-                String lastName = row.get("last_name").getStringValue()
-                String displayName = firstName + " " + lastName
+                String displayName = row.get("full_name").getStringValue()
                 broadUsers.add(new BroadUser(userName: userName, displayName: displayName, email: email))
             }
         }
