@@ -74,7 +74,7 @@ class BQService {
                 broadUsers.add(new BroadUser(userName: userName, displayName: displayName, email: email))
             }
         }
-        log.info(broadUsers)
+        log.info("Broad Users: " + broadUsers)
         broadUsers
     }
 
