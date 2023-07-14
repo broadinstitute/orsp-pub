@@ -41,5 +41,6 @@ class QueryOptions {
     Boolean methodsResearchExcluded
     Date after
     Date before
+    String matchExactUser
 
 }

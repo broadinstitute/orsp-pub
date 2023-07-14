@@ -9,7 +9,7 @@ import org.grails.plugins.web.taglib.ApplicationTagLib
 import java.text.SimpleDateFormat
 
 
-
+@Slf4j
 @SuppressWarnings("GroovyAssignabilityCheck")
 class SearchController implements UserInfo {
 
@@ -146,7 +146,9 @@ class SearchController implements UserInfo {
         if (params.type) options.getIssueTypeNames().addAll(params.type)
         if (params.status) options.getIssueStatusNames().addAll(params.status)
         if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
-        if (params.collection) options.setCollection(params.collection)
+        if (params.collection) options.setCollection(params.collection)      
+        if (params.matchExactUser) options.setMatchExactUser(params.matchExactUser)
+      
         Collection rows = []
         Boolean isAdmin = isAdmin()
         Boolean isViewer = isViewer()
