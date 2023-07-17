@@ -40,6 +40,7 @@ class BQService {
      */
     private List<BroadUser> getBroadUserDetails() {
         List broadUsers = new ArrayList()
+        String query = "SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` LIMIT 10"
 
         try {
             // Instantiate a client.
@@ -50,22 +51,35 @@ class BQService {
                             .getService()
 
             QueryJobConfiguration queryConfig = QueryJobConfiguration
-                    .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` LIMIT 10")
-                    .setUseLegacySql(false).build()
+                    .newBuilder(query)
+                    .build()
 
-            // Create a job ID .
-//        JobId jobId = JobId.of(UUID.randomUUID().toString());
-//        Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build())
+            //Create a job ID.
+            String jobName = UUID.randomUUID().toString()
+            JobId jobId = JobId.newBuilder().setLocation("us").setJob(jobName).build()
 
-            TableResult results = bigquery.query(queryConfig)
-            results.iterateAll().forEach {
-                it.forEach {
-                    log.info("result: " + it)
-                }
-            }
+            //Create a job with job ID
+            Job queryJob = bigquery.create(JobInfo.of(jobId, queryConfig))
+
+//            TableResult results = bigquery.query(queryConfig)
+//            results.iterateAll().forEach {
+//                it.forEach {
+//                    log.info("result: " + it)
+//                }
+//            }
             // Wait for the query to complete.
-            //queryJob = queryJob.waitFor()
+            queryJob = queryJob.waitFor()
 
+            if (queryJob.isDone()) {
+                log.info('Query job is done')
+                TableResult result = queryJob.getQueryResults()
+                result.iterateAll().forEach {
+                    log.info(it)
+                }
+            } else {
+                log.error("BigQuery was unable to load into the table due to an error:"
+                        + queryJob.getStatus().getError())
+            }
             // Check for errors
 //        if (queryJob == null) {
 //            log.error("Job no longer exists")
