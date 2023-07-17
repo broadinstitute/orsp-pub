@@ -28,6 +28,7 @@ class BQService {
      */
     @SuppressWarnings("GroovyAssignabilityCheck")
     List<BroadUser> findMissingUsers() {
+        log.info('running findMissingUsers')
         Collection<String> filterUsers = userService.findAllUserNames()
         getNewOrspUsers(filterUsers, getBroadUserDetails())
     }
@@ -38,6 +39,7 @@ class BQService {
      * @return List of BroadUser from BigQuery
      */
     private List<BroadUser> getBroadUserDetails() {
+        log.info('running getBroadUserDetails')
         List broadUsers = new ArrayList()
 
         // Instantiate a client.
@@ -64,6 +66,7 @@ class BQService {
         } else if (queryJob.getStatus().getError() != null) {
             log.error(queryJob.getStatus().getError().toString())
         } else {
+            log.info('running getting results')
             // Get the results.
             TableResult result = queryJob.getQueryResults()
             // iterate over results to build BroadUser list
@@ -73,8 +76,9 @@ class BQService {
                 String displayName = row.get("full_name").getStringValue()
                 broadUsers.add(new BroadUser(userName: userName, displayName: displayName, email: email))
             }
+            log.info("Broad Users: " + broadUsers)
         }
-        log.info("Broad Users: " + broadUsers)
+
         broadUsers
     }
 
