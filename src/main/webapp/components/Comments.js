@@ -1,12 +1,20 @@
 import React, { Component, Fragment } from 'react';
-import { div, h, hh } from 'react-hyperscript-helpers';
+import { div, h, hh, label, button } from 'react-hyperscript-helpers';
 import TextEditor from './TextEditor';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import { Btn } from './Btn';
 import './Btn.css';
 import { exportData } from '../util/Utils';
 import { TableComponent } from './TableComponent';
 import { formatDataPrintableFormat } from '../util/TableUtil';
+import { Editor } from '@tinymce/tinymce-react';
+import { AlertMessage } from '../components/AlertMessage';
+import { isEmpty } from '../util/Utils';
+import { Review } from '../util/ajax';
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import '../components/Btn.css';
+import './Wizard.css';
 import LoadingWrapper from './LoadingWrapper';
 
 const defaultSorted = [{
@@ -15,72 +23,252 @@ const defaultSorted = [{
 }];
 
 const columns = [{
-    dataField: 'id',
-    text: 'Id',
-    hidden: true,
-    editable: false,
-    csvExport : false
-  }, {
-    dataField: 'author',
-    text: 'Author',
-    sort: true,
-    editable: false
-  }, {
-    dataField: 'date',
-    text: 'Date',
-    sort: true,
-    editable: false
-  }, {
-    dataField: 'comment',
-    text: 'Comment',
-    sort: true,
-    editable: false,
-    formatter: (cell, row, rowIndex, colIndex) =>
-      div({dangerouslySetInnerHTML: { __html: cell } },[]),
-    csvFormatter: (cell, row, rowIndex, colIndex) =>
-      cell.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ')
-}];
-
-const columnsCopy = [{
-  dataField: 'project',
-  text: 'Project',
-  sort: true,
-  editable: false
+  dataField: 'id',
+  text: 'Id',
+  hidden: true,
+  editable: false,
+  csvExport : false
 }, {
-  dataField: 'title',
-  text: 'Title',
+  dataField: 'author',
+  text: 'Author',
   sort: true,
-  editable: false
+  editable: false,
+  headerStyle: (column, colIndex) => {
+    return { width: '150px' };
+  },
 }, {
-  dataField: 'status',
-  text: 'Status',
+  dataField: 'date',
+  text: 'Date',
   sort: true,
-  editable: false
+  editable: false,
+  headerStyle: (column, colIndex) => {
+    return { width: '180px' };
+  },
 }, {
-  dataField: 'type',
-  text: 'Type',
+  dataField: 'comment',
+  text: 'Comment',
   sort: true,
-  editable: false
-}, {
-  dataField: 'updated',
-  text: 'Updated',
-  sort: true,
-  editable: false
-}, {
-  dataField: 'expiration',
-  text: 'Expiration',
-  sort: true,
-  editable: false
-}];
+  editable: false,
+  formatter: (cell, row, rowIndex, colIndex) =>
+    div({dangerouslySetInnerHTML: { __html: cell } },[]),
+  csvFormatter: (cell, row, rowIndex, colIndex) =>
+    cell.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' '),
+}]
 
 const Comments = hh(class Comments extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      columns: (_this) => [{
+        dataField: 'id',
+        text: 'Id',
+        hidden: true,
+        editable: false,
+        csvExport : false
+      }, {
+        dataField: 'author',
+        text: 'Author',
+        sort: true,
+        editable: false,
+        headerStyle: (column, colIndex) => {
+          return { width: '150px' };
+        },
+      }, {
+        dataField: 'date',
+        text: 'Date',
+        sort: true,
+        editable: false,
+        headerStyle: (column, colIndex) => {
+          return { width: '180px' };
+        },
+      }, {
+        dataField: 'comment',
+        text: 'Comment',
+        sort: true,
+        editable: false,
+        formatter: (cell, row, rowIndex, colIndex) =>
+          div({dangerouslySetInnerHTML: { __html: cell } },[]),
+        csvFormatter: (cell, row, rowIndex, colIndex) =>
+          cell.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' '),
+      }, {
+        dataField: '',
+        text: 'Actions',
+        sort: false,
+        editable: false,
+        headerStyle: (column, colIndex) => {
+          return { width: '95px' };
+        },
+        formatter: (cell, row, rowIndex, formatExtraData) => {
+          return (
+            div({}, [
+              Btn({
+                btnclass: 'btnPrimary',
+                style: {marginRight: '4px', padding: '4px 9px', backgroundColor: 'rgba(0, 0, 0, 0)'},
+                title: 'Edit',
+                action: {
+                  labelClass: "glyphicon glyphicon-pencil icon",
+                  handler: () => _this.editComment(row)
+                }
+              }),
+              Btn({
+                btnclass: 'btnPrimary',
+                style: {marginRight: '4px', padding: '4px 9px', backgroundColor: 'rgba(0, 0, 0, 0)'},
+                title: 'Remove',
+                action: {
+                  labelClass: "glyphicon glyphicon-remove icon",
+                  handler: () => _this.removehandler(row)
+                }
+              })
+            ])
+          )
+        }
+      }],
+      editMode: false,
+      comment: {},
+      showAlert: false,
+      errorMsg: '',
+      errorType: '',
+      newComment: '',
+      showDialog: false,
+      commentId: null
+    }
   }
 
+  handleEditorChange = (comment, editor) => {
+    this.setState(prev => {
+      prev.newComment =  comment
+      return prev;
+    });
+  };
+
+  editComment = (row) => {
+    this.setState({
+      newComment: row.comment,
+      comment: row,
+      editMode: true
+    }, () => {
+      let element = document.getElementById('comment');
+      element.scrollIntoView();
+    })
+  }
+
+  updateComment = () => {
+    this.props.showSpinner();
+    this.setState(prev => {
+      prev.comment.comment = this.state.newComment;
+      prev.comment.author = JSON.parse(localStorage.getItem("CurrentUser")).displayName;
+    }, () => {
+      this.callCommentUpdate();
+    });
+  };
+
+  callCommentUpdate = () => {
+    Review.updateComment(this.state.comment).then(
+      response => {
+        this.props.hideSpinner();
+        this.setState({
+          showAlert: true,
+          comment: '',
+          errorMsg: 'Comment updated succesfully',
+          errorType: 'success',
+          editMode: false
+        }, () => {
+          this.props.updateContent();
+          setTimeout(() => {
+            this.setState({
+              showAlert: false
+            })
+          }, 4000);
+        });
+      }
+    ).catch(error =>
+      this.setState(prev => {
+        prev.showAlert = true;
+        prev.errorMsg = 'Error trying to update comment, please try again later.';
+        prev.errorType = 'danger';
+        prev.editMode = false;
+      },()=> {
+        this.props.hideSpinner();
+        setTimeout(() => {
+          this.setState({
+            showAlert: false
+          })
+        }, 4000);
+      })
+    )
+  };
+
+  removehandler = (row) => {
+    this.setState({
+      showDialog: true,
+      commentId: row.id
+    })
+  }
+
+  removeComment = () => {
+    this.props.showSpinner();
+    Review.deleteComment(this.state.commentId).then(
+      (response) => {
+        this.props.hideSpinner();
+        this.setState(prev => {
+          prev.showDialog = false;
+          prev.showAlert = true;
+          prev.comment = '';
+          prev.errorMsg = 'Comment deleted succesfully';
+          prev.errorType = 'success';
+          prev.editMode = false;
+          return prev;
+        }, () => {
+          this.props.updateContent();
+          setTimeout(() => {
+            this.setState({
+              showAlert: false
+            })
+          }, 4000);
+        });
+      }
+    ).catch(error =>
+      this.setState(prev => {
+        prev.showDialog = false;
+        prev.showAlert = true;
+        prev.errorMsg = 'Error trying to delete comment, please try again later.';
+        prev.errorType = 'danger';
+        prev.editMode = false;
+      },()=> {
+        this.props.hideSpinner()
+        setTimeout(() => {
+          this.setState({
+            showAlert: false
+          })
+        }, 4000);
+      })
+    )
+  }
+
+  returnToAddComment = () => {
+    this.setState({
+      editMode: false,
+      showAlert: false
+    })
+  }
+
+  closeModal = () => {
+    this.setState({
+      showDialog: false,
+      commentId: null
+    })
+  }
+
+  closeAlertHandler = () => {
+    this.setState(prev => {
+      prev.showAlert = false;
+      return prev;
+    })
+  };
+
   printComments = () => {
-    let cols = columns.filter(el => el.dataField !== 'id');
+    let cols = this.state.columns.filter(el => el.dataField !== 'id');
     let commentsArray = formatDataPrintableFormat(this.props.comments, cols);
     const titleText = (component.issueType === "project" ? ("Project ID: "+ this.props.projectKey)
       : ("Sample Data Cohort ID:"+ component.consentKey));
@@ -90,15 +278,74 @@ const Comments = hh(class Comments extends Component {
 
   render() {
     return (
-      h(Fragment, {}, [
+      h(Fragment, [
+        ConfirmationDialog({
+          closeModal: this.closeModal,
+          show: this.state.showDialog,
+          handleOkAction: this.removeComment,
+          title: 'Comment Removal Confirmation',
+          bodyText: 'Are you sure you want to remove this comment?',
+          actionLabel: 'Yes'
+        }, []),
+        div({
+          id: 'comment'
+        }),
         h(TextEditor, {
+          isRendered: !this.state.editMode,
           id: this.props.id,
           loadComments: this.props.updateContent
         }),
+        div({
+          isRendered: this.state.editMode,
+          className: "well"
+        },[
+          label({},["Edit comment"]),
+          h(Editor, {
+            init: {
+              width: '100%',
+              menubar: false,
+              statusbar: false,
+              plugins: "paste",
+              paste_data_images: false
+            },
+            value: this.state.newComment,
+            onEditorChange: this.handleEditorChange
+          }, []),
+          button({
+            className: "btn btn-primary",
+            style: {marginTop:"15px"},
+            isRendered: true,
+            onClick: this.updateComment,
+            disabled: isEmpty(this.state.comment)
+          }, ["Save"]),
+          button({
+            className: "btn buttonSecondary",
+            style: {marginTop:"15px", marginLeft: "5px"},
+            ref: el => {
+              if(el) {
+                  el.style.setProperty('background', 'none', 'important');
+                  el.style.setProperty('color', '#000000', 'important');
+              }
+            },
+            isRendered: true,
+            onClick: this.returnToAddComment
+          }, ["Cancel"]),
+        ]),
+        div({
+          style: {marginTop:"15px"}
+          },[
+          AlertMessage({
+            msg: this.state.errorMsg,
+            show: this.state.showAlert,
+            type: this.state.errorType,
+            closeable: false,
+            closeAlertHandler: this.closeAlertHandler
+          })
+        ]),
         TableComponent({
           remoteProp: false,
           data: this.props.comments,
-          columns: columns,
+          columns: component.isAdmin ? this.state.columns(this) : columns,
           keyField: 'id',
           search: true,
           fileName: 'ORSP',
@@ -108,7 +355,10 @@ const Comments = hh(class Comments extends Component {
           pagination: true,
           showExportButtons: true,
           hideXlsxColumns: [],
-          showSearchBar: true
+          showSearchBar: true,
+          showSaveAndCancel: this.state.showSaveAndCancel,
+          saveHandler: this.saveHandler,
+          cancelHandler: this.cancelHandler
         })
       ])
     )

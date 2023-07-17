@@ -117,6 +117,8 @@ class UrlMappings {
         '/api/consent-collection-links'(controller: 'report', action: 'getAllConsentCollectionLinks')
         '/api/comments/save'(controller: 'comments', action: 'saveNewComment', method: 'POST')
         '/api/comments/list'(controller: 'comments', action: 'getComments', method: 'GET')
+        '/api/comments/update'(controller: 'comments', action: 'updateComment', method: 'PUT')
+        '/api/comments/delete'(controller: 'comments', action: 'deleteComment', method: 'PUT')
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
 
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')

@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { format } from 'date-fns';
 import { a, button, div, hh, span, h } from 'react-hyperscript-helpers';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
+import { ButtonToolbar, DropdownButton, MenuItem, Tooltip, OverlayTrigger, Button, Glyphicon } from 'react-bootstrap';
 import { Btn } from './Btn';
 import './Table.css';
 import { downloadSelectedFile, handleRedirectToProject } from "../util/Utils";
@@ -33,7 +33,14 @@ const styles = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     color: '#337ab7'
-  }
+  },
+  numberColumnWidth: '2%',
+  descColumnWidth: '20%',
+  fileNameColumnWidth: '5%',
+  fileDescColumnWidth: '7%',
+  authorColumnWidth: '4%',
+  createdColumnWidth: '3%',
+  actionsColumnWidth: '3%'
 };
 
 export const Table = hh(class Table extends Component {
@@ -44,7 +51,7 @@ export const Table = hh(class Table extends Component {
       cellEditProp: {
         mode: 'dbclick',
         blurToSave: true,
-        afterSaveCell: this.props.onAfterSaveCell  // a hook for after saving cell
+        afterSaveCell: this.props.onAfterSaveCell  //  a hook for after saving cell
       }
     }
     this.formatUrlDocument = this.formatUrlDocument.bind(this);
@@ -179,6 +186,26 @@ export const Table = hh(class Table extends Component {
     return this.props.submissionEdit(row);
   };
 
+  submissionActions = (cell, row) => {
+    const toolTipText = this.renderTooltip(row);
+    const indexButton =  this.props.submissionActions(row);
+    return h(Fragment, {}, [indexButton, toolTipText]);
+  };
+
+  renderTooltip = (row) => {
+    const tooltip = (
+      <Tooltip id="tooltip">
+        {row.author} on {this.parseCreateDate(row.createDate)}
+      </Tooltip>
+    );
+    const submissionTooltip = (
+        <OverlayTrigger placement="bottom" overlay={tooltip}>
+        <Glyphicon glyph="eye-open" className='tooltip-eye-icon' />
+        </OverlayTrigger>
+    );    
+    return submissionTooltip;
+  };
+
   redirectToSampleCollectionLinkedProject = (cell, row) => {
     const url = handleRedirectToProject(component.serverURL, row.linkedProjectKey);
     return a({
@@ -243,6 +270,16 @@ export const Table = hh(class Table extends Component {
 
   render() {
     let isKey = false;
+    let fileDescriptionWidth = 'auto';
+    let authorWidth = 'auto';
+    if(!!this.props.isSubmissionTabActive) {
+      styles.numberWidth = '2%';
+      styles.submissionComments = '20%';
+      styles.submissionDocumentsWidth = '5%';
+      styles.createdWidth = '4%';
+      fileDescriptionWidth = '5%';
+      authorWidth = '4%';
+    }
     return (
       <BootstrapTable data={this.props.data}
         cellEdit={ !component.isViewer ? this.state.cellEditProp : false }
@@ -268,7 +305,7 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
-              >{header.name}</TableHeaderColumn>
+                width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>
             }
             if (header.value === 'status') {
               return <TableHeaderColumn key={header.name}
@@ -314,7 +351,8 @@ export const Table = hh(class Table extends Component {
                 dataField={header.value}
                 dataFormat={this.formatUrlDocument}
                 editable={ false }
-                dataSort={true}>{header.name}</TableHeaderColumn>
+                dataSort={true}
+                >{header.name}</TableHeaderColumn>
             } else if (header.value === 'projectKey') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}
@@ -425,6 +463,14 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.parseCreateDate}
                 dataSort={ true }
                 width={styles.createdWidth}>{header.name}</TableHeaderColumn>
+            }  else if (header.value === 'submissionActions') {
+              return <TableHeaderColumn isKey={isKey}
+                key={header.value}
+                dataField={header.value}
+                editable={ false }
+                dataFormat={this.submissionActions}
+                dataSort={ false }
+                width={styles.actionsColumnWidth}>{header.name}</TableHeaderColumn>
             } else {
               return <TableHeaderColumn isKey={isKey}
                 key={header.name}

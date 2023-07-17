@@ -1,5 +1,6 @@
 package org.broadinstitute.orsp
 
+import com.google.cloud.bigquery.BigQueryException
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.config.BQConfiguration
 import com.google.cloud.bigquery.BigQuery
@@ -39,6 +40,7 @@ class BQService {
      */
     private List<BroadUser> getBroadUserDetails() {
         List broadUsers = new ArrayList()
+        String query = "SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` LIMIT 10"
 
         // Instantiate a client.
         BigQuery bigquery =
@@ -49,9 +51,10 @@ class BQService {
 
         QueryJobConfiguration queryConfig = QueryJobConfiguration
                 .newBuilder("SELECT username, broad_email, first_name, last_name FROM `broad-bits.data_warehouse.people`")
-                .setUseLegacySql(false).build()
+                .setUseLegacySql(false)
+                .build()
 
-        // Create a job ID .
+        // Create a job ID.
         JobId jobId = JobId.of(UUID.randomUUID().toString());
         Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build())
 
@@ -66,6 +69,7 @@ class BQService {
         } else {
             // Get the results.
             TableResult result = queryJob.getQueryResults()
+
             // iterate over results to build BroadUser list
             for (FieldValueList row : result.iterateAll()) {
                 String email = row.get("broad_email").getStringValue()

@@ -149,3 +149,8 @@
 p.modal-large {
   font-size: 16px;
 }
+
+.icon {
+  color: #333;
+  font-size: 1rem !important;
+}

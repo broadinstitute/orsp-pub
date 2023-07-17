@@ -815,7 +815,11 @@ class QueryService implements Status {
         if (options.userName) {
             def q = ' (u.user_name like :userName or i.reporter like :userName)'
             query = andIfyQstring(query, q, params)
-            params.put('userName', "%" + options.userName + "%")
+            if (options.matchExactUser == "true") {
+                params.put('userName', options.userName.toString())
+            } else {
+                params.put('userName', "%" + options.userName + "%")
+            }
         }
         if (options.getIssueTypeNames() && !options.getIssueTypeNames().empty) {
             def q = orIfyCollection("i.type = :typeName", options.getIssueTypeNames())
@@ -891,6 +895,7 @@ class QueryService implements Status {
 
         final List<Object[]> results = sqlQuery.with {
             setParameterList('issueIds', issueIds)
+
             list()
         }
         IssueSearchItemDTO.processResults(results);
@@ -1923,6 +1928,27 @@ class QueryService implements Status {
 
         sqlQuery.executeUpdate()
 
+    }
+
+    void deleteCommentById(Integer id) {
+        final session = sessionFactory.currentSession
+        final String query = 'DELETE FROM comment WHERE id= :id'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('id', id)
+
+        sqlQuery.executeUpdate()
+    }
+
+    void updateCommentById(String id, String comment, String author) {
+        final session = sessionFactory.currentSession
+        final String query = 'UPDATE comment SET description= :comment, updated_author= :author, updated= :updated WHERE id= :id'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('updated', new Date())
+        sqlQuery.setParameter('comment', comment)
+        sqlQuery.setParameter('author', author)
+        sqlQuery.setParameter('id', id)
+
+        sqlQuery.executeUpdate()
     }
 
 }

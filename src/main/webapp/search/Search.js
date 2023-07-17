@@ -12,6 +12,7 @@ import { isEmpty } from '../util/Utils';
 import "./style.css";
 import { PortalMessage } from "../components/PortalMessage";
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+import { InputFieldCheckbox } from "../components/InputFieldCheckbox";
 
 const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "On Hold"];
 
@@ -62,7 +63,8 @@ class Search extends React.Component {
       statuses: this.getLocalStorageState("statuses", "array"),
       irb: this.getLocalStorageState("irb", "array"),
       collection: '',
-      defaultValueForAbout: 'default'
+      defaultValueForAbout: 'default',
+      matchExactUser: true
     };
   }
 
@@ -201,6 +203,7 @@ class Search extends React.Component {
     params.append("funding", this.state.funding);
     params.append("userName", this.state.userName);
     params.append("collection", !isEmpty(this.state.collection) ? this.state.collection.key : '');
+    params.append("matchExactUser", this.state.matchExactUser);
     this.state.types.map(function (type, index) {
       params.append("type", type);
     });
@@ -323,6 +326,18 @@ class Search extends React.Component {
                 }}
                 defaultSelected={this.state.defaultUserSelected}
               />
+              <InputFieldCheckbox 
+                id={'matchExactUser'}
+                name={'matchUser'}
+                label={'Match Exact Member'}
+                readonly={false}
+                checked={this.state.matchExactUser}
+                onChange= {() => {
+                  this.setState({
+                    matchExactUser: !this.state.matchExactUser
+                  })
+                }}
+              />
             </div>
             <div className="form-group col-md-6">
               <label className="inputFieldLabel">Status</label>
@@ -409,7 +424,7 @@ class Search extends React.Component {
               <input
                 type={"reset"}
                 className={"btn btn-default"}
-                value={"Clear Cache for new Search"}
+                value={"Clear cache for new search"}
                 onClick={this.handleClear}
               />
             </div>

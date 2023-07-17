@@ -156,7 +156,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
         endState: false
       },
       questions: null,
-      enabledQuestionsWizard: false
+      enabledQuestionsWizard: false,
+      sponsorHasError: false,
+      identifierHasError: false
     };
     this.state.questions = initQuestions();
     this.rejectProject = this.rejectProject.bind(this);
@@ -807,8 +809,25 @@ const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   handleUpdateFundings = (updated) => {
+    let fundings = updated;
+    fundings.forEach(element => {
+      if(element.future.source.value ===  'federal_sub-award' || element.future.source.value === 'federal_prime') {
+        element.future['identifierError'] = element.future.identifier ? false : true;
+        this.setState({
+          identifierHasError: element.future.identifier ? false : true
+        })
+      } else {
+        element.future['identifierError'] = false;
+      }
+      if (element.future.source) {
+        element.future['sponsorError'] = element.future.sponsor ? false : true;
+        this.setState({
+          sponsorHasError: element.future.sponsor ? false : true
+        })
+      }
+    })
     this.setState(prev => {
-      prev.formData.fundings = updated;
+      prev.formData.fundings = fundings;
       prev.fundingAwardNumberError = false;
       prev.generalError = false;
       prev.fundingError = false;
@@ -932,6 +951,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     let generalError = false;
     let questions = false;
     let fundingAwardNumber = false;
+    let fundingAdditionalFieldError = false;
     let fundingError = this.state.formData.fundings.filter((obj, idx) => {
       if (isEmpty(obj.future.source.label) && (!isEmpty(obj.future.sponsor) || !isEmpty(obj.future.identifier))
         || (idx === 0 && isEmpty(obj.future.source.label) && isEmpty(obj.current.source.label))) {
@@ -965,6 +985,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
       attestationError = true;
       generalError = true;
     }
+    if (this.state.sponsorHasError || this.state.identifierHasError) {
+      fundingAdditionalFieldError = true;
+      generalError = true;
+    }
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
@@ -985,7 +1009,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       !editDescriptionError &&
       !fundingError &&
       !questions &&
-      !fundingAwardNumber;
+      !fundingAwardNumber &&
+      !fundingAdditionalFieldError;
   }
 
   changeFundingError = () => {
@@ -1131,7 +1156,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
           successClarification: this.successNotification,
         }),
 
-        div({ id: "notesToORSP" }, [
+        /*div({ id: "notesToORSP" }, [
             Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false || !isEmpty(this.state.formData.projectExtraProps.editDescription) }, [
               div({ isRendered: this.projectType === "IRB Project" }, [
                 InputFieldRadio({
@@ -1166,7 +1191,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                   errorMessage: "Required field"
                 })
             ])
-          ]),
+          ]),*/
 
           div({ id: "requestor" }, [
             Panel({ title: "Requestor" }, [
@@ -1526,6 +1551,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
             label: "I confirm",
             checked: this.state.formData.projectExtraProps.attestation === true || this.state.formData.projectExtraProps.attestation === "true",
             readOnly: true,
+            error: false
           }),
         ]),
         AlertMessage({

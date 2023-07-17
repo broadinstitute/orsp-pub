@@ -9,7 +9,7 @@ import LoadingWrapper from './LoadingWrapper';
 import { KeyDocumentsEnum } from "../util/KeyDocuments";
 import { InputFieldText } from './InputFieldText';
 
-const MAX_SIZE = 15700000;
+const MAX_SIZE = 524288000;
 
 const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   constructor(props) {
@@ -183,7 +183,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       let selectedFile = this.state.dropEvent;
       if(selectedFile.size > MAX_SIZE) {
         this.setState(prev => {
-          prev.errorMessage = 'Size exceeded. Max file size 15.7 Mb.';
+          prev.errorMessage = 'Size exceeded. Max file size 500 Mb.';
           prev.fileError = true;
           prev.file = { name: '' };
           return prev;
@@ -207,12 +207,13 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
     e.target.value = '';
     if(selectedFile.size > MAX_SIZE) {
       this.setState(prev => {
-        prev.errorMessage = 'Size exceeded. Max file size 15.7 Mb.';
+        prev.errorMessage = 'Size exceeded. Max file size 500 Mb.';
         prev.fileError = true;
         prev.file = { name: '' };
         return prev;
       });
     } else {      
+
       this.setState(prev => {
         prev.alertMessage = '';
         prev.errorMessage = '';
@@ -223,7 +224,20 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
         return prev;
       });
     }
-    
+  };
+
+  setFilesToUpload = () => (e) => {
+    let selectedFile = e.target.files[0];
+    e.target.value = '';
+    this.setState(prev => {
+      prev.alertMessage = '';
+      prev.errorMessage = '';
+      prev.disableBtn = false;
+      prev.showAlert = false;
+      prev.fileError = false;
+      prev.file = selectedFile;
+      return prev;
+    });
   };
 
   removeFile() {
@@ -254,6 +268,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
             value: this.state.type,
             onChange: this.handleTypeSelect,
             currentValue: this.state.currentValue,
+            readOnly: false,
             error: this.state.typeError,
             errorMessage: "Required field",
             readOnly: false
@@ -271,7 +286,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
           }),
           InputFieldFile({
             label: "File ",
-            moreInfo: "(Max file size 15.7 Mb)",
+            moreInfo: "(Max file size 500 Mb)",
             id: "documentFile",
             name: "documentFile",
             callback: this.setFilesToUpload(this.state.documents),
