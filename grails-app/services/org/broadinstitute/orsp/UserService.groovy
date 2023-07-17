@@ -18,6 +18,7 @@ class UserService {
      */
     @Transactional(readOnly = true)
     Collection<String> findAllUserNames() {
+        log.info('running findAllUserNames')
         User.findAll()*.userName
     }
 
