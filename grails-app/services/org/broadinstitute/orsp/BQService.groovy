@@ -40,6 +40,7 @@ class BQService {
      */
     private List<BroadUser> getBroadUserDetails() {
         List broadUsers = new ArrayList()
+        String query = "SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` LIMIT 10"
 
         // Instantiate a client.
         BigQuery bigquery =
