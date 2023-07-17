@@ -50,35 +50,42 @@ class BQService {
                         .getService()
 
         QueryJobConfiguration queryConfig = QueryJobConfiguration
-                .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view`")
+                .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` LIMIT 10")
                 .setUseLegacySql(false).build()
 
         // Create a job ID .
-        JobId jobId = JobId.of(UUID.randomUUID().toString());
-        Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build())
+//        JobId jobId = JobId.of(UUID.randomUUID().toString());
+//        Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build())
 
+        TableResult results = bigquery.query(queryConfig)
+        results.iterateAll().forEach {
+            it.forEach {
+                log.warn(it.toString())
+            }
+        }
         // Wait for the query to complete.
-        queryJob = queryJob.waitFor()
+        //queryJob = queryJob.waitFor()
 
         // Check for errors
-        if (queryJob == null) {
-            log.error("Job no longer exists")
-        } else if (queryJob.getStatus().getError() != null) {
-            log.error(queryJob.getStatus().getError().toString())
-        } else {
-            log.info('running getting results')
-            // Get the results.
-            TableResult result = queryJob.getQueryResults()
-            // iterate over results to build BroadUser list
-            for (FieldValueList row : result.iterateAll()) {
-                String email = row.get("email").getStringValue()
-                String userName = row.get("username").getStringValue()
-                String displayName = row.get("full_name").getStringValue()
-                broadUsers.add(new BroadUser(userName: userName, displayName: displayName, email: email))
-            }
-            log.info("Broad Users: " + broadUsers)
-        }
-
+//        if (queryJob == null) {
+//            log.error("Job no longer exists")
+//        } else if (queryJob.getStatus().getError() != null) {
+//
+//            log.error(queryJob.getStatus().getError().toString())
+//        } else {
+//            log.info('running getting results')
+//            // Get the results.
+//            TableResult result = queryJob.getQueryResults()
+//            // iterate over results to build BroadUser list
+//            for (FieldValueList row : result.iterateAll()) {
+//                String email = row.get("email").getStringValue()
+//                String userName = row.get("username").getStringValue()
+//                String displayName = row.get("full_name").getStringValue()
+//                broadUsers.add(new BroadUser(userName: userName, displayName: displayName, email: email))
+//            }
+//
+//        }
+        log.info("Broad Users: " + broadUsers)
         broadUsers
     }
 
