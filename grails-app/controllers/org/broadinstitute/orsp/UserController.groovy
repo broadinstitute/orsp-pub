@@ -29,7 +29,6 @@ class UserController extends AuthenticatedController {
     }
 
     def sync() {
-        log.info('running sync users')
         List<User> syncedUsers = BQService.findMissingUsers().collect {
             userService.findOrCreateUser(
                     it.userName,
