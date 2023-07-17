@@ -1,5 +1,6 @@
 package org.broadinstitute.orsp
 
+import com.google.cloud.bigquery.BigQueryException
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.config.BQConfiguration
 import com.google.cloud.bigquery.BigQuery
@@ -28,7 +29,6 @@ class BQService {
      */
     @SuppressWarnings("GroovyAssignabilityCheck")
     List<BroadUser> findMissingUsers() {
-        log.info('running findMissingUsers')
         Collection<String> filterUsers = userService.findAllUserNames()
         getNewOrspUsers(filterUsers, getBroadUserDetails())
     }
@@ -39,34 +39,34 @@ class BQService {
      * @return List of BroadUser from BigQuery
      */
     private List<BroadUser> getBroadUserDetails() {
-        log.info('running getBroadUserDetails')
         List broadUsers = new ArrayList()
 
-        // Instantiate a client.
-        BigQuery bigquery =
-                BigQueryOptions.newBuilder()
-                        .setCredentials(getCredential())
-                        .build()
-                        .getService()
+        try {
+            // Instantiate a client.
+            BigQuery bigquery =
+                    BigQueryOptions.newBuilder()
+                            .setCredentials(getCredential())
+                            .build()
+                            .getService()
 
-        QueryJobConfiguration queryConfig = QueryJobConfiguration
-                .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` LIMIT 10")
-                .setUseLegacySql(false).build()
+            QueryJobConfiguration queryConfig = QueryJobConfiguration
+                    .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` LIMIT 10")
+                    .setUseLegacySql(false).build()
 
-        // Create a job ID .
+            // Create a job ID .
 //        JobId jobId = JobId.of(UUID.randomUUID().toString());
 //        Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build())
 
-        TableResult results = bigquery.query(queryConfig)
-        results.iterateAll().forEach {
-            it.forEach {
-                log.warn(it.toString())
+            TableResult results = bigquery.query(queryConfig)
+            results.iterateAll().forEach {
+                it.forEach {
+                    log.info("result: " + it)
+                }
             }
-        }
-        // Wait for the query to complete.
-        //queryJob = queryJob.waitFor()
+            // Wait for the query to complete.
+            //queryJob = queryJob.waitFor()
 
-        // Check for errors
+            // Check for errors
 //        if (queryJob == null) {
 //            log.error("Job no longer exists")
 //        } else if (queryJob.getStatus().getError() != null) {
@@ -85,6 +85,9 @@ class BQService {
 //            }
 //
 //        }
+        } catch (BigQueryException | InterruptedException e) {
+            log.error("Query not performed: " + e.toString())
+        }
         log.info("Broad Users: " + broadUsers)
         broadUsers
     }
