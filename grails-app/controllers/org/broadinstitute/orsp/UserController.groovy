@@ -36,6 +36,7 @@ class UserController extends AuthenticatedController {
                     it.displayName
             )
         }
+        response.status = 200
         render syncedUsers as JSON
     }
 
