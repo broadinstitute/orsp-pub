@@ -83,6 +83,7 @@ class BQService {
             log.error("Error in executing BigQuery " + e.toString());
         }
 
+
         broadUsers
     }
 
