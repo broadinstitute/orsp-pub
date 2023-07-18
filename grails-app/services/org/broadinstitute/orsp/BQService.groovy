@@ -80,7 +80,7 @@ class BQService {
             }
 
         } catch (BigQueryException | InterruptedException e) {
-            log.error("Error in executing BigQuery ", e.toString());
+            log.error("Error in executing BigQuery " + e.toString());
         }
 
         broadUsers
