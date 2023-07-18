@@ -79,29 +79,7 @@ class BQService {
                 log.error("BigQuery was unable to load into the table due to an error:"
                         + queryJob.getStatus().getError())
             }
-            // Check for errors
-//        if (queryJob == null) {
-//            log.error("Job no longer exists")
-//        } else if (queryJob.getStatus().getError() != null) {
-//
-//            log.error(queryJob.getStatus().getError().toString())
-//        } else {
-//            log.info('running getting results')
-//            // Get the results.
-//            TableResult result = queryJob.getQueryResults()
-//            // iterate over results to build BroadUser list
-//            for (FieldValueList row : result.iterateAll()) {
-//                String email = row.get("email").getStringValue()
-//                String userName = row.get("username").getStringValue()
-//                String displayName = row.get("full_name").getStringValue()
-//                broadUsers.add(new BroadUser(userName: userName, displayName: displayName, email: email))
-//            }
-//
-//        }
-        } catch (BigQueryException | InterruptedException e) {
-            log.error("Query not performed: " + e.toString())
         }
-        log.info("Broad Users: " + broadUsers)
         broadUsers
     }
 
