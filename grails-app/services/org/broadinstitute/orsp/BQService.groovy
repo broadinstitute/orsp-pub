@@ -47,8 +47,7 @@ class BQService {
             BigQuery bigquery =
                     BigQueryOptions.newBuilder()
                             .setCredentials(getCredential())
-                            .build()
-                            .getService()
+                            .build().getService()
 
             QueryJobConfiguration queryConfig = QueryJobConfiguration
                     .newBuilder(query)
