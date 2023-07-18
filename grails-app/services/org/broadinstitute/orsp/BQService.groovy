@@ -78,6 +78,8 @@ class BQService {
                 String displayName = row.get("full_name").getStringValue()
                 broadUsers.add(new BroadUser(userName: userName, displayName: displayName, email: email))
             }
+        } catch (BigQueryException e) {
+            log.error("Error in executing BigQuery ", e.toString());
         }
 
 
