@@ -40,48 +40,48 @@ class BQService {
      */
     private List<BroadUser> getBroadUserDetails() {
         List broadUsers = new ArrayList()
+        try{
+            // Instantiate a client.
+            BigQuery bigquery =
+                    BigQueryOptions.newBuilder()
+                            .setCredentials(getCredential())
+                            .build()
+                            .getService()
 
+            QueryJobConfiguration queryConfig = QueryJobConfiguration
+                    .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view`")
+                    .setUseLegacySql(false).build()
 
-        // Instantiate a client.
-        BigQuery bigquery =
-                BigQueryOptions.newBuilder()
-                        .setCredentials(getCredential())
-                        .build()
-                        .getService()
+            // Create a job ID .
+            JobId jobId = JobId.of(UUID.randomUUID().toString());
+            Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build())
 
-        QueryJobConfiguration queryConfig = QueryJobConfiguration
-                .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view`")
-                .setUseLegacySql(false).build()
+            // Wait for the query to complete.
+            queryJob = queryJob.waitFor()
 
-        // Create a job ID .
-        JobId jobId = JobId.of(UUID.randomUUID().toString());
-        Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build())
+            // Check for errors
+            if (queryJob == null) {
+                log.error("Job no longer exists")
+                throw new RuntimeException("Job no longer exists")
+            } else if (queryJob.getStatus().getError() != null) {
+                log.error(queryJob.getStatus().getError().toString())
+                throw new RuntimeException(queryJob.getStatus().getError().toString());
+            } else {
+                // Get the results.
+                TableResult result = queryJob.getQueryResults()
 
-        // Wait for the query to complete.
-        queryJob = queryJob.waitFor()
-
-        // Check for errors
-        if (queryJob == null) {
-            log.error("Job no longer exists")
-            throw new RuntimeException("Job no longer exists")
-        } else if (queryJob.getStatus().getError() != null) {
-            log.error(queryJob.getStatus().getError().toString())
-            throw new RuntimeException(queryJob.getStatus().getError().toString())
-        } else {
-            // Get the results.
-            TableResult result = queryJob.getQueryResults()
-
-            // iterate over results to build BroadUser list
-            for (FieldValueList row : result.iterateAll()) {
-                String email = row.get("email").getStringValue()
-                String userName = row.get("username").getStringValue()
-                String displayName = row.get("full_name").getStringValue()
-                broadUsers.add(new BroadUser(userName: userName, displayName: displayName, email: email))
+                // iterate over results to build BroadUser list
+                for (FieldValueList row : result.iterateAll()) {
+                    String email = row.get("email").getStringValue()
+                    String userName = row.get("username").getStringValue()
+                    String displayName = row.get("full_name").getStringValue()
+                    broadUsers.add(new BroadUser(userName: userName, displayName: displayName, email: email))
+                }
             }
-        } catch (BigQueryException e) {
+
+        } catch (BigQueryException | InterruptedException e) {
             log.error("Error in executing BigQuery ", e.toString());
         }
-
 
         broadUsers
     }
