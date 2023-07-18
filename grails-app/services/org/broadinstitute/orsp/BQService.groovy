@@ -40,48 +40,51 @@ class BQService {
      */
     private List<BroadUser> getBroadUserDetails() {
         List broadUsers = new ArrayList()
-        String query = "SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` LIMIT 10"
 
-        try {
+        try{
             // Instantiate a client.
             BigQuery bigquery =
                     BigQueryOptions.newBuilder()
                             .setCredentials(getCredential())
-                            .build().getService()
+                            .build()
+                            .getService()
 
             QueryJobConfiguration queryConfig = QueryJobConfiguration
-                    .newBuilder(query)
-                    .build()
+                    .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view`")
+                    .setUseLegacySql(false).build()
 
-            //Create a job ID.
-            String jobName = UUID.randomUUID().toString()
-            JobId jobId = JobId.newBuilder().setLocation("us").setJob(jobName).build()
+            // Create a job ID .
+            JobId jobId = JobId.of(UUID.randomUUID().toString());
+            Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build())
 
-            //Create a job with job ID
-            Job queryJob = bigquery.create(JobInfo.of(jobId, queryConfig))
-
-//            TableResult results = bigquery.query(queryConfig)
-//            results.iterateAll().forEach {
-//                it.forEach {
-//                    log.info("result: " + it)
-//                }
-//            }
             // Wait for the query to complete.
             queryJob = queryJob.waitFor()
 
-            if (queryJob.isDone()) {
-                log.info('Query job is done')
-                TableResult result = queryJob.getQueryResults()
-                result.iterateAll().forEach {
-                    log.info(it)
-                }
+            // Check for errors
+            if (queryJob == null) {
+                log.error("Job no longer exists")
+            } else if (queryJob.getStatus().getError() != null) {
+                log.error(queryJob.getStatus().getError().toString())
             } else {
-                log.error("BigQuery was unable to load into the table due to an error:"
-                        + queryJob.getStatus().getError())
+                // Get the results.
+                TableResult result = queryJob.getQueryResults()
+
+                // iterate over results to build BroadUser list
+                for (FieldValueList row : result.iterateAll()) {
+                    String email = row.get("email").getStringValue()
+                    String userName = row.get("username").getStringValue()
+                    String displayName = row.get("full_name").getStringValue()
+                    broadUsers.add(new BroadUser(userName: userName, displayName: displayName, email: email))
+                }
             }
+        } catch (BigQueryException e) {
+            log.error("Error in executing BigQuery ", e.toString());
         }
+
         broadUsers
     }
+
+
 
     /**
      * Return a List of BroadUser objects from a single search query
