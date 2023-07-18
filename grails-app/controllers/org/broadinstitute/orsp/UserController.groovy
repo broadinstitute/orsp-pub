@@ -36,7 +36,6 @@ class UserController extends AuthenticatedController {
                     it.displayName
             )
         }
-        log.info('Synced-Users: ' + syncedUsers)
         render syncedUsers as JSON
     }
 
