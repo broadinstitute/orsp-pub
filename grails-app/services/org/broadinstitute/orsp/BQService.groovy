@@ -30,8 +30,7 @@ class BQService {
     @SuppressWarnings("GroovyAssignabilityCheck")
     List<BroadUser> findMissingUsers() {
         Collection<String> filterUsers = userService.findAllUserNames()
-        String query = "SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view`"
-        getNewOrspUsers(filterUsers, getBroadUserDetails(query))
+        getNewOrspUsers(filterUsers, getBroadUserDetails())
     }
 
     /**
@@ -39,9 +38,10 @@ class BQService {
      *
      * @return List of BroadUser from BigQuery
      */
-    private List<BroadUser> getBroadUserDetails(String query) {
+    private List<BroadUser> getBroadUserDetails() {
         List broadUsers = new ArrayList()
         try{
+
             // Instantiate a client.
             BigQuery bigquery =
                     BigQueryOptions.newBuilder()
@@ -50,7 +50,7 @@ class BQService {
                             .getService()
 
             QueryJobConfiguration queryConfig = QueryJobConfiguration
-                    .newBuilder(query)
+                    .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view`")
                     .setUseLegacySql(false)
                     .build()
 
@@ -116,13 +116,6 @@ class BQService {
 
     void setCredential(GoogleCredentials credential) {
         this.credential = credential
-    }
-
-    String getDisplayName(username) {
-        String query = "SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` where username='${username}'"
-        def bigQueryUserData = getBroadUserDetails(query);
-        log.info(bigQueryUserData[0].displayName.toString())
-        return bigQueryUserData[0].displayName.toString() != null ? bigQueryUserData[0].displayName.toString() : null
     }
 
 }
