@@ -122,7 +122,7 @@ class BQService {
         String query = "SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` where username='${username}'"
         def bigQueryUserData = getBroadUserDetails(query);
         log.info(bigQueryUserData[0].displayName.toString())
-        return bigQueryUserData[0].displayName.toString()
+        return bigQueryUserData[0].displayName.toString() != null ? bigQueryUserData[0].displayName.toString() : null
     }
 
 }
