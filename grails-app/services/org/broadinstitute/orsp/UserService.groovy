@@ -46,7 +46,7 @@ class UserService {
         }
         if (results.size() > 0) {
             User user = results.get(0)
-            log.info(results, user)
+            log.info(user.toString())
             user.setLastLoginDate(new Date())
 //            String query = "SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` where username=" + user.getUserName().toString()
 //            def bigQueryUserData = bqService.getBroadUserDetails(query);
