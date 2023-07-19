@@ -48,11 +48,9 @@ class UserService {
             User user = results.get(0)
             user.setLastLoginDate(new Date())
             String username = user.getUserName().toString()
-            def query = new StringBuilder()
-            query.append("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` where username=${username}")
-            def bigQueryUserData = bqService.getBroadUserDetails(query);
-            if(bigQueryUserData.get(0).getDisplayName() != user.getDisplayName()) {
-                user.setDisplayName(bigQueryUserData.get(0).getDisplayName())
+            String name = bqService.getDisplayName(username)
+            if(user.getDisplayName().toString() != name) {
+                user.setDisplayName(name)
                 user.setUpdatedDate(new Date())
             }
             user.save(flush: true)
