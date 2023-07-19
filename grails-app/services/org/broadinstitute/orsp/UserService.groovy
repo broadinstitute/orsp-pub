@@ -46,11 +46,11 @@ class UserService {
         }
         if (results.size() > 0) {
             User user = results.get(0)
-            log.info(user.getDisplayName().toString())
             user.setLastLoginDate(new Date())
-            StringBuilder query= new StringBuilder()
-            query.append("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` where username=" + user.getUserName().toString())
-            List<BroadUser> bigQueryUserData = bqService.getBroadUserDetails(query)
+            String username = user.getUserName().toString()
+            def query = new StringBuilder()
+            query.append("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` where username=${username}")
+            def bigQueryUserData = bqService.getBroadUserDetails(query);
             if(bigQueryUserData.get(0).getDisplayName() != user.getDisplayName()) {
                 user.setDisplayName(bigQueryUserData.get(0).getDisplayName())
                 user.setUpdatedDate(new Date())
@@ -157,7 +157,7 @@ class UserService {
                     displayName: displayName,
                     createdDate: new Date(),
                     updatedDate: new Date()
-            ).save()
+            ).save(flush: true)
         } else {
             null
         }
