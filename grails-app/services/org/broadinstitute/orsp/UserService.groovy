@@ -48,7 +48,12 @@ class UserService {
             User user = results.get(0)
             user.setLastLoginDate(new Date())
             String username = user.getUserName().toString()
-            String name = bqService.getDisplayName(username)
+            String name = user.getDisplayName().toString()
+            log.info("username" + username)
+            if (username != null) {
+                name = bqService.getDisplayName(username)
+                log.info("name" + name)
+            }
             if(user.getDisplayName().toString() != name) {
                 user.setDisplayName(name)
                 user.setUpdatedDate(new Date())
