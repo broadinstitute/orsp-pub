@@ -36,6 +36,7 @@ class UserController extends AuthenticatedController {
                     it.displayName
             )
         }
+        log.info("Synced user data length: ", syncedUsers.size())
         response.status = 200
         render syncedUsers as JSON
     }

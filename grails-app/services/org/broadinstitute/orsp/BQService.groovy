@@ -30,7 +30,8 @@ class BQService {
     @SuppressWarnings("GroovyAssignabilityCheck")
     List<BroadUser> findMissingUsers() {
         Collection<String> filterUsers = userService.findAllUserNames()
-        getNewOrspUsers(filterUsers, getBroadUserDetails())
+        String query = "SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view`"
+        getNewOrspUsers(filterUsers, getBroadUserDetails(query))
     }
 
     /**
@@ -38,7 +39,7 @@ class BQService {
      *
      * @return List of BroadUser from BigQuery
      */
-    private List<BroadUser> getBroadUserDetails() {
+    List<BroadUser> getBroadUserDetails(String query) {
         List broadUsers = new ArrayList()
         try{
             // Instantiate a client.
@@ -49,8 +50,9 @@ class BQService {
                             .getService()
 
             QueryJobConfiguration queryConfig = QueryJobConfiguration
-                    .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view`")
-                    .setUseLegacySql(false).build()
+                    .newBuilder(query)
+                    .setUseLegacySql(false)
+                    .build()
 
             // Create a job ID .
             JobId jobId = JobId.of(UUID.randomUUID().toString());
