@@ -44,23 +44,14 @@ class UserService {
                 order("lastLoginDate", "desc")
             }
         }
+
         if (results.size() > 0) {
             User user = results.get(0)
             user.setLastLoginDate(new Date())
-            String username = user.getUserName().toString()
-            String name = user.getDisplayName().toString()
-            log.info("username" + username)
-            if (username != null) {
-                name = bqService.getDisplayName(username) != null ? bqService.getDisplayName(username) : user.getDisplayName().toString()
-                log.info("name" + name)
-            }
-            if(user.getDisplayName().toString() != name) {
-                user.setDisplayName(name)
-                user.setUpdatedDate(new Date())
-            }
             user.save(flush: true)
             return user
         }
+
         if (emailAddress.contains(BROAD)) {
             return new User(
                     userName: userName,
