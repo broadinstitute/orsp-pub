@@ -22,6 +22,7 @@ class BQService {
 
     private GoogleCredentials credential
 
+
     /**
      * Find all users that exist in Broad's users (BigQuery) 
      *
@@ -41,7 +42,6 @@ class BQService {
     private List<BroadUser> getBroadUserDetails() {
         List broadUsers = new ArrayList()
         try{
-
             // Instantiate a client.
             BigQuery bigquery =
                     BigQueryOptions.newBuilder()
