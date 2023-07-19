@@ -48,12 +48,12 @@ class UserService {
             User user = results.get(0)
             log.info(user.getDisplayName().toString())
             user.setLastLoginDate(new Date())
-//            String query = "SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` where username=" + user.getUserName().toString()
-//            def bigQueryUserData = bqService.getBroadUserDetails(query);
-//            if(bigQueryUserData.get(0).getDisplayName() != user.getDisplayName()) {
-//                user.setDisplayName(bigQueryUserData.get(0).getDisplayName())
-//                user.setUpdatedDate(new Date())
-//            }
+            String query = "SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` where username=" + user.getUserName().toString()
+            List<BroadUser> bigQueryUserData = bqService.getBroadUserDetails(query);
+            if(bigQueryUserData.get(0).getDisplayName() != user.getDisplayName()) {
+                user.setDisplayName(bigQueryUserData.get(0).getDisplayName())
+                user.setUpdatedDate(new Date())
+            }
             user.save(flush: true)
             return user
         }
