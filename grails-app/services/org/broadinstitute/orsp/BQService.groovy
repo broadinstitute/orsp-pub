@@ -39,7 +39,7 @@ class BQService {
      *
      * @return List of BroadUser from BigQuery
      */
-    List<BroadUser> getBroadUserDetails(String query) {
+    private List<BroadUser> getBroadUserDetails(String query) {
         List broadUsers = new ArrayList()
         try{
             // Instantiate a client.
@@ -85,7 +85,6 @@ class BQService {
             log.error("Error in executing BigQuery " + e.toString());
         }
 
-
         broadUsers
     }
 
@@ -117,6 +116,13 @@ class BQService {
 
     void setCredential(GoogleCredentials credential) {
         this.credential = credential
+    }
+
+    String getDisplayName(username) {
+        String query = "SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` where username=${username}"
+        List bigQueryUserData = getBroadUserDetails(query);
+        log.info(bigQueryUserData.get(0).getDisplayName().toString())
+        return bigQueryUserData.get(0).getDisplayName().toString()
     }
 
 }
