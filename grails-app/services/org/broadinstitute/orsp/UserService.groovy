@@ -51,7 +51,7 @@ class UserService {
             String name = user.getDisplayName().toString()
             log.info("username" + username)
             if (username != null) {
-                name = bqService.getDisplayName(username)
+                name = bqService.getDisplayName(username) != null ? bqService.getDisplayName(username) : user.getDisplayName().toString()
                 log.info("name" + name)
             }
             if(user.getDisplayName().toString() != name) {
