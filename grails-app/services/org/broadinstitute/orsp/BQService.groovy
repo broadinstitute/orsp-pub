@@ -124,7 +124,7 @@ class BQService {
                     .getService()
 
             QueryJobConfiguration queryConfig = QueryJobConfiguration
-                    .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` LIMIT 10")
+                    .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` WHERE username='saakhil'")
                     .setUseLegacySql(false)
                     .build()
 
@@ -164,15 +164,21 @@ class BQService {
 
     def createOrUpdateUser() {
         def broadUsers = getUserDataFromBigquery()
-        def existingUser
+        User existingUser
         List newUsers = new ArrayList()
         broadUsers.each {
             existingUser = User.findByUserName(it.userName)
             if (!existingUser) {
+                new User(
+                        userName: it.userName,
+                        emailAddress: it.email,
+                        displayName: it.displayName,
+                        createdDate: new Date(),
+                        updatedDate: new Date()
+                ).save(flush: true)
                 newUsers.add(it.userName)
-                log.info("user does not exist " + it.userName)
             } else {
-                log.info("user exists " + it.userName)
+                log.info("user exists " + existingUser.displayName)
             }
         }
         newUsers
