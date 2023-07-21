@@ -99,7 +99,7 @@ class BQService {
 
     /**
      *
-     * @return A GoogleCredentials from json secrets.
+     * @return A GoogleCredentiacmdls from json secrets.
      */
     private GoogleCredentials getCredential() {
         if (!credential) {
