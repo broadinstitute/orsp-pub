@@ -22,7 +22,6 @@ class BQService {
 
     private GoogleCredentials credential
 
-
     /**
      * Find all users that exist in Broad's users (BigQuery) 
      *
@@ -43,8 +42,7 @@ class BQService {
         List broadUsers = new ArrayList()
         try{
             // Instantiate a client.
-            BigQuery bigquery =
-                    BigQueryOptions.newBuilder()
+            BigQuery bigquery = BigQueryOptions.newBuilder()
                             .setCredentials(getCredential())
                             .build()
                             .getService()
@@ -54,7 +52,7 @@ class BQService {
                     .setUseLegacySql(false)
                     .build()
 
-            // Create a job ID .
+            // Create a job ID.
             JobId jobId = JobId.of(UUID.randomUUID().toString());
             Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build())
 
@@ -87,8 +85,6 @@ class BQService {
 
         broadUsers
     }
-
-
 
     /**
      * Return a List of BroadUser objects from a single search query
@@ -122,18 +118,17 @@ class BQService {
         List broadUsers = new ArrayList()
         try{
             // Instantiate a client.
-            BigQuery bigquery =
-                    BigQueryOptions.newBuilder()
-                            .setCredentials(getCredential())
-                            .build()
-                            .getService()
+            BigQuery bigquery = BigQueryOptions.newBuilder()
+                    .setCredentials(getCredential())
+                    .build()
+                    .getService()
 
             QueryJobConfiguration queryConfig = QueryJobConfiguration
                     .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` LIMIT 10")
                     .setUseLegacySql(false)
                     .build()
 
-            // Create a job ID .
+            // Create a job ID.
             JobId jobId = JobId.of(UUID.randomUUID().toString());
             Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build())
 
@@ -164,11 +159,23 @@ class BQService {
             log.error("Error in executing BigQuery " + e.toString());
         }
 
-        broadUsers.each {
-            log.info(it.userName, it.displayName, it.email)
-        }
-
         broadUsers
+    }
+
+    def createOrUpdateUser() {
+        def broadUsers = getUserDataFromBigquery()
+        def existingUser
+        List newUsers = new ArrayList()
+        broadUsers.each {
+            existingUser = User.findByUserName(it.userName)
+            if (!existingUser) {
+                newUsers.add(it.userName)
+                log.info("user does not exist " + it.userName)
+            } else {
+                log.info("user exists " + it.userName)
+            }
+        }
+        newUsers
     }
 
 }
