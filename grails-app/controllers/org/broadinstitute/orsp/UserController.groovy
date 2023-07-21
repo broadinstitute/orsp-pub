@@ -29,7 +29,7 @@ class UserController extends AuthenticatedController {
     }
 
     def sync() {
-        def bigData = BQService.getUserDataFromBigquery()
+        def syncedUsers = BQService.createOrUpdateUser()
 //        List<User> syncedUsers = BQService.findMissingUsers().collect {
 //            userService.findOrCreateUser(
 //                    it.userName,
@@ -37,9 +37,8 @@ class UserController extends AuthenticatedController {
 //                    it.displayName
 //            )
 //        }
-        log.info("Synced user data length: ", bigData.size())
         response.status = 200
-        render bigData as JSON
+        render syncedUsers
     }
 
     def getOrspUsers() {
