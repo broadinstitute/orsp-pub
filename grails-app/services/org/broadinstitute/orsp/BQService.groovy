@@ -114,56 +114,13 @@ class BQService {
         this.credential = credential
     }
 
-    List<BroadUser> getUserDataFromBigquery() {
-        List broadUsers = new ArrayList()
-        try{
-            // Instantiate a client.
-            BigQuery bigquery = BigQueryOptions.newBuilder()
-                    .setCredentials(getCredential())
-                    .build()
-                    .getService()
-
-            QueryJobConfiguration queryConfig = QueryJobConfiguration
-                    .newBuilder("SELECT username, email, full_name FROM `broad-gaia-dev.gaia_shared_views.orsp_people_view` WHERE username='saakhil'")
-                    .setUseLegacySql(false)
-                    .build()
-
-            // Create a job ID.
-            JobId jobId = JobId.of(UUID.randomUUID().toString());
-            Job queryJob = bigquery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build())
-
-            // Wait for the query to complete.
-            queryJob = queryJob.waitFor()
-
-            // Check for errors
-            if (queryJob == null) {
-                log.error("Job no longer exists")
-                throw new RuntimeException("Job no longer exists")
-            } else if (queryJob.getStatus().getError() != null) {
-                log.error(queryJob.getStatus().getError().toString())
-                throw new RuntimeException(queryJob.getStatus().getError().toString());
-            } else {
-                // Get the results.
-                TableResult result = queryJob.getQueryResults()
-
-                // iterate over results to build BroadUser list
-                for (FieldValueList row : result.iterateAll()) {
-                    String email = row.get("email").getStringValue()
-                    String userName = row.get("username").getStringValue()
-                    String displayName = row.get("full_name").getStringValue()
-                    broadUsers.add(new BroadUser(userName: userName, displayName: displayName, email: email))
-                }
-            }
-
-        } catch (BigQueryException | InterruptedException e) {
-            log.error("Error in executing BigQuery " + e.toString());
-        }
-
-        broadUsers
-    }
-
+    /**
+     * Create new ORSP user if not exists
+     * Update existing user's full name if mismatched
+     * @return array of username of created users
+     */
     def createOrUpdateUser() {
-        def broadUsers = getUserDataFromBigquery()
+        def broadUsers = getBroadUserDetails()
         User existingUser
         List newUsers = new ArrayList()
         broadUsers.each {
@@ -178,7 +135,11 @@ class BQService {
                 ).save(flush: true)
                 newUsers.add(it.userName)
             } else {
-                log.info("user exists " + existingUser.displayName)
+                if (existingUser.displayName != it.displayName) {
+                    existingUser.displayName = it.displayName
+                    existingUser.updatedDate = new Date()
+                    existingUser.save(flush: true)
+                }
             }
         }
         newUsers
