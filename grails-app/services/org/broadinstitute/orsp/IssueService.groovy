@@ -406,6 +406,12 @@ class IssueService implements UserInfo {
             issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))
         }
 
+        if (previousStatus.equals(IssueStatus.OnHold.getName()) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
+            Event event = Event.find {
+                it.projectKey == params.projectKey && it.eventType == EventType.ONHOLD_PROJECT
+            }
+            log.info(event.projectKey, event.created)
+        }
 
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
@@ -451,6 +457,10 @@ class IssueService implements UserInfo {
                 type = EventType.ABANDON_PROJECT
                 break
 
+            case IssueStatus.OnHold.getName():
+                type = EventType.ONHOLD_PROJECT
+                break
+
             case IssueStatus.Approved.getName():
                 type = EventType.APPROVE_PROJECT
                 break
@@ -462,7 +472,6 @@ class IssueService implements UserInfo {
             case IssueStatus.Withdrawn.getName():
                 type = EventType.WITHDRAWN_PROJECT
                 break
-
 
             default:
                 type = EventType.CHANGE
