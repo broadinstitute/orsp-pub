@@ -1951,8 +1951,5 @@ class QueryService implements Status {
         sqlQuery.executeUpdate()
     }
 
-    getOnHoldProject(String projectKey) {
-
-    }
 
 }
