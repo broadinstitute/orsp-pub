@@ -409,7 +409,7 @@ class IssueService implements UserInfo {
         if (previousStatus.equals(IssueStatus.OnHold.getName()) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
             Event event = Event.where{
                 eq('projectKey', params.projectKey)
-                eq('eventType', IssueStatus.OnHold.getName())
+                eq('eventType', IssueStatus.OnHold.getName().toString())
             }.list()
             log.info(event.projectKey, event.created)
         }
@@ -441,7 +441,7 @@ class IssueService implements UserInfo {
     }
 
     Boolean shouldUpdateStatus(String status, String previousStatus) {
-        Boolean isAValidStatus = Arrays.stream(IssueStatus.values()).anyMatch{t -> t.name().equals(status)}
+        Boolean isAValidStatus = IssueStatus.values().any { it.name() == status }
         Boolean statusHasChanged = !status.equals(previousStatus)
         isAValidStatus && statusHasChanged
     }
