@@ -407,8 +407,9 @@ class IssueService implements UserInfo {
         }
 
         if (previousStatus.equals(IssueStatus.OnHold.getName()) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
-            Event event = Event.find {
-                it.projectKey == params.projectKey && it.eventType == EventType.ONHOLD_PROJECT
+            Event event = Event.where{
+                eq('projectKey', params.projectKey)
+                eq('eventType', IssueStatus.OnHold.getName())
             }
             log.info(event.projectKey, event.created)
         }
