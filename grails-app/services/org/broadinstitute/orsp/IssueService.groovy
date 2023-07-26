@@ -410,7 +410,7 @@ class IssueService implements UserInfo {
             Event event = Event.where{
                 eq('projectKey', params.projectKey)
                 eq('eventType', IssueStatus.OnHold.getName())
-            }
+            }.list()
             log.info(event.projectKey, event.created)
         }
 
