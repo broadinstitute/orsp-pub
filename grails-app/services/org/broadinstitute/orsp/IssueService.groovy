@@ -406,13 +406,9 @@ class IssueService implements UserInfo {
             issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))
         }
 
-        if (previousStatus.equals(IssueStatus.OnHold.getName()) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
-            def event = Event.where{
-                eq('projectKey', params.projectKey)
-                eq('eventType', IssueStatus.OnHold.getName().toString())
-            }.list()
-            log.info(event.projectKey, event.created)
-        }
+//        if (previousStatus.equals(IssueStatus.OnHold.getName()) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
+//            def event
+//        }
 
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
@@ -431,6 +427,10 @@ class IssueService implements UserInfo {
         }
         if (shouldUpdateStatus(input.get(IssueExtraProperty.PROJECT_STATUS), previousStatus)) {
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project " + input.get(IssueExtraProperty.PROJECT_STATUS), eventTypeMatcher(input.get(IssueExtraProperty.PROJECT_STATUS)))
+        } else {
+            if (input.get(IssueExtraProperty.PROJECT_STATUS) == "On Hold") {
+                persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project On Hold", EventType.ONHOLD_PROJECT)
+            }
         }
         String newStatus = Optional.ofNullable(input.get(IssueExtraProperty.PROJECT_STATUS)).orElse("")
 
