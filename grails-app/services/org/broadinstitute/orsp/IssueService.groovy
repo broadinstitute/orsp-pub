@@ -467,6 +467,13 @@ class IssueService implements UserInfo {
         issue
     }
 
+    def daysBetween(def currentDate, def specifiedDate) {
+        use(TimeCategory) {
+            def duration = currentDate - specifiedDate
+            duration.days
+        }
+    }
+
     Boolean shouldUpdateStatus(String status, String previousStatus) {
         Boolean isAValidStatus = Arrays.stream(IssueStatus.values()).anyMatch{t -> t.name().equals(status)}
         Boolean statusHasChanged = !status.equals(previousStatus)
