@@ -428,16 +428,19 @@ class IssueService implements UserInfo {
                 // Handle the exception if the parsing fails
                 println("Error parsing the dates: " + e.message)
             }
-            log.info('difference: ' + differenceInDays.toString())
-            IssueExtraProperty extraProperty = IssueExtraProperty.findByProjectKey(params.projectKey)
-            def test = extraProperty.getProperty("name")
-            log.info(test.toString())
-//            new IssueExtraProperty(
-//                    issue: issue,
-//                    name: IssueExtraProperty.ON_HOLD_DAYS,
-//                    value: difference,
-//                    projectKey: issue.projectKey
-//            ).save(flush: true)
+            def hasOnHoldDays = queryService.getPropertyValue(params.projectKey, IssueExtraProperty.ON_HOLD_DAYS)
+            if (hasOnHoldDays.isEmpty()) {
+                new IssueExtraProperty(
+                        issue: issue,
+                        name: IssueExtraProperty.ON_HOLD_DAYS,
+                        value: differenceInDays,
+                        projectKey: issue.projectKey
+                ).save(flush: true)
+            } else {
+                def newOnHoldDays = hasOnHoldDays[0] + differenceInDays
+                queryService.updateOnHoldDays(params.projectKey, newOnHoldDays)
+            }
+
         }
 
         propsToDelete.each {
