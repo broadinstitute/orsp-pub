@@ -99,6 +99,7 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String ADMIN_COMMENTS = "adminComments"
     public static final String FINANCIAL_CONFLICT = "financialConflict"
     public static final String FINANCIAL_CONFLICT_DESCRIPTION = "financialConflictDescription"
+    public static final String ON_HOLD_DAYS = "onHoldDays"
 
 
     // Status Flags
