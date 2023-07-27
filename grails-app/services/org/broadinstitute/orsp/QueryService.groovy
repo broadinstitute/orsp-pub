@@ -1979,7 +1979,7 @@ class QueryService implements Status {
         result
     }
 
-    void updateOnHoldDays(String projectKey, Integer value) {
+    void updateOnHoldDays(String projectKey, String value) {
         final session = sessionFactory.currentSession
         final String query = 'UPDATE issue_extra_property SET value= :value WHERE project_key= :projectKey AND name= :name'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
