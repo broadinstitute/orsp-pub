@@ -430,7 +430,8 @@ class IssueService implements UserInfo {
             }
             log.info('difference: ' + differenceInDays.toString())
             IssueExtraProperty extraProperty = IssueExtraProperty.findByProjectKey(params.projectKey)
-            log.info(extraProperty.getProperty(IssueExtraProperty.BROAD_INVESTIGATOR))
+            def test = extraProperty.getProperty("name")
+            log.info(test.toString())
 //            new IssueExtraProperty(
 //                    issue: issue,
 //                    name: IssueExtraProperty.ON_HOLD_DAYS,
