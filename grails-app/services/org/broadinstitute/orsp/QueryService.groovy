@@ -1985,7 +1985,7 @@ class QueryService implements Status {
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setParameter('value', value)
         sqlQuery.setParameter('projectKey', projectKey)
-        sqlQuery.setParameter('value', 'onHoldDays')
+        sqlQuery.setParameter('name', 'onHoldDays')
 
         sqlQuery.executeUpdate()
     }
