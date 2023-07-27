@@ -5,6 +5,10 @@ import grails.web.servlet.mvc.GrailsParameterMap
 import groovy.time.TimeCategory
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang.StringUtils
+
+import java.text.ParseException
+import java.text.SimpleDateFormat
+
 /**
  * This class handles the general update or creation of issues and nothing more.
  *
@@ -409,9 +413,22 @@ class IssueService implements UserInfo {
 
         if (previousStatus.equals(IssueStatus.OnHold.getName()) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
             def eventDate = queryService.getProjectEventDate(params.projectKey, EventType.ONHOLD_PROJECT.toString())
-            Date specificDate = new Date(eventDate[0])
-            def difference = daysBetween(new Date(), specificDate)
-            log.info('difference: ' + difference.toString())
+            String specificDate = eventDate[0].toString()
+            long differenceInDays
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")
+            try {
+                Date date1 = sdf.parse(specificDate)
+                Date date2 = sdf.parse(new Date().toString())
+
+                long differenceInMillis = Math.abs(date2.time - date1.time)
+                differenceInDays = differenceInMillis / (24 * 60 * 60 * 1000)
+
+                println("Difference in days: " + differenceInDays)
+            } catch (ParseException e) {
+                // Handle the exception if the parsing fails
+                println("Error parsing the dates: " + e.message)
+            }
+            log.info('difference: ' + differenceInDays.toString())
             IssueExtraProperty extraProperty = findByProjectKey(params.projectKey)
             log.info(extraProperty.getProperty(IssueExtraProperty.ON_HOLD_DAYS))
 //            new IssueExtraProperty(
@@ -448,13 +465,6 @@ class IssueService implements UserInfo {
             notifyService.sendProjectStatusNotification((String)input.get(IssueExtraProperty.PROJECT_STATUS), issue, getUser()?.displayName)
         }
         issue
-    }
-
-    def daysBetween(def currentDate, def specifiedDate) {
-        use(TimeCategory) {
-            def duration = currentDate - specifiedDate
-            duration.days
-        }
     }
 
     Boolean shouldUpdateStatus(String status, String previousStatus) {
