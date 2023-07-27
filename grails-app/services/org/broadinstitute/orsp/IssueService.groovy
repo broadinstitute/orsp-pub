@@ -99,8 +99,8 @@ class IssueService implements UserInfo {
             IssueExtraProperty.HUMAN_SUBJECTS,
             IssueExtraProperty.ADMIN_COMMENTS,
             IssueExtraProperty.FINANCIAL_CONFLICT,
-            IssueExtraProperty.FINANCIAL_CONFLICT_DESCRIPTION
-
+            IssueExtraProperty.FINANCIAL_CONFLICT_DESCRIPTION,
+            IssueExtraProperty.ON_HOLD_DAYS
 
 
     ]
@@ -409,25 +409,17 @@ class IssueService implements UserInfo {
 
         if (previousStatus.equals(IssueStatus.OnHold.getName()) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
             def eventDate = queryService.getProjectEventDate(params.projectKey, EventType.ONHOLD_PROJECT.toString())
-            log.info('event date ' + eventDate[0].toString())
-            long eventDateTimeInMillis = eventDate[0] as long
-            Date specificDate = new Date(eventDateTimeInMillis)
-            Date currentDate = new Date()
-            // Calculate the difference in milliseconds
-            long differenceInMilliseconds = currentDate.time - specificDate.time
-
-            // Calculate the difference in seconds
-            long differenceInSeconds = differenceInMilliseconds / 1000
-
-            // Calculate the difference in minutes
-            long differenceInMinutes = differenceInSeconds / 60
-
-            // Calculate the difference in hours
-            long differenceInHours = differenceInMinutes / 60
-
-            // Calculate the difference in days
-            long differenceInDays = differenceInHours / 24
-            log.info('difference ' + differenceInDays)
+            Date specificDate = new Date(eventDate[0])
+            def difference = daysBetween(new Date(), specificDate)
+            log.info('difference: ' + difference.toString())
+            IssueExtraProperty extraProperty = findByProjectKey(params.projectKey)
+            log.info(extraProperty.getProperty(IssueExtraProperty.ON_HOLD_DAYS))
+//            new IssueExtraProperty(
+//                    issue: issue,
+//                    name: IssueExtraProperty.ON_HOLD_DAYS,
+//                    value: difference,
+//                    projectKey: issue.projectKey
+//            ).save(flush: true)
         }
 
         propsToDelete.each {
@@ -456,6 +448,13 @@ class IssueService implements UserInfo {
             notifyService.sendProjectStatusNotification((String)input.get(IssueExtraProperty.PROJECT_STATUS), issue, getUser()?.displayName)
         }
         issue
+    }
+
+    def daysBetween(def currentDate, def specifiedDate) {
+        use(TimeCategory) {
+            def duration = currentDate - specifiedDate
+            duration.days
+        }
     }
 
     Boolean shouldUpdateStatus(String status, String previousStatus) {
