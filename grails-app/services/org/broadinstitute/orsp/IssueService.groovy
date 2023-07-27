@@ -429,8 +429,8 @@ class IssueService implements UserInfo {
                 println("Error parsing the dates: " + e.message)
             }
             log.info('difference: ' + differenceInDays.toString())
-            IssueExtraProperty extraProperty = findByProjectKey(params.projectKey)
-            log.info(extraProperty.getProperty(IssueExtraProperty.ON_HOLD_DAYS))
+            IssueExtraProperty extraProperty = IssueExtraProperty.findByProjectKey(params.projectKey)
+            log.info(extraProperty.getProperty(IssueExtraProperty.BROAD_INVESTIGATOR))
 //            new IssueExtraProperty(
 //                    issue: issue,
 //                    name: IssueExtraProperty.ON_HOLD_DAYS,
