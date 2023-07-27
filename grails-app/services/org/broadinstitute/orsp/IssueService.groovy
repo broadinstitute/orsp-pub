@@ -424,7 +424,7 @@ class IssueService implements UserInfo {
                 differenceInDays = differenceInMillis / (24 * 60 * 60 * 1000)
 
             } catch (ParseException e) {
-                log.error("Error parsing the dates: " + e.message)
+                log.error("Error parsing the dates: " + e)
             }
             def hasOnHoldDays = queryService.getPropertyValue(params.projectKey, IssueExtraProperty.ON_HOLD_DAYS)
             if (hasOnHoldDays.isEmpty()) {
@@ -435,8 +435,8 @@ class IssueService implements UserInfo {
                         projectKey: issue.projectKey
                 ).save(flush: true)
             } else {
-                def newOnHoldDays = (hasOnHoldDays[0]) as Integer + differenceInDays as Integer
-                queryService.updateOnHoldDays(params.projectKey, newOnHoldDays)
+                def newOnHoldDays = hasOnHoldDays[0].toString().toInteger() + differenceInDays
+                queryService.updateOnHoldDays(params.projectKey, newOnHoldDays.toString())
             }
 
         }
