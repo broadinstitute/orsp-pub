@@ -1965,4 +1965,29 @@ class QueryService implements Status {
         result
     }
 
+    List getPropertyValue(String projectKey, String name) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = 'SELECT value from issue_extra_property where project_key= :projectKey  AND name= :name'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('projectKey', projectKey)
+        sqlQuery.setParameter('name', name)
+        final result = sqlQuery.with {
+            list()
+        }
+
+        result
+    }
+
+    void updateOnHoldDays(String projectKey, Integer value) {
+        final session = sessionFactory.currentSession
+        final String query = 'UPDATE issue_extra_property SET value= :value WHERE project_key= :projectKey AND name= :name'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('value', value)
+        sqlQuery.setParameter('projectKey', projectKey)
+        sqlQuery.setParameter('value', 'onHoldDays')
+
+        sqlQuery.executeUpdate()
+    }
+
 }
