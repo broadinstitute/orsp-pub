@@ -2,6 +2,7 @@ package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
+import groovy.time.TimeCategory
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang.StringUtils
 /**
@@ -406,9 +407,28 @@ class IssueService implements UserInfo {
             issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))
         }
 
-//        if (previousStatus.equals(IssueStatus.OnHold.getName()) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
-//            def event
-//        }
+        if (previousStatus.equals(IssueStatus.OnHold.getName()) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
+            def eventDate = queryService.getProjectEventDate(params.projectKey, EventType.ONHOLD_PROJECT.toString())
+            log.info('event date ' + eventDate[0].toString())
+            long eventDateTimeInMillis = eventDate[0] as long
+            Date specificDate = new Date(eventDateTimeInMillis)
+            Date currentDate = new Date()
+            // Calculate the difference in milliseconds
+            long differenceInMilliseconds = currentDate.time - specificDate.time
+
+            // Calculate the difference in seconds
+            long differenceInSeconds = differenceInMilliseconds / 1000
+
+            // Calculate the difference in minutes
+            long differenceInMinutes = differenceInSeconds / 60
+
+            // Calculate the difference in hours
+            long differenceInHours = differenceInMinutes / 60
+
+            // Calculate the difference in days
+            long differenceInDays = differenceInHours / 24
+            log.info('difference ' + differenceInDays)
+        }
 
         propsToDelete.each {
             issue.removeFromExtraProperties(it)

@@ -1951,5 +1951,18 @@ class QueryService implements Status {
         sqlQuery.executeUpdate()
     }
 
+    List getProjectEventDate(String projectKey, String eventType) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = 'SELECT created from event where project_key= :projectKey and event_type= :eventType'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('projectKey', projectKey)
+        sqlQuery.setParameter('eventType', eventType)
+        final result = sqlQuery.with {
+            list()
+        }
+
+        result
+    }
 
 }
