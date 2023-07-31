@@ -168,7 +168,7 @@ export const Table = hh(class Table extends Component {
             a({
               href: `${UrlConstants.downloadDocumentUrl}?uuid=${data.document.uuid}`,
               target: '_blank',
-              title: data.document.fileType,
+              title: data.document.fileName,
             }, [
               span({
                 className: 'glyphicon glyphicon-download submission-download'
@@ -179,8 +179,20 @@ export const Table = hh(class Table extends Component {
         ]);
       }
     });
-    return h(Fragment, {} , [...documents]) ;
+    return h(Fragment, {} , [...documents]);
   };
+
+  documentDescription = (cell, row) => {
+    let descriptions = [];
+    cell.forEach(data => {
+      if (data.document !== undefined) {
+        descriptions.push([
+          data.document.description
+        ]);
+      }
+    });
+    return [...descriptions];
+  }
 
   submissionEdit = (cell, row) => {
     return this.props.submissionEdit(row);
@@ -274,10 +286,10 @@ export const Table = hh(class Table extends Component {
     let authorWidth = 'auto';
     if(!!this.props.isSubmissionTabActive) {
       styles.numberWidth = '2%';
-      styles.submissionComments = '20%';
+      styles.submissionComments = '18%';
       styles.submissionDocumentsWidth = '5%';
-      styles.createdWidth = '4%';
-      fileDescriptionWidth = '5%';
+      styles.createdWidth = '5%';
+      fileDescriptionWidth = '6%';
       authorWidth = '4%';
     }
     return (
@@ -305,6 +317,16 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
+                editable={ false }
+                width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>
+            }
+            if(header.value === 'descriptions') {
+              return <TableHeaderColumn
+                key={header.name}
+                dataField={header.value}
+                dataSort={true}
+                dataFormat={this.documentDescription}
+                editable={ false }
                 width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>
             }
             if (header.value === 'status') {
