@@ -320,15 +320,6 @@ export const Table = hh(class Table extends Component {
                 editable={ false }
                 width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>
             }
-            if(header.value === 'descriptions') {
-              return <TableHeaderColumn
-                key={header.name}
-                dataField={header.value}
-                dataSort={true}
-                dataFormat={this.documentDescription}
-                editable={ false }
-                width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>
-            }
             if (header.value === 'status') {
               return <TableHeaderColumn key={header.name}
                 dataField={header.value}
@@ -477,6 +468,14 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.documentLink}
                 dataSort={ true }
                 width={styles.submissionDocumentsWidth}>{header.name}</TableHeaderColumn>
+            } else if (header.value === 'descriptions') {
+              return <TableHeaderColumn
+                key={header.name}
+                dataField={header.value}
+                dataSort={true}
+                dataFormat={this.documentDescription}
+                editable={ false }
+                width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'createDate') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
