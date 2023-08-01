@@ -25,7 +25,7 @@ const styles = {
   collectionNameWidth: '270',
   numberWidth: '85',
   createDateWidth: '15',
-  submissionDocumentsWidth: '200',
+  submissionDocumentsWidth: '400',
   submissionComments: '200',
   createdWidth: '120',
   linkOverflowEllipsis: {
@@ -164,18 +164,22 @@ export const Table = hh(class Table extends Component {
     cell.forEach(data => {
       if (data.document !== undefined) {
         documents.push([
-          div({style: styles.linkOverflowEllipsis, key: data.document.id}, [
-            a({
-              href: `${UrlConstants.downloadDocumentUrl}?uuid=${data.document.uuid}`,
-              target: '_blank',
-              title: data.document.fileName,
-            }, [
-              span({
-                className: 'glyphicon glyphicon-download submission-download'
-              }, []), " ",
-              data.document.fileName
+          div({key: data.document.id}, [
+            div({style: styles.linkOverflowEllipsis}, [
+              a({
+                href: `${UrlConstants.downloadDocumentUrl}?uuid=${data.document.uuid}`,
+                target: '_blank',
+                title: data.document.fileName,
+              }, [
+                span({
+                  className: 'glyphicon glyphicon-download submission-download'
+                }, []), " ",
+                data.document.fileName > 14 ? data.document.fileName.slice(14) + '...' : data.document.fileName
+              ]),
             ]),
-            span({}, [" - " + data.document.description])
+            span({
+              title: data.document.description
+            }, [" - " + data.document.description])
           ])
         ]);
       }
