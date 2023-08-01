@@ -178,7 +178,8 @@ export const Table = hh(class Table extends Component {
               ]),
             ]),
             span({
-              title: data.document.description == null ? '' : " - " +  data.document.description
+              title: data.document.description == null ? '' : " - " +  data.document.description,
+              style: {'white-space' : 'normal'}
             }, [data.document.description == null ? '' : " - " +  data.document.description]),
             hr({ className: "fullWidth" })
           ])
