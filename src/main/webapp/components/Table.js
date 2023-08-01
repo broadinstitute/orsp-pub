@@ -182,18 +182,6 @@ export const Table = hh(class Table extends Component {
     return h(Fragment, {} , [...documents]);
   };
 
-  documentDescription = (cell, row) => {
-    let descriptions = [];
-    cell.forEach(data => {
-      if (data.document !== undefined) {
-        descriptions.push([
-          data.document.description
-        ]);
-      }
-    });
-    return [...descriptions];
-  }
-
   submissionEdit = (cell, row) => {
     return this.props.submissionEdit(row);
   };
@@ -468,12 +456,11 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.documentLink}
                 dataSort={ true }
                 width={styles.submissionDocumentsWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value === 'descriptions') {
+            } else if (header.value === 'description') {
               return <TableHeaderColumn
                 key={header.value}
                 dataField={header.value}
                 dataSort={true}
-                dataFormat={this.documentDescription}
                 editable={ false }
                 width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'createDate') {
