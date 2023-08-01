@@ -178,8 +178,8 @@ export const Table = hh(class Table extends Component {
               ]),
             ]),
             span({
-              title: data.document.description
-            }, [" - " + data.document.description])
+              title: data.document.description == null ? '' : " - " +  data.document.description
+            }, [data.document.description == null ? '' : " - " +  data.document.description])
           ])
         ]);
       }
@@ -280,7 +280,7 @@ export const Table = hh(class Table extends Component {
     if(!!this.props.isSubmissionTabActive) {
       styles.numberWidth = '2%';
       styles.submissionComments = '18%';
-      styles.submissionDocumentsWidth = '5%';
+      styles.submissionDocumentsWidth = '8%';
       styles.createdWidth = '5%';
       fileDescriptionWidth = '6%';
       authorWidth = '4%';
