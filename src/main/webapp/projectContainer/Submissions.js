@@ -12,8 +12,8 @@ const headers =
   [
     { name: '#', value: 'number' },
     { name: 'Description', value: 'comments' },
-    { name: 'File Name', value: 'documents' },
-    { name: 'File Description', value: 'description' },
+    { name: 'File Name | File Description', value: 'documents' },
+    // { name: 'File Description', value: 'documents' },
     { name: 'Actions', value: 'submissionActions' }
   ];
 
