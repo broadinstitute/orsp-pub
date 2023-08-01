@@ -134,7 +134,8 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                             financialConflictDescription: '',
                             daysFromSubmissionToApproval: ''
                         };
-                        let tempReportData = []
+                        let tempReportData = [];
+                        let onHoldDays = 0;
                         complianceDataArr.forEach(complianceElement => {
                             if (complDataArrElement.projectKey === complianceElement.projectKey) {
                                 tempReportData.push(complianceElement);   
@@ -163,7 +164,11 @@ const ComplianceReport = hh(class ComplianceReport extends Component {
                                     reportData["financialConflict"] = tempData.value;
                                 if (tempData.name == "financialConflictDescription")
                                     reportData["financialConflictDescription"] = tempData.value;
-                                let daysCount = Math.round((new Date(reportData.approveDate).getTime() - new Date(reportData.submittedDate).getTime()) / (1000*3600*24))
+                                if (tempData.name == "onHoldDays") {
+                                    onHoldDays = tempData.value
+                                }
+                                let daysCount = Math.round((new Date(reportData.approveDate).getTime() - new Date(reportData.submittedDate).getTime()) / (1000*3600*24));
+                                daysCount = onHoldDays ? (daysCount - onHoldDays) : daysCount;
                                 reportData["daysFromSubmissionToApproval"] = isNaN(daysCount) ? 'Not yet approved' : daysCount;
                         })
                         reportDataArr.push(reportData);
