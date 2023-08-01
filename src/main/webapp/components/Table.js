@@ -33,7 +33,7 @@ const styles = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     color: '#337ab7',
-    "line-height": 2.5
+    "line-height": '2.5rem'
   },
   numberColumnWidth: '2%',
   descColumnWidth: '20%',
