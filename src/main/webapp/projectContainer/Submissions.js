@@ -13,7 +13,7 @@ const headers =
     { name: '#', value: 'number' },
     { name: 'Description', value: 'comments' },
     { name: 'File Name', value: 'documents' },
-    { name: 'File Description', value: 'descriptions' },
+    { name: 'File Description', value: 'description' },
     { name: 'Actions', value: 'submissionActions' }
   ];
 
