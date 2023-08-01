@@ -174,7 +174,8 @@ export const Table = hh(class Table extends Component {
                 className: 'glyphicon glyphicon-download submission-download'
               }, []), " ",
               data.document.fileName
-            ])
+            ]),
+            span({}, [" - " + data.document.description])
           ])
         ]);
       }
@@ -456,13 +457,6 @@ export const Table = hh(class Table extends Component {
                 dataFormat={this.documentLink}
                 dataSort={ true }
                 width={styles.submissionDocumentsWidth}>{header.name}</TableHeaderColumn>
-            } else if (header.value === 'description') {
-              return <TableHeaderColumn
-                key={header.value}
-                dataField={header.value}
-                dataSort={true}
-                editable={ false }
-                width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'createDate') {
               return <TableHeaderColumn isKey={isKey}
                 key={header.value}
