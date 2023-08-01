@@ -12,8 +12,7 @@ const headers =
   [
     { name: '#', value: 'number' },
     { name: 'Description', value: 'comments' },
-    { name: 'File Name', value: 'documents' },
-    { name: 'File Description', value: 'fileDescription' },
+    { name: 'File Name | File Description', value: 'documents' },
     { name: 'Actions', value: 'submissionActions' }
   ];
 
@@ -85,7 +84,6 @@ export const Submissions = hh(class Submissions extends Component {
           submisionData.documents.forEach(document => {
             Files.getDocument(document.id).then(doc => {
               document.document = doc.data.document;
-              submisionData['fileDescription'] = doc.data.document.description;
             });
           });
         });

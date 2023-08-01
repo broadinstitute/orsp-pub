@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { format } from 'date-fns';
-import { a, button, div, hh, span, h } from 'react-hyperscript-helpers';
+import { a, button, div, hh, span, h, hr, p } from 'react-hyperscript-helpers';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { ButtonToolbar, DropdownButton, MenuItem, Tooltip, OverlayTrigger, Button, Glyphicon } from 'react-bootstrap';
 import { Btn } from './Btn';
@@ -25,14 +25,15 @@ const styles = {
   collectionNameWidth: '270',
   numberWidth: '85',
   createDateWidth: '15',
-  submissionDocumentsWidth: '200',
+  submissionDocumentsWidth: '400',
   submissionComments: '200',
   createdWidth: '120',
   linkOverflowEllipsis: {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    color: '#337ab7'
+    color: '#337ab7',
+    "line-height": 2.5
   },
   numberColumnWidth: '2%',
   descColumnWidth: '20%',
@@ -164,22 +165,30 @@ export const Table = hh(class Table extends Component {
     cell.forEach(data => {
       if (data.document !== undefined) {
         documents.push([
-          div({style: styles.linkOverflowEllipsis, key: data.document.id}, [
-            a({
-              href: `${UrlConstants.downloadDocumentUrl}?uuid=${data.document.uuid}`,
-              target: '_blank',
-              title: data.document.fileType,
-            }, [
-              span({
-                className: 'glyphicon glyphicon-download submission-download'
-              }, []), " ",
-              data.document.fileName
-            ])
+          div({key: data.document.id}, [
+            div({style: styles.linkOverflowEllipsis}, [
+              a({
+                href: `${UrlConstants.downloadDocumentUrl}?uuid=${data.document.uuid}`,
+                target: '_blank',
+                title: data.document.fileName,
+              }, [
+                span({
+                  className: 'glyphicon glyphicon-download submission-download'
+                }, []), " ",
+                data.document.fileName > 14 ? data.document.fileName.slice(14) + '...' : data.document.fileName
+              ]),
+            ]),
+            span({
+              title: data.document.description == null ? '' : " - " +  data.document.description,
+              style: {'white-space' : 'normal'}
+            }, [data.document.description == null ? '' : " - " +  data.document.description]),
+            p({}),
+            hr({ className: "fullWidth" })
           ])
         ]);
       }
     });
-    return h(Fragment, {} , [...documents]) ;
+    return h(Fragment, {} , [...documents]);
   };
 
   submissionEdit = (cell, row) => {
@@ -274,10 +283,10 @@ export const Table = hh(class Table extends Component {
     let authorWidth = 'auto';
     if(!!this.props.isSubmissionTabActive) {
       styles.numberWidth = '2%';
-      styles.submissionComments = '20%';
-      styles.submissionDocumentsWidth = '5%';
-      styles.createdWidth = '4%';
-      fileDescriptionWidth = '5%';
+      styles.submissionComments = '18%';
+      styles.submissionDocumentsWidth = '8%';
+      styles.createdWidth = '5%';
+      fileDescriptionWidth = '6%';
       authorWidth = '4%';
     }
     return (
@@ -305,6 +314,7 @@ export const Table = hh(class Table extends Component {
                 key={header.name}
                 dataField={header.value}
                 dataSort={true}
+                editable={ false }
                 width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>
             }
             if (header.value === 'status') {
