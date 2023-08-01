@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { format } from 'date-fns';
-import { a, button, div, hh, span, h } from 'react-hyperscript-helpers';
+import { a, button, div, hh, span, h, hr } from 'react-hyperscript-helpers';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import { ButtonToolbar, DropdownButton, MenuItem, Tooltip, OverlayTrigger, Button, Glyphicon } from 'react-bootstrap';
 import { Btn } from './Btn';
@@ -179,7 +179,8 @@ export const Table = hh(class Table extends Component {
             ]),
             span({
               title: data.document.description == null ? '' : " - " +  data.document.description
-            }, [data.document.description == null ? '' : " - " +  data.document.description])
+            }, [data.document.description == null ? '' : " - " +  data.document.description]),
+            hr({ className: "fullWidth" })
           ])
         ]);
       }
