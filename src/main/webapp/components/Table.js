@@ -470,7 +470,7 @@ export const Table = hh(class Table extends Component {
                 width={styles.submissionDocumentsWidth}>{header.name}</TableHeaderColumn>
             } else if (header.value === 'descriptions') {
               return <TableHeaderColumn
-                key={header.name}
+                key={header.value}
                 dataField={header.value}
                 dataSort={true}
                 dataFormat={this.documentDescription}
