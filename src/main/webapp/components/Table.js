@@ -192,8 +192,10 @@ export const Table = hh(class Table extends Component {
   };
 
   formatDescriptionColumn = (cell, row) => {
-    console.log('cell', cell);
-    console.log('row', row);
+    return span({
+      title: cell,
+      style: {'whiteSpace' : 'normal'}
+    }, [cell])
   };
 
   submissionEdit = (cell, row) => {
@@ -284,7 +286,7 @@ export const Table = hh(class Table extends Component {
 
   render() {
     let isKey = false;
-    let fileDescriptionWidth = 'auto';
+    let fileDescriptionWidth = '8%';
     let authorWidth = 'auto';
     
     if(!!this.props.isSubmissionTabActive) {
