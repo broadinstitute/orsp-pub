@@ -191,6 +191,11 @@ export const Table = hh(class Table extends Component {
     return h(Fragment, {} , [...documents]);
   };
 
+  formatDescriptionColumn = (cell, row) => {
+    console.log('cell', cell);
+    console.log('row', row);
+  };
+
   submissionEdit = (cell, row) => {
     return this.props.submissionEdit(row);
   };
@@ -281,6 +286,7 @@ export const Table = hh(class Table extends Component {
     let isKey = false;
     let fileDescriptionWidth = 'auto';
     let authorWidth = 'auto';
+    
     if(!!this.props.isSubmissionTabActive) {
       styles.numberWidth = '2%';
       styles.submissionComments = '18%';
@@ -289,6 +295,7 @@ export const Table = hh(class Table extends Component {
       fileDescriptionWidth = '9%';
       authorWidth = '3%';
     }
+
     return (
       <BootstrapTable data={this.props.data}
         cellEdit={ !component.isViewer ? this.state.cellEditProp : false }
@@ -313,6 +320,7 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn
                 key={header.name}
                 dataField={header.value}
+                dataFormat={this.formatDescriptionColumn}
                 dataSort={true}
                 editable={ false }
                 width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>
