@@ -33,7 +33,7 @@ const styles = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     color: '#337ab7',
-    "line-height": '2.5rem'
+    lineHeight: '2.5rem'
   },
   numberColumnWidth: '2%',
   descColumnWidth: '20%',
@@ -180,7 +180,7 @@ export const Table = hh(class Table extends Component {
             ]),
             span({
               title: data.document.description == null ? '' : " - " +  data.document.description,
-              style: {'white-space' : 'normal'}
+              style: {'whiteSpace' : 'normal'}
             }, [data.document.description == null ? '' : " - " +  data.document.description]),
             p({}),
             hr({ className: "fullWidth" })
