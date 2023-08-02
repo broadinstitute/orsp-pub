@@ -286,7 +286,7 @@ export const Table = hh(class Table extends Component {
 
   render() {
     let isKey = false;
-    let fileDescriptionWidth = '8%';
+    let fileDescriptionWidth = '20%';
     let authorWidth = 'auto';
     
     if(!!this.props.isSubmissionTabActive) {
