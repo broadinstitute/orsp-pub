@@ -112,7 +112,6 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   };
 
   getSubmissionFormInfo = (projectKey, type, submissionId = '') => {
-    let docDetail = {};
     this.props.showSpinner();
     ProjectMigration.getSubmissionFormInfo(projectKey, type, submissionId).then(resp => {
       this.props.hideSpinner();
