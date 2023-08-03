@@ -293,9 +293,9 @@ export const Table = hh(class Table extends Component {
       styles.numberWidth = '2%';
       styles.submissionComments = '18%';
       styles.submissionDocumentsWidth = '8%';
-      styles.createdWidth = '2.5%';
-      fileDescriptionWidth = '9%';
-      authorWidth = '3%';
+      styles.createdWidth = '5%';
+      fileDescriptionWidth = '6%';
+      authorWidth = '4%';
     }
 
     return (
