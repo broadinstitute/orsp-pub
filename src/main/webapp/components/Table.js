@@ -33,7 +33,7 @@ const styles = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     color: '#337ab7',
-    "line-height": 2.5
+    lineHeight: '2.5rem'
   },
   numberColumnWidth: '2%',
   descColumnWidth: '20%',
@@ -180,7 +180,7 @@ export const Table = hh(class Table extends Component {
             ]),
             span({
               title: data.document.description == null ? '' : " - " +  data.document.description,
-              style: {'white-space' : 'normal'}
+              style: {'whiteSpace' : 'normal'}
             }, [data.document.description == null ? '' : " - " +  data.document.description]),
             p({}),
             hr({ className: "fullWidth" })
@@ -189,6 +189,13 @@ export const Table = hh(class Table extends Component {
       }
     });
     return h(Fragment, {} , [...documents]);
+  };
+
+  formatDescriptionColumn = (cell, row) => {
+    return span({
+      title: cell,
+      style: {'whiteSpace' : 'normal'}
+    }, [cell])
   };
 
   submissionEdit = (cell, row) => {
@@ -279,8 +286,9 @@ export const Table = hh(class Table extends Component {
 
   render() {
     let isKey = false;
-    let fileDescriptionWidth = 'auto';
     let authorWidth = 'auto';
+    let fileDescriptionWidth = 'auto';
+    
     if(!!this.props.isSubmissionTabActive) {
       styles.numberWidth = '2%';
       styles.submissionComments = '18%';
@@ -289,6 +297,7 @@ export const Table = hh(class Table extends Component {
       fileDescriptionWidth = '6%';
       authorWidth = '4%';
     }
+
     return (
       <BootstrapTable data={this.props.data}
         cellEdit={ !component.isViewer ? this.state.cellEditProp : false }
@@ -313,6 +322,7 @@ export const Table = hh(class Table extends Component {
               return <TableHeaderColumn
                 key={header.name}
                 dataField={header.value}
+                dataFormat={this.formatDescriptionColumn}
                 dataSort={true}
                 editable={ false }
                 width={fileDescriptionWidth}>{header.name}</TableHeaderColumn>

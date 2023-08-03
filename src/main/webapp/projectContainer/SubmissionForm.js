@@ -112,7 +112,9 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   };
 
   getSubmissionFormInfo = (projectKey, type, submissionId = '') => {
+    this.props.showSpinner();
     ProjectMigration.getSubmissionFormInfo(projectKey, type, submissionId).then(resp => {
+      this.props.hideSpinner();
       const submissionInfo = resp.data;
       if (this._isMounted) {
         this.setState(prev => {
@@ -131,6 +133,12 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             submissionInfo.submission.number;
           prev.docTypes = this.loadOptions(submissionInfo.docTypes);
           prev.documents = isEmpty(submissionInfo.documents) ? [] : submissionInfo.documents;
+          !isEmpty(submissionInfo.documents) ? submissionInfo.documents.forEach(doc => {
+            doc['fileDescription'] = doc.description;
+            doc['displayName'] = doc.creator;
+            doc['createdDate'] = new Date(doc.creationDate).toISOString().substring(0,10);
+          }) : [];
+          prev.viewDocDetails = isEmpty(submissionInfo.documents) ? [] : submissionInfo.documents;
           return prev;
         });
       }
