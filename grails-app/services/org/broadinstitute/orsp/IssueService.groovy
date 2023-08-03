@@ -414,6 +414,7 @@ class IssueService implements UserInfo {
         if (previousStatus.equals(IssueStatus.OnHold.getName()) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
             def eventDate = queryService.getProjectEventDate(params.projectKey, EventType.ONHOLD_PROJECT.toString())
             String specificDate = eventDate[0].toString()
+            log.info(specificDate)
             long differenceInDays
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")
             try {
