@@ -424,7 +424,7 @@ class IssueService implements UserInfo {
                 Date date2 = sdf.parse(sdf.format(currentDate))
                 long differenceInMillis = Math.abs(date2.time - date1.time)
                 differenceInDays = differenceInMillis / (24 * 60 * 60 * 1000)
-                log.info(differenceInDays.toString())
+                log.info('Difference in days: ' + differenceInDays.toString())
 
             } catch (ParseException e) {
                 log.error("Error parsing the dates: " + e)
@@ -439,7 +439,6 @@ class IssueService implements UserInfo {
                 ).save(flush: true)
             } else {
                 def newOnHoldDays = hasOnHoldDays[0].toString().toInteger() + differenceInDays
-                log.info(newOnHoldDays.toString())
                 queryService.updateOnHoldDays(params.projectKey, newOnHoldDays.toString())
             }
 
