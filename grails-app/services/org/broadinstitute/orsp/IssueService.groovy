@@ -417,9 +417,9 @@ class IssueService implements UserInfo {
             def specificDate = eventDate[0].toString()
             def currentDate = Instant.now().toString()
             long differenceInDays
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")
-
             log.info(currentDate)
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")
             try {
                 Date date1 = sdf.parse(sdf.format(specificDate))
                 Date date2 = sdf.parse(sdf.format(currentDate))
