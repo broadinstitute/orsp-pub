@@ -415,9 +415,11 @@ class IssueService implements UserInfo {
         if (previousStatus.equals(IssueStatus.OnHold.getName()) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
             def eventDate = queryService.getProjectEventDate(params.projectKey, EventType.ONHOLD_PROJECT.toString())
             def specificDate = eventDate[0].toString()
-            def currentDate = Instant.now()
+            def currentDate = Instant.now().toString()
             long differenceInDays
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")
+
+            log.info(currentDate)
             try {
                 Date date1 = sdf.parse(sdf.format(specificDate))
                 Date date2 = sdf.parse(sdf.format(currentDate))
