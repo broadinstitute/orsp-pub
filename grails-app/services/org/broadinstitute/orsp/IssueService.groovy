@@ -419,7 +419,7 @@ class IssueService implements UserInfo {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")
             try {
                 Date date1 = sdf.parse(specificDate)
-                Date date2 = sdf.parse(new Date().toString())
+                Date date2 = sdf.parse(new Date())
 
                 long differenceInMillis = Math.abs(date2.time - date1.time)
                 differenceInDays = differenceInMillis / (24 * 60 * 60 * 1000)
