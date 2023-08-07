@@ -1954,7 +1954,7 @@ class QueryService implements Status {
     List getProjectEventDate(String projectKey, String eventType) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-        final String query = 'SELECT created from event where project_key= :projectKey and event_type= :eventType'
+        final String query = 'SELECT created FROM event WHERE project_key= :projectKey AND event_type= :eventType ORDER BY created DESC'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setParameter('projectKey', projectKey)
         sqlQuery.setParameter('eventType', eventType)
@@ -1968,7 +1968,7 @@ class QueryService implements Status {
     List getPropertyValue(String projectKey, String name) {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
-        final String query = 'SELECT value from issue_extra_property where project_key= :projectKey  AND name= :name'
+        final String query = 'SELECT value FROM issue_extra_property WHERE project_key= :projectKey AND name= :name'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setParameter('projectKey', projectKey)
         sqlQuery.setParameter('name', name)

@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.Instant
 
 /**
  * This class handles the general update or creation of issues and nothing more.
@@ -413,17 +414,18 @@ class IssueService implements UserInfo {
 
         if (previousStatus.equals(IssueStatus.OnHold.getName()) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
             def eventDate = queryService.getProjectEventDate(params.projectKey, EventType.ONHOLD_PROJECT.toString())
-            String specificDate = eventDate[0].toString()
-            log.info(specificDate)
+            def specificDate = eventDate[0].toString()
+            def currentDate = new Date()
             long differenceInDays
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd")
             try {
-                Date date1 = sdf.parse(sdf.format(specificDate))
-                Date date2 = sdf.parse(sdf.format(new Date()))
 
+                Date date1 = sdf.parse(specificDate)
+                Date date2 = sdf.parse(sdf.format(currentDate))
                 long differenceInMillis = Math.abs(date2.time - date1.time)
                 differenceInDays = differenceInMillis / (24 * 60 * 60 * 1000)
-                log.info(differenceInDays.toString())
+                log.info('Difference in days: ' + differenceInDays.toString())
+
             } catch (ParseException e) {
                 log.error("Error parsing the dates: " + e)
             }
@@ -437,7 +439,6 @@ class IssueService implements UserInfo {
                 ).save(flush: true)
             } else {
                 def newOnHoldDays = hasOnHoldDays[0].toString().toInteger() + differenceInDays
-                log.info(newOnHoldDays.toString())
                 queryService.updateOnHoldDays(params.projectKey, newOnHoldDays.toString())
             }
 
