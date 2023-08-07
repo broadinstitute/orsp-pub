@@ -166,6 +166,10 @@ export const Table = hh(class Table extends Component {
       if (data.document !== undefined) {
         documents.push([
           div({key: data.document.id}, [
+            span({
+              title: data.document.fileType,
+              style: {'whiteSpace' : 'normal'}
+            }, [data.document.fileType]),
             div({style: styles.linkOverflowEllipsis}, [
               a({
                 href: `${UrlConstants.downloadDocumentUrl}?uuid=${data.document.uuid}`,
