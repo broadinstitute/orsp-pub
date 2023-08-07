@@ -201,7 +201,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
       let documents = this.state.documents
       editedDocs.forEach(editedDoc => {
         documents.forEach(doc => {
-          if (doc.fileName === editedDoc.fileName && doc.fileDescription !== editedDoc.fileDescription) {
+          if (doc.id === editedDoc.id && doc.fileDescription !== editedDoc.fileDescription) {
             doc.fileDescription = editedDoc.fileDescription
           }
         })
@@ -330,6 +330,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
       viewDocDetail['fileDescription'] = doc.fileDescription;
       viewDocDetail['displayName'] = name;
       viewDocDetail['createdDate'] = createdDate;
+      viewDocDetail['id'] = document.id;
       let documents = prev.documents;
       documents.push(document);
       prev.documents = documents;
