@@ -421,7 +421,6 @@ class IssueService implements UserInfo {
             try {
                 Date date1 = sdf.parse(specificDate)
                 Date date2 = sdf.parse(sdf.format(currentDate))
-
                 long differenceInMillis = Math.abs(date2.time - date1.time)
                 differenceInDays = differenceInMillis / (24 * 60 * 60 * 1000)
                 log.info(differenceInDays.toString())
