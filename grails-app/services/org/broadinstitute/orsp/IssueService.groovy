@@ -416,10 +416,10 @@ class IssueService implements UserInfo {
             String specificDate = eventDate[0].toString()
             log.info(specificDate)
             long differenceInDays
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd")
             try {
-                Date date1 = sdf.parse(specificDate)
-                Date date2 = sdf.parse(new Date().toString())
+                Date date1 = sdf.parse(sdf.format(specificDate))
+                Date date2 = sdf.parse(sdf.format(new Date()))
 
                 long differenceInMillis = Math.abs(date2.time - date1.time)
                 differenceInDays = differenceInMillis / (24 * 60 * 60 * 1000)
