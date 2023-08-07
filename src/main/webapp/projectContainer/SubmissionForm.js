@@ -132,13 +132,13 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             this.maximumNumber(submissionInfo.submissionNumberMaximums, prev.params.type, prev.params.submissionId) :
             submissionInfo.submission.number;
           prev.docTypes = this.loadOptions(submissionInfo.docTypes);
-          prev.documents = isEmpty(submissionInfo.documents) ? [] : submissionInfo.documents;
+          prev.documents = isEmpty(submissionInfo.documents) ? [] : [...submissionInfo.documents];
           !isEmpty(submissionInfo.documents) ? submissionInfo.documents.forEach(doc => {
             doc['fileDescription'] = doc.description;
             doc['displayName'] = doc.creator;
             doc['createdDate'] = new Date(doc.creationDate).toISOString().substring(0,10);
           }) : [];
-          prev.viewDocDetails = isEmpty(submissionInfo.documents) ? [] : submissionInfo.documents;
+          prev.viewDocDetails = isEmpty(submissionInfo.documents) ? [] : [...submissionInfo.documents];
           return prev;
         });
       }
