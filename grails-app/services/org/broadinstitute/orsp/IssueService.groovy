@@ -417,7 +417,7 @@ class IssueService implements UserInfo {
             def specificDate = eventDate[0].toString()
             def currentDate = new Date()
             long differenceInDays
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd")
             try {
 
                 Date date1 = sdf.parse(specificDate)
