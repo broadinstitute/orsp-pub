@@ -67,7 +67,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
   };
 
   checkvalue = () => {
-    if (this.props.value === undefined || this.props.value === '') {
+    if (!this.props.value) {
       return '';
     } else {
       if (this.props.value.label) {
