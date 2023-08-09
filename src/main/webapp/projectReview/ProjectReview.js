@@ -1362,7 +1362,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
               onChange: this.handleSelect("irb"),
               readOnly: this.state.readOnly,
               placeholder: isEmpty(this.state.formData.projectExtraProps.irb) && this.state.readOnly ? "--" : "Select...",
-              edit: true
+              edit: true,
+              isClearable: true
             })
           ])
         ]),
