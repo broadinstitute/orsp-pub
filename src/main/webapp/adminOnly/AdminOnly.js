@@ -566,11 +566,9 @@ const AdminOnly = hh(class AdminOnly extends Component {
                 onChange: this.handleSelect("preferredIrb"),
                 readOnly: true,
                 placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
-                edit: false
+                edit: false,
+                showRemove: true
               }),
-              span({ style: {'floatRight': 'right'} }, [
-                i({ className: 'glyphicon glyphicon-remove' },[])
-              ])
             ]),
             InputFieldText({
               id: "preferredIrbText",

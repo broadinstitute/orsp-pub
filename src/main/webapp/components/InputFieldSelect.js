@@ -155,7 +155,13 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               placeholder: ((this.props.placeholder === undefined || this.props.placeholder === '') && this.props.readOnly) ? '--' : this.props.placeholder,
               disabled: this.props.disabled,
               onBlur: this.props.focusOut
-            })
+            }),
+            span({ 
+              isRendered: this.props.showRemove,
+              style: {'floatRight': 'right'} 
+            }, [
+              i({ className: 'glyphicon glyphicon-remove' },[])
+            ])
           ])
         ])
     )
