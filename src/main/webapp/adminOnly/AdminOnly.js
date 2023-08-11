@@ -510,7 +510,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
     });
   }
 
-  clearIRB() {
+  clearIRB = () => {
     console.log('before ', this.state.formData.preferredIrb)
     this.setState(prev => {
       prev.formData.preferredIrb = JSON.stringify({label: "--", value: "--"})
