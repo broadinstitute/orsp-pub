@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, createRef } from 'react';
 import { div, h, hh } from 'react-hyperscript-helpers';
 import ProjectReview from '../projectReview/ProjectReview';
 import { History } from '../components/History';
@@ -26,6 +26,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
       dialogContent: '',
       activeTab: 'review'
     };
+    this.child = createRef();
   }
 
   componentDidMount= async () => {
@@ -176,7 +177,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               div({
                 key: "adminOnly",
                 title: "Admin Only",
-                onClick: this.child.init()
               }, [
                   h(AdminOnly, {
                     ref: instance => this.child = instance,
@@ -184,6 +184,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                     updateAdminOnlyStatus: this.updateAdminOnlyStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
                     projectKey: this.props.projectKey,
+                    onClick: () => { this.child.current.init() }
                   })
                 ])
             ])
