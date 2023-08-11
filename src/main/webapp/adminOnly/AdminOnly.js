@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, div, h2, hh, p, span, ul, li, small } from 'react-hyperscript-helpers';
+import { button, div, h2, hh, p, span, ul, li, small, i } from 'react-hyperscript-helpers';
 import { Project, Search } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -556,17 +556,22 @@ const AdminOnly = hh(class AdminOnly extends Component {
               onChange: this.radioBtnHandler,
               readOnly: !this.state.isAdmin
             }),
-            InputFieldSelect({
-              label: "IRB",
-              id: "preferredIrb",
-              name: "preferredIrb",
-              options: PREFERRED_IRB,
-              value: this.state.formData.preferredIrb,
-              onChange: this.handleSelect("preferredIrb"),
-              readOnly: true,
-              placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
-              edit: false
-            }),
+            div({}, [
+              InputFieldSelect({
+                label: "IRB",
+                id: "preferredIrb",
+                name: "preferredIrb",
+                options: PREFERRED_IRB,
+                value: this.state.formData.preferredIrb,
+                onChange: this.handleSelect("preferredIrb"),
+                readOnly: true,
+                placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
+                edit: false
+              }),
+              span({ style: {'floatRight': 'right'} }, [
+                i({ className: 'glyphicon glyphicon-remove' },[])
+              ])
+            ]),
             InputFieldText({
               id: "preferredIrbText",
               name: "preferredIrbText",
