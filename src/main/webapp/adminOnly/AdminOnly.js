@@ -511,10 +511,11 @@ const AdminOnly = hh(class AdminOnly extends Component {
   }
 
   clearIRB() {
-    this.state.formData.preferredIrb
+    console.log('before ', this.state.formData.preferredIrb)
     this.setState(prev => {
       prev.formData.preferredIrb = JSON.stringify({label: "--", value: "--"})
     })
+    console.log('after ', this.state.formData.preferredIrb)
   }
 
   render() {
@@ -582,16 +583,13 @@ const AdminOnly = hh(class AdminOnly extends Component {
             ]),
             span({
               className: 'col-md-1',
-              onClick: () => {
-                this.setState(prev => {
-                  prev.formData.preferredIrb = JSON.stringify({label: "--", value: "--"});
-                })  
-              }
+              onClick: this.clearIRB,
+              style: {'marginTop': '1.5rem'}
             }, [
               i({
                 className: 'glyphicon glyphicon-remove',
               }, [])
-            ]), br(),
+            ]), br(), br(),
             InputFieldText({
               id: "preferredIrbText",
               name: "preferredIrbText",
