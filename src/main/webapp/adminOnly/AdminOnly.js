@@ -508,6 +508,13 @@ const AdminOnly = hh(class AdminOnly extends Component {
     });
   }
 
+  clearIRB() {
+    this.state.formData.preferredIrb
+    this.setState(prev => {
+      prev.formData.preferredIrb = JSON.stringify({label: "--", value: "--"})
+    })
+  }
+
   render() {
     return(
       div({},[
@@ -567,7 +574,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
                 readOnly: true,
                 placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
                 edit: false,
-                showRemove: true
+                showRemove: true,
+                clearIRB: this.clearIRB
               }),
             ]),
             InputFieldText({

@@ -158,7 +158,8 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
             }),
             span({ 
               isRendered: this.props.showRemove,
-              style: {'floatRight': 'right'} 
+              style: {'floatRight': 'right'},
+              onClick: this.props.clearIRB
             }, [
               i({ className: 'glyphicon glyphicon-remove' },[])
             ])
