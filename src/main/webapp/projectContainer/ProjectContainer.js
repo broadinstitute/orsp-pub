@@ -24,9 +24,10 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
       history: [],
       comments: [],
       dialogContent: '',
-      activeTab: 'review'
+      activeTab: 'review',
+      adminTab: false,
     };
-    this.child = createRef();
+    
   }
 
   componentDidMount= async () => {
@@ -100,7 +101,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     if(tab === 'history') {
       this.getHistory();
     }
-    console.log(this.child.current)
+
   };
 
   render() {
@@ -117,10 +118,9 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Project Details",
               }, [
                   h(ProjectReview, {
-                    ref: this.child,
-                    updateDetailsStatus: this.updateDetailsStatus,
                     changeInfoStatus: this.props.changeInfoStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
+                    updateDetailsStatus: this.updateDetailsStatus,
                     updateContent: this.updateContent,
                     projectKey: this.props.projectKey,
                     history: this.props.history
@@ -179,13 +179,16 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               div({
                 title: "Admin Only",
                 key: "adminOnly",
+                onClick: () => {this.setState(prev => {
+                  prev.adminTab = !this.state.adminTab
+                })}
               }, [
                   h(AdminOnly, {
+                    adminTab: this.state.adminTab,
+                    projectKey: this.props.projectKey,
                     statusBoxHandler: this.props.statusBoxHandler,
                     updateAdminOnlyStatus: this.updateAdminOnlyStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
-                    ref: this.child,
-                    projectKey: this.props.projectKey
                   })
                 ])
             ])

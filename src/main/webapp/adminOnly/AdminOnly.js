@@ -89,6 +89,13 @@ const AdminOnly = hh(class AdminOnly extends Component {
     this._isMounted = false;
   }
 
+  componentDidUpdate(prevState, prevProps) {
+    console.log(prevProps, prevState);
+    if (this.props.adminTab != prevProps.adminTab) {
+      this.init();
+    }
+  }
+
   init = () => {
     Project.getProject(this.props.projectKey).then(issue => {
       let formData = {};
@@ -563,7 +570,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
               onChange: this.radioBtnHandler,
               readOnly: !this.state.isAdmin
             }),
-            div({}, [
+            div({className: 'col-md-11'}, [
               InputFieldSelect({
                 label: "IRB",
                 id: "preferredIrb",
@@ -577,6 +584,15 @@ const AdminOnly = hh(class AdminOnly extends Component {
                 showRemove: true,
                 clearIRB: this.clearIRB
               }),
+            ]),
+            span({
+              className: 'col-md-1',
+              onClick: () => {console.log('clicked span');}
+            }, [
+              i({
+                className: 'glyphicon glyphicon-remove',
+                onClick: () => {console.log('clicked i');}
+              }, [])
             ]),
             InputFieldText({
               id: "preferredIrbText",
