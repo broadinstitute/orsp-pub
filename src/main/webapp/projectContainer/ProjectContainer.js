@@ -117,6 +117,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Project Details",
               }, [
                   h(ProjectReview, {
+                    ref: this.child,
                     updateDetailsStatus: this.updateDetailsStatus,
                     changeInfoStatus: this.props.changeInfoStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
