@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, div, h2, hh, p, span, ul, li, small, i } from 'react-hyperscript-helpers';
+import { button, div, h2, hh, p, span, ul, li, small, i, br } from 'react-hyperscript-helpers';
 import { Project, Search } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -89,12 +89,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
     this._isMounted = false;
   }
 
-  componentDidUpdate(prevState, prevProps) {
-    console.log(prevProps, prevState);
-    if (this.props.adminTab != prevProps.adminTab) {
-      this.init();
-    }
-  }
+ 
 
   init = () => {
     Project.getProject(this.props.projectKey).then(issue => {
@@ -587,13 +582,16 @@ const AdminOnly = hh(class AdminOnly extends Component {
             ]),
             span({
               className: 'col-md-1',
-              onClick: () => {console.log('clicked span');}
+              onClick: () => {
+                this.setState(prev => {
+                  prev.formData.preferredIrb = JSON.stringify({label: "--", value: "--"});
+                })  
+              }
             }, [
               i({
                 className: 'glyphicon glyphicon-remove',
-                onClick: () => {console.log('clicked i');}
               }, [])
-            ]),
+            ]), br(),
             InputFieldText({
               id: "preferredIrbText",
               name: "preferredIrbText",
