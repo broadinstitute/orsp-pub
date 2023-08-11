@@ -297,7 +297,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             value: this.state.formData.irb,
             onChange: this.handleSelectChange("irb"),
             readOnly: false,
-            edit: false
+            edit: false,
+            isClearable: true
           })
         ])
       ])
