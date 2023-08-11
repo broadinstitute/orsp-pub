@@ -175,9 +175,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 }),
               ]),
               div({
-                key: "adminOnly",
                 title: "Admin Only",
-                onClick: this.child.init()
+                key: "adminOnly",
               }, [
                   h(AdminOnly, {
                     ref: instance => this.child = instance,
