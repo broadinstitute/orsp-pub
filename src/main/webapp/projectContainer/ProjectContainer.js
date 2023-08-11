@@ -100,6 +100,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
     if(tab === 'history') {
       this.getHistory();
     }
+    console.log(this.child.current)
   };
 
   render() {
@@ -179,12 +180,11 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 key: "adminOnly",
               }, [
                   h(AdminOnly, {
-                    ref: instance => this.child = instance,
                     statusBoxHandler: this.props.statusBoxHandler,
                     updateAdminOnlyStatus: this.updateAdminOnlyStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
-                    projectKey: this.props.projectKey,
-                    onClick: () => { this.child.current.init() }
+                    ref: this.child,
+                    projectKey: this.props.projectKey
                   })
                 ])
             ])
