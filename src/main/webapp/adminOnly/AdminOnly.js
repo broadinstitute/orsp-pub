@@ -513,7 +513,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
   clearIRB = () => {
     console.log('before ', this.state.formData.preferredIrb)
     this.setState(prev => {
-      prev.formData.preferredIrb = JSON.stringify({label: "--", value: "--"})
+      prev.formData.preferredIrb = {label: "--", value: "--"};
+      return prev;
     })
     console.log('after ', this.state.formData.preferredIrb)
   }
@@ -578,7 +579,6 @@ const AdminOnly = hh(class AdminOnly extends Component {
                 placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
                 edit: false,
                 showRemove: true,
-                clearIRB: this.clearIRB
               }),
             ]),
             span({
