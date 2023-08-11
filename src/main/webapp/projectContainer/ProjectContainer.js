@@ -176,8 +176,10 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               div({
                 key: "adminOnly",
                 title: "Admin Only",
+                onClick: this.child.init()
               }, [
                   h(AdminOnly, {
+                    ref: instance => this.child = instance,
                     statusBoxHandler: this.props.statusBoxHandler,
                     updateAdminOnlyStatus: this.updateAdminOnlyStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
