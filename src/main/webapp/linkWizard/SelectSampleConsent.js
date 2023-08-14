@@ -105,7 +105,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       createdDate = new Date().toISOString().substring(0,10);
     })
     let viewDocDetail = {};
-    let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random() };
+    let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription };
     viewDocDetail['fileType'] = doc.fileKey;
       viewDocDetail['file'] = doc.file;
       viewDocDetail['fileName'] = doc.file.name;

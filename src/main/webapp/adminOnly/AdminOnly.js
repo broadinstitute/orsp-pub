@@ -598,7 +598,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
               }),
             ]),
             span({
-              className: 'col-md-1',
+              className: 'col-md-1 text-right',
               onClick: this.clearIRB,
               style: {'marginTop': '1.5rem', "cursor": "pointer"}
             }, [
