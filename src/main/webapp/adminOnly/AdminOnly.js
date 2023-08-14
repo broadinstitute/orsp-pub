@@ -210,7 +210,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
           // to reflect the change in project review
           // when admin clears the IRB-of-Record field in admin-only page
           if(this.state.pageReload) {
-            window.location.reload
+            window.location.reload();
           }
 
           this.props.hideSpinner();
@@ -600,7 +600,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
             span({
               className: 'col-md-1',
               onClick: this.clearIRB,
-              style: {'marginTop': '1.5rem'}
+              style: {'marginTop': '1.5rem', "cursor": "pointer"}
             }, [
               i({
                 className: 'glyphicon glyphicon-remove',
