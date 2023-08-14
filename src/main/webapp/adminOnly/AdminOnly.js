@@ -335,6 +335,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
   getParsedForm() {
     let form = {};
     form.irbReferral = JSON.stringify(this.state.formData.preferredIrb);
+    form.irb = JSON.stringify(this.state.formData.preferredIrb);
     form.irbReferralText = this.state.formData.preferredIrbText;
     form.investigatorFirstName = this.state.formData.investigatorFirstName;
     form.investigatorLastName = this.state.formData.investigatorLastName;
@@ -511,12 +512,10 @@ const AdminOnly = hh(class AdminOnly extends Component {
   }
 
   clearIRB = () => {
-    console.log('before ', this.state.formData.preferredIrb)
     this.setState(prev => {
       prev.formData.preferredIrb = {label: "--", value: "--"};
       return prev;
     })
-    console.log('after ', this.state.formData.preferredIrb)
   }
 
   render() {
