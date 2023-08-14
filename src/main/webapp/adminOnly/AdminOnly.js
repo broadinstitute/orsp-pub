@@ -74,7 +74,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
         adminComments: '',
         financialConflict: '',
         textFinancialConflict: ''
-      }
+      },
+      pageReload: false
     };
     this.addNewDegree = this.addNewDegree.bind(this)
   }
@@ -205,6 +206,13 @@ const AdminOnly = hh(class AdminOnly extends Component {
     if (this.isValid()) {
       Project.updateAdminOnlyProps(parsedForm , this.props.projectKey).then(
         response => {
+          // NB: this is to reload the page
+          // to reflect the change in project review
+          // when admin clears the IRB-of-Record field in admin-only page
+          if(this.state.pageReload) {
+            window.location.reload
+          }
+
           this.props.hideSpinner();
           this.setState(prev => {
             prev.initial = createObjectCopy(this.state.formData);
@@ -364,6 +372,15 @@ const AdminOnly = hh(class AdminOnly extends Component {
     } else if (this.state.formData.initialReviewType.value === 'Not Engaged') {
       form.notEngagedCategories = this.state.formData.notEngagedCategories;
       form.textOtherNotEngagedCategory = this.state.formData.textOtherNotEngagedCategory;
+    }
+
+    // NB: this is to reload the page
+    // to reflect the change in project review
+    // when admin clears the IRB-of-Record field in admin-only page
+    if (this.state.formData.preferredIrb.value === "--") {
+      this.setState({
+        pageReload: true
+      })
     }
     
     let degrees = [];

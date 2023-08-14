@@ -25,7 +25,6 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
       comments: [],
       dialogContent: '',
       activeTab: 'review',
-      adminTab: false,
     };
     
   }
@@ -179,16 +178,12 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               div({
                 title: "Admin Only",
                 key: "adminOnly",
-                onClick: () => {this.setState(prev => {
-                  prev.adminTab = !this.state.adminTab
-                })}
               }, [
                   h(AdminOnly, {
-                    adminTab: this.state.adminTab,
-                    projectKey: this.props.projectKey,
                     statusBoxHandler: this.props.statusBoxHandler,
                     updateAdminOnlyStatus: this.updateAdminOnlyStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
+                    projectKey: this.props.projectKey,
                   })
                 ])
             ])
