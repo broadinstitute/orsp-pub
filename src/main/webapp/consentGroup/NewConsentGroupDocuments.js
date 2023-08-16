@@ -64,6 +64,7 @@ export const NewConsentGroupDocuments = hh(class NewConsentGroupDocuments extend
       viewDocDetail['fileDescription'] = doc.fileDescription;
       viewDocDetail['displayName'] = name;
       viewDocDetail['createdDate'] = createdDate;
+      viewDocDetail['id'] = document.id;
       documents.push(document);
       prev.documents = documents;
       let viewDocDetails = prev.viewDocDetails;
