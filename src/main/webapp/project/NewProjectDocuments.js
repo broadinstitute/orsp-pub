@@ -68,6 +68,7 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
       viewDocDetail['fileDescription'] = doc.fileDescription;
       viewDocDetail['displayName'] = name;
       viewDocDetail['createdDate'] = createdDate;
+      viewDocDetail['id'] = document.id;
       let documents = prev.documents;
       documents.push(document);
       prev.documents = documents;

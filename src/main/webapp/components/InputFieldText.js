@@ -30,6 +30,7 @@ export const InputFieldText = hh(class InputFieldText extends Component {
               disabled: this.props.readOnly ? true : this.props.disabled,
               onChange: this.props.onChange,
               onBlur: this.props.focusOut,
+              autocomplete: 'off'
             })
           ])
         ])

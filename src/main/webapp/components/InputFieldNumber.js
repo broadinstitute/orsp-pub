@@ -20,6 +20,7 @@ const InputFieldNumber = (props) => {
           onChange={onChange}
           min={!isEmpty(props.min) ? props.min : ''}
           max={!isEmpty(props.max) ? props.max : ''}
+          autoComplete='off'
         />
       </div>
     </div>

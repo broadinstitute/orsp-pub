@@ -112,6 +112,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       viewDocDetail['fileDescription'] = doc.fileDescription;
       viewDocDetail['displayName'] = name;
       viewDocDetail['createdDate'] = createdDate;
+      viewDocDetail['id'] = document.id;
     this.setState(prev => {
       let documents = prev.documents;
       documents.push(document);
