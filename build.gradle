@@ -100,7 +100,7 @@ dependencies {
     compile 'javax.ws.rs:jsr311-api:1.1.1'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
     compile 'javax.mail:mail:1.4.7'
-    compile 'com.google.guava:guava:31.1-jre'
+    compile 'com.google.guava:guava:28.2-jre'
     compile 'commons-logging:commons-logging:1.2'
     compile 'com.google.apis:google-api-services-storage:v1-rev20220705-2.0.0'
     compile 'com.google.api-client:google-api-client:2.0.0'
