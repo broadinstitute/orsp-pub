@@ -26,7 +26,9 @@ RUN ln -sf /root/.nvm/versions/node/v$NODE_VERSION/bin/npm /usr/bin/npm
 
 ENV WEBPACK_VERSION 4.43.0
 ENV WEBPACK_VERSION_CLI 4.4.0
-RUN npm install -g webpack@$WEBPACK_VERSION webpack-cli@WEBPACK_VERSION_CLI yarn
+RUN npm install -g webpack@$WEBPACK_VERSION
+RUN npm install -g webpack-cli@WEBPACK_VERSION_CLI
+RUN npm install -g yarn
 
 RUN ln -sf /root/.nvm/versions/node/v$NODE_VERSION/bin/webpack /usr/bin/webpack
 RUN ln -sf /root/.nvm/versions/node/v$NODE_VERSION/bin/webpack-cli /usr/bin/webpack-cli
