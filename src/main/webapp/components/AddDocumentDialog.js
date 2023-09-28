@@ -1,14 +1,15 @@
 import { Component } from 'react';
-import { button, h, hh } from 'react-hyperscript-helpers';
+import { button, h, hh, br } from 'react-hyperscript-helpers';
 import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
 import { InputFieldSelect } from './InputFieldSelect';
 import { InputFieldFile } from './InputFieldFile';
-import { Files } from '../util/ajax';
+import { Files, User } from '../util/ajax';
 import './ConfirmationDialog.css';
 import LoadingWrapper from './LoadingWrapper';
 import { KeyDocumentsEnum } from "../util/KeyDocuments";
+import { InputFieldText } from './InputFieldText';
 
-const MAX_SIZE = 15700000;
+const MAX_SIZE = 524288000;
 
 const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   constructor(props) {
@@ -31,11 +32,24 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       },
       currentValue: {
         label: ''
-      }
+      },
+      dropEvent: null,
+      description: '',
+      descriptionError: false
     };
     this.upload = this.upload.bind(this);
     this.handleTypeSelect = this.handleTypeSelect.bind(this);
     this.setFilesToUpload = this.setFilesToUpload.bind(this);
+  }
+
+  componentDidMount() {
+    this.init();
+  }
+
+  init() {
+    this.setState(prev => {
+      prev.dropEvent= this.props.dropEvent
+    }, () => this.setDroppedFilesToUpload())
   }
 
   handleClose = () => {
@@ -50,6 +64,8 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       prev.disableSendBtn = false;
       prev.alertMessage = '';
       prev.type = '';
+      prev.dropEvent = null;
+      prev.descriptionError = false;
       return prev;
     });
     this.props.closeModal();
@@ -65,7 +81,13 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
           prev.disableBtn = true;
           return prev;
         });
-        let file = { file: this.state.file, fileKey: this.state.type.label };
+        let file;
+        if (this.state.dropEvent) {
+          this.setDroppedFilesToUpload();
+          file = { file: this.state.dropEvent, fileKey: this.state.type.label, fileDescription: this.state.description }
+        } else {
+          file = { file: this.state.file, fileKey: this.state.type.label, fileDescription: this.state.description };
+        }
         let files = [file];
         if(this.props.projectKey !== undefined) {
           this.props.showSpinner();
@@ -113,6 +135,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
   isValid() {
     let typeError = false;
     let fileError = false;
+    let descriptionError = false;
     let errorMessage = '';
     if (this.state.submit) {
       if (this.state.file.name === '') {
@@ -122,14 +145,18 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       if (this.state.type === '') {
         typeError = true;
       }
+      if (this.state.description === '') {
+        descriptionError = true
+      }
       this.setState(prev => {
         prev.typeError = typeError;
         prev.fileError = fileError;
         prev.errorMessage = errorMessage;
+        prev.descriptionError = descriptionError;
         return prev;
       });
     }
-    return !typeError && !fileError;
+    return !typeError && !fileError && !descriptionError;
   }
 
   handleTypeSelect = () => (selectedOption) => {
@@ -144,17 +171,49 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
     });
   };
 
+  handleDescriptionChange = (e) => {
+    this.setState({
+      description: e.target.value,
+      descriptionError: false
+    })
+  }
+
+  setDroppedFilesToUpload = () => {
+    if(this.state.dropEvent) {
+      let selectedFile = this.state.dropEvent;
+      if(selectedFile.size > MAX_SIZE) {
+        this.setState(prev => {
+          prev.errorMessage = 'Size exceeded. Max file size 500 Mb.';
+          prev.fileError = true;
+          prev.file = { name: '' };
+          return prev;
+        });
+      } else {      
+        this.setState(prev => {
+          prev.alertMessage = '';
+          prev.errorMessage = '';
+          prev.disableBtn = false;
+          prev.showAlert = false;
+          prev.fileError = false;
+          prev.file = selectedFile;
+          return prev;
+        });
+      }
+    }
+  };
+
   setFilesToUpload = () => (e) => {
     let selectedFile = e.target.files[0];
     e.target.value = '';
     if(selectedFile.size > MAX_SIZE) {
       this.setState(prev => {
-        prev.errorMessage = 'Size exceeded. Max file size 15.7 Mb.';
+        prev.errorMessage = 'Size exceeded. Max file size 500 Mb.';
         prev.fileError = true;
         prev.file = { name: '' };
         return prev;
       });
     } else {      
+
       this.setState(prev => {
         prev.alertMessage = '';
         prev.errorMessage = '';
@@ -165,7 +224,6 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
         return prev;
       });
     }
-    
   };
 
   removeFile() {
@@ -173,6 +231,7 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
       prev.file = {
         name: ''
       };
+      prev.dropEvent = null;
       return prev;
     });
   }
@@ -195,16 +254,28 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
             value: this.state.type,
             onChange: this.handleTypeSelect,
             currentValue: this.state.currentValue,
+            readOnly: false,
             error: this.state.typeError,
-            errorMessage: "Required field"
+            errorMessage: "Required field",
+          }),
+          InputFieldText({
+            id: "docDescription",
+            name: "description",
+            label: "Document Description",
+            value: this.state.description,
+            disabled: false,
+            require: false,
+            onChange: this.handleDescriptionChange,
+            error: this.state.descriptionError,
+            errorMessage: 'Required field'
           }),
           InputFieldFile({
             label: "File ",
-            moreInfo: "(Max file size 15.7 Mb)",
+            moreInfo: "(Max file size 500 Mb)",
             id: "documentFile",
             name: "documentFile",
             callback: this.setFilesToUpload(this.state.documents),
-            fileName: this.state.file.name,
+            fileName: this.state.file.name || (this.state.dropEvent && this.state.dropEvent.name),
             required: true,
             error: this.state.fileError,
             errorMessage: this.state.errorMessage,
@@ -212,7 +283,15 @@ const AddDocumentDialog = hh(class AddDocumentDialog extends Component{
           }),
         ]),
         h(ModalFooter, {}, [
-          button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
+          button({ 
+            ref: el => {
+              if(el) {
+                  el.style.setProperty('background', 'none', 'important');
+                  el.style.setProperty('color', '#000000', 'important');
+              }
+            },
+            className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose,
+        }, ["Cancel"]),
           button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.upload }, [this.props.projectKey !== undefined ? "Upload" : "Add Document"])
         ])
       ])

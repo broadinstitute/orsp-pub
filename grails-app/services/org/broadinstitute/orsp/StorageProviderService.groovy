@@ -166,7 +166,7 @@ class StorageProviderService implements Status {
      * @param files The multipart files
      * @return
      */
-    StorageDocument saveMultipartFile(String displayName, String userName, String issueKey, String type, MultipartFile file, ConsentCollectionLink consentCollectionLink) {
+    StorageDocument saveMultipartFile(String displayName, String userName, String issueKey, String type, MultipartFile file, ConsentCollectionLink consentCollectionLink, description) {
         StorageDocument document = new StorageDocument(
                 projectKey: issueKey,
                 fileName: file.originalFilename,
@@ -177,7 +177,8 @@ class StorageProviderService implements Status {
                 username: userName,
                 creationDate: new Date(),
                 status: DocumentStatus.PENDING.status,
-                consentCollectionLinkId: consentCollectionLink?.id
+                consentCollectionLinkId: consentCollectionLink?.id,
+                description: description
         )
         if (saveStorageDocument(document, file.getInputStream())) {
             persistenceService.saveEvent(
@@ -200,7 +201,7 @@ class StorageProviderService implements Status {
      * @param files The multipart files
      * @return
      */
-    StorageDocument saveFileItem(String displayName, String userName, String issueKey, String type, DiskFileItem file) {
+    StorageDocument saveFileItem(String displayName, String userName, String issueKey, String type, DiskFileItem file, String description) {
         StorageDocument document = new StorageDocument(
                 projectKey: issueKey,
                 fileName: file.name,
@@ -210,8 +211,10 @@ class StorageProviderService implements Status {
                 creator: displayName,
                 username: userName,
                 creationDate: new Date(),
-                status: DocumentStatus.PENDING
+                status: DocumentStatus.PENDING,
+                description: description
         )
+        log.info('file:',file)
         if (saveStorageDocument(document, file.getInputStream())) {
             if (document.projectKey != null) {
                 persistenceService.saveEvent(

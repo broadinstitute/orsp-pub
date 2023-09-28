@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { a, button, h, h3, hh } from 'react-hyperscript-helpers';
-import { ConsentCollectionLink, ConsentGroup, DocumentHandler } from '../util/ajax';
+import { ConsentCollectionLink, ConsentGroup, DocumentDescription, DocumentHandler, ProjectMigration, User } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import RequestClarificationDialog from '../components/RequestClarificationDialog';
 import { CollapsibleElements } from '../CollapsiblePanel/CollapsibleElements';
@@ -16,12 +16,14 @@ const columns = (cThis) => [{
   dataField: 'id',
   text: 'Id',
   hidden: true,
+  editable: false,
   csvExport : false
 },
 {
   dataField: 'uuid',
   text: '',
   style: { pointerEvents: 'auto' },
+  editable: false,
   headerStyle: (column, colIndex) => {
     return {
       width: '65px',
@@ -36,21 +38,27 @@ const columns = (cThis) => [{
 },
 {
   dataField: 'fileType',
-  text: 'Attachment Type'
+  text: 'Attachment Type',
+  editable: false
 }, {
   dataField: 'fileName',
   text: 'File Name',
   style: { pointerEvents: 'auto' },
+  editable: false,
   formatter: (cell, row, rowIndex, colIndex) =>
     a(formatUrlDocument(row), [row.fileName])
-},
-{
+},{
+  dataField: 'description',
+  text: 'File Description'
+},{
   dataField: 'creator',
-  text: 'Author'
+  text: 'Author',
+  editable: false
 },
 {
   dataField: 'creationDate',
   text: 'Created',
+  editable: false,
   formatter: (cell, row, rowIndex, colIndex) =>
     isEmpty(row.creationDate) ? '' : parseDate(row.creationDate)
 }
@@ -77,7 +85,7 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
       actionConsentKey: '',
       fileIdToRemove: '',
       issue: {},
-      showSuccessClarification: false
+      showSuccessClarification: false,
     };
   }
 

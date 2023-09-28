@@ -1,7 +1,7 @@
 import { Component } from 'react';
-import { a, button, div, h, h1, hh, small, p } from 'react-hyperscript-helpers';
+import { a, button, div, h, h1, hh, small, p, br } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
-import { Files, ProjectMigration } from '../util/ajax';
+import { Files, ProjectMigration, User } from '../util/ajax';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import InputFieldNumber from '../components/InputFieldNumber';
 import { Table } from '../components/Table';
@@ -19,7 +19,7 @@ const errorBorderStyle = {
 
 const styles = {
   addDocumentContainer: {
-    display: 'block', height: '40px', margin: '15px 0 10px 0'
+    display: 'block', height: '50px', margin: '15px 0 10px 0'
   },
   addDocumentBtn: {
     position: 'relative', float: 'right'
@@ -34,7 +34,10 @@ const headers =
   [
     { name: 'Document Type', value: 'fileType' },
     { name: 'File Name', value: 'fileName' },
-    { name: 'Remove', value: 'removeFile' }
+    { name: 'Document Description', value: 'fileDescription' },
+    { name: 'Author', value: 'displayName' },
+    { name: 'Created On', value: 'createdDate' },
+    { name: 'Remove', value: 'removeFile' },
   ];
 
 const SubmissionForm = hh(class SubmissionForm extends Component {
@@ -69,6 +72,8 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         number: false,
         numberType: 'Required field'
       },
+      dropEvent: null,
+      viewDocDetails: []
     };
   }
 
@@ -107,7 +112,9 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   };
 
   getSubmissionFormInfo = (projectKey, type, submissionId = '') => {
+    this.props.showSpinner();
     ProjectMigration.getSubmissionFormInfo(projectKey, type, submissionId).then(resp => {
+      this.props.hideSpinner();
       const submissionInfo = resp.data;
       if (this._isMounted) {
         this.setState(prev => {
@@ -125,7 +132,13 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             this.maximumNumber(submissionInfo.submissionNumberMaximums, prev.params.type, prev.params.submissionId) :
             submissionInfo.submission.number;
           prev.docTypes = this.loadOptions(submissionInfo.docTypes);
-          prev.documents = isEmpty(submissionInfo.documents) ? [] : submissionInfo.documents;
+          prev.documents = isEmpty(submissionInfo.documents) ? [] : [...submissionInfo.documents];
+          !isEmpty(submissionInfo.documents) ? submissionInfo.documents.forEach(doc => {
+            doc['fileDescription'] = doc.description;
+            doc['displayName'] = doc.creator;
+            doc['createdDate'] = new Date(doc.creationDate).toISOString().substring(0,10);
+          }) : [];
+          prev.viewDocDetails = isEmpty(submissionInfo.documents) ? [] : [...submissionInfo.documents];
           return prev;
         });
       }
@@ -184,6 +197,18 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
         comments: this.state.submissionInfo.comments,
         projectKey: this.state.submissionInfo.projectKey
       };
+      let editedDocs = this.state.viewDocDetails;
+      let documents = this.state.documents
+      editedDocs.forEach(editedDoc => {
+        documents.forEach(doc => {
+          if (doc.id === editedDoc.id && doc.fileDescription !== editedDoc.fileDescription) {
+            doc.fileDescription = editedDoc.fileDescription
+          }
+        })
+      })
+      this.setState({
+        documents: documents
+      })
 
       ProjectMigration.saveSubmission(submissionData, this.state.documents, this.state.params.submissionId).then(resp => {
         this.backToProject();
@@ -283,17 +308,35 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   updateDocuments = () => {
     this.setState(prev => {
       prev.documents = prev.documents.filter(doc => doc.id !== this.state.fileToRemove.id);
+      prev.viewDocDetails = prev.viewDocDetails.filter(doc => doc.id !== this.state.fileToRemove.id);
       return prev;
     });
     this.props.hideSpinner();
   };
 
-  setFilesToUpload = (doc) => {
+  setFilesToUpload = async (doc) => {
+    let name, createdDate;
+    await User.getUserSession().then(user => {
+      name = user.data.displayName;
+      createdDate = new Date().toISOString().substring(0,10);
+    })
+    let viewDocDetail = {};
     this.setState(prev => {
-      let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random() };
+    
+      let document = { fileType: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription };
+      viewDocDetail['fileType'] = doc.fileKey;
+      viewDocDetail['file'] = doc.file;
+      viewDocDetail['fileName'] = doc.file.name;
+      viewDocDetail['fileDescription'] = doc.fileDescription;
+      viewDocDetail['displayName'] = name;
+      viewDocDetail['createdDate'] = createdDate;
+      viewDocDetail['id'] = document.id;
       let documents = prev.documents;
       documents.push(document);
       prev.documents = documents;
+      let viewDocDetails = prev.viewDocDetails;
+      viewDocDetails.push(viewDocDetail);
+      prev.viewDocDetails = viewDocDetails;
       return prev;
     }, () => {
       this.closeModal("showAddDocuments");
@@ -309,6 +352,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
   closeModal = (type) => {
     this.setState(prev => {
       prev[type] = !this.state[type];
+      prev.dropEvent = null;
       return prev;
     });
   };
@@ -327,6 +371,27 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
       });
     });
   };
+
+  dropHandler = (event) => {
+    event.preventDefault();
+    let file
+    if (event.dataTransfer.items) {
+        [...event.dataTransfer.items].forEach((item, i) => {
+            if (item.kind === 'file') {
+                file = item.getAsFile();
+            }
+        })
+    }
+    this.setState(prev => {
+      prev.dropEvent = file;
+    }, () => {
+      this.addDocuments();
+    })
+  }
+
+  dragOverHandler(event) {
+    event.preventDefault();
+  }
 
   backToProject = () => {
     this.props.history.push('/project/main?projectKey=' + this.state.params.projectKey + '&tab=submissions', {tab: 'submissions'});
@@ -352,6 +417,7 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           actionLabel: 'Yes'
         }),
         h(AddDocumentDialog, {
+          isRendered: this.state.showAddDocuments,
           closeModal: () => this.closeModal("showAddDocuments"),
           show: this.state.showAddDocuments,
           options: this.state.docTypes,
@@ -360,7 +426,8 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           handleLoadDocuments: this.props.handleLoadDocuments,
           emailUrl: this.props.emailUrl,
           userName: this.props.userName,
-          documentHandler: this.setFilesToUpload
+          documentHandler: this.setFilesToUpload,
+          dropEvent: this.state.dropEvent
         }),
           h1({
             style: {'marginBottom':'20px'}
@@ -423,22 +490,26 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
           title: "Files"
         },[
           div({ style: styles.addDocumentContainer }, [
-            button({
+            div({
               isRendered: !component.isViewer,
-              className: "btn buttonSecondary",
-              style: styles.addDocumentBtn,
-              onClick: this.addDocuments
-            }, ["Add Document"])
-          ]),
+              id: 'drop_zone',
+              onDrop: this.dropHandler,
+              onDragOver: this.dragOverHandler,
+              style: {padding: '10px 0 10px 0', textAlign: 'center', border: '1px solid #ddd', width: '100%'}
+            }, [
+              p(['Drag and drop your document here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
+            ])
+          ]),br(),
           Table({
             headers: headers,
-            data: this.state.documents,
+            data: this.state.viewDocDetails,
             sizePerPage: 10,
             paginationSize: 10,
             remove: this.removeFileDialog,
             reviewFlow: false,
             pagination: false,
             isAdmin: component.isAdmin,
+            style: {top: '10px'}
           }),
           button({
             isRendered: !component.isViewer,

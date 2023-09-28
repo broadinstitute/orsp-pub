@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import Select from 'react-select';
-import { hh, h, div } from 'react-hyperscript-helpers';
+import { hh, h, div, input, span, i } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import './InputField.css';
 import get from 'lodash/get';
@@ -66,6 +66,18 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
     return edited;
   };
 
+  checkvalue = () => {
+    if (!this.props.value) {
+      return '';
+    } else {
+      if (this.props.value.label) {
+        return this.props.value.label
+      } else {
+        return this.props.value
+      }
+    }
+  }
+
   render() {
     const { isLoading = false, placeholder = '' } = this.props;
     let edited = false;
@@ -117,6 +129,7 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
       }, [
           div({ className: "inputFieldSelectWrapper" }, [
             h(Select, {
+              isRendered: !this.props.readOnly,
               id: this.props.id,
               index: this.props.index,
               name: this.props.name,
@@ -130,7 +143,21 @@ export const InputFieldSelect = hh(class InputFieldSelect extends Component {
               isClearable: this.props.isClearable,
               isLoading: isLoading,
               styles: selectWithLabels,
-            })
+            }),
+            input({
+              isRendered: this.props.readOnly,
+              type: 'text',
+              id: this.props.id,
+              index: this.props.index,
+              name: this.props.name,
+              className: "form-control inputFieldText",
+              value: this.checkvalue(),
+              placeholder: ((this.props.placeholder === undefined || this.props.placeholder === '') && this.props.readOnly) ? '--' : this.props.placeholder,
+              disabled: this.props.disabled,
+              onBlur: this.props.focusOut,
+              autocomplete: 'off'
+            }),
+
           ])
         ])
     )

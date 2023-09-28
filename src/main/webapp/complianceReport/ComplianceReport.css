@@ -1,0 +1,73 @@
+.DatePicker {
+    position: relative;
+    min-height: 38px;
+    display: block !important;
+    padding-left: 10px;
+    border: 1px solid #ced4da;
+    font-size: 1rem;
+    color: black;
+    width: 95% !important;
+}
+
+.react-datepicker-wrapper {
+    display: block !important;
+}
+
+.react-datepicker__input-container {
+    display: block !important;
+}
+
+.compliance-table .react-bootstrap-table {
+    max-height: 600px;
+    overflow: auto;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ced4da;
+}
+
+.compliance-table .react-bootstrap-table thead {
+    position: sticky;
+    top: -1px;
+    z-index: 2;
+    background-color: #e6e9ed;
+}
+
+.compliance-table .table-containter .table thead tr th {
+    white-space: normal;
+    text-overflow: unset;
+    padding-left: 4px;
+}
+
+.react-datepicker-popper {
+    z-index: 3;
+}
+
+.no-data {
+    border: 1px solid rgb(165 165 165);
+    border-radius: 3px;
+    margin: 1% 0;
+    padding: 1%;
+    font-weight: bold
+}
+
+.option-label {
+    color: #286090;
+    margin-top: 20px;
+}
+
+.project-select {
+    min-height: 38px;
+    border: 1px solid #ced4da;
+    min-width: 37.3rem;
+    outline: none
+}
+
+.date-warning {
+    margin-top: 10px;
+    display: block;
+    background-color: #ffe4e8;
+    padding: 3px 10px;
+    margin-right: 2rem;
+    border: 1px solid #f58181;
+    border-radius: 3px;
+    font-weight: bold;
+}

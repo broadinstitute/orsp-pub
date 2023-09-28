@@ -261,3 +261,37 @@
     margin: 15px 0 5px 0;
     padding-bottom: 5px;
 }
+
+.rbt-menu > .dropdown-item {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+}
+
+.rbt-menu > .dropdown-item:hover {
+    color: #262626;
+    text-decoration: none;
+    background-color: #f5f5f5;
+}
+
+.checkbox .checkboxLabel {
+    margin-top: 7px;
+    font-size: 0.95rem;
+    padding-left: 20px;
+}
+
+.checkboxLabel:before {
+    content: "";
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+    position: absolute;
+    left: 0;
+    background-color: #ffffff;
+    border-radius: 3px;
+    border: 1px solid #999999;
+  }

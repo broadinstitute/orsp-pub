@@ -215,7 +215,8 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
               placeholder: "Start typing a Sample Collection",
               isMulti: false,
               isClearable: true,
-              edit: false
+              edit: false,
+              readOnly: false
             }),
           ]),
 

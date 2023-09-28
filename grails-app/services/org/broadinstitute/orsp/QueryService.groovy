@@ -815,7 +815,11 @@ class QueryService implements Status {
         if (options.userName) {
             def q = ' (u.user_name like :userName or i.reporter like :userName)'
             query = andIfyQstring(query, q, params)
-            params.put('userName', "%" + options.userName + "%")
+            if (options.matchExactUser == "true") {
+                params.put('userName', options.userName.toString())
+            } else {
+                params.put('userName', "%" + options.userName + "%")
+            }
         }
         if (options.getIssueTypeNames() && !options.getIssueTypeNames().empty) {
             def q = orIfyCollection("i.type = :typeName", options.getIssueTypeNames())
@@ -891,6 +895,7 @@ class QueryService implements Status {
 
         final List<Object[]> results = sqlQuery.with {
             setParameterList('issueIds', issueIds)
+
             list()
         }
         IssueSearchItemDTO.processResults(results);
@@ -1873,6 +1878,116 @@ class QueryService implements Status {
             list()
         }
         result
+    }
+
+    List getComplianceDetails(String startDate, String endDate, String projectType) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = new StringBuilder().append('SELECT t1.project_key, t1.request_date, t1.type, t2.name, t2.value, t3.source ')
+                                                .append('FROM issue_extra_property t2 ')
+                                                .append('INNER JOIN issue t1 ON t1.project_key = t2.project_key ')
+                                                .append('INNER JOIN funding t3 ON t1.project_key = t3.project_key ')
+                                                .append('WHERE date(t1.request_date) >= :startDate and date(t1.request_date) <= :endDate and t1.project_key LIKE :projectType').toString()
+//        final String query = 'SELECT t1.project_key, t1.request_date, t1.type, t2.name, t2.value, t3.source ' +
+//                            'FROM issue_extra_property t2 ' +
+//                            'INNER JOIN issue t1 ON t1.project_key = t2.project_key ' +
+//                            'INNER JOIN funding t3 ON t1.project_key = t3.project_key ' +
+//                            'WHERE t1.request_date >= :startDate and t1.request_date <= :endDate'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter("startDate", startDate+'%')
+        sqlQuery.setParameter("endDate", endDate+'%')
+        sqlQuery.setParameter("projectType", '%'+ projectType +'%')
+        final result = sqlQuery.with{
+            list()
+        }
+        result
+    }
+
+    List<SubmissionData> getSubmissionDetails() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = new StringBuilder().append('SELECT t1.project_key, t1.type, t2.create_date, t2.type as event_type ')
+                                                .append('FROM issue t1 ')
+                                                .append('INNER JOIN submission t2 ON t1.project_key = t2.project_key ')
+                                                .append('WHERE t1.type= :irbProject and t2.type= :event').toString()
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter("irbProject", "IRB Project")
+        sqlQuery.setParameter("event", "Other Event")
+        final result = sqlQuery.with{
+            list()
+        }
+        result
+    }
+
+    void updateDocumentDescriptionByUuid(String uuid, String description) {
+        final session = sessionFactory.currentSession
+        final String query = 'UPDATE storage_document SET description= :description where uuid= :uuid'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('description', description)
+        sqlQuery.setParameter('uuid', uuid)
+
+        sqlQuery.executeUpdate()
+
+    }
+
+    void deleteCommentById(Integer id) {
+        final session = sessionFactory.currentSession
+        final String query = 'DELETE FROM comment WHERE id= :id'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('id', id)
+
+        sqlQuery.executeUpdate()
+    }
+
+    void updateCommentById(String id, String comment, String author) {
+        final session = sessionFactory.currentSession
+        final String query = 'UPDATE comment SET description= :comment, updated_author= :author, updated= :updated WHERE id= :id'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('updated', new Date())
+        sqlQuery.setParameter('comment', comment)
+        sqlQuery.setParameter('author', author)
+        sqlQuery.setParameter('id', id)
+
+        sqlQuery.executeUpdate()
+    }
+
+    List getProjectEventDate(String projectKey, String eventType) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = 'SELECT created FROM event WHERE project_key= :projectKey AND event_type= :eventType ORDER BY created DESC'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('projectKey', projectKey)
+        sqlQuery.setParameter('eventType', eventType)
+        final result = sqlQuery.with {
+            list()
+        }
+
+        result
+    }
+
+    List getPropertyValue(String projectKey, String name) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = 'SELECT value FROM issue_extra_property WHERE project_key= :projectKey AND name= :name'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('projectKey', projectKey)
+        sqlQuery.setParameter('name', name)
+        final result = sqlQuery.with {
+            list()
+        }
+
+        result
+    }
+
+    void updateOnHoldDays(String projectKey, String value) {
+        final session = sessionFactory.currentSession
+        final String query = 'UPDATE issue_extra_property SET value= :value WHERE project_key= :projectKey AND name= :name'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('value', value)
+        sqlQuery.setParameter('projectKey', projectKey)
+        sqlQuery.setParameter('name', 'onHoldDays')
+
+        sqlQuery.executeUpdate()
     }
 
 }

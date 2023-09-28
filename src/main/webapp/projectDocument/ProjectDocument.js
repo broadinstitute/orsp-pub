@@ -1,10 +1,10 @@
 import { Component, Fragment } from 'react';
-import { Documents } from '../components/Documents'
 import { DocumentHandler, Project, User } from '../util/ajax';
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { h, hh } from 'react-hyperscript-helpers';
 import { AlertMessage } from '../components/AlertMessage';
+import { Documents } from '../components/Documents';
 import LoadingWrapper from '../components/LoadingWrapper';
 
 const ProjectDocument = hh(class ProjectDocument extends Component {
@@ -48,8 +48,14 @@ const ProjectDocument = hh(class ProjectDocument extends Component {
     DocumentHandler.attachedDocuments(this.props.projectKey).then(resp => {
       User.getUserSession().then(user => {
         if (this._isMounted) {
+          let docs = JSON.parse(resp.data.documents);
+          docs.forEach(doc => {
+            if(!doc.description) {
+              doc.description = '';
+            }
+          })
           this.setState(prev => {
-              prev.documents = JSON.parse(resp.data.documents);
+              prev.documents = docs;
               prev.user = user.data;
               return prev;
             }, () => {

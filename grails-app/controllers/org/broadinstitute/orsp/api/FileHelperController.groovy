@@ -1,16 +1,23 @@
 package org.broadinstitute.orsp.api
 
 import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonParser
 import grails.converters.JSON
 import grails.rest.Resource
 import org.apache.commons.collections.CollectionUtils
+import org.apache.commons.fileupload.disk.DiskFileItem
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.ConsentService
 import org.broadinstitute.orsp.DocumentStatus
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.PersistenceService
+import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.StorageDocument
+import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
 
 
@@ -18,8 +25,18 @@ import org.springframework.web.multipart.MultipartFile
 class FileHelperController extends AuthenticatedController{
 
     ConsentService consentService
+    QueryService queryService
+    PersistenceService persistenceService
 
     def attachDocument() {
+        JsonParser parser = new JsonParser()
+        JsonElement jsonFileDescription = parser.parse(request?.parameterMap["fileData"].toString())
+        JsonArray fileData
+
+        if (jsonFileDescription.jsonArray) {
+            fileData = jsonFileDescription.asJsonArray
+        }
+
         List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
 
         def names = []
@@ -38,7 +55,8 @@ class FileHelperController extends AuthenticatedController{
                             creator: params.displayName,
                             username: params.userName,
                             creationDate: new Date(),
-                            status: DocumentStatus.PENDING.status
+                            status: DocumentStatus.PENDING.status,
+                            description: fileData.find {data -> data.fileName.value == it.originalFilename }.fileDescription.value
                     )
                     storageProviderService.saveStorageDocument(document, it.getInputStream())
                     persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Document Added", EventType.UPLOAD_DOCUMENT)
@@ -161,4 +179,5 @@ class FileHelperController extends AuthenticatedController{
             render(['message': 'Unable to delete a file with no Id.'] as JSON)
         }
     }
+
 }

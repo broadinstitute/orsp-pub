@@ -1,6 +1,7 @@
 package org.broadinstitute.orsp.api
 
 import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import grails.converters.JSON
 import grails.rest.Resource
@@ -32,10 +33,15 @@ class ProjectController extends AuthenticatedController {
     def save() {
         List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
         User user = getUser()
-        String dataProject = request.parameterMap["dataProject"].toString()
         JsonParser parser = new JsonParser()
+        String dataProject = request.parameterMap["dataProject"].toString()
+        JsonElement jsonFileDescription = parser.parse(request?.parameterMap["fileData"].toString())
+        JsonArray fileData
         JsonArray dataProjectJson = parser.parse(dataProject)
         String projectKey
+        if (jsonFileDescription.jsonArray) {
+            fileData = jsonFileDescription.asJsonArray
+        }
         try {
             Issue parsedIssue = IssueUtils.getJson(Issue.class, dataProjectJson[0])
             Issue issue = issueService.createIssue(IssueType.valueOfPrefix(parsedIssue.type), parsedIssue)
@@ -44,7 +50,8 @@ class ProjectController extends AuthenticatedController {
             projectKey = issue.projectKey
             if (!files?.isEmpty()) {
                 files.forEach {
-                    storageProviderService.saveMultipartFile(user.displayName, user.userName, projectKey, it.name , it, null)
+                    String description = fileData.find {data -> data.fileName.value == it.originalFilename }.fileDescription.value
+                    storageProviderService.saveMultipartFile(user.displayName, user.userName, projectKey, it.name , it, null, description)
                 }
             }
             notifyService.projectCreation(issue)

@@ -30,6 +30,7 @@ enum EventType {
     ABANDON_PROJECT,
     DISAPPROVE_PROJECT,
     WITHDRAWN_PROJECT,
+    ONHOLD_PROJECT,
     REJECT_EDITS,
     SUBMIT_EDITS,
     REQUEST_CLARIFICATION,
@@ -54,6 +55,9 @@ enum EventType {
     // Data Use Letter Events
     SUBMIT_DUL,
     SEND_DUL_LINK_BY_EMAIL,
-    COPY_DUL_LINK_TO_CLIPBOARD
+    COPY_DUL_LINK_TO_CLIPBOARD,
+
+    //Document description Event
+    DESCRIPTION_UPDATED
 }
 

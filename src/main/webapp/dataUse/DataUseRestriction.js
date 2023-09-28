@@ -25,6 +25,7 @@ const columns = [
     dataField: 'consentGroupKey',
     text: 'Consent Group',
     sort: true,
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
       h(Link, {to: {pathname:'/newConsentGroup/main', search: '?consentKey=' + row.consentGroupKey, state: {issueType: 'consent-group', tab: 'documents', consentKey: row.consentGroupKey}}}, [row.consentGroupKey])
@@ -34,6 +35,7 @@ const columns = [
     dataField: 'id',
     text: 'View Restrictions',
     sort: false,
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
       h(Link, {to: {pathname:'/dataUse/view', search:'?restrictionId=' + row.id, state: {restrictionId: row.id}}}, ['View Restriction'])
@@ -43,6 +45,7 @@ const columns = [
     dataField: 'vaultExportDate',
     text: 'DUOS Export',
     sort: true,
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) =>
     div({},[
       !isEmpty(row.vaultExportDate) ? format(new Date(row.vaultExportDate), 'MM/DD/YYYY') : ''

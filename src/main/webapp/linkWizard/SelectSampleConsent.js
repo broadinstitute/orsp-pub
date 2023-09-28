@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, div, h, hh, p } from 'react-hyperscript-helpers';
+import { button, div, h, hh, p, a, br } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
@@ -8,11 +8,11 @@ import { Panel } from '../components/Panel';
 import AddDocumentDialog from '../components/AddDocumentDialog';
 import { Table } from '../components/Table';
 import { CONSENT_DOCUMENTS } from '../util/DocumentType';
-import { ConsentGroup, SampleCollections } from '../util/ajax';
+import { ConsentGroup, SampleCollections, User } from '../util/ajax';
 
 const styles = {
   addDocumentContainer: {
-    display: 'block', height: '40px', margin: '5px 0 15px 0'
+    display: 'block', height: '50px', margin: '5px 0 15px 0'
   },
   addDocumentBtn: {
     position: 'relative', float: 'right'
@@ -45,7 +45,9 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
       consentGroupIsLoading: false,
       startDate: null,
       endDate: null,
-      onGoingProcess: false
+      onGoingProcess: false,
+      dropEvent: null,
+      viewDocDetails: []
     };
   }
 
@@ -85,7 +87,10 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
   };
 
   closeModal = () => {
-    this.setState({ showAddDocuments: !this.state.showAddDocuments });
+    this.setState({
+      showAddDocuments: !this.state.showAddDocuments,
+      dropEvent: null
+    });
   };
 
   static getDerivedStateFromError(error) {
@@ -93,12 +98,28 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     return { hasError: true }
   }
 
-  setFilesToUpload = (doc) => {
-    let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random() };
+  setFilesToUpload = async (doc) => {
+    let name, createdDate;
+    await User.getUserSession().then(user => {
+      name = user.data.displayName;
+      createdDate = new Date().toISOString().substring(0,10);
+    })
+    let viewDocDetail = {};
+    let document = { fileKey: doc.fileKey, file: doc.file, fileName: doc.file.name, id: Math.random(), fileDescription: doc.fileDescription };
+    viewDocDetail['fileType'] = doc.fileKey;
+      viewDocDetail['file'] = doc.file;
+      viewDocDetail['fileName'] = doc.file.name;
+      viewDocDetail['fileDescription'] = doc.fileDescription;
+      viewDocDetail['displayName'] = name;
+      viewDocDetail['createdDate'] = createdDate;
+      viewDocDetail['id'] = document.id;
     this.setState(prev => {
       let documents = prev.documents;
       documents.push(document);
       prev.documents = documents;
+      let viewDocDetails = prev.viewDocDetails;
+      viewDocDetails.push(viewDocDetail);
+      prev.viewDocDetails = viewDocDetails;
       return prev;
     }, () => {
       this.props.fileHandler(this.state.documents);
@@ -232,6 +253,27 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
     );
   };
 
+  dropHandler = (event) => {
+    event.preventDefault();
+    let file
+    if (event.dataTransfer.items) {
+        [...event.dataTransfer.items].forEach((item, i) => {
+            if (item.kind === 'file') {
+                file = item.getAsFile();
+            }
+        })
+    }
+    this.setState(prev => {
+      prev.dropEvent = file
+    }, () => {
+      this.addDocuments();
+    })
+  }
+
+  dragOverHandler(event) {
+    event.preventDefault();
+  }
+
   render() {
     let documents = this.props.files;
 
@@ -259,6 +301,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             isMulti: false,
             edit: false,
             isLoading: this.state.consentGroupIsLoading,
+            readOnly: false
           }),
         ]),
         Panel({
@@ -275,7 +318,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
             isMulti: false,
             edit: false,
             isLoading: this.state.sampleCollectionIsLoading,
-
+            readOnly: false
           }),
         ]),
         Panel({ title: "Sample Collection Date Range*" }, [
@@ -319,8 +362,9 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
           title: "Documents"
         }, [
           div({ className: "questionnaireContainerLight" }, [
-            p({ className: "col-lg-10 col-md-9 col-sm-9 col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
+            p({ className: "col-12"},["Please upload any documents related to your specific sample or data cohort, for example: consent forms, assent forms, waivers of consent, attestations, data use letters, and Institutional Certifications."]),
             h(AddDocumentDialog, {
+              isRendered: this.state.showAddDocuments,
               closeModal: this.closeModal,
               show: this.state.showAddDocuments,
               options: this.state.documentOptions,
@@ -331,14 +375,19 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
               emailUrl: this.props.emailUrl,
               userName: this.props.userName,
               documentHandler: this.setFilesToUpload,
+              dropEvent: this.state.dropEvent
             }),
             div({ style: styles.addDocumentContainer }, [
-              button({
-                className: "btn buttonSecondary",
-                style: styles.addDocumentBtn,
-                onClick: this.addDocuments
-              }, ["Add Document"])
-            ]),
+              div({
+                isRendered: !component.isViewer,
+                id: 'drop_zone',
+                onDrop: this.dropHandler,
+                onDragOver: this.dragOverHandler,
+                style: {padding: '10px 0 10px 0', textAlign: 'center', border: '1px solid #ddd', width: '100%'}
+              }, [
+                p(['Drag and drop your documents here or ', a({onClick:() => {this.addDocuments()}}, ['click here to add documents'])])
+              ]),
+            ]),br(),
             Table({
               headers: headers,
               data: documents,

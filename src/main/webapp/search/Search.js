@@ -11,6 +11,8 @@ import { LoginText, SampleCollections } from "../util/ajax";
 import { isEmpty } from '../util/Utils';
 import "./style.css";
 import { PortalMessage } from "../components/PortalMessage";
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+import { InputFieldCheckbox } from "../components/InputFieldCheckbox";
 
 const newStatuses = ["Legacy", "Pending ORSP Admin Review", "Approved", "Disapproved", "Withdrawn", "Closed", "Abandoned", "On Hold"];
 
@@ -34,6 +36,10 @@ class Search extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.userAutocomplete = React.createRef();
     this.projectAutocomplete = React.createRef();
+    this.issueTypeRef = React.createRef();
+    this.issueStatusRef = React.createRef();
+    this.irbOfRecordRef = React.createRef();
+    this.searchRef = React.createRef();
     this.state = {
       // setup data
       data: [],
@@ -57,7 +63,8 @@ class Search extends React.Component {
       statuses: this.getLocalStorageState("statuses", "array"),
       irb: this.getLocalStorageState("irb", "array"),
       collection: '',
-      defaultValueForAbout: 'default'
+      defaultValueForAbout: 'default',
+      matchExactUser: true
     };
   }
 
@@ -72,7 +79,7 @@ class Search extends React.Component {
       this.state.statuses.length > 0 ||
       this.state.irb.length > 0
     ) {
-      this.refs.search.click();
+      this.searchRef.current.click();
     }
     this.checkDefault();
   }
@@ -143,12 +150,12 @@ class Search extends React.Component {
     }));
     this.userAutocomplete.clear();
     this.projectAutocomplete.clear();
-    this.refs.issueType.getInstance().clear();
-    this.refs.issueType.getInstance().blur();
-    this.refs.issueStatus.getInstance().clear();
-    this.refs.issueStatus.getInstance().blur();
-    this.refs.irbOfRecord.getInstance().clear();
-    this.refs.irbOfRecord.getInstance().blur();
+    this.issueTypeRef.current.clear();
+    this.issueTypeRef.current.blur();
+    this.issueStatusRef.current.clear();
+    this.issueStatusRef.current.blur();
+    this.irbOfRecordRef.current.clear();
+    this.irbOfRecordRef.current.blur();
     this.saveStateToLocalStorage();
   }
 
@@ -196,6 +203,7 @@ class Search extends React.Component {
     params.append("funding", this.state.funding);
     params.append("userName", this.state.userName);
     params.append("collection", !isEmpty(this.state.collection) ? this.state.collection.key : '');
+    params.append("matchExactUser", this.state.matchExactUser);
     this.state.types.map(function (type, index) {
       params.append("type", type);
     });
@@ -278,7 +286,8 @@ class Search extends React.Component {
             <div className="form-group col-md-6">
               <label className="inputFieldLabel">Type</label>
               <Typeahead
-                ref={"issueType"}
+                id="issueType"
+                ref={this.issueTypeRef}
                 align={"left"}
                 multiple={true}
                 options={component.issueTypes}
@@ -317,11 +326,24 @@ class Search extends React.Component {
                 }}
                 defaultSelected={this.state.defaultUserSelected}
               />
+              <InputFieldCheckbox 
+                id={'matchExactUser'}
+                name={'matchUser'}
+                label={'Match Exact Member'}
+                readonly={false}
+                checked={this.state.matchExactUser}
+                onChange= {() => {
+                  this.setState({
+                    matchExactUser: !this.state.matchExactUser
+                  })
+                }}
+              />
             </div>
             <div className="form-group col-md-6">
               <label className="inputFieldLabel">Status</label>
               <Typeahead
-                ref={"issueStatus"}
+                id="issueStatus"
+                ref={this.issueStatusRef}
                 align={"left"}
                 multiple={true}
                 options={component.issueStatuses}
@@ -349,7 +371,8 @@ class Search extends React.Component {
             <div className="form-group col-md-6">
               <label className="inputFieldLabel">IRB of Record</label>
               <Typeahead
-                ref={"irbOfRecord"}
+                id="irbOfRecord"
+                ref={this.irbOfRecordRef}
                 align={"left"}
                 multiple={true}
                 labelKey={option => `${option.value}`}
@@ -395,13 +418,13 @@ class Search extends React.Component {
                 type={"submit"}
                 className={"btn btn-primary"}
                 value={"Search"}
-                ref={"search"}
+                ref={this.searchRef}
                 style={{ marginRight: "1rem" }}
               />
               <input
                 type={"reset"}
                 className={"btn btn-default"}
-                value={"Clear Cache for new Search"}
+                value={"Clear cache for new search"}
                 onClick={this.handleClear}
               />
             </div>

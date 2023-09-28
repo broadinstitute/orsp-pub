@@ -1,6 +1,8 @@
 package org.broadinstitute.orsp
 
 import groovy.util.logging.Slf4j
+import org.hibernate.SQLQuery
+import org.hibernate.SessionFactory
 
 @Slf4j
 class CommentsService implements UserInfo {
@@ -8,6 +10,7 @@ class CommentsService implements UserInfo {
     PersistenceService persistenceService
     NotifyService notifyService
     UserService userService
+    SessionFactory sessionFactory
 
     /**
      * @param issueId  Project or Sample Data Cohort element to associate comments
@@ -77,4 +80,5 @@ class CommentsService implements UserInfo {
         }
         comments
     }
+
 }

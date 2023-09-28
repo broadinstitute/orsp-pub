@@ -2,8 +2,14 @@ package org.broadinstitute.orsp
 
 import grails.gorm.transactions.Transactional
 import grails.web.servlet.mvc.GrailsParameterMap
+import groovy.time.TimeCategory
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang.StringUtils
+
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.time.Instant
+
 /**
  * This class handles the general update or creation of issues and nothing more.
  *
@@ -98,8 +104,8 @@ class IssueService implements UserInfo {
             IssueExtraProperty.HUMAN_SUBJECTS,
             IssueExtraProperty.ADMIN_COMMENTS,
             IssueExtraProperty.FINANCIAL_CONFLICT,
-            IssueExtraProperty.FINANCIAL_CONFLICT_DESCRIPTION
-
+            IssueExtraProperty.FINANCIAL_CONFLICT_DESCRIPTION,
+            IssueExtraProperty.ON_HOLD_DAYS
 
 
     ]
@@ -406,6 +412,38 @@ class IssueService implements UserInfo {
             issue.setApprovalStatus(input.get(IssueExtraProperty.PROJECT_STATUS))
         }
 
+        if (previousStatus.equals(IssueStatus.OnHold.getName()) && !previousStatus.equals(input.get(IssueExtraProperty.PROJECT_STATUS))) {
+            def eventDate = queryService.getProjectEventDate(params.projectKey, EventType.ONHOLD_PROJECT.toString())
+            def specificDate = eventDate[0].toString()
+            def currentDate = new Date()
+            long differenceInDays
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd")
+            try {
+
+                Date date1 = sdf.parse(specificDate)
+                Date date2 = sdf.parse(sdf.format(currentDate))
+                long differenceInMillis = Math.abs(date2.time - date1.time)
+                differenceInDays = differenceInMillis / (24 * 60 * 60 * 1000)
+                log.info('Difference in days: ' + differenceInDays.toString())
+
+            } catch (ParseException e) {
+                log.error("Error parsing the dates: " + e)
+            }
+            def hasOnHoldDays = queryService.getPropertyValue(params.projectKey, IssueExtraProperty.ON_HOLD_DAYS)
+            if (hasOnHoldDays.isEmpty()) {
+                new IssueExtraProperty(
+                        issue: issue,
+                        name: IssueExtraProperty.ON_HOLD_DAYS,
+                        value: differenceInDays,
+                        projectKey: issue.projectKey
+                ).save(flush: true)
+            } else {
+                def newOnHoldDays = hasOnHoldDays[0].toString().toInteger() + differenceInDays
+                queryService.updateOnHoldDays(params.projectKey, newOnHoldDays.toString())
+            }
+
+        }
+
         propsToDelete.each {
             issue.removeFromExtraProperties(it)
             it.delete(hard: true, flush: true)
@@ -423,6 +461,8 @@ class IssueService implements UserInfo {
         }
         if (shouldUpdateStatus(input.get(IssueExtraProperty.PROJECT_STATUS), previousStatus)) {
             persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project " + input.get(IssueExtraProperty.PROJECT_STATUS), eventTypeMatcher(input.get(IssueExtraProperty.PROJECT_STATUS)))
+        } else if (input.get(IssueExtraProperty.PROJECT_STATUS) == "On Hold" && previousStatus != "On Hold") {
+            persistenceService.saveEvent(issue.projectKey, getUser()?.displayName, "Project On Hold", EventType.ONHOLD_PROJECT)
         }
         String newStatus = Optional.ofNullable(input.get(IssueExtraProperty.PROJECT_STATUS)).orElse("")
 
@@ -430,6 +470,13 @@ class IssueService implements UserInfo {
             notifyService.sendProjectStatusNotification((String)input.get(IssueExtraProperty.PROJECT_STATUS), issue, getUser()?.displayName)
         }
         issue
+    }
+
+    def daysBetween(def currentDate, def specifiedDate) {
+        use(TimeCategory) {
+            def duration = currentDate - specifiedDate
+            duration.days
+        }
     }
 
     Boolean shouldUpdateStatus(String status, String previousStatus) {
@@ -448,6 +495,10 @@ class IssueService implements UserInfo {
 
             case IssueStatus.Abandoned.getName():
                 type = EventType.ABANDON_PROJECT
+                break
+
+            case IssueStatus.OnHold.getName():
+                type = EventType.ONHOLD_PROJECT
                 break
 
             case IssueStatus.Approved.getName():

@@ -123,6 +123,11 @@ export const UrlConstants = {
   loginTextUrl: context + "/api/login-text",
   loginText: context + "/loginText",
   editLoginTextUrl: context + "/api/edit-login-text",
-  LoginTextResponseUrl: context + "/api/login-text-response"
+  LoginTextResponseUrl: context + "/api/login-text-response",
+  complianceReport: context + "/compliance-report",
+  complianceReportUrl: context + "/api/report/compliance-report",
+  updateDocumentDescription: context + "/api/update-document-description",
+  updateComment: context + '/api/comments/update',
+  deleteComment: context + '/api/comments/delete'
 };
 

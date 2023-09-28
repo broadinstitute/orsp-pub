@@ -25,6 +25,7 @@ const columnsCopy = [{
   dataField: 'project',
   text: 'Project',
   sort: true,
+  editable: false,
   headerStyle: { width: styles.projectWidth },
   formatter: (cell, row, rowIndex, colIndex) => {
     return div({}, [
@@ -35,6 +36,7 @@ const columnsCopy = [{
   dataField: 'title',
   text: 'Title',
   sort: true,
+  editable: false,
   headerStyle: { width: styles.typeWidth },
   formatter: (cell, row, rowIndex, colIndex) => {
     return div({}, [
@@ -45,33 +47,39 @@ const columnsCopy = [{
   dataField: 'status',
   text: 'Status',
   sort: true,
+  editable: false,
   formatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
   headerStyle: { width: styles.statusWidth }
 }, {
   dataField: 'type',
   text: 'Type',
   sort: true,
+  editable: false,
   headerStyle: { width: styles.typeWidth }
 }, {
   dataField: 'updated',
   text: 'Updated',
   sort: true,
+  editable: false,
   headerStyle: { width: styles.updatedWidth }
 }, {
   dataField: 'expiration',
   text: 'Expiration',
   sort: true,
+  editable: false,
   formatter: (cell, row, rowIndex, colIndex) => cell ? moment(cell).format('MM/DD/YYYY') : ''
 }, {
   dataField: 'assignedAdmin',
   text: 'Assigned reviewer',
   sort: true,
+  editable: false,
   headerStyle: { width: styles.typeWidth }
 },
 {
   dataField: 'adminComments',
   text: 'Notes',
   sort: true,
+  editable: false,
   headerStyle: { width: styles.typeWidth }
 }];
 

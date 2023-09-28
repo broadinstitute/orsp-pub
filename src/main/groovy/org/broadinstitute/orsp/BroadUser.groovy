@@ -9,8 +9,6 @@ class BroadUser {
         }
     }
     String userName
-    String firstName
-    String lastName
     String displayName
     String email
 }

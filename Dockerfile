@@ -13,7 +13,8 @@ RUN apt-get -qq -y install \
 
 RUN mkdir /root/.nvm
 ENV NVM_DIR /root/.nvm
-ENV NODE_VERSION 14.17.6
+ENV NODE_VERSION 16.8.0
+
 ARG build_env="dev"
 
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
@@ -25,7 +26,12 @@ RUN ln -sf /root/.nvm/versions/node/v$NODE_VERSION/bin/node /usr/bin/node
 RUN ln -sf /root/.nvm/versions/node/v$NODE_VERSION/bin/npm /usr/bin/npm
 
 ENV WEBPACK_VERSION 4.43.0
-RUN npm install -g webpack@$WEBPACK_VERSION webpack-cli yarn
+ENV WEBPACK_VERSION_CLI 4.4.0
+RUN npm config set registry https://registry.npmjs.org/
+RUN npm cache clean -f
+RUN npm install -g yarn
+RUN npm install -g webpack@$WEBPACK_VERSION
+RUN npm install -g webpack-cli@$WEBPACK_VERSION_CLI
 
 RUN ln -sf /root/.nvm/versions/node/v$NODE_VERSION/bin/webpack /usr/bin/webpack
 RUN ln -sf /root/.nvm/versions/node/v$NODE_VERSION/bin/webpack-cli /usr/bin/webpack-cli

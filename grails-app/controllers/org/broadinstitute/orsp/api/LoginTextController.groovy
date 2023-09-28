@@ -1,10 +1,13 @@
 package org.broadinstitute.orsp.api
 
 import grails.converters.JSON
+import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.LoginText
 import org.broadinstitute.orsp.LoginTextResponseService
 import org.broadinstitute.orsp.LoginTextService
 import org.broadinstitute.orsp.LogintTextResponse
+import org.broadinstitute.orsp.PersistenceService
+import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.utils.IssueUtils
 
 
@@ -12,6 +15,8 @@ class LoginTextController {
 
     LoginTextService loginTextService
     LoginTextResponseService loginTextResponseService
+    PersistenceService persistenceService
+    QueryService queryService
 
     def getLoginText() {
         try {
@@ -37,6 +42,22 @@ class LoginTextController {
             List<LogintTextResponse> loginTextResponse = loginTextResponseService.getLoginTextResponse()
             render loginTextResponse as JSON
         } catch(Exception e) {
+            handleException(e)
+        }
+    }
+
+    def updateDocumentDescriptionByUuid() {
+        Map<String, Object> docEditDetails = IssueUtils.getJson(Map.class, request.JSON)
+        String uuid = docEditDetails.get('uuid')
+        String description = docEditDetails.get('description')
+        String projectKey = docEditDetails.get('projectKey')
+        String creator = docEditDetails.get('creator')
+        String type = docEditDetails.get('fileType')
+        try {
+            queryService.updateDocumentDescriptionByUuid(uuid, description)
+            persistenceService.saveEvent(projectKey, creator, "Document Description of type '"+ type +"' updated to '"+ description+"'", EventType.DESCRIPTION_UPDATED)
+            response.status = 200
+        } catch (Exception e) {
             handleException(e)
         }
     }

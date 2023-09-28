@@ -1,6 +1,6 @@
 import { Component, Fragment } from 'react';
 import { div, a, hh, h, button, span } from 'react-hyperscript-helpers';
-import { ProjectMigration } from '../util/ajax';
+import { DocumentDescription, ProjectMigration } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import MultiTab from "../components/MultiTab";
 import { Table } from "../components/Table";
@@ -10,22 +10,16 @@ import { UrlConstants } from "../util/UrlConstants";
 
 const headers =
   [
-    { name: 'Number', value: 'number' },
+    { name: '#', value: 'number' },
     { name: 'Description', value: 'comments' },
-    { name: 'Documents', value: 'documents' },
-    { name: 'Created', value: 'createDate' },
+    { name: 'File Name | File Description', value: 'documents' },
+    { name: 'Actions', value: 'submissionActions' }
   ];
 
 const styles = {
   submissionComment: {
-    margin: '0 10px 10px 0',
-    paddingLeft: '20px',
-    width: 'calc(100% - 60px)',
     display: 'inline-block',
-    overflow: 'visible',
-    whiteSpace: 'normal',
-    textOverflow: 'initial',
-    wordBreak: 'break-word'
+    whiteSpace: 'normal'
   },
 
   addSubmission: {
@@ -67,26 +61,29 @@ export const Submissions = hh(class Submissions extends Component {
   }
 
   submissionEdit = (data) => {
-    const indexButton = a({
-      className: 'btn btn-default btn-xs pull-left link-btn',
-      onClick: () => this.redirectEditSubmission(data)
-    }, [!component.isViewer ? 'Edit': 'View']);
     const submissionComment = span({style: styles.submissionComment}, [
       span({dangerouslySetInnerHTML: { __html: data.comments } },[])
     ]);
-    return h(Fragment, {}, [indexButton, submissionComment]);
+    return h(Fragment, {}, [submissionComment]);
+  };
+  
+  submissionActions = (data) => {
+    const indexButton = a({
+      className: 'edit-pen-icon',
+      onClick: () => this.redirectEditSubmission(data)
+    }, [span({className: 'glyphicon glyphicon-pencil', "aria-hidden": "true"},[])]);    
+    return h(Fragment, {}, [indexButton]);
   };
 
   getDisplaySubmissions = () => {
     let submissions = {};
     ProjectMigration.getDisplaySubmissions(this.props.projectKey).then(resp => {
       submissions = resp.data.groupedSubmissions;
-
       _.map(submissions, (data, title) => {
         data.forEach(submisionData => {
           submisionData.documents.forEach(document => {
-            Files.getDocument(document.id).then(resp => {
-              document.document = resp.data.document;
+            Files.getDocument(document.id).then(doc => {
+              document.document = doc.data.document;
             });
           });
         });
@@ -128,6 +125,9 @@ export const Submissions = hh(class Submissions extends Component {
         pagination: true,
         reviewFlow: true,
         submissionEdit: this.submissionEdit,
+        onAfterSaveCell: this.saveDocumentDescription,
+        isSubmissionTabActive: true,
+        submissionActions: this.submissionActions
       })
     ]);
   };
@@ -142,6 +142,25 @@ export const Submissions = hh(class Submissions extends Component {
   handleTabChange = async (tab) => {
     await this.setState({ activeTab: tab });
   };
+
+  saveDocumentDescription = () => {
+    this.state.submissions[this.state.activeTab].forEach(submissionData => {
+      submissionData.documents.forEach(document => {
+        Files.getDocument(document.id).then(doc => {
+          let docum = doc.data.document
+          if (docum.description !== submissionData.fileDescription) {
+            DocumentDescription.updateDocumentDescription(
+              docum.uuid,
+              submissionData.fileDescription,
+              docum.projectKey,
+              docum.creator,
+              docum.fileType
+              );
+            }
+        })
+      })
+    })
+  }
 
   render() {
     return (

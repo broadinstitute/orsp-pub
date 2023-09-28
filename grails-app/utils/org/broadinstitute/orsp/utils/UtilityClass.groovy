@@ -39,9 +39,9 @@ class UtilityClass {
             SimpleDateFormat  sd = new SimpleDateFormat("yyyy-MM-dd HH:mm")
             LinkedHashMap output = [:]
             output['id'] = it.id
-            output['author'] = it.author
+            output['author'] = it.updated_author
             output['comment'] = it.description
-            output['date'] = sd.format(it.created)
+            output['date'] = sd.format(it.updated)
             return output
         }
     }

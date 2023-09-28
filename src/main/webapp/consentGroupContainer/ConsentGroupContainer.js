@@ -100,6 +100,9 @@ export const ConsentGroupContainer = hh(class ConsentGroupContainer extends Comp
 
   handleTabChange = async (tab) => {
     await this.setState({ activeTab: tab });
+    if(tab === 'history') {
+      this.getHistory();
+    }
   };
 
   noConsentFormAnswer = (isAnswered) => {

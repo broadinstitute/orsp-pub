@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, createRef } from 'react';
 import { div, h, hh } from 'react-hyperscript-helpers';
 import ProjectReview from '../projectReview/ProjectReview';
 import { History } from '../components/History';
@@ -24,8 +24,9 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
       history: [],
       comments: [],
       dialogContent: '',
-      activeTab: 'review'
+      activeTab: 'review',
     };
+    
   }
 
   componentDidMount= async () => {
@@ -96,6 +97,10 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
 
   handleTabChange = async (tab) => {
     await this.setState({ activeTab: tab });
+    if(tab === 'history') {
+      this.getHistory();
+    }
+
   };
 
   render() {
@@ -112,9 +117,9 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 title: "Project Details",
               }, [
                   h(ProjectReview, {
-                    updateDetailsStatus: this.updateDetailsStatus,
                     changeInfoStatus: this.props.changeInfoStatus,
                     initStatusBoxInfo: this.props.initStatusBoxInfo,
+                    updateDetailsStatus: this.updateDetailsStatus,
                     updateContent: this.updateContent,
                     projectKey: this.props.projectKey,
                     history: this.props.history
@@ -163,7 +168,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
               ]),
               div({
                 key: "history",
-                title: "History",
+                title: "History"
               }, [
                 History({
                   history: this.state.history,
@@ -171,8 +176,8 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 }),
               ]),
               div({
-                key: "adminOnly",
                 title: "Admin Only",
+                key: "adminOnly",
               }, [
                   h(AdminOnly, {
                     statusBoxHandler: this.props.statusBoxHandler,

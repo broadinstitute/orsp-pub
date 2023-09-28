@@ -17,3 +17,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.react-bootstrap-table{
+    margin-top: 10px;
+}
+
+.exportButtons button {
+    margin-right: 8px;
+}
+

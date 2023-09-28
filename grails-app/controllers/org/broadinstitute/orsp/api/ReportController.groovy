@@ -5,12 +5,15 @@ import grails.rest.Resource
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AAHRPPMetrics
 import org.broadinstitute.orsp.AuthenticatedController
+import org.broadinstitute.orsp.ComplianceReport
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.ReportService
+import org.broadinstitute.orsp.SubmissionData
+import org.broadinstitute.orsp.utils.IssueUtils
 import org.broadinstitute.orsp.utils.UtilityClass
 import org.broadinstitute.orsp.webservice.PaginationParams
 
@@ -99,6 +102,27 @@ class ReportController extends AuthenticatedController {
             JSON.use(UtilityClass.CONSENT_LINK_REPORT) {
                 render queryService.findAllCollectionLinks(pagination) as JSON
             }
+        } catch (Exception e) {
+            handleException(e)
+        }
+    }
+
+    def getComplianceReportDetails() {
+        Map<String, Object> complianceReportDates = IssueUtils.getJson(Map.class, request.JSON)
+        try {
+            String startDate = params.startDate
+            String endDate = params.endDate
+            String projectType = params.projectType
+            List complianceReportData = queryService.getComplianceDetails(startDate, endDate, projectType)
+            def result = []
+//            List complianceReportData = queryService.getComplianceDetails((String)complianceReportDates.get("startDate"), (String)complianceReportDates.get("endDate"))
+            List submissionData = queryService.getSubmissionDetails()
+            result.add([
+                    complianceReportData: complianceReportData,
+                    submissionData: submissionData
+            ])
+            render result as JSON
+
         } catch (Exception e) {
             handleException(e)
         }

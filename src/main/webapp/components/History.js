@@ -7,29 +7,35 @@ import './Btn.css';
 import { exportData } from '../util/Utils';
 import { TableComponent } from './TableComponent';
 import { formatDataPrintableFormat } from '../util/TableUtil';
+import { ProjectMigration } from '../util/ajax';
 
 const defaultSorted = [{
   dataField: 'date',
-  order: 'desc'
+  order: 'desc',
+  editable: false
 }];
 
 const columns = [{
     dataField: 'id',
     text: 'Id',
     hidden: true,
+    editable: false,
     csvExport : false
   }, {
     dataField: 'author',
     text: 'Author',
+    editable: false,
     sort: true
   }, {
     dataField: 'created',
     text: 'Date',
-    sort: true
+    sort: true,
+    editable: false
   }, {
     dataField: 'summary',
     text: 'Summary',
     sort: true,
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) =>
       div({dangerouslySetInnerHTML: { __html: cell } },[]),
     csvFormatter: (cell, row, rowIndex, colIndex) =>
@@ -40,6 +46,9 @@ export const History = hh(class History extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      history: []
+    }
   }
 
   printHistory = () => {
@@ -56,7 +65,7 @@ export const History = hh(class History extends Component {
       h(Fragment, {}, [
         TableComponent({
           remoteProp: false,
-          data: this.props.history,
+          data:  this.props.history,
           columns: columns,
           keyField: 'id',
           search: true,

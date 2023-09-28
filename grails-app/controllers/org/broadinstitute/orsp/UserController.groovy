@@ -29,14 +29,10 @@ class UserController extends AuthenticatedController {
     }
 
     def sync() {
-        List<User> syncedUsers = BQService.findMissingUsers().collect {
-            userService.findOrCreateUser(
-                    it.userName,
-                    it.email,
-                    it.displayName
-            )
-        }
-        render syncedUsers as JSON
+        def syncedUsers = BQService.createOrUpdateUser()
+        log.info('Number of new users created: ' + syncedUsers.size())
+        response.status = 200
+        render syncedUsers
     }
 
     def getOrspUsers() {

@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, div, h2, hh, p, span, ul, li, small } from 'react-hyperscript-helpers';
+import { button, div, h2, hh, p, span, ul, li, small, i, br } from 'react-hyperscript-helpers';
 import { Project, Search } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -74,7 +74,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
         adminComments: '',
         financialConflict: '',
         textFinancialConflict: ''
-      }
+      },
+      pageReload: false
     };
     this.addNewDegree = this.addNewDegree.bind(this)
   }
@@ -88,6 +89,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
   componentWillUnmount() {
     this._isMounted = false;
   }
+
+ 
 
   init = () => {
     Project.getProject(this.props.projectKey).then(issue => {
@@ -203,6 +206,13 @@ const AdminOnly = hh(class AdminOnly extends Component {
     if (this.isValid()) {
       Project.updateAdminOnlyProps(parsedForm , this.props.projectKey).then(
         response => {
+          // NB: this is to reload the page
+          // to reflect the change in project review
+          // when admin clears the IRB-of-Record field in admin-only page
+          if(this.state.pageReload) {
+            window.location.reload();
+          }
+
           this.props.hideSpinner();
           this.setState(prev => {
             prev.initial = createObjectCopy(this.state.formData);
@@ -333,6 +343,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
   getParsedForm() {
     let form = {};
     form.irbReferral = JSON.stringify(this.state.formData.preferredIrb);
+    form.irb = JSON.stringify(this.state.formData.preferredIrb);
     form.irbReferralText = this.state.formData.preferredIrbText;
     form.investigatorFirstName = this.state.formData.investigatorFirstName;
     form.investigatorLastName = this.state.formData.investigatorLastName;
@@ -361,6 +372,15 @@ const AdminOnly = hh(class AdminOnly extends Component {
     } else if (this.state.formData.initialReviewType.value === 'Not Engaged') {
       form.notEngagedCategories = this.state.formData.notEngagedCategories;
       form.textOtherNotEngagedCategory = this.state.formData.textOtherNotEngagedCategory;
+    }
+
+    // NB: this is to reload the page
+    // to reflect the change in project review
+    // when admin clears the IRB-of-Record field in admin-only page
+    if (this.state.formData.preferredIrb.value === "--") {
+      this.setState({
+        pageReload: true
+      })
     }
     
     let degrees = [];
@@ -508,6 +528,13 @@ const AdminOnly = hh(class AdminOnly extends Component {
     });
   }
 
+  clearIRB = () => {
+    this.setState(prev => {
+      prev.formData.preferredIrb = {label: "--", value: "--"};
+      return prev;
+    })
+  }
+
   render() {
     return(
       div({},[
@@ -556,17 +583,29 @@ const AdminOnly = hh(class AdminOnly extends Component {
               onChange: this.radioBtnHandler,
               readOnly: !this.state.isAdmin
             }),
-            InputFieldSelect({
-              label: "IRB",
-              id: "preferredIrb",
-              name: "preferredIrb",
-              options: PREFERRED_IRB,
-              value: this.state.formData.preferredIrb,
-              onChange: this.handleSelect("preferredIrb"),
-              readOnly: true,
-              placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
-              edit: false
-            }),
+            div({className: 'col-md-11'}, [
+              InputFieldSelect({
+                label: "IRB",
+                id: "preferredIrb",
+                name: "preferredIrb",
+                options: PREFERRED_IRB,
+                value: this.state.formData.preferredIrb,
+                onChange: this.handleSelect("preferredIrb"),
+                readOnly: true,
+                placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
+                edit: false,
+                showRemove: true,
+              }),
+            ]),
+            span({
+              className: 'col-md-1 text-right',
+              onClick: this.clearIRB,
+              style: {'marginTop': '1.5rem', "cursor": "pointer"}
+            }, [
+              i({
+                className: 'glyphicon glyphicon-remove',
+              }, [])
+            ]), br(), br(),
             InputFieldText({
               id: "preferredIrbText",
               name: "preferredIrbText",

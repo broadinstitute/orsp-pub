@@ -16,6 +16,9 @@ class UrlMappings {
         "/api/report/review-categories"(controller: 'report', action: "findReviewCategories")
         '/api/swagger/**'(controller: 'api', action: 'swagger')
 
+        // Compliance report end point
+        "/api/report/compliance-report"(controller: "report", action: "getComplianceReportDetails", method: "GET")
+
         // Project end points
         '/api/project'(resource: 'project')
         '/api/project'(controller:'project', action: 'save', method: 'POST')
@@ -114,6 +117,8 @@ class UrlMappings {
         '/api/consent-collection-links'(controller: 'report', action: 'getAllConsentCollectionLinks')
         '/api/comments/save'(controller: 'comments', action: 'saveNewComment', method: 'POST')
         '/api/comments/list'(controller: 'comments', action: 'getComments', method: 'GET')
+        '/api/comments/update'(controller: 'comments', action: 'updateComment', method: 'PUT')
+        '/api/comments/delete'(controller: 'comments', action: 'deleteComment', method: 'PUT')
         '/api/history'(controller: 'history', action: 'list', method: 'GET')
 
         '/api/submissions'(controller: 'submission', action: 'show', method: 'GET')
@@ -146,6 +151,9 @@ class UrlMappings {
         '/api/login-text'(controller: 'loginText', action: 'getLoginText', method: 'GET')
         '/api/edit-login-text'(controller: 'loginText', action: 'updateLoginText', method: 'PUT')
         '/api/login-text-response'(controller: 'loginText', action: 'getLoginTextResponse', method: 'GET')
+
+        // Document description updating endpoint
+        '/api/update-document-description'(controller: 'loginText', action: 'updateDocumentDescriptionByUuid', method: 'PUT')
 
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")

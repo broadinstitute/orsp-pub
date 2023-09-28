@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import grails.converters.JSON
 import grails.rest.Resource
 import groovy.util.logging.Slf4j
+import org.broadinstitute.orsp.utils.IssueUtils
 import org.broadinstitute.orsp.utils.UtilityClass
 
 @Slf4j
@@ -11,6 +12,7 @@ import org.broadinstitute.orsp.utils.UtilityClass
 class CommentsController extends AuthenticatedController {
 
     CommentsService commentsService
+    QueryService queryService
 
     def index = { list }
 
@@ -47,6 +49,30 @@ class CommentsController extends AuthenticatedController {
         } catch(Exception e) {
             response.status = 500
             render([error: e.message] as JSON)
+        }
+    }
+
+    def deleteComment() {
+        Map<String, Object> commentId = IssueUtils.getJson(Map.class, request.JSON)
+        Integer id = commentId.get('id')
+        try {
+            queryService.deleteCommentById(id)
+            response.status = 200
+        } catch (Exception e) {
+            handleException(e)
+        }
+    }
+
+    def updateComment() {
+        Map<String, Object> editedCommentData = IssueUtils.getJson(Map.class, request.JSON)
+        String id = editedCommentData.get('id').toString()
+        String comment = editedCommentData.get('comment')
+        String author = editedCommentData.get('author')
+        try {
+            queryService.updateCommentById(id, comment, author)
+            response.status = 200
+        } catch (Exception e) {
+            handleException(e)
         }
     }
 }

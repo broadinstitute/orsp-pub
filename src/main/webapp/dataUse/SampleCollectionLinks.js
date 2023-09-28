@@ -18,6 +18,7 @@ const columns = [
     dataField: 'consentGroupKey',
     text: 'Consent Group',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width:  styles.consentCollection.consentKeyWidth};
     },
@@ -28,6 +29,7 @@ const columns = [
     dataField: 'id',
     text: 'Sample Collection(s)',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width:  styles.consentCollection.collectionsWidth};
     },
@@ -40,6 +42,7 @@ const columns = [
     dataField: 'vaultExportDate',
     text: 'DUOS Export',
     sort: true,
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) =>
       div({}, [
         row.restriction !== null && row.restriction.vaultExportDate ? format(row.restriction.vaultExportDate, 'MM/DD/YYYY') : ''

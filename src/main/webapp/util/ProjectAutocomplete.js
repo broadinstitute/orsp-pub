@@ -6,6 +6,7 @@ import { Search } from './ajax';
 class ProjectAutocomplete extends React.Component {
     constructor(props) {
         super(props);
+        this.projectAutocompleteRef = React.createRef();
         this.state = {
             onChange: props.onChange,
             allowNew: false,
@@ -18,15 +19,15 @@ class ProjectAutocomplete extends React.Component {
     }
 
     clear() {
-        this.refs.projectAutocomplete.getInstance().clear();
-        this.refs.projectAutocomplete.getInstance().blur();
+        this.projectAutocompleteRef.current.clear()
+        this.projectAutocompleteRef.current.blur()
     }
 
     componentDidMount() {
         const defaultOptions = this.state.options;
         if (defaultOptions.length === 1) {
             const option = defaultOptions[0];
-            const instance = this.refs.projectAutocomplete.getInstance();
+            const instance = this.projectAutocompleteRef.current;
             instance.setState({
                 text: ProjectAutocomplete.formatLabel(option)
             })
@@ -42,7 +43,8 @@ class ProjectAutocomplete extends React.Component {
         return (
             <div>
                 <AsyncTypeahead
-                    ref="projectAutocomplete"
+                    id="projectAutocomplete"
+                    ref={this.projectAutocompleteRef}
                     labelKey={option => ProjectAutocomplete.formatLabel(option)}
                     align={'left'}
                     isLoading={this.state.isLoading}

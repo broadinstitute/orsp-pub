@@ -61,6 +61,11 @@ export const ConsentGroup = {
     files.forEach(file => {
       if (file.file != null) {
         data.append(file.fileKey, file.file, file.file.name);
+        const fileData = {
+          fileName: file.file.name,
+          fileDescription: file.fileDescription
+        }
+        data.append('fileData', JSON.stringify(fileData));
       }
     });
 
@@ -170,6 +175,11 @@ export const Files = {
     files.forEach(file => {
       if (file.file != null) {
         data.append(file.fileKey, file.file, file.file.name);
+        const fileData = {
+          fileName: file.file.name,
+          fileDescription: file.fileDescription
+        }
+        data.append('fileData', JSON.stringify(fileData));
       }
     });
 
@@ -202,6 +212,11 @@ export const Project = {
     files.forEach(file => {
       if (file.file != null) {
         data.append(file.fileKey, file.file, file.file.name);
+        const fileData = {
+          fileName: file.file.name,
+          fileDescription: file.fileDescription
+        };
+        data.append('fileData', JSON.stringify(fileData));
       }
     });
     data.append('displayName', displayName);
@@ -371,6 +386,14 @@ export const Review = {
 
   getComments(id) {
     return axios.get(UrlConstants.getCommentsUrl + '?id=' + id)
+  },
+
+  updateComment(commentData) {
+    return axios.put(UrlConstants.updateComment, {id: commentData.id, comment: commentData.comment, author: commentData.author})
+  },
+
+  deleteComment(id) {
+    return axios.put(UrlConstants.deleteComment, {id: id})
   }
 };
 
@@ -428,6 +451,11 @@ export const ConsentCollectionLink = {
     files.forEach(file => {
       if (file.file != null) {
         data.append(file.fileKey, file.file, file.file.name);
+        const fileData = {
+          fileName: file.file.name,
+          fileDescription: file.fileDescription
+        };
+        data.append('fileData', JSON.stringify(fileData));
       }
     });
     data.append('dataConsentCollection', JSON.stringify(dataConsentCollection));
@@ -505,6 +533,10 @@ export const Reports = {
         searchValue: query.searchValue
       }
     })
+  },
+
+  getComplianceReportData(startDate, endDate, projectType) {
+    return axios.get(UrlConstants.complianceReportUrl + "?startDate=" + startDate + "&endDate=" + endDate + "&projectType=" + projectType);
   }
 };
 
@@ -533,7 +565,8 @@ export const ProjectMigration = {
       if (file.file != null) {
         const fileData = {
           fileType: file.fileType,
-          name: file.fileName
+          name: file.fileName,
+          fileDescription: file.fileDescription
         };
         data.append('files', file.file, file.fileName);
         data.append('fileTypes', JSON.stringify(fileData));
@@ -581,5 +614,11 @@ export const LoginText = {
 
   getLoginTextResponse() {
     return axios.get(UrlConstants.LoginTextResponseUrl);
+  }
+};
+
+export const DocumentDescription = {
+  updateDocumentDescription(uuid, description, projectKey, creator, fileType) {
+    return axios.put(UrlConstants.updateDocumentDescription, {uuid: uuid, description: description, projectKey: projectKey, creator: creator, fileType: fileType})
   }
 };

@@ -38,11 +38,13 @@ const columns = (ref) => [
     dataField: 'id',
     text: 'Id',
     hidden: true,
+    editable: false,
     csvExport: false
   }, {
     dataField: 'projectKey',
     text: 'Project',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.project.projectKeyWidth };
     },
@@ -61,6 +63,7 @@ const columns = (ref) => [
     dataField: 'summary',
     text: 'Title',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.project.titleWidth };
     },
@@ -79,6 +82,7 @@ const columns = (ref) => [
     dataField: 'type',
     text: 'Type',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.project.typeWidth };
     }
@@ -87,17 +91,20 @@ const columns = (ref) => [
     text: 'Status',
     formatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
     csvFormatter: (cell, row, rowIndex, colIndex) => row.type === 'Consent Group' ? '' : cell,
-    sort: true
+    sort: true,
+    editable: false
   }, {
     dataField: 'updateDate',
     text: 'Updated',
     sort: true,
+    editable: false,
     classes: 'ellipsis-column'
   },
   {
     dataField: 'actors',
     text: 'Awaiting action from',
     sort: true,
+    editable: false,
     formatter: (cell, row, rowIndex, colIndex) =>
       div({}, [
         !isNil(row.actors) ? row.actors.join(", ") : ''
@@ -111,6 +118,7 @@ const columns = (ref) => [
     text: 'Assigned Reviewer',
     csvFormatter: (cell, row, rowIndex, colIndex) => isEmpty(row.assignedAdmin) ? '' : JSON.parse(cell).value,
     sort: true,
+    editable: false,
     sortFunc: (a, b, order) => {
       let result = 0;
       if (order === 'asc') {
@@ -135,6 +143,7 @@ const columns = (ref) => [
     dataField: 'adminComments',
     text: 'Notes',
     sort: true,
+    editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.project.typeWidth };
     }
