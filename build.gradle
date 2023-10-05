@@ -105,7 +105,7 @@ dependencies {
     compile 'com.google.apis:google-api-services-storage:v1-rev20220705-2.0.0'
     compile 'com.google.api-client:google-api-client:2.2.0'
     compile 'com.google.api-client:google-api-client-jackson2:1.27.0'
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.16.1'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.10.3'
     compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
     compile group: 'joda-time', name: 'joda-time', version: '2.11.1'
     compile 'org.grails.plugins:quartz:2.0.13'
