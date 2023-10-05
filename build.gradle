@@ -124,7 +124,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-json
     compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '3.0.19'
 
-    compile group: 'io.github.http-builder-ng', name: 'http-builder-ng-okhttp', version: '1.0.3'
+    compile group: 'io.github.http-builder-ng', name: 'http-builder-ng-okhttp', version: '1.0.4'
     compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.13'
     compile 'org.grails.plugins:gorm-logical-delete:2.0.0.M2'
     // https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
