@@ -78,9 +78,8 @@ class SchedulerService {
         Properties prop = new Properties();
         prop.put("mail.smtp.host", getEmailConfig('host'));
         prop.put("mail.smtp.port", getEmailConfig('port'));
-
         Session session = Session.getInstance(prop, null);
-//        session.setDebug(true)                                                         // uncomment to get detailed info
+        //session.setDebug(true)                                                         // uncomment to get detailed info
 
         def formatDate = new SimpleDateFormat("MM/dd/yyyy").format(new Date())
 
@@ -92,8 +91,10 @@ class SchedulerService {
                     InternetAddress.parse(getEmailConfig('to'))
             );
             // CC recipients
-            //List<InternetAddress> ccList = InternetAddress.parse("saakhil@broadinstitute.org, amaljith@broadinstitute.org")
-            //message.setRecipients(Message.RecipientType.CC, ccList)
+            if (getEmailConfig('cc')) {
+                List<InternetAddress> ccList = InternetAddress.parse(getEmailConfig('cc'))
+                message.setRecipients(Message.RecipientType.CC, ccList)
+            }
             message.setSubject(getEmailConfig('subject') + " - " + formatDate);
 
             //message
@@ -118,7 +119,7 @@ class SchedulerService {
             log.info(message.getSubject() + " sent successfully");
             // Delete the file after sending the email
             File file = new File(filename)
-            if (file.delete()) log.info(filename + ' file deleted')
+            if (file.delete()) log.info(filename + ' deleted successfully')
 
         } catch (MessagingException e) {
             e.printStackTrace();
