@@ -155,6 +155,9 @@ class UrlMappings {
         // Document description updating endpoint
         '/api/update-document-description'(controller: 'loginText', action: 'updateDocumentDescriptionByUuid', method: 'PUT')
 
+        // Scheduler APIs
+        '/api/get-weekly-report'(controller: 'scheduler', action: 'generateWeeklyReport', method: 'GET')
+
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
         "404"(controller: "error", action: "error404")

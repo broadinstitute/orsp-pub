@@ -1888,11 +1888,6 @@ class QueryService implements Status {
                                                 .append('INNER JOIN issue t1 ON t1.project_key = t2.project_key ')
                                                 .append('INNER JOIN funding t3 ON t1.project_key = t3.project_key ')
                                                 .append('WHERE date(t1.request_date) >= :startDate and date(t1.request_date) <= :endDate and t1.project_key LIKE :projectType').toString()
-//        final String query = 'SELECT t1.project_key, t1.request_date, t1.type, t2.name, t2.value, t3.source ' +
-//                            'FROM issue_extra_property t2 ' +
-//                            'INNER JOIN issue t1 ON t1.project_key = t2.project_key ' +
-//                            'INNER JOIN funding t3 ON t1.project_key = t3.project_key ' +
-//                            'WHERE t1.request_date >= :startDate and t1.request_date <= :endDate'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setParameter("startDate", startDate+'%')
         sqlQuery.setParameter("endDate", endDate+'%')
