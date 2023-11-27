@@ -90,11 +90,6 @@ class SchedulerService {
                     Message.RecipientType.TO,
                     InternetAddress.parse(getEmailConfig('to'))
             );
-            // CC recipients
-            if (getEmailConfig('cc')) {
-                List<InternetAddress> ccList = InternetAddress.parse(getEmailConfig('cc'))
-                message.setRecipients(Message.RecipientType.CC, ccList)
-            }
             message.setSubject(getEmailConfig('subject') + " - " + formatDate);
 
             //message
