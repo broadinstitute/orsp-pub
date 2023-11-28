@@ -79,7 +79,7 @@ class SchedulerService {
         prop.put("mail.smtp.host", getEmailConfig('host'));
         prop.put("mail.smtp.port", getEmailConfig('port'));
         Session session = Session.getInstance(prop, null);
-        //session.setDebug(true)                                                         // uncomment to get detailed info
+        session.setDebug(true)
 
         def formatDate = new SimpleDateFormat("MM/dd/yyyy").format(new Date())
 
