@@ -1,6 +1,6 @@
 package org.broadinstitute.orsp
 
-class EmailConfigs {
+class EmailConfig {
 
     Integer id
     String emailConfigName
