@@ -175,7 +175,7 @@ data:
           adminRecipient: orsp@broadinstitute.org
           securityRecipient: orsp-security@broadinstitute.org
           agreementsRecipient: agreements@broadinstitute.org
-          conflictOfInterestRecipient: wdodds@broadinstitute.org
+          conflictOfInterestRecipient: [wdodds@broadinstitute.org, conflicts@broadinstitute.org]
           orspSpecialRecipients: [orsp-portal@broadinstitute.org]
           bccRecipients: []
           replyToRecipient: orsp-portal@broadinstitute.org
