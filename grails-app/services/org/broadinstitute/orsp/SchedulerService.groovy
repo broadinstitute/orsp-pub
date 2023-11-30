@@ -73,6 +73,10 @@ class SchedulerService implements SendgridSupport{
         def attachmentBytes = csvContent.getBytes('UTF-8')
         def base64EncodedCSV = Base64.getEncoder().encodeToString(attachmentBytes)
         def fromEmail = new EmailUser(email: getDefaultFromAddress(), name: 'ORSP')
+//        def to1 = new EmailUser(email: 'sweisenb@broadinstitute.org', name: 'Akhil')
+//        def to2 = new EmailUser(email: 'lipscomb@broadinstitute.org', name: 'Amal')
+        def to3 = new EmailUser(email: 'amaljith@broadinstitute.org', name: 'Amal')
+        def bcc = new EmailUser(email: 'saakhil@broadinstitute.org', name: 'Akhil')
         String htmlContent = "<p>Hi team, <br>Attached herewith is the report of Pending ORSP projects as of " + formatDate + "." +
                 "<p>Thanks,<br>ORSP</p>" +
                 "<i>This is an automated mail. Please don't reply.</i></p>"
@@ -83,11 +87,13 @@ class SchedulerService implements SendgridSupport{
         def attachment = new Attachment(content: base64EncodedCSV, type: 'text/csv', filename: filename, disposition: 'attachment')
         def personalisedData = new Personalization(
                 to: [],
-                subject: subject
+                subject: subject,
+                bcc: []
         )
-        getToEmail().collect {it ->
-            personalisedData.to.add(new EmailUser(email: it, name: it))
-        }
+//        personalisedData.to.add(to1)
+//        personalisedData.to.add(to2)
+        personalisedData.to.add(to3)
+        personalisedData.bcc.add(bcc)
         def mail = new Mail(
                 personalizations: [],
                 from: fromEmail,
