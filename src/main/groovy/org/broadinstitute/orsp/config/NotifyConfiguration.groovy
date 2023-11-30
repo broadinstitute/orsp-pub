@@ -18,4 +18,5 @@ class NotifyConfiguration {
     String securityRecipient
     String agreementsRecipient
     String conflictOfInterestRecipient
+    List<String> weeklyPendingReportRecipients
 }
