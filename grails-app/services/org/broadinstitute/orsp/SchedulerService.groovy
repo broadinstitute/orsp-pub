@@ -92,7 +92,7 @@ class SchedulerService implements SendgridSupport{
                 personalizations: [],
                 from: fromEmail,
                 reply_to: fromEmail,
-                subject: getEmailConfig('subject') + " - " + formatDate,
+                subject: subject,
                 content: [],
                 attachment: []
         )
