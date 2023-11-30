@@ -1,25 +1,23 @@
 package org.broadinstitute.orsp
 
+import grails.util.Environment
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.config.NotifyConfiguration
+import org.broadinstitute.orsp.sendgrid.Attachment
+import org.broadinstitute.orsp.sendgrid.Content
+import org.broadinstitute.orsp.sendgrid.EmailUser
+import org.broadinstitute.orsp.sendgrid.Mail
+import org.broadinstitute.orsp.sendgrid.Personalization
+import org.broadinstitute.orsp.sendgrid.SendgridSupport
 import org.hibernate.SQLQuery
 import org.hibernate.SessionFactory
 
-import javax.mail.Multipart
-import javax.mail.internet.MimeBodyPart
-import javax.mail.internet.MimeMultipart
 import java.text.SimpleDateFormat
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 @Slf4j
 @Transactional(readOnly = true)
-class SchedulerService {
+class SchedulerService implements SendgridSupport{
 
     NotifyConfiguration notifyConfiguration
     def grailsApplication
@@ -28,13 +26,16 @@ class SchedulerService {
         notifyConfiguration.fromAddress
     }
 
-    String getEmailConfig(String name) {
-        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
-        final session = sessionFactory.currentSession
-        final String query = 'SELECT email_config_value from email_config where email_config_name =\'' + name + '\';'
-        final SQLQuery sqlQuery = session.createSQLQuery(query)
-        final result = sqlQuery.uniqueResult()
-        result
+    String getSendGridUrl() {
+        notifyConfiguration.sendGridUrl
+    }
+
+    String getApiKey() {
+        notifyConfiguration.apiKey
+    }
+
+    List getToEmail() {
+        notifyConfiguration.weeklyPendingReportRecipients
     }
 
     def getWeeklyReportData() {
@@ -55,70 +56,50 @@ class SchedulerService {
         def formatDate = new SimpleDateFormat("MM-dd-yyyy").format(new Date())
         String filename = 'ORSP_Pending_Report-' + formatDate + '.csv'
         log.info(filename)
-        convertToCSVAndWriteToFile(csvData, filename)
+        sendEmail(csvData, filename)
     }
 
-    def convertToCSVAndWriteToFile(data, filename) {
-        def csv = new File(filename)
-        csv.withWriter { writer ->
-            data.each { row ->
-                row.eachWithIndex { cell, index ->
-                    writer.write("\"${cell}\"")
-                    if (index < row.size() - 1) {
-                        writer.write(',')
-                    }
-                }
-                writer.write('\n')
-            }
+    def convertListToCSV(List<List<String>> dataList) {
+        def csvString = dataList.collect { row ->
+            row.join(',')
+        }.join('\n')
+
+        return csvString
+    }
+
+    def sendEmail(List csvData, String filename) {
+        def formatDate = new SimpleDateFormat("MM-dd-yyyy").format(new Date())
+        def csvContent = convertListToCSV(csvData)
+        def attachmentBytes = csvContent.getBytes('UTF-8')
+        def base64EncodedCSV = Base64.getEncoder().encodeToString(attachmentBytes)
+        def fromEmail = new EmailUser(email: getDefaultFromAddress(), name: 'ORSP')
+        String htmlContent = "<p>Hi team, <br>Attached herewith is the report of Pending ORSP projects as of " + formatDate + "." +
+                "<p>Thanks,<br>ORSP</p>" +
+                "<i>This is an automated mail. Please don't reply.</i></p>"
+        String subject = (Environment.getCurrent() == Environment.PRODUCTION) ?
+                'Weekly Report - Pending Projects ' + new SimpleDateFormat("MM/dd/yyyy").format(new Date()) :
+                '[Test] - Weekly Report - Pending Projects ' + new SimpleDateFormat("MM/dd/yyyy").format(new Date())
+        def content = new Content(type: 'text/html', value: htmlContent)
+        def attachment = new Attachment(content: base64EncodedCSV, type: 'text/csv', filename: filename, disposition: 'attachment')
+        def personalisedData = new Personalization(
+                to: [],
+                subject: subject
+        )
+        getToEmail().collect {it ->
+            personalisedData.to.add(new EmailUser(email: it, name: it))
         }
-        sendEmail(filename)
+        def mail = new Mail(
+                personalizations: [],
+                from: fromEmail,
+                reply_to: fromEmail,
+                subject: getEmailConfig('subject') + " - " + formatDate,
+                content: [],
+                attachment: []
+        )
+        mail.personalizations.add(personalisedData)
+        mail.content.add(content)
+        mail.attachment.add(attachment)
+        log.debug(mail)
+        sendMail(mail, getApiKey(), getSendGridUrl())
     }
-
-    def sendEmail(String filename) {
-        Properties prop = new Properties();
-        prop.put("mail.smtp.host", getEmailConfig('host'));
-        prop.put("mail.smtp.port", getEmailConfig('port'));
-        Session session = Session.getInstance(prop, null);
-        session.setDebug(true)
-
-        def formatDate = new SimpleDateFormat("MM/dd/yyyy").format(new Date())
-
-        try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(getDefaultFromAddress()));
-            message.setRecipients(
-                    Message.RecipientType.TO,
-                    InternetAddress.parse(getEmailConfig('to'))
-            );
-            message.setSubject(getEmailConfig('subject') + " - " + formatDate);
-
-            //message
-            MimeBodyPart messageBody = new MimeBodyPart()
-            messageBody.setContent("<p>Hi team, <br>Attached herewith is the report of Pending ORSP projects as of " + formatDate + "." +
-                    "<p>Thanks,<br>ORSP</p>" +
-                    "<i>This is an automated mail. Please don't reply.</i></p>",
-                    "text/html; charset=utf-8"
-            )
-            Multipart multipart = new MimeMultipart()
-            multipart.addBodyPart(messageBody)
-
-            //attachment
-            MimeBodyPart messageBodyAttach = new MimeBodyPart()
-            messageBodyAttach.attachFile(filename)
-            multipart.addBodyPart(messageBodyAttach)
-
-            //set message
-            message.setContent(multipart)
-
-            Transport.send(message);
-            log.info(message.getSubject() + " sent successfully");
-            // Delete the file after sending the email
-            File file = new File(filename)
-            if (file.delete()) log.info(filename + ' deleted successfully')
-
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

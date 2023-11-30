@@ -46,4 +46,5 @@ class Mail {
     EmailUser reply_to
     String subject
     List<Content> content
+    List<Attachment> attachment
 }
