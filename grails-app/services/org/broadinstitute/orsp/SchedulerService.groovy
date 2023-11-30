@@ -99,7 +99,6 @@ class SchedulerService implements SendgridSupport{
         mail.personalizations.add(personalisedData)
         mail.content.add(content)
         mail.attachment.add(attachment)
-        log.debug(mail)
         sendMail(mail, getApiKey(), getSendGridUrl())
     }
 }
