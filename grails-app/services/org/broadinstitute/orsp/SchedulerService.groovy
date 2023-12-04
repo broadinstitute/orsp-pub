@@ -3,13 +3,8 @@ package org.broadinstitute.orsp
 import grails.util.Environment
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
+import groovyx.net.http.RESTClient
 import org.broadinstitute.orsp.config.NotifyConfiguration
-import org.broadinstitute.orsp.sendgrid.Attachment
-import org.broadinstitute.orsp.sendgrid.Content
-import org.broadinstitute.orsp.sendgrid.EmailUser
-import org.broadinstitute.orsp.sendgrid.Mail
-import org.broadinstitute.orsp.sendgrid.Personalization
-import org.broadinstitute.orsp.sendgrid.SendgridSupport
 import org.hibernate.SQLQuery
 import org.hibernate.SessionFactory
 
@@ -17,7 +12,7 @@ import java.text.SimpleDateFormat
 
 @Slf4j
 @Transactional(readOnly = true)
-class SchedulerService implements SendgridSupport{
+class SchedulerService {
 
     NotifyConfiguration notifyConfiguration
     def grailsApplication
@@ -34,8 +29,13 @@ class SchedulerService implements SendgridSupport{
         notifyConfiguration.apiKey
     }
 
-    List getToEmail() {
-        notifyConfiguration.weeklyPendingReportRecipients
+    String getEmailConfig(String name) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = 'SELECT value from email_config where name =\'' + name + '\';'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final result = sqlQuery.uniqueResult()
+        result
     }
 
     def getWeeklyReportData() {
@@ -53,58 +53,79 @@ class SchedulerService implements SendgridSupport{
             list()
         }
         csvData.addAll(result)
-        def formatDate = new SimpleDateFormat("MM-dd-yyyy").format(new Date())
-        String filename = 'ORSP_Pending_Report-' + formatDate + '.csv'
-        log.info(filename)
-        sendEmail(csvData, filename)
+        sendMail(csvData)
     }
 
     def convertListToCSV(List<List<String>> dataList) {
         def csvString = dataList.collect { row ->
-            row.join(',')
+            println(row)
+            row.join(';')
         }.join('\n')
 
         return csvString
     }
 
-    def sendEmail(List csvData, String filename) {
-        def formatDate = new SimpleDateFormat("MM-dd-yyyy").format(new Date())
+    def sendMail(List csvData) {
+        String formatDate = new SimpleDateFormat("MM-dd-yyyy").format(new Date())
+        String filename = 'ORSP_Pending_Report-' + formatDate + '.csv'
+        String sendgridUrl = getSendGridUrl()
+        String apiKey = getApiKey()
+
         def csvContent = convertListToCSV(csvData)
         def attachmentBytes = csvContent.getBytes('UTF-8')
         def base64EncodedCSV = Base64.getEncoder().encodeToString(attachmentBytes)
-        def fromEmail = new EmailUser(email: getDefaultFromAddress(), name: 'ORSP')
-//        def to1 = new EmailUser(email: 'sweisenb@broadinstitute.org', name: 'Akhil')
-//        def to2 = new EmailUser(email: 'lipscomb@broadinstitute.org', name: 'Amal')
-        def to3 = new EmailUser(email: 'amaljith@broadinstitute.org', name: 'Amal')
-        def bcc = new EmailUser(email: 'saakhil@broadinstitute.org', name: 'Akhil')
+
+        String from = getDefaultFromAddress()
+        List<String> emailList = getEmailConfig('to').split(',').collect { it.trim() }
+        String subject = (Environment.getCurrent() == Environment.PRODUCTION) ?
+                'Weekly Report of ORSP Pending Projects - ' + formatDate :
+                '[Test] - Weekly Report of ORSP Pending Projects - ' + formatDate
         String htmlContent = "<p>Hi team, <br>Attached herewith is the report of Pending ORSP projects as of " + formatDate + "." +
                 "<p>Thanks,<br>ORSP</p>" +
                 "<i>This is an automated mail. Please don't reply.</i></p>"
-        String subject = (Environment.getCurrent() == Environment.PRODUCTION) ?
-                'Weekly Report - Pending Projects ' + new SimpleDateFormat("MM/dd/yyyy").format(new Date()) :
-                '[Test] - Weekly Report - Pending Projects ' + new SimpleDateFormat("MM/dd/yyyy").format(new Date())
-        def content = new Content(type: 'text/html', value: htmlContent)
-        def attachment = new Attachment(content: base64EncodedCSV, type: 'text/csv', filename: filename, disposition: 'attachment')
-        def personalisedData = new Personalization(
-                to: [],
+        def client = new RESTClient(sendgridUrl)
+        client.headers['Authorization'] = 'Bearer ' + apiKey
+
+        def mail = [
+                personalizations: [
+                    [
+                        to: emailList.collect {email ->
+                            [email: email]
+                        }
+                    ]
+                ],
+                from: [
+                    email: from
+                ],
                 subject: subject,
-                bcc: []
+                content: [
+                    [
+                        type: 'text/html',
+                        value: htmlContent
+                    ]
+                ],
+                attachments: [
+                    [
+                        content: base64EncodedCSV,
+                        filename: filename,
+                        type: 'text/csv',
+                        disposition: 'attachment'
+                    ]
+                ]
+        ]
+        log.info('Mail data: ' + mail)
+
+        def response = client.post(
+                'contentType': 'application/json',
+                'body': mail
         )
-//        personalisedData.to.add(to1)
-//        personalisedData.to.add(to2)
-        personalisedData.to.add(to3)
-        personalisedData.bcc.add(bcc)
-        def mail = new Mail(
-                personalizations: [],
-                from: fromEmail,
-                reply_to: fromEmail,
-                subject: subject,
-                content: [],
-                attachment: []
-        )
-        mail.personalizations.add(personalisedData)
-        mail.content.add(content)
-        mail.attachment.add(attachment)
-        sendMail(mail, getApiKey(), getSendGridUrl())
+
+        if (response.status >= 200 || response.status < 300) {
+            log.info(response.status as String)
+            log.info('Email sent succesfully success')
+        } else {
+            log.info(response.status as String)
+            log.info(response.data as String)
+        }
     }
 }
