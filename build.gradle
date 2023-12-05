@@ -147,6 +147,8 @@ dependencies {
     // Slf4j startup error handling
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
 
+    compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
+
 }
 
 task wrapper(type: Wrapper) {

@@ -66,7 +66,7 @@ class SchedulerService {
     }
 
     def sendMail(List csvData) {
-        String formatDate = new SimpleDateFormat("MM-dd-yyyy").format(new Date())
+        String formatDate = new SimpleDateFormat("MM.dd.yyyy").format(new Date())
         String filename = 'ORSP_Pending_Report-' + formatDate + '.csv'
         String sendgridUrl = getSendGridUrl()
         String apiKey = getApiKey()
