@@ -46,8 +46,9 @@ class SchedulerService {
                                 .append('SELECT t1.project_key, t1.summary as title, COALESCE(JSON_UNQUOTE(JSON_EXTRACT(t2.value, \'$.value\')), "Not Assigned") as assigned_reviewer, ')
                                 .append('DATE_FORMAT(t1.request_date, \'%m-%d-%Y\'), t1.approval_status FROM orsp_dev.issue t1 ')
                                 .append('LEFT JOIN orsp_dev.issue_extra_property t2 ON ')
-                                .append('t2.project_key = t1.project_key AND t2.name=\'assignedAdmin\'')
-                                .append('WHERE t1.approval_status=\'Pending ORSP Admin Review\' AND t1.deleted=0 ORDER BY t1.request_date;').toString()
+                                .append('t2.project_key = t1.project_key AND t2.name=\'assignedAdmin\' ')
+                                .append('WHERE t1.approval_status=\'Pending ORSP Admin Review\' ')
+                                .append('OR t1.approval_status=\'On Hold\' AND t1.deleted=0 ORDER BY t1.request_date;').toString()
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final result = sqlQuery.with {it ->
             list()
