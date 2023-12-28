@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { a, div, h, h3, hh } from 'react-hyperscript-helpers';
 import { About } from '../components/About';
 import { TableComponent } from '../components/TableComponent';
-import { Issues, User, Search } from '../util/ajax';
+import { Issues, User, Search, Reviewer } from '../util/ajax';
 import { parseDate } from '../util/TableUtil';
 import { Link } from 'react-router-dom';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -112,7 +112,8 @@ const LandingPage = hh(class LandingPage extends Component{
 
   componentDidMount = async () => {
     this._isMounted = true;
-    this.loadORSPAdmins();
+    // this.loadORSPAdmins();
+    this.loadReviewers();
     await this.init()
   };
 
@@ -137,6 +138,35 @@ const LandingPage = hh(class LandingPage extends Component{
         return prev;
       })
     });
+  }
+
+  loadReviewers = () => {
+    Reviewer.getReviewers().then(response => {
+      let reviewersArray = response.data;
+      // sort data in order
+      reviewersArray = reviewersArray.sort((a,b) => a[3] - b[3]);
+      let reviewerData = [];
+      // converting array of array into array of json
+      // after checking endDate
+      reviewersArray.forEach((dataArray, i) => {
+        if (dataArray[2] === 'Y') {
+          if (!dataArray[7]) {
+            reviewerData.push(JSON.parse(dataArray[4]))
+          } else {
+            if (new Date(dataArray[7]) > new Date()) {
+              reviewerData.push(JSON.parse(dataArray[4]))
+            }
+          }
+        }
+      });
+      let all = {key:'', value:'', label:'All'}
+      reviewerData.splice(0, 0, all)
+      this.setState(prev => {
+        prev.orspAdmins = reviewerData;
+        prev.assignedReviewer = all;
+        return prev;
+      })
+    })
   }
 
   handleSelect = (field) => () => (selectedOption) => {

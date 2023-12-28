@@ -71,6 +71,7 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String ASSIGNED_ADMIN = "assignedAdmin"
     public static final String IRB_REVIEWED_PROTOCOL = "irbReviewedProtocol"
     public static final String HUMAN_SUBJECTS = "humanSubjects"
+    public static final String REVIEWER_ASSIGNED = "reviewerAssigned"
 
 
     // Admin Only

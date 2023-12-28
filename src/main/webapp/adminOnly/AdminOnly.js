@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { button, div, h2, hh, p, span, ul, li, small, i, br } from 'react-hyperscript-helpers';
-import { Project, Search } from '../util/ajax';
+import { Project, Reviewer, Search } from '../util/ajax';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldDatePicker } from '../components/InputFieldDatePicker';
@@ -82,7 +82,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
 
   componentDidMount() {
     this._isMounted = true;
-    this.loadORSPAdmins();
+    // this.loadORSPAdmins();
+    this.loadReviewers()
     this.init();
   }
 
@@ -353,6 +354,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
     form.irbExpirationDate = this.parseDate(this.state.formData.irbExpirationDate);
     form.projectStatus = this.state.formData.projectStatus;
     form.assignedAdmin = JSON.stringify(this.state.formData.assignedReviewer);
+    form.reviewerAssigned = this.state.formData.assignedReviewer.value;
     form.adminComments = isEmpty(this.state.formData.adminComments) ? '--' : this.state.formData.adminComments;
     form.financialConflict = this.state.formData.financialConflict;
     form.financialConflictDescription = this.state.formData.financialConflictDescription;
@@ -526,6 +528,32 @@ const AdminOnly = hh(class AdminOnly extends Component {
         return prev;
       })
     });
+  }
+
+  loadReviewers = () => {
+    Reviewer.getReviewers().then(response => {
+      let reviewersArray = response.data;
+      // sort data in order
+      reviewersArray = reviewersArray.sort((a,b) => a[3] - b[3]);
+      let reviewerData = [];
+      // converting array of array into array of json
+      // after checking endDate
+      reviewersArray.forEach((dataArray, i) => {
+        if (dataArray[2] === 'Y') {
+          if (!dataArray[7]) {
+            reviewerData.push(JSON.parse(dataArray[4]))
+          } else {
+            if (new Date(dataArray[7]) > new Date()) {
+              reviewerData.push(JSON.parse(dataArray[4]))
+            }
+          }
+        }
+      });
+      this.setState(prev => {
+        prev.orspAdmins = reviewerData;
+        return prev;
+      })
+    })
   }
 
   clearIRB = () => {
