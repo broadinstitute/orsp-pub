@@ -105,8 +105,8 @@ class IssueService implements UserInfo {
             IssueExtraProperty.ADMIN_COMMENTS,
             IssueExtraProperty.FINANCIAL_CONFLICT,
             IssueExtraProperty.FINANCIAL_CONFLICT_DESCRIPTION,
-            IssueExtraProperty.ON_HOLD_DAYS
-
+            IssueExtraProperty.ON_HOLD_DAYS,
+            IssueExtraProperty.REVIEWER_ASSIGNED
 
     ]
 
