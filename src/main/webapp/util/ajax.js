@@ -646,5 +646,9 @@ export const Reviewer = {
 
   getReviewerProjectCount(userjson) {
     return axios.post(UrlConstants.getProjectCount, {json: userjson})
+  },
+
+  getDistinctiveReviewers() {
+    return axios.get(UrlConstants.getDistinctiveReviewers)
   }
 }

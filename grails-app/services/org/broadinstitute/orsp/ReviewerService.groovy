@@ -78,12 +78,22 @@ class ReviewerService {
     }
 
     def countReviewerProjects(Map<String, Object> userjson) {
-        println(userjson)
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final String query = "SELECT count(*) FROM issue_extra_property where name='assignedAdmin' AND JSON_CONTAINS(value, '${userjson.json}')"
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final result = sqlQuery.uniqueResult()
+        result
+    }
+
+    def getDistinctReviewers() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = "SELECT DISTINCT value FROM issue_extra_property where name='assignedAdmin'"
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final result = sqlQuery.with {it ->
+            list()
+        }
         result
     }
 }

@@ -165,6 +165,7 @@ class UrlMappings {
         '/api/update-reviewer'(controller: 'reviewer', action: 'updateReviewer', method: 'POST')
         '/api/get-reviewer-assigned-count'(controller: 'reviewer', action: 'reviewerAssignedCount', method: 'GET')
         '/api/get-project-count'(controller: 'reviewer', action: 'getReviewerProjectCount', method: 'POST')
+        '/api/get-distinctive-reviewers'(controller: 'reviewer', action: 'getDistinctReviewers', method: 'GET')
 
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
