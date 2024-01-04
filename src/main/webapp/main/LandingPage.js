@@ -141,31 +141,16 @@ const LandingPage = hh(class LandingPage extends Component{
   }
 
   loadReviewers = () => {
-    Reviewer.getReviewers().then(response => {
-      let reviewersArray = response.data;
-      // sort data in order
-      reviewersArray = reviewersArray.sort((a,b) => a[3] - b[3]);
-      let reviewerData = [];
-      // converting array of array into array of json
-      // after checking endDate
-      reviewersArray.forEach((dataArray, i) => {
-        if (dataArray[2] === 'Y') {
-          if (!dataArray[7]) {
-            reviewerData.push(JSON.parse(dataArray[4]))
-          } else {
-            if (new Date(dataArray[7]) > new Date()) {
-              reviewerData.push(JSON.parse(dataArray[4]))
-            }
-          }
-        }
-      });
-      let all = {key:'', value:'', label:'All'}
-      reviewerData.splice(0, 0, all)
+    Reviewer.getDistinctiveReviewers().then(data => {
+      let jsondata = data.data.map(item => JSON.parse(item));
+      const keys = jsondata.map(({key}) => key);
+      let distinctReviewers = jsondata.filter(({key}, i) => (key && !keys.includes(key, i+1)));
+      distinctReviewers.splice(0, 0, {key:'', value:'', label:'All'});
       this.setState(prev => {
-        prev.orspAdmins = reviewerData;
-        prev.assignedReviewer = all;
+        prev.orspAdmins = distinctReviewers;
+        prev.assignedReviewer = {key:'', value:'', label:'All'};
         return prev;
-      })
+      });
     })
   }
 

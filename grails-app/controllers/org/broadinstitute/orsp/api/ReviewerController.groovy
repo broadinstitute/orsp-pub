@@ -69,4 +69,13 @@ class ReviewerController extends AuthenticatedController{
             handleException(e)
         }
     }
+
+    def getDistinctReviewers() {
+        try {
+            def result = reviewerService.getDistinctReviewers()
+            render result as JSON
+        } catch (Exception e) {
+            handleException(e)
+        }
+    }
 }
