@@ -49,8 +49,8 @@ const ManageReviewers = hh(class ManageReviewers extends Component {
           order: dataArray[3],
           userjson: dataArray[4],
           createdAt: dataArray[5],
-          startDate: dataArray[6],
-          endDate: dataArray[7]
+          startDate: dataArray[6].split('T')[0],
+          endDate: dataArray[7].split('T')[0]
         })
       })
       this.setState({
