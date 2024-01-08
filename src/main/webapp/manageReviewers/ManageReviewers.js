@@ -50,7 +50,7 @@ const ManageReviewers = hh(class ManageReviewers extends Component {
           userjson: dataArray[4],
           createdAt: dataArray[5],
           startDate: dataArray[6].split('T')[0],
-          endDate: dataArray[7].split('T')[0]
+          endDate: dataArray[7] ? dataArray[7].split('T')[0] : null
         })
       })
       this.setState({
