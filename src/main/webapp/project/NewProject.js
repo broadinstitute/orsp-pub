@@ -75,7 +75,7 @@ const NewProject = hh(class NewProject extends Component {
     });
     this.loadOptions();
     this.checkDefault();
-    this.getReviewerDetails();
+    // this.getReviewerDetails();
   }
 
   async checkDefault() {
@@ -257,6 +257,7 @@ const NewProject = hh(class NewProject extends Component {
     }
 
     // Auto assign reviewers
+    //
     // if (this.state.assignedCount === 0) {
     //   extraProperties.push({name: 'assignedAdmin', value: this.state.reviewersData[0].userjson});
     //   extraProperties.push({name: 'reviewerAssigned', value: this.state.reviewersData[0].name});

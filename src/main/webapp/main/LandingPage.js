@@ -112,8 +112,8 @@ const LandingPage = hh(class LandingPage extends Component{
 
   componentDidMount = async () => {
     this._isMounted = true;
-    // this.loadORSPAdmins();
-    this.loadReviewers();
+    this.loadORSPAdmins();
+    // this.loadReviewers();
     await this.init()
   };
 

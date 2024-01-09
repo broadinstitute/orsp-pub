@@ -82,8 +82,8 @@ const AdminOnly = hh(class AdminOnly extends Component {
 
   componentDidMount() {
     this._isMounted = true;
-    // this.loadORSPAdmins();
-    this.loadReviewers()
+    this.loadORSPAdmins();
+    // this.loadReviewers()
     this.init();
   }
 
