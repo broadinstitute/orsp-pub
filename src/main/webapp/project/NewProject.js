@@ -5,7 +5,7 @@ import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { DETERMINATION } from '../util/TypeDescription';
-import { LoginText, Project, User } from '../util/ajax';
+import { LoginText, Project, Reviewer, User } from '../util/ajax';
 import { handleUnauthorized, isEmpty } from '../util/Utils';
 import { getProjectType } from '../util/DeterminationQuestions';
 import { hh, div } from 'react-hyperscript-helpers';
@@ -54,6 +54,8 @@ const NewProject = hh(class NewProject extends Component {
       },
       formerProjectType: null,
       defaultValueForAbout: 'default',
+      reviewersData: [],
+      assignedCount: 0
     };
     this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.updateAttestationFormData = this.updateAttestationFormData.bind(this);
@@ -73,6 +75,7 @@ const NewProject = hh(class NewProject extends Component {
     });
     this.loadOptions();
     this.checkDefault();
+    this.getReviewerDetails();
   }
 
   async checkDefault() {
@@ -96,6 +99,53 @@ const NewProject = hh(class NewProject extends Component {
       documentOptions.push({ value: type, label: type });
     });
     this.setState({ documentOptions: documentOptions });
+  };
+
+  getReviewerDetails = () => {
+    Reviewer.getReviewerAssignedCount().then(data => {
+      let assignedCount = data.data;
+      Reviewer.getReviewers().then(response => {
+        let reviewersArray = response.data;
+        // sort data in order
+        reviewersArray = reviewersArray.sort((a,b) => a[3] - b[3]);
+        let reviewerData = [];
+        // converting array of array into array of json
+        // after checking endDate
+        reviewersArray.forEach((dataArray, i) => {
+          if (dataArray[2] === 'Y') {
+            if (!dataArray[7]) {
+              reviewerData.push({
+                id: i + 1,
+                name: dataArray[1],
+                active: dataArray[2],
+                order: dataArray[3],
+                userjson: dataArray[4],
+                createdAt: dataArray[5],
+                startDate: dataArray[6],
+                endDate: dataArray[7]
+              })
+            } else {
+              if (new Date(dataArray[7]) > new Date()) {
+                reviewerData.push({
+                  id: i + 1,
+                  name: dataArray[1],
+                  active: dataArray[2],
+                  order: dataArray[3],
+                  userjson: dataArray[4],
+                  createdAt: dataArray[5],
+                  startDate: dataArray[6],
+                  endDate: dataArray[7]
+                })
+              }
+            }
+          }
+        });
+        this.setState({
+          reviewersData: reviewerData,
+          assignedCount: assignedCount
+        });
+      })
+    })
   };
 
   submitNewProject = () => {
@@ -204,6 +254,16 @@ const NewProject = hh(class NewProject extends Component {
           extraProperties.push({name: q.key+"TextValue", value: q.textValue});
         }
       });
+    }
+
+    // Auto assign reviewers
+    if (this.state.assignedCount === 0) {
+      extraProperties.push({name: 'assignedAdmin', value: this.state.reviewersData[0].userjson});
+      extraProperties.push({name: 'reviewerAssigned', value: this.state.reviewersData[0].name});
+    } else {
+      let assignableReviewerOrder = this.state.assignedCount % this.state.reviewersData.length;
+      extraProperties.push({name: 'assignedAdmin', value: this.state.reviewersData[assignableReviewerOrder].userjson});
+      extraProperties.push({name: 'reviewerAssigned', value: this.state.reviewersData[assignableReviewerOrder].name});
     }
 
     project.extraProperties = extraProperties;

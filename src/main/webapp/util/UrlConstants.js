@@ -128,6 +128,16 @@ export const UrlConstants = {
   complianceReportUrl: context + "/api/report/compliance-report",
   updateDocumentDescription: context + "/api/update-document-description",
   updateComment: context + '/api/comments/update',
-  deleteComment: context + '/api/comments/delete'
+  deleteComment: context + '/api/comments/delete',
+
+  // reviewers
+  manageReviewers: context + "/manage-reviewers",
+  getReviewers: context + '/api/get-reviewers',
+  addReviewer: context + '/api/add-reviewer',
+  updateReviewer: context + '/api/update-reviewer',
+  deleteReviewer: context + '/api/delete-reviewer',
+  getReviewerAssignedCount: context + '/api/get-reviewer-assigned-count',
+  getProjectCount: context + '/api/get-project-count',
+  getDistinctiveReviewers: context + '/api/get-distinctive-reviewers'
 };
 

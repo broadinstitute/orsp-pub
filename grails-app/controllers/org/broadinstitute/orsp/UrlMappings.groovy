@@ -158,6 +158,15 @@ class UrlMappings {
         // Scheduler APIs
         '/api/get-weekly-report'(controller: 'scheduler', action: 'generateWeeklyReport', method: 'GET')
 
+        // Reviewer API end points
+        '/api/get-reviewers'(controller: 'reviewer', action: 'index', method: 'GET')
+        '/api/add-reviewer'(controller: 'reviewer', action: 'addNewReviewer', method: 'POST')
+        '/api/delete-reviewer'(controller: 'reviewer', action: 'deleteReviewer', method: 'GET')
+        '/api/update-reviewer'(controller: 'reviewer', action: 'updateReviewer', method: 'POST')
+        '/api/get-reviewer-assigned-count'(controller: 'reviewer', action: 'reviewerAssignedCount', method: 'GET')
+        '/api/get-project-count'(controller: 'reviewer', action: 'getReviewerProjectCount', method: 'POST')
+        '/api/get-distinctive-reviewers'(controller: 'reviewer', action: 'getDistinctReviewers', method: 'GET')
+
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
         "404"(controller: "error", action: "error404")

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { a, div, h, h3, hh } from 'react-hyperscript-helpers';
 import { About } from '../components/About';
 import { TableComponent } from '../components/TableComponent';
-import { Issues, User, Search } from '../util/ajax';
+import { Issues, User, Search, Reviewer } from '../util/ajax';
 import { parseDate } from '../util/TableUtil';
 import { Link } from 'react-router-dom';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -112,7 +112,8 @@ const LandingPage = hh(class LandingPage extends Component{
 
   componentDidMount = async () => {
     this._isMounted = true;
-    this.loadORSPAdmins();
+    // this.loadORSPAdmins();
+    this.loadReviewers();
     await this.init()
   };
 
@@ -137,6 +138,20 @@ const LandingPage = hh(class LandingPage extends Component{
         return prev;
       })
     });
+  }
+
+  loadReviewers = () => {
+    Reviewer.getDistinctiveReviewers().then(data => {
+      let jsondata = data.data.map(item => JSON.parse(item));
+      const keys = jsondata.map(({key}) => key);
+      let distinctReviewers = jsondata.filter(({key}, i) => (key && !keys.includes(key, i+1)));
+      distinctReviewers.splice(0, 0, {key:'', value:'', label:'All'});
+      this.setState(prev => {
+        prev.orspAdmins = distinctReviewers;
+        prev.assignedReviewer = {key:'', value:'', label:'All'};
+        return prev;
+      });
+    })
   }
 
   handleSelect = (field) => () => (selectedOption) => {

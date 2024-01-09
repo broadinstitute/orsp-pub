@@ -622,3 +622,33 @@ export const DocumentDescription = {
     return axios.put(UrlConstants.updateDocumentDescription, {uuid: uuid, description: description, projectKey: projectKey, creator: creator, fileType: fileType})
   }
 };
+
+export const Reviewer = {
+  getReviewers() {
+    return axios.get(UrlConstants.getReviewers)
+  },
+
+  addReviewer(data) {
+    return axios.post(UrlConstants.addReviewer, data)
+  },
+
+  updateReviewer(data) {
+    return axios.post(UrlConstants.updateReviewer, data)
+  },
+
+  removeReviewer(name) {
+    return axios.get(UrlConstants.deleteReviewer + '?name=' + name)
+  },
+
+  getReviewerAssignedCount() {
+    return axios.get(UrlConstants.getReviewerAssignedCount)
+  },
+
+  getReviewerProjectCount(userjson) {
+    return axios.post(UrlConstants.getProjectCount, {json: userjson})
+  },
+
+  getDistinctiveReviewers() {
+    return axios.get(UrlConstants.getDistinctiveReviewers)
+  }
+}
