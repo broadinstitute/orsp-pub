@@ -38,12 +38,81 @@ class SchedulerService {
         result
     }
 
+    def generateMailBody(
+            List<String> emailList,
+            String from,
+            String subject,
+            String htmlContent,
+            String base64Content,
+            String filename
+    ) {
+        def mail = [
+                personalizations: [
+                        [
+                                to: emailList.collect {email ->
+                                    [email: email]
+                                }
+                        ]
+                ],
+                from: [
+                        email: from
+                ],
+                subject: subject,
+                content: [
+                        [
+                                type: 'text/html',
+                                value: htmlContent
+                        ]
+                ],
+                attachments: [
+                        [
+                                content: base64Content,
+                                filename: filename,
+                                type: 'text/csv',
+                                disposition: 'attachment'
+                        ]
+                ]
+        ]
+
+        return mail
+    }
+
+    def sendMail(
+            List<String> emailList,
+            String from,
+            String subject,
+            String htmlContent,
+            String base64Content,
+            String filename
+    ) {
+        String sendgridUrl = getSendGridUrl()
+        String apiKey = getApiKey()
+        def client = new RESTClient(sendgridUrl)
+        client.headers['Authorization'] = 'Bearer ' + apiKey
+
+        def mail = generateMailBody(emailList, from, subject, htmlContent, base64Content, filename)
+        log.info('Mail data: ' + mail)
+
+        def response = client.post(
+                'contentType': 'application/json',
+                'body': mail
+        )
+        if (response.status >= 200 || response.status < 300) {
+            log.info(response.status as String)
+            log.info('Email sent succesfully')
+        } else {
+            log.info(response.status as String)
+            log.info(response.data as String)
+        }
+    }
+
     def getWeeklyReportData() {
         List csvData = [['Project Key', 'Title', 'Assigned Reviewer', 'Submission Date', 'Status']]
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         final String query = new StringBuilder()
-                                .append('SELECT t1.project_key, t1.summary as title, COALESCE(JSON_UNQUOTE(JSON_EXTRACT(t2.value, \'$.value\')), "Not Assigned") as assigned_reviewer, ')
+                                .append('SELECT t1.project_key, CONCAT(\'"\', REPLACE(t1.summary, \'"\', \'\\\'\'), \'"\') as title, ')
+                                .append('COALESCE(JSON_UNQUOTE(JSON_EXTRACT(t2.value, \'$.value\')), "Not Assigned") as assigned_reviewer, ')
                                 .append('DATE_FORMAT(t1.request_date, \'%m-%d-%Y\'), t1.approval_status FROM issue t1 ')
                                 .append('LEFT JOIN issue_extra_property t2 ON ')
                                 .append('t2.project_key = t1.project_key AND t2.name=\'assignedAdmin\' ')
@@ -54,23 +123,20 @@ class SchedulerService {
             list()
         }
         csvData.addAll(result)
-        sendMail(csvData)
+        sendWeeklyReport(csvData)
     }
 
     def convertListToCSV(List<List<String>> dataList) {
         def csvString = dataList.collect { row ->
-            println(row)
-            row.join(';')
+            row.join(',')
         }.join('\n')
 
         return csvString
     }
 
-    def sendMail(List csvData) {
+    def sendWeeklyReport(List csvData) {
         String formatDate = new SimpleDateFormat("MM.dd.yyyy").format(new Date())
         String filename = 'ORSP_Pending_Report-' + formatDate + '.csv'
-        String sendgridUrl = getSendGridUrl()
-        String apiKey = getApiKey()
 
         def csvContent = convertListToCSV(csvData)
         def attachmentBytes = csvContent.getBytes('UTF-8')
@@ -84,49 +150,7 @@ class SchedulerService {
         String htmlContent = "<p>Hi team, <br>Attached herewith is the report of Pending ORSP projects as of " + formatDate + "." +
                 "<p>Thanks,<br>ORSP</p>" +
                 "<i>This is an automated mail. Please don't reply.</i></p>"
-        def client = new RESTClient(sendgridUrl)
-        client.headers['Authorization'] = 'Bearer ' + apiKey
 
-        def mail = [
-                personalizations: [
-                    [
-                        to: emailList.collect {email ->
-                            [email: email]
-                        }
-                    ]
-                ],
-                from: [
-                    email: from
-                ],
-                subject: subject,
-                content: [
-                    [
-                        type: 'text/html',
-                        value: htmlContent
-                    ]
-                ],
-                attachments: [
-                    [
-                        content: base64EncodedCSV,
-                        filename: filename,
-                        type: 'text/csv',
-                        disposition: 'attachment'
-                    ]
-                ]
-        ]
-        log.info('Mail data: ' + mail)
-
-        def response = client.post(
-                'contentType': 'application/json',
-                'body': mail
-        )
-
-        if (response.status >= 200 || response.status < 300) {
-            log.info(response.status as String)
-            log.info('Email sent succesfully success')
-        } else {
-            log.info(response.status as String)
-            log.info(response.data as String)
-        }
+        sendMail(emailList, from, subject, htmlContent, base64EncodedCSV, filename)
     }
 }
