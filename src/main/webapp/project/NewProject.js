@@ -257,14 +257,14 @@ const NewProject = hh(class NewProject extends Component {
     }
 
     // Auto assign reviewers
-    if (this.state.assignedCount === 0) {
-      extraProperties.push({name: 'assignedAdmin', value: this.state.reviewersData[0].userjson});
-      extraProperties.push({name: 'reviewerAssigned', value: this.state.reviewersData[0].name});
-    } else {
-      let assignableReviewerOrder = this.state.assignedCount % this.state.reviewersData.length;
-      extraProperties.push({name: 'assignedAdmin', value: this.state.reviewersData[assignableReviewerOrder].userjson});
-      extraProperties.push({name: 'reviewerAssigned', value: this.state.reviewersData[assignableReviewerOrder].name});
-    }
+    // if (this.state.assignedCount === 0) {
+    //   extraProperties.push({name: 'assignedAdmin', value: this.state.reviewersData[0].userjson});
+    //   extraProperties.push({name: 'reviewerAssigned', value: this.state.reviewersData[0].name});
+    // } else {
+    //   let assignableReviewerOrder = this.state.assignedCount % this.state.reviewersData.length;
+    //   extraProperties.push({name: 'assignedAdmin', value: this.state.reviewersData[assignableReviewerOrder].userjson});
+    //   extraProperties.push({name: 'reviewerAssigned', value: this.state.reviewersData[assignableReviewerOrder].name});
+    // }
 
     project.extraProperties = extraProperties;
     return project;
