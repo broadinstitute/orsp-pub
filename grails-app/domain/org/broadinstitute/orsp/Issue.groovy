@@ -68,6 +68,10 @@ class Issue implements LogicalDelete<Issue> {
 
     transient Boolean getProjectReviewApproved() { getExtraProperties().find { it.name == IssueExtraProperty.PROJECT_REVIEW_APPROVED }?.value }
 
+    transient Boolean getProjectReviewDate() { getExtraProperties().find { it.name == IssueExtraProperty.PROJECT_REVIEW_DATE }?.value }
+
+    transient Boolean getProjectStatusDate() { getExtraProperties().find { it.name == IssueExtraProperty.PROJECT_STATUS_DATE }?.value }
+
     transient String getProtocol() { getExtraProperties().find { it.name == IssueExtraProperty.PROTOCOL }?.value }
 
     transient String getProjectTitle() { getExtraProperties().find { it.name == IssueExtraProperty.PROJECT_TITLE }?.value }
