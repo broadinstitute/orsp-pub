@@ -839,14 +839,15 @@ class NotifyService implements SendgridSupport, Status {
         sendSecurityInfo(issue, user, consentCollectionLink, user.displayName)
     }
 
-    Map<Boolean, String> projectCreation(Issue issue) {
+    Map<Boolean, String> projectCreation(Issue issue, String reviewerUsername) {
         User user = userService.findUser(issue.reporter)
-        sendProjectAdminNotification(ProjectCGTypes.PROJECT.name, issue)
+        User reviewer = userService.findUser(reviewerUsername)
+//        sendProjectAdminNotification(ProjectCGTypes.PROJECT.name, issue)
         sendApplicationSubmit(
                 new NotifyArguments(
                         toAddresses:  [user?.emailAddress, 'orsp@broadinstitute.org'],
                         fromAddress: getDefaultFromAddress(),
-                        ccAddresses: [],
+                        ccAddresses: [reviewer?.emailAddress],
                         subject: "Project Submission Received by ORSP: " + issue.projectKey,
                         issue: issue,
                         user: user

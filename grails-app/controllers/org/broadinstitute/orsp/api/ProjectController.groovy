@@ -34,16 +34,20 @@ class ProjectController extends AuthenticatedController {
         List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
         User user = getUser()
         JsonParser parser = new JsonParser()
-        String dataProject = request.parameterMap["dataProject"].toString()
+        String projectData = request.parameterMap["projectData"].toString()
+        String reviewer = request.parameterMap["reviewer"].toString()
         JsonElement jsonFileDescription = parser.parse(request?.parameterMap["fileData"].toString())
         JsonArray fileData
-        JsonArray dataProjectJson = parser.parse(dataProject)
+        JsonArray projectDataJson = parser.parse(projectData)
+        JsonElement reviewerJson = parser.parse(reviewer)
+        String reviewerUsername = reviewerJson.getAt(0).key
+        reviewerUsername = reviewerUsername.replace('"', '')
         String projectKey
         if (jsonFileDescription.jsonArray) {
             fileData = jsonFileDescription.asJsonArray
         }
         try {
-            Issue parsedIssue = IssueUtils.getJson(Issue.class, dataProjectJson[0])
+            Issue parsedIssue = IssueUtils.getJson(Issue.class, projectDataJson[0])
             Issue issue = issueService.createIssue(IssueType.valueOfPrefix(parsedIssue.type), parsedIssue)
             handleIntake(issue.projectKey)
             persistenceService.saveEvent(issue.projectKey, user?.displayName, "New Project Added", EventType.SUBMIT_PROJECT)
@@ -54,7 +58,7 @@ class ProjectController extends AuthenticatedController {
                     storageProviderService.saveMultipartFile(user.displayName, user.userName, projectKey, it.name , it, null, description)
                 }
             }
-            notifyService.projectCreation(issue)
+            notifyService.projectCreation(issue, reviewerUsername)
             organizationService.organizationsMatch(issue)
             issue.status = 201
             render([message: issue] as JSON)
