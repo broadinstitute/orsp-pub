@@ -58,6 +58,8 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String SUBJECT_PROTECTION = "subjectProtection"
     public static final String SENSITIVE_INFORMATION_SOURCE = "sensitiveInformationSource"
     public static final String PROJECT_REVIEW_APPROVED = "projectReviewApproved"
+    public static final String PROJECT_REVIEW_DATE = "projectReviewDate"
+    public static final String PROJECT_STATUS_DATE = "projectStatusDate"
     public static final String APPROVAL = "approvalStatus"
     public static final String PROJECT_AVAILABILITY = "projectAvailability"
     public static final String EDIT_DESCRIPTION = "editDescription"

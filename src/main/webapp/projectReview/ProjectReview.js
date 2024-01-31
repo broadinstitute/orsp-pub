@@ -327,7 +327,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
       disableApproveButton: true,
       approveInfoDialog: false
     });
-    const data = { projectReviewApproved: true };
+    const data = { 
+      projectReviewApproved: true,
+      projectReviewDate: new Date().getFullYear() + '-' + (new Date().getMonth() + 1).toString().padStart(2, '0') 
+                          + '-' + new Date().getDate().toString().padStart(2, '0')
+    };
     Project.addExtraProperties(this.props.projectKey, data).then(
       () => {
         this.toggleState('approveInfoDialog');
@@ -388,6 +392,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
     this.props.showSpinner();
     let project = this.getProject();
     project.editsApproved = true;
+    project.projectReviewDate = new Date().getFullYear() + '/' + (new Date().getMonth() + 1).toString().padStart(2, '0') 
+                                + '/' + new Date().getDate().toString().padStart(2, '0')
     Project.updateProject(project, this.props.projectKey).then(
       resp => {
         this.verifyProjectkeyChanged(project.type);

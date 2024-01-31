@@ -62,6 +62,8 @@ class IssueService implements UserInfo {
             IssueExtraProperty.PI,
             IssueExtraProperty.PM,
             IssueExtraProperty.PROJECT_REVIEW_APPROVED,
+            IssueExtraProperty.PROJECT_REVIEW_DATE,
+            IssueExtraProperty.PROJECT_STATUS_DATE,
             IssueExtraProperty.APPROVAL,
             IssueExtraProperty.SUBJECT_PROTECTION,
             IssueExtraProperty.PROJECT_AVAILABILITY,
@@ -439,9 +441,15 @@ class IssueService implements UserInfo {
                 ).save(flush: true)
             } else {
                 def newOnHoldDays = hasOnHoldDays[0].toString().toInteger() + differenceInDays
-                queryService.updateOnHoldDays(params.projectKey, newOnHoldDays.toString())
+                queryService.updatePropertyValue(params.projectKey, IssueExtraProperty.ON_HOLD_DAYS, newOnHoldDays.toString())
             }
+        }
 
+        if (input.containsKey(IssueExtraProperty.PROJECT_STATUS_DATE)) {
+            def hasProjectStatusDate = queryService.getPropertyValue(params.projectKey, IssueExtraProperty.PROJECT_STATUS_DATE)
+            if (!hasProjectStatusDate.isEmpty()) {
+                queryService.updatePropertyValue(params.projectKey, IssueExtraProperty.PROJECT_STATUS_DATE, input.get(IssueExtraProperty.PROJECT_STATUS_DATE))
+            }
         }
 
         propsToDelete.each {

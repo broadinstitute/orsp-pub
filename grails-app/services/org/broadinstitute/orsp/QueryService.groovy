@@ -1974,13 +1974,13 @@ class QueryService implements Status {
         result
     }
 
-    void updateOnHoldDays(String projectKey, String value) {
+    void updatePropertyValue(String projectKey, String name, String value) {
         final session = sessionFactory.currentSession
         final String query = 'UPDATE issue_extra_property SET value= :value WHERE project_key= :projectKey AND name= :name'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         sqlQuery.setParameter('value', value)
         sqlQuery.setParameter('projectKey', projectKey)
-        sqlQuery.setParameter('name', 'onHoldDays')
+        sqlQuery.setParameter('name', name)
 
         sqlQuery.executeUpdate()
     }

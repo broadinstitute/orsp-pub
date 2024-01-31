@@ -376,6 +376,11 @@ const AdminOnly = hh(class AdminOnly extends Component {
       form.textOtherNotEngagedCategory = this.state.formData.textOtherNotEngagedCategory;
     }
 
+    if (form.projectStatus) {
+      form.projectStatusDate = new Date().getFullYear() + '/' + (new Date().getMonth() + 1).toString().padStart(2, '0') 
+                                + '/' + new Date().getDate().toString().padStart(2, '0')
+    }
+
     // NB: this is to reload the page
     // to reflect the change in project review
     // when admin clears the IRB-of-Record field in admin-only page
