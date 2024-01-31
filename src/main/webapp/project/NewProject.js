@@ -153,11 +153,19 @@ const NewProject = hh(class NewProject extends Component {
     this.props.showSpinner();
     if (this.validateForm()) {
       this.changeStateSubmitButton();
+      let projectData = this.getProject();
+      let reviewer = '';
+      projectData.extraProperties.forEach(item => {
+        if (item.name === 'assignedAdmin') {
+          reviewer = item.value;
+        }
+      })
       Project.createProject(
-        this.getProject(),
+        projectData,
         this.state.files,
         this.state.user.displayName,
-        this.state.user.userName
+        this.state.user.userName,
+        reviewer
         ).then(resp => {
           this.props.history.push('/project/main?projectKey=' + resp.data.message.projectKey + '&tab=review&new');
         }).catch(error => {
