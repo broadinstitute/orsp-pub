@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hh, span, div, a, h3, p, br } from 'react-hyperscript-helpers';
+import { hh, span, div, a, h3, p, br, ul, li } from 'react-hyperscript-helpers';
 import { isEmpty } from "../util/Utils";
 import { LoginText, User } from "../util/ajax";
 import { AlertMessage } from './AlertMessage';
@@ -68,7 +68,34 @@ export const About = hh(class About extends Component {
             a({href:"mailto:orsp-portal@broadinstitute.org"}, ["orsp-portal@broadinstitute.org"]),
             " with any questions or requests for assistance.",
           ]),
-          p({ isRendered: this.props.showWarning, style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize, padding:"15px", border:"1px solid #CCCCCC", borderRadius:"6px", margin:"20px 0 30px 0"}},[
+          p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
+            "In accordance with Institutional policies, ORSP must review (via an ORSP Portal submission) " +
+            "any Broad project that involves either biospecimens or data originating from human sources, with the following exceptions: "]),
+            ul([
+              li([
+                "Projects that are exclusively fee-for-service work for external entities (e.g. pharmaceutical companies, researchers with no " +
+                "Broad affiliation or Broad email address), and that do not involve research collaborations (e.g. substantial contributions to " +
+                "research design, joint data analysis, etc) with Broad-affiliated researchers.  Such projects are, however, subject to review by " +
+                "Broad’s Office of Strategic Alliances and Partnerships (OSAP).  For additional information about OSAP review, " +
+                "contact ", a({href:"mailto: agreements@broadinstitute.org"}, ["agreements@broadinstitute.org"]), " agreements@broadinstitute.org. " +
+                "Fee-for-service projects that have been reviewed by OSAP may use ORSP-ID NE-8596 " +
+                "when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing)."
+              ]),
+              li([
+                "Projects that involve only commercially/publicly available biospecimens (e.g. cell lines sourced from ATCC) or publicly available data " +
+                "(e.g. open source data such as GEO, or controlled access data available via a data access committee such as dbGaP, provided that " +
+                "IRB approval is not a condition for access).  Please note that projects involving the use of human embryonic stem cells DO require ORSP review."
+              ])
+            ]),
+          p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
+            "ORSP remains available to review projects that do not, per policy, require submission to the ORSP Portal, " +
+            "particularly in cases where there are questions about Broad's engagement in research, or whether data generated " +
+            "from a project can be shared widely in the future (e.g. datasets generated from commercially available " +
+            "biospecimens that may require dbGaP deposition in the future). Email ", 
+            a({href:"mailto: orsp@broadinstitute.org"}, ["orsp@broadinstitute.org"]), " for assistance."
+          ]),
+          p({ isRendered: this.props.showWarning, 
+              style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize, padding:"15px", border:"1px solid #CCCCCC", borderRadius:"6px", margin:"20px 0 30px 0"}},[
             "Please note that Microsoft Edge and Internet Explorer are not supported browsers for the ORSP Portal. Please use Google Chrome or Firefox instead."
           ]),
           div({ isRendered:  component.isBroad && showAccessDetails}, [
