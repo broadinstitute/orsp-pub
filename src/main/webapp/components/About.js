@@ -77,14 +77,17 @@ export const About = hh(class About extends Component {
                 "Broad affiliation or Broad email address), and that do not involve research collaborations (e.g. substantial contributions to " +
                 "research design, joint data analysis, etc) with Broad-affiliated researchers.  Such projects are, however, subject to review by " +
                 "Broad’s Office of Strategic Alliances and Partnerships (OSAP).  For additional information about OSAP review, " +
-                "contact ", a({href:"mailto: agreements@broadinstitute.org"}, ["agreements@broadinstitute.org"]), " agreements@broadinstitute.org. " +
-                "Fee-for-service projects that have been reviewed by OSAP may use ORSP-ID NE-8596 " +
-                "when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing)."
-              ]),
+                "contact ", a({href:"mailto: agreements@broadinstitute.org"}, ["agreements@broadinstitute.org"]), " agreements@broadinstitute.org. ",
+                span({style: {color: "rgb(211 79 79)"}}, ["Fee-for-service projects that have been reviewed by OSAP may use ORSP-ID NE-8596 " +
+                "when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing)."])
+              ]),br(),
               li([
-                "Projects that involve only commercially/publicly available biospecimens (e.g. cell lines sourced from ATCC) or publicly available data " +
+                "Projects that involve ", span({style: {textDecoration: "underline"}}, ["only commercially/publicly available biospecimens"]), 
+                " (e.g. cell lines sourced from ATCC) or publicly available data " +
                 "(e.g. open source data such as GEO, or controlled access data available via a data access committee such as dbGaP, provided that " +
-                "IRB approval is not a condition for access).  Please note that projects involving the use of human embryonic stem cells DO require ORSP review."
+                "IRB approval is not a condition for access). ", 
+                span({style: {color: "rgb(211 79 79)"}}, ["Such projects can use ORSP-ID NHSR-8716 when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing). "]), 
+                "Please note that projects involving the use of human embryonic stem cells DO require ORSP review."
               ])
             ]),
           p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
