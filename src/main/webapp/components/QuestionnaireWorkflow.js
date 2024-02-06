@@ -270,7 +270,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
             required: false,
           }),
           InputFieldTextArea({
-            isRendered: this.state.questions[currentQuestionIndex].id === 2 && this.state.questions[currentQuestionIndex].answer == false && !this.props.internationalCohorts,
+            isRendered: this.state.questions[currentQuestionIndex].id === 1 && this.state.questions[currentQuestionIndex].answer == false && !this.props.internationalCohorts,
             id: "broadInvestigatorTextValue",
             name: "broadInvestigatorTextValue",
             label: "Please provide a rationale for why this project/work would not be considered as research",
