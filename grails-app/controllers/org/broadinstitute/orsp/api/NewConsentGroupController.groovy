@@ -84,6 +84,17 @@ class NewConsentGroupController extends AuthenticatedController {
                     }
                 }
                 notifyService.consentGroupCreation(issue, consentCollectionLink)
+
+                /* Check whether "individualDataSourced" is true
+                 * and send notification to agreements@broadinstitute.org
+                 */
+                def jsonSlurper = new JsonSlurper()
+                def internationalCohorts = jsonSlurper.parseText(consentCollectionLink.getInternationalCohorts())
+                internationalCohorts.each {it ->
+                    if(it.name == 'individualDataSourced') {
+                        if (it.value) notifyService.sendIndividualDataSourcedNotification(issue)
+                    }
+                }
                 consent.status = 201
                 render([message: consent] as JSON)
             } else {
