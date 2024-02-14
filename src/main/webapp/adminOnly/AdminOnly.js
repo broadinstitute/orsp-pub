@@ -354,7 +354,6 @@ const AdminOnly = hh(class AdminOnly extends Component {
     form.irbExpirationDate = this.parseDate(this.state.formData.irbExpirationDate);
     form.projectStatus = this.state.formData.projectStatus;
     form.assignedAdmin = JSON.stringify(this.state.formData.assignedReviewer);
-    form.reviewerAssigned = this.state.formData.assignedReviewer.value;
     form.adminComments = isEmpty(this.state.formData.adminComments) ? '--' : this.state.formData.adminComments;
     form.financialConflict = this.state.formData.financialConflict;
     form.financialConflictDescription = this.state.formData.financialConflictDescription;
