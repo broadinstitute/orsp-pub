@@ -4,34 +4,23 @@ import { b, span, i } from 'react-hyperscript-helpers';
 
 export const initQuestions = () => {
   let questions = [];   
-  questions.push({
-    isYesNo: true,
-    question: 'Is this a “fee for service” project? ',
-    moreInfo: '(Commercial service only, no direct federal funding, no data analysis, no data storage, no dbGaP deposition by Broad.)',
-    progress: 0,
-    yesOutput: DETERMINATION.NE,
-    noOutput: 2,
-    answer: null,
-    key: 'feeForService',
-    id: 1
-  });
 
   questions.push({
     isYesNo: true,
     question: 'Is a Broad scientist(s) conducting research (generating or contributing to generalizable knowledge, with the intention to publish results)? ',
     moreInfo: span({style: { 'display': 'block' }}, ['Examples of projects that ', b(['DO NOT ']), 'contribute to generalizable knowledge include small case studies and internal technology development/validation projects. ']),
-    progress: 12,
-    yesOutput: 3,
+    progress: 0,
+    yesOutput: 2,
     noOutput: DETERMINATION.NHSR,
     answer: null,
     key: 'broadInvestigator',
-    id: 2
+    id: 1
   });
   questions.push({
     isRadio: true,
     moreInfo: '',
     question: 'Does this project  involve only specimens or data from deceased individuals?',
-    progress: 25,
+    progress: 20,
     value: 'subjectsDeceased',
     answer: null,
     key: 'subjectsDeceased',
@@ -40,8 +29,8 @@ export const initQuestions = () => {
           span(['No/Unknown'])
         ],
     optionValues: ['true', 'false'],
-    outputs: [{key: 'true', value: DETERMINATION.NHSR}, {key: 'false', value: 4}],
-    id: 3
+    outputs: [{key: 'true', value: DETERMINATION.NHSR}, {key: 'false', value: 3}],
+    id: 2
   });   
   questions.push({
     isRadio: true,
@@ -57,30 +46,30 @@ export const initQuestions = () => {
           span(['N/A (for example research with direct interaction with participants) '])
         ],
     optionValues: ['true', 'false', 'na'],
-    outputs: [{key: 'true', value: 5}, {key: 'false', value: 7}, {key: 'na', value: 7}],
-    id: 4
+    outputs: [{key: 'true', value: 4}, {key: 'false', value: 6}, {key: 'na', value: 6}],
+    id: 3
   });
 
   questions.push({
     isYesNo: true,
     question: 'Does the sample provider have access to identifiers?',
     progress: 46,
-    yesOutput: 6,
+    yesOutput: 5,
     noOutput: DETERMINATION.NHSR,
     answer: null,
     key: 'isIdReceive',
-    id: 5
+    id: 4
   });
 
   questions.push({
     isYesNo: true,
     question: 'Will the Broad investigator be co-publishing or jointly analyzing data with the sample provider who has access to identifiable information about the original sample donor?',
     progress: 57,
-    yesOutput: 7,
+    yesOutput: 6,
     noOutput: DETERMINATION.NHSR,
     answer: null,
     key: 'isCoPublishing',
-    id: 6
+    id: 5
   });
 
   questions.push({
@@ -97,8 +86,8 @@ export const initQuestions = () => {
           span(['This is not a secondary use study. The Broad scientist/team will obtain coded private information/biospecimens from another institution that retains a link to identifiers, ', b(['AND ']), ' be unable to readily ascertain the identity of subjects, ', b(['AND ']), 'will not receive a direct federal grant/award at Broad.'])
         ],
     optionValues: ['irbReviewedProtocol', 'sensitiveInformationSource', 'secondaryResearch', 'privateInformation'],
-    outputs: [{key: 'irbReviewedProtocol', value: DETERMINATION.IRB}, {key: 'sensitiveInformationSource', value: 8}, {key: 'secondaryResearch', value: 9}, {key: 'privateInformation', value: DETERMINATION.NE}],
-    id: 7
+    outputs: [{key: 'irbReviewedProtocol', value: DETERMINATION.IRB}, {key: 'sensitiveInformationSource', value: 7}, {key: 'secondaryResearch', value: 8}, {key: 'privateInformation', value: DETERMINATION.NE}],
+    id: 6
   });
 
   questions.push({
@@ -112,10 +101,10 @@ export const initQuestions = () => {
               ]),
     progress: 78,
     yesOutput: DETERMINATION.EX,
-    noOutput: 9,
+    noOutput: 8,
     answer: null,
     key: 'humanSubjects',
-    id: 8
+    id: 7
   });
 
   questions.push({
@@ -128,7 +117,7 @@ export const initQuestions = () => {
     noOutput: DETERMINATION.IRB,
     answer: null,
     key: 'interactionSource',
-    id: 9
+    id: 8
   });
 
   return questions

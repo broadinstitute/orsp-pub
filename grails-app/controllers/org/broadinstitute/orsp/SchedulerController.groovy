@@ -13,4 +13,9 @@ class SchedulerController {
         response.status = 200
     }
 
+    def generateAnnualReviewReport() {
+        schedulerService.getAnnualRenewalProject()
+        response.status = 200
+    }
+
 }

@@ -842,7 +842,6 @@ class NotifyService implements SendgridSupport, Status {
     Map<Boolean, String> projectCreation(Issue issue, String reviewerUsername) {
         User user = userService.findUser(issue.reporter)
         User reviewer = userService.findUser(reviewerUsername)
-//        sendProjectAdminNotification(ProjectCGTypes.PROJECT.name, issue)
         sendApplicationSubmit(
                 new NotifyArguments(
                         toAddresses:  [user?.emailAddress, 'orsp@broadinstitute.org'],
@@ -930,5 +929,20 @@ class NotifyService implements SendgridSupport, Status {
         sendMail(mail, getApiKey(), getSendGridUrl())
         sendSecurityInfo(consent, user, consentCollectionLink, subjectDisplayName)
         log.info('Sent notification mail for sendAddedCGToProjectNotification '+ mail)
+    }
+
+    Map<Boolean, String> sendIndividualDataSourcedNotification(Issue issue) {
+        User user = userService.findUser(issue.reporter)
+        NotifyArguments arguments =
+                new NotifyArguments(
+                        toAddresses: Collections.singletonList("agreements@broadinstitute.org"),
+                        fromAddress: getDefaultFromAddress(),
+                        subject: "New EU cohort submitted to ORSP Portal",
+                        user: user,
+                        issue: issue)
+        arguments.view = "/notify/individualDataSourced"
+        Mail mail = populateMailFromArguments(arguments)
+        sendMail(mail, getApiKey(), getSendGridUrl())
+        log.info('Sent notification mail for IndividualDataSourced Notification '+ mail)
     }
 }
