@@ -195,7 +195,6 @@ class SchedulerService {
         String htmlContent = "<p>Hi team, <br>Attached herewith is the report of Pending ORSP projects as of " + formatDate + "." +
                 "<p>Thanks,<br>ORSP</p>" +
                 "<i>This is an automated mail. Please don't reply.</i></p>"
-
         sendMail('Weekly report', emailList, subject, htmlContent, base64EncodedCSV, filename, 'text/csv')
     }
 
