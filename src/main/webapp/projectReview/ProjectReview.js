@@ -1320,7 +1320,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
               ]),
               
               div({ isRendered: this.state.readOnly && (this.state.formData.description == this.state.current.description) }, [
-                p({ className: "inputFieldLabel" }, "Describe Broad study activities* (briefly, in 1-2 paragraphs, with attention to whether or not protected health information will be accessed, and any future data sharing plans)"),
+                p({ className: "inputFieldLabel" }, "Broad study activities "),
                 div({ className: "inputFieldReadOnly" }, [
                   div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' }}, this.state.current.description)
                 ])
