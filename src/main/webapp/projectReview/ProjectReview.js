@@ -1306,7 +1306,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 InputFieldTextArea({
                   id: "inputStudyActivitiesDescription",
                   name: "description",
-                  label: "Broad study activities",
+                  label: "Describe Broad study activities* ",
+                  moreInfo: "(briefly, in 1-2 paragraphs, with attention to whether or not protected health information will be accessed, and any future data sharing plans)",
                   value: this.state.formData.description,
                   currentValue: this.state.current.description,
                   readOnly: this.state.readOnly,
@@ -1318,7 +1319,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 })
               ]),
               div({ isRendered: this.state.readOnly && (this.state.formData.description == this.state.current.description) }, [
-                p({ className: "inputFieldLabel" }, "Broad study activities"),
+                p({ className: "inputFieldLabel" }, "Describe Broad study activities* (briefly, in 1-2 paragraphs, with attention to whether or not protected health information will be accessed, and any future data sharing plans)"),
                 div({ className: "inputFieldReadOnly" }, [
                   div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' }}, this.state.current.description)
                 ])
