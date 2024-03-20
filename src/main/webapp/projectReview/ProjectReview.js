@@ -1318,6 +1318,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                   errorMessage: "Required field"
                 })
               ]),
+              
               div({ isRendered: this.state.readOnly && (this.state.formData.description == this.state.current.description) }, [
                 p({ className: "inputFieldLabel" }, "Broad study activities"),
                 div({ className: "inputFieldReadOnly" }, [
