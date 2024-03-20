@@ -1306,7 +1306,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 InputFieldTextArea({
                   id: "inputStudyActivitiesDescription",
                   name: "description",
-                  label: "Broad study activities",
+                  label: "Describe Broad study activities* ",
+                  moreInfo: "(briefly, in 1-2 paragraphs, with attention to whether or not protected health information will be accessed, and any future data sharing plans)",
                   value: this.state.formData.description,
                   currentValue: this.state.current.description,
                   readOnly: this.state.readOnly,
@@ -1318,7 +1319,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 })
               ]),
               div({ isRendered: this.state.readOnly && (this.state.formData.description == this.state.current.description) }, [
-                p({ className: "inputFieldLabel" }, "Broad study activities"),
+                p({ className: "inputFieldLabel" }, "Describe Broad study activities* (briefly, in 1-2 paragraphs, with attention to whether or not protected health information will be accessed, and any future data sharing plans)"),
                 div({ className: "inputFieldReadOnly" }, [
                   div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' }}, this.state.current.description)
                 ])
@@ -1445,14 +1446,13 @@ const ProjectReview = hh(class ProjectReview extends Component {
             div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.sensitiveInformationSource) }, [
               InputFieldRadio({
                 id:  "sensitiveInformationSource",
-                label: span(['Will specimens or data be provided ', i({style: { 'color': '#0A3356' }}, ['without ']), 'identifiable information? ']),
+                label: span(['Will specimens or data be provided to the Broad ', i({style: { 'color': '#0A3356' }}, ['without ']), 'identifiable information? ']),
                 value: this.state.formData.projectExtraProps.sensitiveInformationSource,
                 onChange: () => { },
-                optionValues: ['false', 'true', 'na'],
+                optionValues: ['false', 'true'],
                 optionLabels: [
                   span(['No']), 
-                  span(['Yes']), 
-                  span(['N/A (for example research with direct interaction with participants) '])
+                  span(['Yes'])
                 ],  
                 required: false,
                 edit: false,
@@ -1465,7 +1465,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 name: 'isIdReceive',
                 value: this.state.formData.projectExtraProps.isIdReceive,
                 currentValue: this.state.current.projectExtraProps.isIdReceive,
-                label: 'Does the sample provider have access to identifiers?',
+                label: 'Does the sample or data provider have access to identifiers?',
                 readOnly: true,
                 onChange: () => { }
               })
@@ -1476,8 +1476,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 name: 'isCoPublishing',
                 value: this.state.formData.projectExtraProps.isCoPublishing,
                 currentValue: this.state.current.projectExtraProps.isCoPublishing,
-                label: 'Will the Broad investigator be co-publishing or jointly analyzing data with the sample provider who has access to identifiable information about the original sample donor?',
-                // moreInfo: '(no joint analysis, no co-publishing)',
+                label: 'Will anyone at the Broad be co-publishing or jointly analyzing data with the sample/data provider who has access to identifiable information about the original sample/data donor?',
                 readOnly: true,
                 onChange: () => { }
               })
@@ -1509,7 +1508,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 currentValue: this.state.current.projectExtraProps.humanSubjects,
                 label: "",
                 moreInfo: span([
-                  span({style: { 'display': 'block' }}, ["Is this a project that only includes interactions involving surveys or interview procedures (including visual or auditory recording) ", b(["IF AT LEAST ONE OF THE FOLLOWING IS TRUE:"])]),
+                  span({style: { 'display': 'block' }}, ["Is this a project that only includes interactions involving ", span({style: {fontWeight: 'bold', textDecoration: 'underline'}}, ["surveys or interview procedures"]), " (including visual or auditory recording) ", b(["IF AT LEAST ONE OF THE FOLLOWING IS TRUE:"])]),
                   span({style: { 'display': 'block' }}, ["(i) The information is recorded in such a manner that the identity of the subjects cannot readily be ascertained;"]), 
                   span({style: { 'display': 'block' }}, [b(["OR"])]), 
                   span({style: { 'display': 'block' }}, ["(ii) Any disclosure of the responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects' financial standing, employability, educational advancement, or reputation "])

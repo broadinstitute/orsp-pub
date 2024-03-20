@@ -35,24 +35,23 @@ export const initQuestions = () => {
   questions.push({
     isRadio: true,
     moreInfo: '',
-    question: span(['Will specimens or data be provided ', i({style: { 'color': '#0A3356' }}, ['without ']), 'identifiable information? ']),
+    question: span(['Will specimens or data be provided to the Broad ', i({style: { 'color': '#0A3356' }}, ['without ']), 'identifiable information?']),
     progress: 37,
     value: 'sensitiveInformationSource',
     answer: null,
     key: 'sensitiveInformationSource',
     optionLabels: [
           span(['Yes']), 
-          span(['No']), 
-          span(['N/A (for example research with direct interaction with participants) '])
+          span(['No'])
         ],
-    optionValues: ['true', 'false', 'na'],
-    outputs: [{key: 'true', value: 4}, {key: 'false', value: 6}, {key: 'na', value: 6}],
+    optionValues: ['true', 'false'],
+    outputs: [{key: 'true', value: 4}, {key: 'false', value: 6}],
     id: 3
   });
 
   questions.push({
     isYesNo: true,
-    question: 'Does the sample provider have access to identifiers?',
+    question: 'Does the sample or data provider have access to identifiers?',
     progress: 46,
     yesOutput: 5,
     noOutput: DETERMINATION.NHSR,
@@ -63,7 +62,7 @@ export const initQuestions = () => {
 
   questions.push({
     isYesNo: true,
-    question: 'Will the Broad investigator be co-publishing or jointly analyzing data with the sample provider who has access to identifiable information about the original sample donor?',
+    question: 'Will anyone at the Broad be co-publishing or jointly analyzing data with the sample/data provider who has access to identifiable information about the original sample/data donor?',
     progress: 57,
     yesOutput: 6,
     noOutput: DETERMINATION.NHSR,
@@ -94,14 +93,14 @@ export const initQuestions = () => {
     isYesNo: true,
     question: " ",
     moreInfo: span([
-                span({style: { 'display': 'block' }}, ["Is this a project that only includes interactions involving surveys or interview procedures (including visual or auditory recording) ", b(["IF AT LEAST ONE OF THE FOLLOWING IS TRUE:"])]),
+                span({style: { 'display': 'block' }}, ["Is this a project that only includes interactions involving ", span({style: {fontWeight: 'bold', textDecoration: 'underline'}}, ["surveys or interview procedures"]), " (including visual or auditory recording) ", b(["IF AT LEAST ONE OF THE FOLLOWING IS TRUE:"])]),
                 span({style: { 'display': 'block' }}, ["(i) The information is recorded in such a manner that the identity of the subjects cannot readily be ascertained;"]), 
                 span({style: { 'display': 'block' }}, [b(["OR"])]), 
                 span({style: { 'display': 'block' }}, ["(ii) Any disclosure of the responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects' financial standing, employability, educational advancement, or reputation "])
               ]),
     progress: 78,
     yesOutput: DETERMINATION.EX,
-    noOutput: 8,
+    noOutput: DETERMINATION.IRB,
     answer: null,
     key: 'humanSubjects',
     id: 7
