@@ -39,17 +39,6 @@ class SampleConsentLinkController extends AuthenticatedController {
             persistenceService.saveConsentCollectionLink(consentCollectionLink)
             notifyService.sendAddedCGToProjectNotification(consentCollectionLink.consentKey, consentCollectionLink.projectKey, consentCollectionLink, user.displayName)
             Issue issue = Issue.findByProjectKey(consentCollectionLink.projectKey)
-            /* Check whether "individualDataSourced" is true
-             * and send notification to agreements@broadinstitute.org
-             */
-            def jsonSlurper = new JsonSlurper()
-            def internationalCohorts = jsonSlurper.parseText(consentCollectionLink.internationalCohorts)
-            println(internationalCohorts)
-            internationalCohorts.each {it ->
-                if(it.name == 'individualDataSourced') {
-                    if (it.value) notifyService.sendIndividualDataSourcedNotification(issue)
-                }
-            }
             if (!files?.isEmpty()) {
                 files.forEach {
                     String description = fileData.find {data -> data.fileName.value == it.originalFilename }.fileDescription.value
