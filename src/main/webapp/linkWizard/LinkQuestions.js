@@ -41,24 +41,24 @@ export const LinkQuestions = hh(class LinkQuestions extends Component {
     }
     return (
       WizardStep({
-        title: "Security/MTA/International Info",
+        title: "Data Security Info",
         step: 1,
         currentStep: this.props.currentStep,
         error: this.props.generalError || this.props.submitError,
         errorMessage: errorMessage
       }, [
-        Panel({ title: "International Cohorts" }, [
-          InternationalCohorts({
-            title: "International Cohorts",
-            handler: this.props.handler,
-            determination: this.props.determination,
-            origin: 'feeForServiceWork'
-          }),
-          AlertMessage({
-            msg: ' Please answer all questions to continue',
-            show: this.props.showErrorIntCohorts && this.props.generalError
-          })
-        ]),
+        // Panel({ title: "International Cohorts" }, [
+        //   InternationalCohorts({
+        //     title: "International Cohorts",
+        //     handler: this.props.handler,
+        //     determination: this.props.determination,
+        //     origin: 'feeForServiceWork'
+        //   }),
+        //   AlertMessage({
+        //     msg: ' Please answer all questions to continue',
+        //     show: this.props.showErrorIntCohorts && this.props.generalError
+        //   })
+        // ]),
         Panel({ title: "Security" }, [
           Security({
             title: "Security",
@@ -76,30 +76,30 @@ export const LinkQuestions = hh(class LinkQuestions extends Component {
             readOnly: false
           })
         ]),
-        Panel({ title: "MTA" }, [
-          InputFieldRadio({
-            id: "radioRequireMta",
-            name: "requireMta",
-            label: span({}, ["Has the ", span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
-            moreInfo: span({ className: "italic" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)*"]),
-            value: this.props.requireMta,
-            onChange: this.handleRadioChange,
-            optionValues: ["true", "false", "uncertain"],
-            optionLabels: [
-              "Yes, the provider does require an MTA/DTA.",
-              "No, the provider does not require an MTA/DTA.",
-              "Not sure"
-            ],
-            required: true,
-            error: this.props.errors.requireMta && this.props.generalError,
-            errorMessage: "Required field",
-            edit: false
-          }),
-          span({ isRendered: this.props.requireMta === "true" }, [i({}, ["Upon receipt of the MTA from the provider, please visit "]),
-            a({ href: "https://converge.broadinstitute.org", target: "_blank", className: "link" }, ["converge.broadinstitute.org"]), span({}, [i({}, [", to submit for review and approval by OSAP."])])
-          ]),
-          span({ isRendered: this.props.requireMta === "uncertain" }, [i({}, ["Please contact your collaborator to determine if an MTA is required by their institution."])])
-        ])
+        // Panel({ title: "MTA" }, [
+        //   InputFieldRadio({
+        //     id: "radioRequireMta",
+        //     name: "requireMta",
+        //     label: span({}, ["Has the ", span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
+        //     moreInfo: span({ className: "italic" }, ["(PLEASE NOTE THAT ALL SAMPLES ARRIVING FROM THE DANA FARBER CANCER INSTITUTE NOW REQUIRE AN MTA)*"]),
+        //     value: this.props.requireMta,
+        //     onChange: this.handleRadioChange,
+        //     optionValues: ["true", "false", "uncertain"],
+        //     optionLabels: [
+        //       "Yes, the provider does require an MTA/DTA.",
+        //       "No, the provider does not require an MTA/DTA.",
+        //       "Not sure"
+        //     ],
+        //     required: true,
+        //     error: this.props.errors.requireMta && this.props.generalError,
+        //     errorMessage: "Required field",
+        //     edit: false
+        //   }),
+        //   span({ isRendered: this.props.requireMta === "true" }, [i({}, ["Upon receipt of the MTA from the provider, please visit "]),
+        //     a({ href: "https://converge.broadinstitute.org", target: "_blank", className: "link" }, ["converge.broadinstitute.org"]), span({}, [i({}, [", to submit for review and approval by OSAP."])])
+        //   ]),
+        //   span({ isRendered: this.props.requireMta === "uncertain" }, [i({}, ["Please contact your collaborator to determine if an MTA is required by their institution."])])
+        // ])
       ]))
   }
 });

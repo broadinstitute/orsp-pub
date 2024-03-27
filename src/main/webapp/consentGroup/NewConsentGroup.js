@@ -166,7 +166,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     // consent collection link info
     consentCollectionLink.sampleCollectionId = sampleCollectionId;
     consentCollectionLink.projectKey = this.projectKey;
-    consentCollectionLink.requireMta = this.state.linkFormData.requireMta;
+    consentCollectionLink.requireMta = this.state.linkFormData.requireMta || null;
     consentCollectionLink.startDate = this.parseDate(this.state.generalDataFormData.startDate);
     consentCollectionLink.onGoingProcess = this.state.generalDataFormData.onGoingProcess ;
     if (this.state.generalDataFormData.endDate !== null) {
@@ -206,7 +206,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     consentCollectionLink.uniqueIdentifying = this.state.securityInfoFormData.uniqueIdentifying;
     consentCollectionLink.otherIdentifier = this.state.securityInfoFormData.otherIdentifier;
     consentCollectionLink.textOtherIdentifier = isEmpty(this.state.securityInfoFormData.textOtherIdentifier) ? null : this.state.securityInfoFormData.textOtherIdentifier;
-    // cohorts
+    // International cohorts
     let questions = this.state.determination.questions;
     if (questions !== null && questions.length > 1) {
       let cohortsForm = [];
@@ -215,7 +215,8 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
           cohortsForm.push({ name: q.key, value: q.answer });
         }
       });
-      consentCollectionLink.internationalCohorts = JSON.stringify(cohortsForm);
+      // consentCollectionLink.internationalCohorts = JSON.stringify(cohortsForm);
+      consentCollectionLink.internationalCohorts = null;
     }
     return consentCollectionLink;
   }
@@ -284,13 +285,13 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
 
   validateMTA() {
     let isValid = true;
-    if (this.state.linkFormData.requireMta === undefined || this.state.linkFormData.requireMta === '') {
-      isValid = false;
-    }
-    this.setState(prev => {
-      prev.errors.requireMta = !isValid;
-      return prev;
-    });
+    // if (this.state.linkFormData.requireMta === undefined || this.state.linkFormData.requireMta === '') {
+    //   isValid = false;
+    // }
+    // this.setState(prev => {
+    //   prev.errors.requireMta = !isValid;
+    //   return prev;
+    // });
     return isValid
   }
 
@@ -431,13 +432,13 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
 
   validateInternationalCohorts() {
     let isValid = true;
-    if (this.state.determination.requiredError || this.state.determination.endState === false) {
-      isValid = false;
-    }
-    this.setState(prev => {
-      prev.showInternationalCohortsError = !isValid;
-      return prev;
-    });
+    // if (this.state.determination.requiredError || this.state.determination.endState === false) {
+    //   isValid = false;
+    // }
+    // this.setState(prev => {
+    //   prev.showInternationalCohortsError = !isValid;
+    //   return prev;
+    // });
     return isValid;
   }
 
@@ -555,14 +556,15 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
             files: this.state.files,
             isConsentFormPresent: this.state.isConsentFormPresent
           }),
+          /* Eliminated International Cohorts and MTA */
           NewLinkCohortData({
-            title: "Security/MTA/International Info",
+            title: "Data Security Info",
             currentStep: currentStep,
-            handler: this.determinationHandler,
-            determination: this.state.determination,
-            showErrorIntCohorts: this.state.showInternationalCohortsError,
+            // handler: this.determinationHandler,
+            // determination: this.state.determination,
+            // showErrorIntCohorts: this.state.showInternationalCohortsError,
             origin: 'consentGroup',
-            requireMta: this.state.linkFormData.requireMta,
+            // requireMta: this.state.linkFormData.requireMta,
             errors: this.state.errors,
             user: this.state.user,
             updateInfoSecurityFormData: this.updateInfoSecurityFormData,
@@ -571,7 +573,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
             submitError: this.state.submitError,
             handleInfoSecurityValidity: this.handleInfoSecurityValidity,
             securityInfoData: this.state.securityInfoFormData,
-            updateMTA: this.updateMTA
+            // updateMTA: this.updateMTA
           })
         ])
       ])

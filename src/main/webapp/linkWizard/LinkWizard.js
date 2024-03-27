@@ -142,13 +142,13 @@ const LinkWizard = hh( class LinkWizard extends Component {
 
   validateMTA() {
     let isValid = true;
-    if (this.state.linkFormData.requireMta === undefined || this.state.linkFormData.requireMta === '') {
-      isValid = false;
-    }
-    this.setState(prev => {
-      prev.errors.requireMta = !isValid;
-      return prev;
-    });
+    // if (this.state.linkFormData.requireMta === undefined || this.state.linkFormData.requireMta === '') {
+    //   isValid = false;
+    // }
+    // this.setState(prev => {
+    //   prev.errors.requireMta = !isValid;
+    //   return prev;
+    // });
     return isValid
   }
 
@@ -341,13 +341,13 @@ const LinkWizard = hh( class LinkWizard extends Component {
 
   validateInternationalCohorts() {
     let isValid = true;
-    if (this.state.determination.requiredError || this.state.determination.endState === false) {
-      isValid = false;
-    }
-    this.setState(prev => {
-      prev.showInternationalCohortsError = !isValid;
-      return prev;
-    });
+    // if (this.state.determination.requiredError || this.state.determination.endState === false) {
+    //   isValid = false;
+    // }
+    // this.setState(prev => {
+    //   prev.showInternationalCohortsError = !isValid;
+    //   return prev;
+    // });
     return isValid;
   }
 
@@ -401,13 +401,13 @@ const LinkWizard = hh( class LinkWizard extends Component {
             projectKey: this.projectKey
           }),
           LinkQuestions({
-            title: "Security/MTA/International Info",
+            title: "Data Security Info",
             currentStep: currentStep,
-            handler: this.determinationHandler,
-            determination: this.state.determination,
-            showErrorIntCohorts: this.state.showInternationalCohortsError,
+            // handler: this.determinationHandler,
+            // determination: this.state.determination,
+            // showErrorIntCohorts: this.state.showInternationalCohortsError,
             origin: 'consentGroup',
-            requireMta: this.state.linkFormData.requireMta,
+            // requireMta: this.state.linkFormData.requireMta,
             errors: this.state.errors,
             user: this.state.user,
             updateInfoSecurityFormData: this.updateInfoSecurityFormData,
@@ -416,7 +416,7 @@ const LinkWizard = hh( class LinkWizard extends Component {
             submitError: this.state.submitError,
             handleInfoSecurityValidity: this.handleInfoSecurityValidity,
             securityInfoData: this.state.securityInfoFormData,
-            updateMTA: this.updateMTA,
+            // updateMTA: this.updateMTA,
             removeErrorMessage: this.removeErrorMessage,
           })
         ])
