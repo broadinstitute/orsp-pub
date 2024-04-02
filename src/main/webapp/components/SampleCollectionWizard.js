@@ -91,7 +91,7 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
   };
 
   buildDocumentsTable = (currentStepIndex, headers) => {
-    if (currentStepIndex === 3) {
+    if (currentStepIndex === 1) {
       return Table({
         headers: headers,
         data: this.parseDocuments(this.props.documents),
@@ -111,25 +111,25 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
       div({}, [
         div({ className: "linkTab" }, [
           div({ className: "linkTabHeader" }, [
-            div({ className: "tab " + (currentStepIndex === 0 ? "active" : ""), onClick: this.goStep(0)}, ["International Cohorts"]),
-            div({ className: "tab " + (currentStepIndex === 1 ? "active" : ""), onClick: this.goStep(1)}, ["Security"]),
-            div({ className: "tab "  + (currentStepIndex === 2 ? "active" : ""), onClick: this.goStep(2)}, ["MTA"]),
-            div({ className: "tab "  + (currentStepIndex === 3 ? "active" : ""), onClick: this.goStep(3)}, ["Documents"])
+            // div({ className: "tab " + (currentStepIndex === 0 ? "active" : ""), onClick: this.goStep(0)}, ["International Cohorts"]),
+            div({ className: "tab " + (currentStepIndex === 0 ? "active" : ""), onClick: this.goStep(0)}, ["Data Security"]),
+            // div({ className: "tab "  + (currentStepIndex === 2 ? "active" : ""), onClick: this.goStep(2)}, ["MTA"]),
+            div({ className: "tab "  + (currentStepIndex === 1 ? "active" : ""), onClick: this.goStep(1)}, ["Documents"])
           ]),
           div({ className: "linkTabContent" }, [
-            IntCohortsReview({
-              future: this.parseIntCohorts(this.props.sample.internationalCohorts),
+            // IntCohortsReview({
+            //   future: this.parseIntCohorts(this.props.sample.internationalCohorts),
+            //   currentStep: currentStepIndex,
+            //   determination: this.state.determination,
+            //   step: 0,
+            //   sample : this.props.sample
+            // }),
+            SecurityReview({
               currentStep: currentStepIndex,
-              determination: this.state.determination,
               step: 0,
               sample : this.props.sample
             }),
-            SecurityReview({
-              currentStep: currentStepIndex,
-              step: 1,
-              sample : this.props.sample
-            }),
-            this.buildMta(currentStepIndex),
+            // this.buildMta(currentStepIndex),
             this.buildDocumentsTable(currentStepIndex, headers)
           ])
         ])
