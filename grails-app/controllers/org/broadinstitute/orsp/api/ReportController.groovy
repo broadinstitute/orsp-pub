@@ -127,4 +127,13 @@ class ReportController extends AuthenticatedController {
             handleException(e)
         }
     }
+
+    def getIRBReport() {
+        try {
+            List irbReportData = queryService.getIRBReportData()
+            render irbReportData as JSON
+        } catch(Exception e) {
+            handleException(e)
+        }
+    }
 }

@@ -168,6 +168,9 @@ class UrlMappings {
         '/api/get-project-count'(controller: 'reviewer', action: 'getReviewerProjectCount', method: 'POST')
         '/api/get-distinctive-reviewers'(controller: 'reviewer', action: 'getDistinctReviewers', method: 'GET')
 
+        // IRB Report
+        '/api/irb-report'(controller: 'report', action: 'getIRBReport', method: 'GET')
+
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
         "404"(controller: "error", action: "error404")

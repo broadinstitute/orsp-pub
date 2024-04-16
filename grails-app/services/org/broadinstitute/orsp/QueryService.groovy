@@ -1985,4 +1985,26 @@ class QueryService implements Status {
         sqlQuery.executeUpdate()
     }
 
+    List getIRBReportData() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        final String query = new StringBuilder()
+                                .append("SELECT  t1.project_key, t1.type, t1.approval_status, t1.request_date, ")
+                                .append("JSON_OBJECTAGG(t2.name, t2.value) as extra_properties, ")
+                                .append("t3.funding_source, t3.funding_name ")
+                                .append("FROM orsp_dev.issue t1 ")
+                                .append("INNER JOIN orsp_dev.issue_extra_property t2 ON t1.project_key = t2.project_key ")
+                                .append("INNER JOIN ( ")
+                                .append("SELECT project_key, source as 'funding_source', name as 'funding_name' ")
+                                .append("FROM funding ")
+                                .append(") t3 ON t1.project_key = t3.project_key ")
+                                .append("WHERE t1.type = 'IRB Project' AND t1.approval_status = 'Approved' ")
+                                .append("GROUP BY t1.project_key, t1.request_date, t3.funding_source, t3.funding_name;")
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final result = sqlQuery.with {
+            list()
+        }
+        result
+    }
+
 }
