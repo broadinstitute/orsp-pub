@@ -277,4 +277,79 @@ export const COMPLIANCE_REPORT_COLUMNS = [
     sort: true,
     editable: false
   }
+];
+
+export const IRB_REPORT_COLUMNS = [
+  {
+    dataField: 'irb',
+    text: 'IRB',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'investigatorFirstName',
+    text: 'First name of investigator',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'investigatorLastName',
+    text: 'Last name of investigator',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'degree',
+    text: 'Degree(s)of investigator',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'protocol',
+    text: 'Protocol number',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'projectKey',
+    text: 'ORSP number',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'projectTitle',
+    text: 'Title',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'initialDate',
+    text: 'Initial approval date',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'fundingSource',
+    text: 'Funding Source',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'sponsorName',
+    text: 'Sponsor Name',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'typeOfInitialReview',
+    text: 'Type of initial review',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'bioMedical',
+    text: 'Biomedical or Non-Biomedical',
+    sort: true,
+    editable: false
+  },
 ]
