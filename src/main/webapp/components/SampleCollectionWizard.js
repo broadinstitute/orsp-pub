@@ -91,7 +91,7 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
   };
 
   buildDocumentsTable = (currentStepIndex, headers) => {
-    if (currentStepIndex === 3) {
+    if (currentStepIndex === 1) {
       return Table({
         headers: headers,
         data: this.parseDocuments(this.props.documents),
@@ -127,7 +127,7 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
             }),
             SecurityReview({
               currentStep: currentStepIndex,
-              step: 1,
+              step: 0,
               sample : this.props.sample
             }),
             this.buildMta(currentStepIndex),
