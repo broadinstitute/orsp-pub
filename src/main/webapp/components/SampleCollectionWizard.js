@@ -16,7 +16,7 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
   constructor(props) {
     super(props);
     this.state = {
-      currentStepIndex: 0,
+      currentStepIndex: isEmpty(this.props.sample.internationalCohorts) ? 1 : 0,
     };
   }
 
@@ -72,7 +72,7 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
   buildMta = (currentStepIndex) => {
     if (currentStepIndex === 2) {
       return(
-        div({ className: "answerWrapper" }, [
+        div({ isRendered: !!this.props.sample.requireMta, className: "answerWrapper" }, [
           label({}, [
             span({}, ["Has the ",
               span({ style: { 'textDecoration': 'underline' } }, ["tech transfer office "]), "of the institution providing samples/data confirmed that an Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
@@ -91,7 +91,7 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
   };
 
   buildDocumentsTable = (currentStepIndex, headers) => {
-    if (currentStepIndex === 1) {
+    if (currentStepIndex === 3) {
       return Table({
         headers: headers,
         data: this.parseDocuments(this.props.documents),
@@ -111,25 +111,26 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
       div({}, [
         div({ className: "linkTab" }, [
           div({ className: "linkTabHeader" }, [
-            // div({ className: "tab " + (currentStepIndex === 0 ? "active" : ""), onClick: this.goStep(0)}, ["International Cohorts"]),
-            div({ className: "tab " + (currentStepIndex === 0 ? "active" : ""), onClick: this.goStep(0)}, ["Data Security"]),
-            // div({ className: "tab "  + (currentStepIndex === 2 ? "active" : ""), onClick: this.goStep(2)}, ["MTA"]),
-            div({ className: "tab "  + (currentStepIndex === 1 ? "active" : ""), onClick: this.goStep(1)}, ["Documents"])
+            div({ isRendered: !isEmpty(this.props.sample.internationalCohorts), className: "tab " + (currentStepIndex === 0 ? "active" : ""), onClick: this.goStep(0)}, ["International Cohorts"]),
+            div({ className: "tab " + (currentStepIndex === 1 ? "active" : ""), onClick: this.goStep(1)}, ["Data Security"]),
+            div({ isRendered: !!this.props.sample.requireMta, className: "tab "  + (currentStepIndex === 2 ? "active" : ""), onClick: this.goStep(2)}, ["MTA"]),
+            div({ className: "tab "  + (currentStepIndex === 3 ? "active" : ""), onClick: this.goStep(3)}, ["Documents"])
           ]),
           div({ className: "linkTabContent" }, [
-            // IntCohortsReview({
-            //   future: this.parseIntCohorts(this.props.sample.internationalCohorts),
-            //   currentStep: currentStepIndex,
-            //   determination: this.state.determination,
-            //   step: 0,
-            //   sample : this.props.sample
-            // }),
-            SecurityReview({
+            IntCohortsReview({
+              isRendered: !isEmpty(this.props.sample.internationalCohorts),
+              future: this.parseIntCohorts(this.props.sample.internationalCohorts),
               currentStep: currentStepIndex,
+              determination: this.state.determination,
               step: 0,
               sample : this.props.sample
             }),
-            // this.buildMta(currentStepIndex),
+            SecurityReview({
+              currentStep: currentStepIndex,
+              step: 1,
+              sample : this.props.sample
+            }),
+            this.buildMta(currentStepIndex),
             this.buildDocumentsTable(currentStepIndex, headers)
           ])
         ])
