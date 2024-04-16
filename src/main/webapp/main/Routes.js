@@ -28,6 +28,7 @@ import SampleCollection from '../sampleCollection/SampleCollection';
 import { LogintText } from '../loginText/LoginText';
 import ComplianceReport from '../complianceReport/ComplianceReport'
 import ManageReviewers from '../manageReviewers/ManageReviewers';
+import IRBReport from '../IRBReport/IRBReport';
 
 
 const Routes = ( props ) => (
@@ -54,6 +55,7 @@ const Routes = ( props ) => (
     <AuthenticatedRoute path= {"/index"} exact component={LandingPage} props={props}/>
     <AuthenticatedRoute path= {"/loginText"} component={LogintText} props={props} admin={true} />
     <AuthenticatedRoute path= {"/compliance-report"} component={ComplianceReport} props={props} admin={true} />
+    <AuthenticatedRoute path= {"/irb-report"} component={IRBReport} props={props} admin={true} />
     <AuthenticatedRoute path= {"/manage-reviewers"} component={ManageReviewers} props={props} admin={true} />
     <Route path= {["/about"]} exact render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/"} exact render = {(routeProps) =>  Storage.userIsLogged() ? <LandingPage {...routeProps} {...props}/> : <AboutPage {...routeProps} {...props}/> }/>

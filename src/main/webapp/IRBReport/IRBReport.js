@@ -1,0 +1,71 @@
+import React, {Component, useEffect, useState} from "react";
+import LoadingWrapper from "../components/LoadingWrapper";
+import { Panel } from "../components/Panel";
+import { Reports } from "../util/ajax";
+import { TableComponent } from "../components/TableComponent";
+import { IRB_REPORT_COLUMNS, SIZE_PER_PAGE_LIST, defaultSorted } from "../util/ReportConstants";
+
+import './IRBReport.css'
+
+const IRBReport = () => {
+
+    const [reportData, setReportData] = useState([])
+
+    useEffect(() => {
+        Reports.getIRBReport().then(data => {
+            let reportData = data.data.map(item => {
+                const {
+                    investigatorFirstName,
+                    investigatorLastName,
+                    degree,
+                    protocol,
+                    irb,
+                    projectTitle,
+                    initialDate,
+                    initialReviewType,
+                    bioMedical
+                } = JSON.parse(item[4]);
+                let irbData = irb && JSON.parse(irb).label;
+                let typeOfInitialReview = initialReviewType && JSON.parse(initialReviewType).label;
+                let fundingSource =item[5];
+                let sponsorName = item[6];
+                return {irb: irbData, investigatorFirstName, investigatorLastName, degree, protocol, projectKey: item[0], projectTitle, initialDate, fundingSource, sponsorName, typeOfInitialReview, bioMedical};
+            })
+            setReportData(reportData);
+        }).catch(error => console.log(error))
+    }, []);
+
+    const exportTable = (action) => {
+        let cols = IRB_REPORT_COLUMNS.filter(el => el.dataField !== 'id');
+        let elementsArray = formatDataPrintableFormat(reportData, cols);
+        const headerText = 'Compliance Report';
+        const columnsWidths = ['*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'];
+        exportData(action,'Compliance Report', elementsArray, columnsWidths, headerText, columnsWidths, 'A2', 'landscape');
+    };
+
+    return(
+        <div>
+            <h1>IRB Report</h1>
+            <div className="irb-table">
+                <TableComponent
+                    remoteProp= {false}
+                    data= {reportData}
+                    columns= {IRB_REPORT_COLUMNS}
+                    keyField= 'projectKey'
+                    search= {true}
+                    fileName= 'IRB Report'
+                    showPrintButton= {false}
+                    sizePerPageList= {SIZE_PER_PAGE_LIST}
+                    printComments= {() => exportTable('print')}
+                    defaultSorted= {defaultSorted}
+                    pagination= {true}
+                    showExportButtons= {true}
+                    showSearchBar= {true}
+                    showPdfExport= {false}
+                ></TableComponent>
+            </div>
+        </div>
+    )
+}
+
+export default LoadingWrapper(IRBReport)
