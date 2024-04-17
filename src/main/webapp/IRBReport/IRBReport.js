@@ -13,7 +13,7 @@ const IRBReport = () => {
 
     useEffect(() => {
         Reports.getIRBReport().then(data => {
-            let reportData = data.data.map(item => {
+            let reportData = data.data.map((item, i) => {
                 const {
                     investigatorFirstName,
                     investigatorLastName,
@@ -29,7 +29,7 @@ const IRBReport = () => {
                 let typeOfInitialReview = initialReviewType && JSON.parse(initialReviewType).label;
                 let fundingSource =item[5];
                 let sponsorName = item[6];
-                return {irb: irbData, investigatorFirstName, investigatorLastName, degree, protocol, projectKey: item[0], projectTitle, initialDate, fundingSource, sponsorName, typeOfInitialReview, bioMedical};
+                return {irb: irbData, investigatorFirstName, investigatorLastName, degree, protocol, projectKey: item[0], projectTitle, initialDate, fundingSource, sponsorName, typeOfInitialReview, bioMedical, id: i};
             })
             setReportData(reportData);
         }).catch(error => console.log(error))
@@ -51,7 +51,7 @@ const IRBReport = () => {
                     remoteProp= {false}
                     data= {reportData}
                     columns= {IRB_REPORT_COLUMNS}
-                    keyField= 'projectKey'
+                    keyField= 'id'
                     search= {true}
                     fileName= 'IRB Report'
                     showPrintButton= {false}
