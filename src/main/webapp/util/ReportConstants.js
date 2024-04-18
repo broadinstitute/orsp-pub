@@ -329,14 +329,8 @@ export const IRB_REPORT_COLUMNS = [
     editable: false
   },
   {
-    dataField: 'fundingSource',
-    text: 'Funding Source',
-    sort: true,
-    editable: false
-  },
-  {
-    dataField: 'sponsorName',
-    text: 'Sponsor Name',
+    dataField: 'funding',
+    text: 'Funding',
     sort: true,
     editable: false
   },
