@@ -37,9 +37,9 @@ const IRBReport = () => {
     const exportTable = (action) => {
         let cols = IRB_REPORT_COLUMNS.filter(el => el.dataField !== 'id');
         let elementsArray = formatDataPrintableFormat(reportData, cols);
-        const headerText = 'Compliance Report';
+        const headerText = 'IRB Report';
         const columnsWidths = ['*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'];
-        exportData(action,'Compliance Report', elementsArray, columnsWidths, headerText, columnsWidths, 'A2', 'landscape');
+        exportData(action,'IRB Report', elementsArray, columnsWidths, headerText, columnsWidths, 'A2', 'landscape');
     };
 
     return(
