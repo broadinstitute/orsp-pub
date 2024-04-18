@@ -1993,7 +1993,7 @@ class QueryService implements Status {
                                     .append("FROM issue t1 ")
                                     .append("INNER JOIN issue_extra_property t2 ON t1.project_key = t2.project_key ")
                                     .append("LEFT JOIN ( ")
-                                    .append("SELECT project_key, CONCAT(GROUP_CONCAT(CONCAT('\"', source, '\":\"', name, '\"'))) as funding_source ")
+                                    .append("SELECT project_key, CONCAT(GROUP_CONCAT(CONCAT(' ', source, ': \"', name, '\"'))) as funding_source ")
                                     .append("FROM funding GROUP BY project_key) t3 ON t1.project_key = t3.project_key ")
                                     .append("WHERE t1.type = 'IRB Project' AND (t1.status = 'Approved' OR t1.approval_status = 'Approved') ")
                                     .append("GROUP BY t1.project_key, t1.request_date ORDER BY t1.request_date;")
