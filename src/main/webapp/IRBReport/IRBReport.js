@@ -24,12 +24,11 @@ const IRBReport = () => {
                     initialDate,
                     initialReviewType,
                     bioMedical
-                } = JSON.parse(item[4]);
+                } = JSON.parse(item[1]);
                 let irbData = irb && JSON.parse(irb).label;
                 let typeOfInitialReview = initialReviewType && JSON.parse(initialReviewType).label;
-                let fundingSource =item[5];
-                let sponsorName = item[6];
-                return {irb: irbData, investigatorFirstName, investigatorLastName, degree, protocol, projectKey: item[0], projectTitle, initialDate, fundingSource, sponsorName, typeOfInitialReview, bioMedical, id: i};
+                let funding = item[2];
+                return {irb: irbData, investigatorFirstName, investigatorLastName, degree, protocol, projectKey: item[0], projectTitle, initialDate, funding, sponsorName, typeOfInitialReview, bioMedical, id: i};
             })
             setReportData(reportData);
         }).catch(error => console.log(error))
