@@ -28,7 +28,7 @@ RUN ln -sf /root/.nvm/versions/node/v$NODE_VERSION/bin/npm /usr/bin/npm
 
 ENV WEBPACK_VERSION 4.43.0
 ENV WEBPACK_VERSION_CLI 4.4.0
-RUN npm@$NPM_VERSION \ && npm config set registry https://registry.npmjs.org/
+RUN npm install -g npm@$NPM_VERSION && npm config set registry https://registry.npmjs.org/
 RUN npm cache clean -f
 RUN npm install -g yarn
 RUN npm install -g webpack@$WEBPACK_VERSION
