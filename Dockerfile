@@ -14,12 +14,13 @@ RUN apt-get -qq -y install \
 RUN mkdir /root/.nvm
 ENV NVM_DIR /root/.nvm
 ENV NODE_VERSION 16.20.0
+ENV NPM_VERSION 8.19.4
 
 ARG build_env="dev"
 
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
 RUN chmod +x $HOME/.nvm/nvm.sh
-RUN . $HOME/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm alias default $NODE_VERSION && nvm use default && npm install -g npm 
+RUN . $HOME/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm alias default $NODE_VERSION && nvm use default && npm install -g npm@NPM_VERSION 
 
 RUN ln -sf /root/.nvm/versions/node/v$NODE_VERSION/bin/node /usr/bin/nodejs
 RUN ln -sf /root/.nvm/versions/node/v$NODE_VERSION/bin/node /usr/bin/node
