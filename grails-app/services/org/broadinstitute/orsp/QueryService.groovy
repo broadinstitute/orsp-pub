@@ -1995,7 +1995,9 @@ class QueryService implements Status {
                                     .append("LEFT JOIN ( ")
                                     .append("SELECT project_key, CONCAT(GROUP_CONCAT(CONCAT(' ', source, ': \"', name, '\"'))) as funding_source ")
                                     .append("FROM funding GROUP BY project_key) t3 ON t1.project_key = t3.project_key ")
-                                    .append("WHERE t1.type = 'IRB Project' AND (t1.status = 'Approved' OR t1.approval_status = 'Approved') ")
+                                    .append("WHERE t1.type = 'IRB Project' AND ( ")
+                                    .append("(t1.status = 'Approved' AND t1.approval_status != \"Withdrawn\" AND t1.approval_status != \"Closed\" AND t1.approval_status != \"Abandoned\") ")
+                                    .append("OR t1.approval_status = 'Approved') ")
                                     .append("GROUP BY t1.project_key, t1.request_date ORDER BY t1.request_date;")
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final result = sqlQuery.with {
