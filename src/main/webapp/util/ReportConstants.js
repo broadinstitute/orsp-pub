@@ -329,12 +329,6 @@ export const IRB_REPORT_COLUMNS = [
     editable: false
   },
   {
-    dataField: 'funding',
-    text: 'Funding',
-    sort: true,
-    editable: false
-  },
-  {
     dataField: 'typeOfInitialReview',
     text: 'Type of initial review',
     sort: true,
@@ -345,5 +339,5 @@ export const IRB_REPORT_COLUMNS = [
     text: 'Biomedical or Non-Biomedical',
     sort: true,
     editable: false
-  },
+  }
 ]

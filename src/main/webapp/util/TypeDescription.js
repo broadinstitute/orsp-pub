@@ -16,11 +16,9 @@ export const PREFERRED_IRB = [
   { label: 'Dana-Farber Cancer Institute', value: 'danaFarberCancerInst' },
   { label: 'Beth Israel Deaconess', value: 'bethIsraelDeaconess' },
   { label: 'Boston Children\'s Hospital', value: 'bostonChildrenHosp' },
-  { label: 'Forsyth Institute', value: 'forsythInstitute' },
   { label: 'Harvard Medical School (and Dental Medicine)', value: 'harvardMedicalSchool' },
   { label: 'Harvard School of Public Health', value: 'harvardSchoolPublicHealth' },
   { label: 'Harvard Faculty of Arts & Sciences', value: 'harvardFacultyArtsAndSciences' },
-  { label: 'Joslin Diabetes Center', value: 'joslinDiabetesCenter' },
   { label: 'Other', value: 'other' }
 ];
 
