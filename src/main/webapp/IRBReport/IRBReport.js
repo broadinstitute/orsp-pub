@@ -7,12 +7,16 @@ import { IRB_REPORT_COLUMNS, SIZE_PER_PAGE_LIST, defaultSorted } from "../util/R
 
 import './IRBReport.css'
 
-const IRBReport = () => {
+const IRBReport = (props) => {
 
-    const [reportData, setReportData] = useState([])
+    const [reportData, setReportData] = useState([]);
+    const [columnWidth, setColumnWidth] = useState('*');
 
     useEffect(() => {
+        props.showSpinner();
         Reports.getIRBReport().then(data => {
+            props.hideSpinner();
+            let fundingDataLength = 0;
             let reportData = data.data.map((item, i) => {
                 const {
                     investigatorFirstName,
@@ -25,13 +29,32 @@ const IRBReport = () => {
                     initialReviewType,
                     bioMedical
                 } = JSON.parse(item[1]);
+                let initDate = initialDate && new Date(initialDate);
+                initDate = initialDate && ((initDate.getMonth() + 1).toString().padStart(2, '0') + "/" + initDate.getDate().toString().padStart(2, '0') + "/" + initDate.getFullYear());
                 let irbData = irb && JSON.parse(irb).label;
                 let typeOfInitialReview = initialReviewType && JSON.parse(initialReviewType).label;
                 let funding = item[2];
-                return {irb: irbData, investigatorFirstName, investigatorLastName, degree, protocol, projectKey: item[0], projectTitle, initialDate, funding, typeOfInitialReview, bioMedical, id: i};
-            })
+                funding = funding && funding.split(',');
+                if (funding && (funding.length > fundingDataLength)) fundingDataLength = funding.length;
+                let reportJson = {irb: irbData, investigatorFirstName, investigatorLastName, degree, protocol, projectKey: item[0], projectTitle, initialDate: initDate, typeOfInitialReview, bioMedical, id: i};
+                funding && funding.forEach((item, i) => {
+                    reportJson[`funding${i + 1}`] = item;
+                });
+                return reportJson;
+            });
+            for(let i = 1; i<=fundingDataLength; i++) {
+                IRB_REPORT_COLUMNS.push({
+                    dataField: `funding${i}`,
+                    text: `Funding ${i}`,
+                    sort: true,
+                    editable: false
+                });
+            }
             setReportData(reportData);
-        }).catch(error => console.log(error))
+        }).catch(error => {
+            props.hideSpinner();
+            console.log(error)
+        })
     }, []);
 
     const exportTable = (action) => {
