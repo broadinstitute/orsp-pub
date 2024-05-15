@@ -24,6 +24,7 @@ const IRBReport = (props) => {
                     degree,
                     protocol,
                     irb,
+                    irbReferralText,
                     projectTitle,
                     initialDate,
                     initialReviewType,
@@ -32,6 +33,7 @@ const IRBReport = (props) => {
                 let initDate = initialDate && new Date(initialDate);
                 initDate = initialDate && ((initDate.getMonth() + 1).toString().padStart(2, '0') + "/" + initDate.getDate().toString().padStart(2, '0') + "/" + initDate.getFullYear());
                 let irbData = irb && JSON.parse(irb).label;
+                irbData = (irbData === "Other" && irbReferralText) ? irbReferralText : irbData;
                 let typeOfInitialReview = initialReviewType && JSON.parse(initialReviewType).label;
                 let funding = item[2];
                 funding = funding && funding.split(',');
