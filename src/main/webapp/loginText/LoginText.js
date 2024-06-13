@@ -1,22 +1,15 @@
 import React, { Component } from 'react';
-import '../components/Wizard.css'
-import '../index.css'
-import { button, hh, h1, h3, p, div, br } from 'react-hyperscript-helpers';
-
+import { hh } from 'react-hyperscript-helpers';
 import { InputFieldText } from '../components/InputFieldText'; 
-import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { LoginText } from '../util/ajax';
 import { AlertMessage } from '../components/AlertMessage';
 import { InputFieldSelect } from '../components/InputFieldSelect';
-
 import ReactQuill from "react-quill";
-import 'react-quill/dist/quill.snow.css';
+import { MODULES, THEME } from '../util/TextEditorConstants';
 
-const styles = {
-    titleSize: '24px',
-    fontFamily : '"Helvetica Neue",Helvetica,Arial,sans-serif',
-    textFontSize: '14px'
-  };
+import 'react-quill/dist/quill.snow.css';
+import '../components/Wizard.css'
+import '../index.css'
 
 export const LogintText = hh(class LogintText extends Component {
 
@@ -198,7 +191,8 @@ export const LogintText = hh(class LogintText extends Component {
                     ></InputFieldText>
                     <label style={{ color: '#286090', fontWeight: '700', fontSize: '1rem', marginBottom: '3px', marginTop: '10px' }}>Body for the login page text</label>
                     <ReactQuill
-                        theme='snow'
+                        theme={THEME}
+                        modules={MODULES}
                         value={this.state.body}
                         onChange={this.handleBodyChange}
                         style={{height: '12rem'}}

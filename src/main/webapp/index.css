@@ -398,3 +398,11 @@ input[type=checkbox] {
 .modal-footer {
   padding: 20px !important;
 }
+
+.ql-editor {
+  background-color: #ffffff;
+}
+
+.ql-picker-label {
+  border: 1px solid #cccccc !important;
+}

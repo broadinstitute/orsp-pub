@@ -11,6 +11,8 @@ import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import { AlertMessage } from '../components/AlertMessage';
 import LoadingWrapper from '../components/LoadingWrapper';
 import { Editor } from '@tinymce/tinymce-react';
+import ReactQuill from 'react-quill';
+import { MODULES, STYLE, THEME } from '../util/TextEditorConstants';
 
 const errorBorderStyle = {
   border: "1px solid red",
@@ -470,17 +472,13 @@ const SubmissionForm = hh(class SubmissionForm extends Component {
             div({
               style: this.state.errors.comment ? errorBorderStyle : null
             }, [
-              h(Editor, {
-                disabled: !component.isAdmin,
-                init: {
-                  width: '100%',
-                  menubar: false,
-                  statusbar: false,
-                  plugins: "paste",
-                  paste_data_images: false
-                },
+              h(ReactQuill, {
+                disabled: component.isAdmin,
+                theme: THEME,
+                modules: MODULES,
                 value: this.state.submissionInfo.comments,
-                onEditorChange: this.handleInputChange
+                onChange: this.handleInputChange,
+                style: STYLE
               })
             ]),
             small({ isRendered: this.state.errors.comment, className: "errorMessage" }, ['Required field'])
