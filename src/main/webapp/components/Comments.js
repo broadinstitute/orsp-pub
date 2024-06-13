@@ -1,21 +1,22 @@
 import React, { Component, Fragment } from 'react';
 import { div, h, hh, label, button } from 'react-hyperscript-helpers';
-import TextEditor from './TextEditor';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import { Btn } from './Btn';
-import './Btn.css';
 import { exportData } from '../util/Utils';
 import { TableComponent } from './TableComponent';
 import { formatDataPrintableFormat } from '../util/TableUtil';
-import { Editor } from '@tinymce/tinymce-react';
 import { AlertMessage } from '../components/AlertMessage';
 import { isEmpty } from '../util/Utils';
 import { Review } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import '../components/Btn.css';
-import './Wizard.css';
 import LoadingWrapper from './LoadingWrapper';
+import ReactQuill from 'react-quill';
+import { MODULES, STYLE, THEME } from '../util/TextEditorConstants';
+
+import './Btn.css';
+import './Wizard.css';
+import '../components/Btn.css';
+import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 const defaultSorted = [{
   dataField: 'date',
@@ -125,7 +126,7 @@ const Comments = hh(class Comments extends Component {
         }
       }],
       editMode: false,
-      comment: {},
+      comment: '',
       showAlert: false,
       errorMsg: '',
       errorType: '',
@@ -135,11 +136,55 @@ const Comments = hh(class Comments extends Component {
     }
   }
 
-  handleEditorChange = (comment, editor) => {
+  handleAddEditorChange = (comment, editor) => {
     this.setState(prev => {
-      prev.newComment =  comment
+      prev.comment =  comment;
       return prev;
     });
+  };
+
+  handleUpdateEditorChange = (comment, editor) => {
+    this.setState(prev => {
+      prev.newComment =  comment;
+      return prev;
+    });
+  };
+
+  addComment = () => {
+    this.props.showSpinner();
+    Review.addComments(this.props.id, this.state.comment).then(
+      response => {
+        this.props.hideSpinner();
+        this.setState({
+          showAlert: true,
+          comment: '',
+          errorMsg: 'Comment updated succesfully',
+          errorType: 'success',
+          editMode: false
+        }, () => {
+          this.props.updateContent();
+          setTimeout(() => {
+            this.setState({
+              showAlert: false
+            })
+          }, 4000);
+        });
+      }
+    ).catch(error =>
+      this.setState(prev => {
+        prev.showAlert = true;
+        prev.errorMsg = 'Error trying to update comment, please try again later.';
+        prev.errorType = 'danger';
+        prev.editMode = false;
+      },()=> {
+        this.props.hideSpinner();
+        setTimeout(() => {
+          this.setState({
+            showAlert: false
+          })
+        }, 4000);
+      })
+    )
   };
 
   editComment = (row) => {
@@ -290,46 +335,73 @@ const Comments = hh(class Comments extends Component {
         div({
           id: 'comment'
         }),
-        h(TextEditor, {
+        div({
           isRendered: !this.state.editMode,
-          id: this.props.id,
-          loadComments: this.props.updateContent
-        }),
+          className: "well"
+        },[
+          label({},["Add comment"]),
+          h(ReactQuill, {
+            theme: THEME,
+            modules: MODULES,
+            value: this.state.comment,
+            onChange:this.handleAddEditorChange,
+            style: STYLE
+          }),
+          div({}, [
+            button({
+              className: "btn btn-primary",
+              style: {marginTop:"15px"},
+              isRendered: true,
+              onClick: this.addComment,
+              disabled: isEmpty(this.state.comment)
+            }, ["Add"]),
+            button({
+              className: "btn buttonSecondary",
+              style: {marginTop:"15px", marginLeft: "5px"},
+              ref: el => {
+                if(el) {
+                    el.style.setProperty('background', 'none', 'important');
+                    el.style.setProperty('color', '#000000', 'important');
+                }
+              },
+              isRendered: true,
+              onClick: this.returnToAddComment
+            }, ["Cancel"]),
+          ])
+        ]),
         div({
           isRendered: this.state.editMode,
           className: "well"
         },[
           label({},["Edit comment"]),
-          h(Editor, {
-            init: {
-              width: '100%',
-              menubar: false,
-              statusbar: false,
-              plugins: "paste",
-              paste_data_images: false
-            },
+          h(ReactQuill, {
+            theme: THEME,
+            modules: MODULES,
             value: this.state.newComment,
-            onEditorChange: this.handleEditorChange
-          }, []),
-          button({
-            className: "btn btn-primary",
-            style: {marginTop:"15px"},
-            isRendered: true,
-            onClick: this.updateComment,
-            disabled: isEmpty(this.state.comment)
-          }, ["Save"]),
-          button({
-            className: "btn buttonSecondary",
-            style: {marginTop:"15px", marginLeft: "5px"},
-            ref: el => {
-              if(el) {
-                  el.style.setProperty('background', 'none', 'important');
-                  el.style.setProperty('color', '#000000', 'important');
-              }
-            },
-            isRendered: true,
-            onClick: this.returnToAddComment
-          }, ["Cancel"]),
+            onChange:this.handleUpdateEditorChange,
+            style:STYLE
+          }),
+          div({}, [
+            button({
+              className: "btn btn-primary",
+              style: {marginTop:"15px"},
+              isRendered: true,
+              onClick: this.updateComment,
+              disabled: isEmpty(this.state.comment)
+            }, ["Save"]),
+            button({
+              className: "btn buttonSecondary",
+              style: {marginTop:"15px", marginLeft: "5px"},
+              ref: el => {
+                if(el) {
+                    el.style.setProperty('background', 'none', 'important');
+                    el.style.setProperty('color', '#000000', 'important');
+                }
+              },
+              isRendered: true,
+              onClick: this.returnToAddComment
+            }, ["Cancel"]),
+          ])
         ]),
         div({
           style: {marginTop:"15px"}
