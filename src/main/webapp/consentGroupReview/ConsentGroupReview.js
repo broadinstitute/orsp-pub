@@ -1072,7 +1072,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           InputFieldText({
             id: "inputConsentGroupName",
             name: "consentGroupName",
-            label: " Sample/Data Cohort Name",
+            label: " Cohort Name/PI Name on Consent",
             disabled: !this.state.readOnly,
             value: consent + " / " + protocol,
             currentValue: this.state.current.consentForm.summary,
@@ -1110,7 +1110,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           InputFieldText({
             id: "inputCollaboratingInstitution",
             name: "collInst",
-            label: "Collaborating Institution",
+            label: "External Collaborating Institution",
             value: collInst,
             currentValue: this.state.current.consentExtraProps.collInst,
             onChange: this.handleExtraPropsInputChange,
@@ -1121,7 +1121,7 @@ const ConsentGroupReview = hh(class ConsentGroupReview extends Component {
           InputFieldText({
             id: "inputprimaryContact",
             name: "collContact",
-            label: "Primary Contact at Collaborating Institution ",
+            label: "Primary Contact at External Collaborating Institution ",
             value: collContact,
             currentValue: this.state.current.consentExtraProps.collContact,
             onChange: this.handleExtraPropsInputChange,

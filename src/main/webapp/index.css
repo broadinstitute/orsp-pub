@@ -406,3 +406,15 @@ input[type=checkbox] {
 .ql-picker-label {
   border: 1px solid #cccccc !important;
 }
+
+.consent-help-text {
+  padding: 5px;
+  margin-bottom: 8px;
+  color: rgb(211, 79, 79);
+  font-style: italic;
+  width: 80%;
+}
+
+.pointer {
+  cursor: pointer;
+}

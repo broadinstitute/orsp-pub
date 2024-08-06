@@ -138,7 +138,7 @@ export const ProjectContainer = hh(class ProjectContainer extends Component {
                 ]),
               div({
                 key: "consent-groups",
-                title: "Sample/Data Cohorts",
+                title: "Cohort/Consent Group",
               }, [
                   h(ConsentGroups, {
                   history: this.props.history,

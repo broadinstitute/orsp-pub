@@ -126,7 +126,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
 
     return (
       WizardStep({
-        title: this.props.title, step: 0, currentStep: this.props.currentStep,
+        title: 'Cohort/Consent Info', step: 0, currentStep: this.props.currentStep,
         error: this.props.errors.investigatorLastName ||
           this.props.errors.institutionProtocolNumber ||
           this.props.errors.collaboratingInstitution ||
@@ -172,7 +172,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           InputFieldText({
             id: "inputConsentGroupName",
             name: "consentGroupName",
-            label: "Sample/Data Cohort Name",
+            label: "Cohort Name/PI Name on Consent",
             value: this.state.formData.investigatorLastName + " / " + this.state.formData.institutionProtocolNumber,
             disabled: true,
             required: false,
@@ -184,7 +184,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           InputFieldText({
             id: "inputCollaboratingInstitution",
             name: "collaboratingInstitution",
-            label: "Collaborating Institution*",
+            label: "External Collaborating Institution*",
             value: this.state.formData.collaboratingInstitution,
             disabled: false,
             required: true,
@@ -196,7 +196,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           InputFieldText({
             id: "inputprimaryContact",
             name: "primaryContact",
-            label: "Primary Contact at Collaborating Institution ",
+            label: "Primary Contact at External Collaborating Institution ",
             moreInfo: "(optional)",
             value: this.state.formData.primaryContact,
             disabled: false,
@@ -207,7 +207,7 @@ export const NewConsentGroupGeneralData = hh(class NewConsentGroupGeneralData ex
           div({ style: { 'margin': '20px 0' }}, [
             InputFieldSelect({
               id: "sampleCollection_select",
-              label: "Link Sample Collection to " + this.props.projectKey,
+              label: "Link Biological Samples Platform (BSP) sample collection to " + this.props.projectKey,
               isDisabled: false,
               options: this.props.sampleCollectionList,
               onChange: this.handleSampleCollectionChange,
