@@ -38,7 +38,7 @@ export const NewLinkCohortData = hh(class NewLinkCohortData extends Component {
     }
     return (
       WizardStep({
-        title: "Data Security Info", step: 1, currentStep: this.props.currentStep,
+        title: "InfoSec Details", step: 1, currentStep: this.props.currentStep,
         error: this.props.generalError || this.props.submitError, 
         errorMessage: errorMessage
       }, [

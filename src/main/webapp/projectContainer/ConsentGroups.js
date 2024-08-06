@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { a, button, h, h3, hh } from 'react-hyperscript-helpers';
+import { a, button, h, h3, hh, div } from 'react-hyperscript-helpers';
 import { ConsentCollectionLink, ConsentGroup, DocumentDescription, DocumentHandler, ProjectMigration, User } from '../util/ajax';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
 import RequestClarificationDialog from '../components/RequestClarificationDialog';
@@ -295,17 +295,22 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
           show: this.state.showSuccessClarification,
           type: 'success'
         }),
+        div({
+          className: "consent-help-text"
+        }, ['Please check to ensure that your cohort/consent group does not already exist in the ORSP portal before adding it as a new cohort. ' +
+          'Use the portal’s “search” function to look up the cohort’s IRB protocol number at the institution from which samples are sourced to determine if it has already been entered.']),
         button({
           isRendered: !component.isViewer,
           className: "btn btn-default",
-          style: { marginRight:'5px' },
+          style: { marginRight:'5px', marginBottom: '5px' },
           onClick:() => this.redirect('new')
-        }, ['Add New Sample/Data Cohort']),
+        }, ['Add New Cohort']),
         button({
           isRendered: !component.isViewer,
           className:"btn btn-default",
+          style: { marginBottom: '5px' },
           onClick: () => this.redirect('useExisting')
-        }, ['Use Existing Sample/Data Cohort'] ),
+        }, ['Add Existing Cohort'] ),
         h3({ isRendered: !isEmpty(this.state.consentGroups) },['Sample/Data Cohort']),
         CollapsibleElements({
           body: TableComponent,

@@ -41,7 +41,7 @@ export const LinkQuestions = hh(class LinkQuestions extends Component {
     }
     return (
       WizardStep({
-        title: "Data Security Info",
+        title: "InfoSec Details",
         step: 1,
         currentStep: this.props.currentStep,
         error: this.props.generalError || this.props.submitError,

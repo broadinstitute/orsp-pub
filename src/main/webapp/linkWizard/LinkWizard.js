@@ -385,7 +385,7 @@ const LinkWizard = hh( class LinkWizard extends Component {
           disabledSubmit: this.state.formSubmitted,
         }, [
           SelectSampleConsent({
-            title: "Sample/Data Cohort Info",
+            title: "Cohort/Consent Details",
             removeErrorMessage: this.removeErrorMessage,
             sampleCollectionList: this.state.sampleCollectionList,
             sampleCollection: this.state.sampleCollection,
@@ -401,7 +401,7 @@ const LinkWizard = hh( class LinkWizard extends Component {
             projectKey: this.projectKey
           }),
           LinkQuestions({
-            title: "Data Security Info",
+            title: "InfoSec Details",
             currentStep: currentStep,
             // handler: this.determinationHandler,
             // determination: this.state.determination,

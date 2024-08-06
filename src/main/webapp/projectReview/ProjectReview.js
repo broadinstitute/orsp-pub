@@ -1155,7 +1155,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
           title: 'Project submitted',
           bodyText: [
             p('Your Project was successfully submitted to the Broad Institute’s Office of Research Subject Protection. It will now be reviewed by the ORSP team who will reach out to you if they have any questions.'),
-            p({ className: "bold" }, 'Please be sure to add your corresponding sample/data cohorts. Do you want to add them now?'),
+            p({ className: "bold" }, 'Please be sure to add your corresponding cohort/consent group information. Please note that failure to provide this with your initial submission may cause delays in the review and approval of your project. Do you want to add them now?'),
           ],
           actionLabel: 'Yes, add now.'
         }, []),

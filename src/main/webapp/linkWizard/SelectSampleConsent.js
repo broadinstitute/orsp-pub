@@ -309,7 +309,7 @@ export const SelectSampleConsent = hh(class SelectSampleConsent extends Componen
         }, [
           InputFieldSelect({
             id: "sampleCollection_select",
-            label: "Link Sample Collection to " + this.props.projectKey,
+            label: "Link Biological Samples Platform (BSP) sample collection to " + this.props.projectKey,
             isDisabled: false,
             options: this.state.sampleCollectionList,
             onChange: this.handleSampleCollectionChange,

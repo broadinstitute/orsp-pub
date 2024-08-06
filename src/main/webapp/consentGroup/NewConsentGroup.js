@@ -533,7 +533,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     return (
       div({name: 'wizardContainer'},[
         Wizard({
-          title: "New Sample/Data Cohort",
+          title: "New Cohort/Consent Group",
           note: "Please use this section to provide information about the data and/or samples you will receive.  Also upload any consent forms or associated documents.  If no consent form is available, please explain why this is the case.",
           stepChanged: this.stepChanged,
           isValid: this.isValid,
@@ -542,7 +542,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
           disabledSubmit: this.state.formSubmitted
         }, [
           NewConsentGroupGeneralData({
-            title: "Sample/Data Cohort Info",
+            title: "Cohort/Consent Details",
             currentStep: currentStep,
             user: this.state.user,
             updateForm: this.updateGeneralDataFormData,
@@ -558,7 +558,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
           }),
           /* Eliminated International Cohorts and MTA */
           NewLinkCohortData({
-            title: "Data Security Info",
+            title: "InfoSec Details",
             currentStep: currentStep,
             // handler: this.determinationHandler,
             // determination: this.state.determination,
