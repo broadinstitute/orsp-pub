@@ -295,10 +295,10 @@ const ConsentGroups = hh(class ConsentGroups extends Component {
           show: this.state.showSuccessClarification,
           type: 'success'
         }),
-        div({
-          className: "consent-help-text"
-        }, ['Please check to ensure that your cohort/consent group does not already exist in the ORSP portal before adding it as a new cohort. ' +
-          'Use the portal’s “search” function to look up the cohort’s IRB protocol number at the institution from which samples are sourced to determine if it has already been entered.']),
+        // div({
+        //   className: "consent-help-text"
+        // }, ['Please check to ensure that your cohort/consent group does not already exist in the ORSP portal before adding it as a new cohort. ' +
+        //   'Use the portal’s “search” function to look up the cohort’s IRB protocol number at the institution from which samples are sourced to determine if it has already been entered.']),
         button({
           isRendered: !component.isViewer,
           className: "btn btn-default",
