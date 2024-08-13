@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, div, h, hh } from 'react-hyperscript-helpers';
+import { button, div, h, hh, span } from 'react-hyperscript-helpers';
 import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { MultiSelect } from '../components/MultiSelect';
@@ -21,6 +21,8 @@ const RequestClarificationDialog = hh(class RequestClarificationDialog extends C
       clarification: '',
       showAlert: false,
       pm: [{key:''}],
+      isMinimized: false,
+      showCloseBtn: true
     };
     this.handleFormDataTextChange = this.handleFormDataTextChange.bind(this);
   }
@@ -138,16 +140,84 @@ const RequestClarificationDialog = hh(class RequestClarificationDialog extends C
     });
   };
 
+  handleModalSize = () => {
+    const modal = document.querySelector("#clarification-modal");
+    const modalHeader = document.querySelector("#clarification-modal-header");
+    const modalBody = document.querySelector("#clarification-modal-body");
+    const modalFooter = document.querySelector("#clarification-modal-footer");
+    const aTags = document.querySelectorAll('a');
+    const buttons = document.querySelectorAll('button');
+    const navSearch = document.querySelector('.navbar-form');
+    
+    this.setState({
+      isMinimized: !this.state.isMinimized,
+      showCloseBtn: !this.state.showCloseBtn
+    }, () => {
+      if (this.state.isMinimized) {
+        document.body.style.overflow = 'auto';
+        modal.style.top = '85%';
+        modal.style.left = '65%';
+        modal.style.transition = '0.3s';
+        modalBody.style.display = 'none';
+        modalFooter.style.display = 'none';
+        aTags.forEach(list => {
+          list.classList.add('disabled');
+        });
+        buttons.forEach(btn => {
+          btn.disabled = true;
+        });
+        navSearch.classList.add('disabled');
+        modalHeader.classList.add('clarification-minimized');
+      } else {
+        modal.style.top = '0%';
+        modal.style.left = '0%';
+        modal.style.transition = 'auto';
+        document.body.style.overflow = 'hidden';
+        modalBody.style.display = 'block';
+        modalFooter.style.display = 'block';
+        aTags.forEach(list => {
+          list.classList.remove('disabled');
+        });
+        buttons.forEach(btn => {
+          btn.disabled = false;
+        });
+        navSearch.classList.remove('disabled');
+        modalHeader.classList.remove('clarification-minimized');
+      }
+    });
+  }
+
   render() {
 
     return (
       h(Modal, {
-        show: this.props.show
+        show: this.props.show,
+        id: "clarification-modal"
       }, [
-        h(ModalHeader, {}, [
-          h(ModalTitle, { className: "dialogTitle" }, ['Request Clarification on ' + this.props.issueKey])
+        h(ModalHeader, { id: "clarification-modal-header" }, [
+          h(ModalTitle, { className: "dialogTitle" }, [
+            'Request Clarification on ' + this.props.issueKey, 
+            span({
+              isRendered: !this.state.isMinimized,
+              className: "glyphicon glyphicon-remove floatRight pointer icon-dark",
+              onClick: this.handleClose,
+              title: 'Close'
+            }, []),
+            span({
+              isRendered: !this.state.isMinimized,
+              className: "glyphicon glyphicon-minus floatRight pointer icon-dark pr-10",
+              onClick: this.handleModalSize,
+              title: 'Minimize'
+            }, []),
+            span({
+              isRendered: this.state.isMinimized,
+              className: "glyphicon glyphicon-resize-full floatRight pointer icon-dark",
+              onClick: this.handleModalSize,
+              title: 'Expand'
+            }, []),
+          ]),
         ]),
-        h(ModalBody, { className: "dialogBody" }, [
+        h(ModalBody, { className: "dialogBody", id: "clarification-modal-body" }, [
           MultiSelect({
             isRendered: this.props.linkClarification === true,
             id: "pm_select",
@@ -175,7 +245,9 @@ const RequestClarificationDialog = hh(class RequestClarificationDialog extends C
           ])
         ]),
 
-        h(ModalFooter, {}, [
+        h(ModalFooter, {
+          id: "clarification-modal-footer"
+        }, [
           button({ className: "btn buttonSecondary", disabled: this.state.disableBtn, onClick: this.handleClose }, ["Cancel"]),
           button({ className: "btn buttonPrimary", disabled: this.state.disableBtn, onClick: this.submit }, ["Request Clarification"])
         ])
