@@ -418,3 +418,25 @@ input[type=checkbox] {
 .pointer {
   cursor: pointer;
 }
+
+.disabled {
+  pointer-events: none;
+}
+
+.clarification-minimized {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.icon-dark {
+  color: #000;
+  font-size: 1.15rem;
+  opacity: .5;
+}
+
+.icon-dark:hover {
+  opacity: .8;
+}
+
+.pr-10 {
+  padding-right: 10px;
+}
