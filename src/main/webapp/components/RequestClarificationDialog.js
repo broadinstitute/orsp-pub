@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, div, h, hh, span } from 'react-hyperscript-helpers';
+import { button, div, h, hh, span, i } from 'react-hyperscript-helpers';
 import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { MultiSelect } from '../components/MultiSelect';
@@ -169,7 +169,6 @@ const RequestClarificationDialog = hh(class RequestClarificationDialog extends C
       } else {
         modal.style.top = '0%';
         modal.style.left = '0%';
-        modal.style.transition = 'auto';
         document.body.style.overflow = 'hidden';
         modalBody.style.display = 'block';
         modalFooter.style.display = 'block';
@@ -195,24 +194,26 @@ const RequestClarificationDialog = hh(class RequestClarificationDialog extends C
         h(ModalHeader, { id: "clarification-modal-header" }, [
           h(ModalTitle, { className: "dialogTitle" }, [
             'Request Clarification on ' + this.props.issueKey, 
-            span({
-              isRendered: !this.state.isMinimized,
-              className: "glyphicon glyphicon-remove floatRight pointer icon-dark",
-              onClick: this.handleClose,
-              title: 'Close'
-            }, []),
-            span({
-              isRendered: !this.state.isMinimized,
-              className: "glyphicon glyphicon-minus floatRight pointer icon-dark pr-10",
-              onClick: this.handleModalSize,
-              title: 'Minimize'
-            }, []),
-            span({
-              isRendered: this.state.isMinimized,
-              className: "glyphicon glyphicon-resize-full floatRight pointer icon-dark",
-              onClick: this.handleModalSize,
-              title: 'Expand'
-            }, []),
+            span({isRendered: component.isAdmin}, [
+              i({
+                isRendered: !this.state.isMinimized,
+                className: "glyphicon glyphicon-remove floatRight pointer icon-dark",
+                onClick: this.handleClose,
+                title: 'Close'
+              }, []),
+              i({
+                isRendered: !this.state.isMinimized,
+                className: "glyphicon glyphicon-minus floatRight pointer icon-dark pr-10",
+                onClick: this.handleModalSize,
+                title: 'Minimize'
+              }, []),
+              i({
+                isRendered: this.state.isMinimized,
+                className: "glyphicon glyphicon-resize-full floatRight pointer icon-dark",
+                onClick: this.handleModalSize,
+                title: 'Expand'
+              }, [])
+            ])
           ]),
         ]),
         h(ModalBody, { className: "dialogBody", id: "clarification-modal-body" }, [
