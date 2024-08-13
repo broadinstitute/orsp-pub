@@ -21,8 +21,7 @@ const RequestClarificationDialog = hh(class RequestClarificationDialog extends C
       clarification: '',
       showAlert: false,
       pm: [{key:''}],
-      isMinimized: false,
-      showCloseBtn: true
+      isMinimized: false
     };
     this.handleFormDataTextChange = this.handleFormDataTextChange.bind(this);
   }
@@ -150,8 +149,7 @@ const RequestClarificationDialog = hh(class RequestClarificationDialog extends C
     const navSearch = document.querySelector('.navbar-form');
     
     this.setState({
-      isMinimized: !this.state.isMinimized,
-      showCloseBtn: !this.state.showCloseBtn
+      isMinimized: !this.state.isMinimized
     }, () => {
       if (this.state.isMinimized) {
         document.body.style.overflow = 'auto';
