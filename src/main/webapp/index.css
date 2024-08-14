@@ -440,3 +440,30 @@ input[type=checkbox] {
 .pr-10 {
   padding-right: 10px;
 }
+
+.minimized-modal {
+  top: 85%;
+  left: 65%;
+  transition: 0.3s;
+}
+
+@media screen and (min-width: 1261px) and (max-width: 1700px) {
+  .minimized-modal {
+    top: 83%;
+    left: 50%;
+  }
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1260px) {
+  .minimized-modal {
+    top: 80%;
+    left: 40%;
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .minimized-modal {
+    top: 80%;
+    left: 20%;
+  }
+}
