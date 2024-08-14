@@ -153,9 +153,7 @@ const RequestClarificationDialog = hh(class RequestClarificationDialog extends C
     }, () => {
       if (this.state.isMinimized) {
         document.body.style.overflow = 'auto';
-        modal.style.top = '85%';
-        modal.style.left = '65%';
-        modal.style.transition = '0.3s';
+        modal.classList.add('minimized-modal');
         modalBody.style.display = 'none';
         modalFooter.style.display = 'none';
         aTags.forEach(list => {
@@ -167,8 +165,7 @@ const RequestClarificationDialog = hh(class RequestClarificationDialog extends C
         navSearch.classList.add('disabled');
         modalHeader.classList.add('clarification-minimized');
       } else {
-        modal.style.top = '0%';
-        modal.style.left = '0%';
+        modal.classList.remove('minimized-modal');
         document.body.style.overflow = 'hidden';
         modalBody.style.display = 'block';
         modalFooter.style.display = 'block';
@@ -194,7 +191,7 @@ const RequestClarificationDialog = hh(class RequestClarificationDialog extends C
         h(ModalHeader, { id: "clarification-modal-header" }, [
           h(ModalTitle, { className: "dialogTitle" }, [
             'Request Clarification on ' + this.props.issueKey, 
-            span({isRendered: component.isAdmin}, [
+            span({}, [
               i({
                 isRendered: !this.state.isMinimized,
                 className: "glyphicon glyphicon-remove floatRight pointer icon-dark",
