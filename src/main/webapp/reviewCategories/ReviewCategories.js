@@ -70,7 +70,7 @@ const columns = [
   }, {
     dataField: 'reviewCategory',
     text: 'Review Category',
-    sort: false,
+    sort: true,
     editable: false,
     headerStyle: (column, colIndex) => {
       return { width: styles.reviewCategories.reviewCategoryWidth};
@@ -187,7 +187,19 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
       sortDirection: sortOrder,
       orderColumn: CATEGORY_SORT_NAME_INDEX[sortName]
     };
-    this.tableHandler(0, this.state.sizePerPage, null, sort)
+    if(CATEGORY_SORT_NAME_INDEX[sortName]) {
+      this.tableHandler(0, this.state.sizePerPage, null, sort)
+    } else {
+      const sortedData = [...this.state.categories].sort((a, b) => {
+        if(sortOrder === 'asc')
+          return (a[sortName] > b[sortName]) ? 1 : (a[sortName] < b[sortName]) ? -1 : 0;
+        else
+          return (a[sortName] > b[sortName]) ? -1 : (a[sortName] < b[sortName]) ? 1 : 0;
+      });
+      this.setState({
+        categories: sortedData
+      });
+    }
   };
 
   onTableChange = (type, newState) => {
@@ -232,7 +244,7 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
           sizePerPageList: SIZE_PER_PAGE_LIST,
           page: this.state.currentPage,
           totalSize: this.state.recordsFiltered,
-          showExportButtons: false,
+          showExportButtons: true,
           showSearchBar: true,
           pagination: true
         })
