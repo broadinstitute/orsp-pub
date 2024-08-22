@@ -496,7 +496,7 @@ export const Reports = {
       }
     })
   },
-  getReviewCategory(query) {
+  findReviewCategory(query) {
     return axios.get(UrlConstants.reviewCategoriesUrl, {
       params: {
         draw: 1,
@@ -507,6 +507,9 @@ export const Reports = {
         searchValue: query.searchValue
       }
     })
+  },
+  getReviewCategory() {
+    return axios.get(UrlConstants.getReviewCategoriesUrl)
   },
   getQaEventReport(tab) {
     return axios.get(UrlConstants.qaEventReportUrl, {

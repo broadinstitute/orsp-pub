@@ -140,21 +140,10 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
       searchValue: search
     };
     this.props.showSpinner();
-    Reports.getReviewCategory(query).then(result => {
-      const lastPage = Math.ceil(result.data.recordsTotal / query.length);
+    Reports.getReviewCategory().then(result => {
       if (this._isMounted) {
         this.setState(prev => {
-          prev.lastPage = lastPage;
-          prev.currentPage = page;
-          prev.categories = result.data.data;
-          prev.recordsTotal = result.data.recordsTotal;
-          prev.recordsFiltered = result.data.recordsFiltered;
-          prev.sizePerPage = query.length;
-          prev.search = query.searchValue;
-          prev.sort = {
-            orderColumn : query.orderColumn,
-            sortDirection: query.sortDirection
-          };
+          prev.categories = result.data;
           return prev;
         }, () => this.props.hideSpinner())
       }
@@ -187,19 +176,7 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
       sortDirection: sortOrder,
       orderColumn: CATEGORY_SORT_NAME_INDEX[sortName]
     };
-    if(CATEGORY_SORT_NAME_INDEX[sortName]) {
-      this.tableHandler(0, this.state.sizePerPage, null, sort)
-    } else {
-      const sortedData = [...this.state.categories].sort((a, b) => {
-        if(sortOrder === 'asc')
-          return (a[sortName] > b[sortName]) ? 1 : (a[sortName] < b[sortName]) ? -1 : 0;
-        else
-          return (a[sortName] > b[sortName]) ? -1 : (a[sortName] < b[sortName]) ? 1 : 0;
-      });
-      this.setState({
-        categories: sortedData
-      });
-    }
+    this.tableHandler(0, this.state.sizePerPage, null, sort)
   };
 
   onTableChange = (type, newState) => {
@@ -232,8 +209,7 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
         PortalMessage({}),
         h1({ style: stylesHeader.pageTitle}, ["Review Category Report"]),
         TableComponent({
-          remoteProp: true,
-          onTableChange: this.onTableChange,
+          remoteProp: false,
           data: this.state.categories,
           columns: columns,
           keyField: 'projectKey',
@@ -243,10 +219,11 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
           printComments: this.printContent,
           sizePerPageList: SIZE_PER_PAGE_LIST,
           page: this.state.currentPage,
-          totalSize: this.state.recordsFiltered,
+          totalSize: this.state.categories.length,
           showExportButtons: true,
           showSearchBar: true,
-          pagination: true
+          pagination: true,
+          showTotal: true
         })
       ])
     )
