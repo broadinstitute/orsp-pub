@@ -54,6 +54,7 @@ class ReportController extends AuthenticatedController {
         response.outputStream << content
     }
 
+    // Review category report api with backend pagination
     def findReviewCategories() {
         UtilityClass.registerIssueMarshaller();
         PaginationParams pagination = new PaginationParams(
@@ -66,6 +67,11 @@ class ReportController extends AuthenticatedController {
         JSON.use(UtilityClass.ISSUE_RENDERER_CONFIG) {
             render queryService.findIssueByProjectType(IssueType.IRB.name, pagination) as JSON
         }
+    }
+
+    // Review category report api without backend pagination
+    def getReviewCategories() {
+        render queryService.getReviewCategoryReport() as JSON
     }
 
 

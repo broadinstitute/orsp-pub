@@ -2011,4 +2011,29 @@ class QueryService implements Status {
         result
     }
 
+    def getReviewCategoryReport() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        def query = new StringBuilder()
+        query.append('select distinct i.id, i.type, i.project_key, i.summary, i.status, i.approval_status, ')
+                .append('i.reporter, i.request_date, ie.value as review_category from issue i ')
+                .append('left outer join issue_extra_property ie on ie.project_key = i.project_key and ie.name = "review-category" ')
+                .append('where i.type = "IRB Project" and i.deleted = 0 order by project_key asc')
+        final SQLQuery sqlQuery = session.createSQLQuery(query.toString())
+        final result = sqlQuery.list().collect {row ->
+            [
+                id: row[0],
+                type: row[1],
+                projectKey: row[2],
+                summary: row[3],
+                status: row[4],
+                approvalStatus: row[5],
+                reporter: row[6],
+                requestDate: row[7],
+                reviewCategory: row[8]
+            ]
+        }
+        result
+    }
+
 }
