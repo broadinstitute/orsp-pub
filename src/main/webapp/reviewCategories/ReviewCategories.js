@@ -176,7 +176,19 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
       sortDirection: sortOrder,
       orderColumn: CATEGORY_SORT_NAME_INDEX[sortName]
     };
-    this.tableHandler(0, this.state.sizePerPage, null, sort)
+    if(CATEGORY_SORT_NAME_INDEX[sortName]) {
+      this.tableHandler(0, this.state.sizePerPage, null, sort)
+    } else {
+      const sortedData = [...this.state.categories].sort((a, b) => {
+        if(sortOrder === 'asc')
+          return (a[sortName] > b[sortName]) ? 1 : (a[sortName] < b[sortName]) ? -1 : 0;
+        else
+          return (a[sortName] > b[sortName]) ? -1 : (a[sortName] < b[sortName]) ? 1 : 0;
+      });
+      this.setState({
+        categories: sortedData
+      });
+    }
   };
 
   onTableChange = (type, newState) => {
