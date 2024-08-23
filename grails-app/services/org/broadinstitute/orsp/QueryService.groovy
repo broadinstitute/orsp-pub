@@ -2015,10 +2015,12 @@ class QueryService implements Status {
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
         def query = new StringBuilder()
-        query.append('select distinct i.id, i.type, i.project_key, i.summary, i.status, i.approval_status, ')
-                .append('i.reporter, i.request_date, ie.value as review_category from issue i ')
-                .append('left outer join issue_extra_property ie on ie.project_key = i.project_key and ie.name = "review-category" ')
-                .append('where i.type = "IRB Project" and i.deleted = 0 order by project_key asc')
+        query.append('SELECT DISTINCT iss.id, iss.type, iss.project_key, iss.summary, iss.status, iss.approval_status, iss.reporter, iss.request_date, ')
+                .append('CASE WHEN irt.value IS NOT NULL AND irt.value!=\'""\' AND JSON_VALID(irt.value) THEN JSON_UNQUOTE(JSON_EXTRACT(irt.value, \'$.label\')) ')
+                .append('ELSE rc.value END AS review_category FROM issue iss ')
+                .append('LEFT OUTER JOIN issue_extra_property irt ON irt.project_key = iss.project_key AND irt.name = "initialReviewType" ')
+                .append('LEFT OUTER JOIN issue_extra_property rc ON rc.project_key = iss.project_key AND rc.name = "review-category" ')
+                .append('WHERE iss.type = "IRB Project" AND iss.deleted = 0 ORDER BY iss.project_key ASC')
         final SQLQuery sqlQuery = session.createSQLQuery(query.toString())
         final result = sqlQuery.list().collect {row ->
             [

@@ -86,6 +86,7 @@ const IRBReport = (props) => {
                     showExportButtons= {true}
                     showSearchBar= {true}
                     showPdfExport= {false}
+                    showTotal= {true}
                 ></TableComponent>
             </div>
         </div>
