@@ -143,7 +143,7 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
     Reports.getReviewCategory().then(result => {
       if (this._isMounted) {
         this.setState(prev => {
-          prev.categories = result.data;
+          prev.categories = this.findProjectStatus(result.data);
           return prev;
         }, () => this.props.hideSpinner())
       }
@@ -152,6 +152,13 @@ const ReviewCategories = hh(class ReviewCategories extends Component {
       this.setState(() => { throw error });
     });
   };
+
+  findProjectStatus = (data) => {
+    data.forEach(item => {
+      if (item.status === 'Preparing Application') item.status = item.approvalStatus
+    });
+    return data;
+  }
 
   onSearchChange = (search) => {
     this.tableHandler(0, this.state.sizePerPage, search, this.state.sort, 1);
