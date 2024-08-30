@@ -821,7 +821,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
   handleUpdateFundings = (updated) => {
     let fundings = updated;
     fundings.forEach(element => {
-      if(element.future.source.value ===  'federal_sub-award' || element.future.source.value === 'federal_prime') {
+      if(element.future.source.value ===  'federal_sub-award' || 
+          element.future.source.value === 'federal_prime' || 
+          element.future.source.value === 'cost_object'
+      ) {
         element.future['identifierError'] = element.future.identifier ? false : true;
         this.setState({
           identifierHasError: element.future.identifier ? false : true
@@ -829,7 +832,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       } else {
         element.future['identifierError'] = false;
       }
-      if (element.future.source) {
+      if (element.future.source && element.future.source.value !== 'cost_object') {
         element.future['sponsorError'] = element.future.sponsor ? false : true;
         this.setState({
           sponsorHasError: element.future.sponsor ? false : true

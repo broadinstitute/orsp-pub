@@ -13,6 +13,7 @@ const fundingOptions = [
   { value: 'corporate_funding', label: 'Corporate Funding' },
   { value: 'foundation', label: 'Foundation' },
   { value: 'philanthropy', label: 'Philanthropy' },
+  { value: 'cost_object', label: 'Cost Object' },
   { value: 'other', label: 'Other' },
   { value: 'none', label: 'None' }
 ]
@@ -158,7 +159,11 @@ export const Fundings = hh(class Fundings extends Component {
   getIdentifierError = (element) => {
     let identifierHasError = false;
     const source = this.props.edit ? element.future.source : element.source;
-    if (this.props.fundingAwardNumberError && source.value === 'federal_prime' || source.value === 'federal_sub-award') {
+    if (this.props.fundingAwardNumberError && 
+        source.value === 'federal_prime' || 
+        source.value === 'federal_sub-award' || 
+        source.value === 'cost_object'
+    ) {
       identifierHasError = this.props.edit ? isEmpty(element.future.identifier): isEmpty(element.identifier);
     }
     if (element.future) {
@@ -170,7 +175,7 @@ export const Fundings = hh(class Fundings extends Component {
 
   getSponsorError = (element) => {
     let sponsorHasError = false;
-    if (!this.props.edit && element.source.value) {
+    if (!this.props.edit && element.source.value && element.source.value !== 'cost_object') {
       sponsorHasError = !element.sponsor ? true : false;
     }
     if (element.future) {
