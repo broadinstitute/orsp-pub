@@ -364,6 +364,7 @@ const NewProject = hh(class NewProject extends Component {
     let isValid = true;
     let fundings = false;
     let fundingAwardNumber = false;
+    let fundingSponsor = false;
 
     if (isEmpty(this.state.generalDataFormData.studyDescription)) {
       studyDescription = true;
@@ -382,12 +383,15 @@ const NewProject = hh(class NewProject extends Component {
           fundings = true;
           isValid = false;
         }
-        if (!fundings && (funding.source.value === 'federal_prime' || funding.source.value === 'federal_sub-award') && isEmpty(funding.identifier)) {
+        if (!fundings && 
+            (funding.source.value === 'federal_prime' || funding.source.value === 'federal_sub-award' || funding.source.value === 'cost_object') && 
+            isEmpty(funding.identifier)
+        ) {
           fundingAwardNumber = true;
           isValid = false;
         }
-        if (!funding.sponsor) {
-          fundingAwardNumber = true;
+        if (!funding.sponsor && funding.source.value !== 'cost_object') {
+          fundingSponsor = true;
           isValid = false;
         }
       });
@@ -398,6 +402,7 @@ const NewProject = hh(class NewProject extends Component {
         prev.errors.pTitle = pTitle;
         prev.errors.fundings = fundings;
         prev.errors.fundingAwardNumber = fundingAwardNumber;
+        prev.errors.fundingSponsor = fundingSponsor;
         return prev;
       });
     }
@@ -407,6 +412,7 @@ const NewProject = hh(class NewProject extends Component {
         if (field === 'fundings') {
           prev.errors.fundings = fundings;
           prev.errors.fundingAwardNumber = fundingAwardNumber;
+          prev.errors.fundingSponsor = fundingSponsor;
         }
         else if (field === 'studyDescription') {
           prev.errors.studyDescription = studyDescription;
