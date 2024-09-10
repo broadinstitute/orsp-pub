@@ -515,13 +515,9 @@ class NotifyService implements SendgridSupport, Status {
      */
     Map<Boolean, String> sendSecurityInfo(Issue issue, User user, ConsentCollectionLink consentCollectionLink, String subjectDisplayName) {
         Map<Boolean, String> result = new HashMap<>()
-        Boolean sendEmail = false
-        if (getValue(consentCollectionLink.getPii()) == YES ||
-                getValue(consentCollectionLink.getCompliance()) == YES ||
-                getValue(consentCollectionLink.getPubliclyAvailable()) == YES) {
-            sendEmail = true
-        }
-        if (sendEmail) {
+        if ((consentCollectionLink.getStore().contains('terra') || consentCollectionLink.getStore().contains('bgp')) &&
+            (getValue(consentCollectionLink.getGenomicData()) == YES && (getValue(consentCollectionLink.getPiiDt()) == YES || getValue(consentCollectionLink.getPhi()) == YES))
+        ) {
             Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
             Collection<String> reporter = new LinkedList<String>()
             reporter.add(issue.getReporter())
