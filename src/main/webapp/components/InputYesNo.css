@@ -145,3 +145,8 @@ fieldset[disabled] .radioOptions {
   background: url('./new-tag.svg') no-repeat;
 }
 
+.radioNote {
+  font-weight: 600;
+  font-style: italic;
+}
+

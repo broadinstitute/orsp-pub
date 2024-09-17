@@ -138,6 +138,7 @@ class UrlMappings {
         '/api/consent/export'(controller: 'dataUse', action: 'exportConsent', method: 'POST')
 
         '/api/info-link'(controller: 'infoLink', action: 'getProjectSampleCollections', method: 'GET')
+        '/api/info-link-data-locations'(controller: 'infoLink', action: 'getProjectDataLocations', method: 'GET')
         '/api/break-link'(controller: 'consentGroup', action: 'breakLink', method: 'POST')
 
         '/api/approve-link'(controller: 'newConsentGroup', action: 'approveLink', method: 'PUT')

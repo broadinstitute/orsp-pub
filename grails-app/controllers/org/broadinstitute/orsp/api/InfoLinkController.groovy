@@ -28,4 +28,14 @@ class InfoLinkController extends AuthenticatedController {
             handleException(e)
         }
     }
+
+    def getProjectDataLocations() {
+        String consentCollectionId = params.cclId
+        try {
+            def result = queryService.findAllDataLocationsBySampleCollectionId(consentCollectionId)
+            render result as JSON
+        } catch (Exception e) {
+            handleException(e)
+        }
+    }
 }

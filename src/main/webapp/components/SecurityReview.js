@@ -1,7 +1,8 @@
 import { Component, React } from 'react';
-import { u, hh, span, a, div, label, ul, li } from 'react-hyperscript-helpers';
+import { u, hh, span, a, div, label, ul, li, p, hr, br } from 'react-hyperscript-helpers';
 import { isEmpty } from "../util/Utils";
 import './QuestionnaireWorkflow.css';
+import { UrlConstants } from '../util/UrlConstants';
 
 const sharingTypes = {
     open : "An open/unrestricted repository (such as GEO)",
@@ -9,6 +10,13 @@ const sharingTypes = {
     both: "Both a controlled-access and an open-access repository",
     noDataSharing: "No data sharing via a repository (data returned to research collaborator only)",
     undetermined: "Data sharing plan not yet determined"
+}
+
+const secondaryUseTypes = {
+  broadFacilitatedSharing: "Yes, the Broad may facilitate sharing my data for secondary use via the Broad Data Access Committee",
+  externalSharing: "Yes, it will be shared through an external repository and/or data access committee (i.e. dbGaP)",
+  no: "No, this data should not be shared for secondary use",
+  needAssistance: "I need assistance from ORSP to answer this question"
 }
 export const SecurityReview = hh(class SecurityReview extends Component {
 
@@ -35,6 +43,10 @@ export const SecurityReview = hh(class SecurityReview extends Component {
 
   sharingTypeAnswer = (type) => {
     return sharingTypes[type];
+  };
+
+  secondaryUseAnswer = (type) => {
+    return secondaryUseTypes[type];
   };
 
   storeOptions = (store) => {
@@ -80,7 +92,14 @@ export const SecurityReview = hh(class SecurityReview extends Component {
       biometricIdentifiers = '',
       uniqueIdentifying = '',
       otherIdentifier = '',
-      textOtherIdentifier = ''
+      textOtherIdentifier = '',
+      dataSecondaryUse = '',
+      collaboratorApproval = '',
+      mtaOrDta = '',
+      deliveryDate = '',
+      releaseDate = '',
+      dataLocations = [],
+      approvalDoc
     } = this.props.sample;
 
     let stores = store.split(",");
@@ -226,6 +245,89 @@ export const SecurityReview = hh(class SecurityReview extends Component {
             div({
             }, [isEmpty(textSharingType) ? "--" : textSharingType]),
           ]),
+
+          div({style: {marginBottom: '20px'}}, [
+            label({
+              style: {color: '#286090', fontSize: '1.071rem', marginBottom: '8px'}
+            }, ["Data Location(s)"]),
+            p({isRendered: !dataLocations.length}, ["--"]),
+            div([dataLocations.map(
+              (data, idx) => 
+                div({className: "row"}, [
+                  hr({
+                    isRendered: idx > 0,
+                    style: {margin: '8px 6px', background: '#c7c7c7', height: '1px'}
+                  }),
+                  span({className: "col-lg-6"}, [
+                    label({style: {fontWeight: 600}}, ["Research Stages"]),
+                    p({}, [data.researchStage]),
+                    p({isRendered: isEmpty(data.researchStage)}, ["--"])
+                  ]),
+                  span({className: "col-lg-6"}, [
+                    label({style: {fontWeight: 600}}, ["Data Location"]),
+                    p({}, [data.dataStores]),
+                    p({isRendered: isEmpty(data.dataStores)}, ["--"])
+                  ]),
+                  span({className: "col-lg-6"}, [
+                    label({style: {fontWeight: 600}}, ["Data Location URL"]),
+                    p({}, [a({href: data.locationUrl, target: "_blank"}, [data.locationUrl])]),
+                    p({isRendered: isEmpty(data.locationUrl)}, ["--"])
+                  ]),
+                  span({className: "col-lg-6"}, [
+                    label({style: {fontWeight: 600}}, ["Cloud Provider"]),
+                    p({}, [data.cloudProvider]),
+                    p({isRendered: isEmpty(data.cloudProvider)}, ["--"])
+                  ]),
+                ]),
+            )]),
+          ]),
+
+          div({ className: "answerWrapper" }, [
+            label({}, ["Are you willing to share this data for secondary use in accordance with its consent form after primary research activites are complete? "]),
+            div({}, [this.secondaryUseAnswer(dataSecondaryUse)]),
+            p({isRendered: isEmpty(dataSecondaryUse)}, ["--"])
+          ]),
+
+          div({ className: "answerWrapper" }, [
+            label({}, ["If you received these samples/data from a collaborator, did that collaborator approve/agree to sharing the data? "]),
+            div({isRendered: collaboratorApproval === "true"}, ["Yes, my collaborator has approved sharing."]),
+            div({isRendered: collaboratorApproval === "false"}, ["No, I do not have approval for sharing."]),
+            p({isRendered: isEmpty(collaboratorApproval)}, ["--"])
+          ]),
+          p({isRendered: collaboratorApproval === "true"}, [
+            a({
+              href: `${UrlConstants.downloadDocumentUrl}?uuid=${approvalDoc.uuid}`,
+              target: '_blank',
+              title: approvalDoc.fileName,
+            }, [
+              span({
+                className: 'glyphicon glyphicon-download submission-download'
+              }, []), " ",
+              approvalDoc.fileName > 14 ? approvalDoc.fileName.slice(14) + '...' : approvalDoc.fileName
+            ]),
+          ]),
+          
+          div({ className: "answerWrapper" }, [
+            label({}, ["Are these samples/data subject to an MTA or DTA? "]),
+            div({isRendered: mtaOrDta === "true"}, ["Yes"]),
+            div({isRendered: mtaOrDta === "false"}, ["No"]),
+            p({isRendered: isEmpty(mtaOrDta)}, ["--"])
+          ]),
+
+          div({
+            className: 'row'
+          }, [
+            span({className: 'col-xs-4'}, [
+              label({className: 'inputFieldLabel'}, ["Target Delivery Date"]), br(),
+              div({}, [deliveryDate]),
+              p({isRendered: isEmpty(deliveryDate)}, ["--"])
+          ]),
+            span({className: 'col-xs-4'}, [
+              label({className: 'inputFieldLabel'}, ["Target Public Release Date (if applicable)"]), br(),
+              div({}, [releaseDate]),
+              p({isRendered: isEmpty(releaseDate)}, ["--"])
+          ])
+          ])
         ])
       )
     } else {

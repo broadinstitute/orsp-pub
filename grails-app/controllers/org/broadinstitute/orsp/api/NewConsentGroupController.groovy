@@ -11,6 +11,7 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.CollectionLinkStatus
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.ConsentService
+import org.broadinstitute.orsp.DataLocations
 import org.broadinstitute.orsp.DataUseLetter
 import org.broadinstitute.orsp.DataUseRestriction
 import org.broadinstitute.orsp.EventType
@@ -58,6 +59,9 @@ class NewConsentGroupController extends AuthenticatedController {
             JsonParser parser = new JsonParser()
             JsonArray dataProjectJson = parser.parse(request.parameterMap["dataProject"].toString())
             JsonArray dataConsentCollectionJson = parser.parse(request.parameterMap["dataConsentCollection"].toString())
+            JsonSlurper slurper = new JsonSlurper();
+            List<DataLocations> dataLocations = slurper.parseText(request.parameterMap["dataLocations"].toString())
+            dataLocations = dataLocations[0]
             JsonElement jsonFileDescription = parser.parse(request?.parameterMap["fileData"].toString())
             JsonArray fileData
             Issue issue = IssueUtils.getJson(Issue.class, dataProjectJson[0])
@@ -74,6 +78,16 @@ class NewConsentGroupController extends AuthenticatedController {
                 persistenceService.saveEvent(issue.projectKey, user?.displayName, "New Consent Group Added", EventType.SUBMIT_CONSENT_GROUP)
                 try {
                     persistenceService.saveConsentCollectionLink(consentCollectionLink)
+                    dataLocations.each {
+                        def dataLocation = new DataLocations(
+                                researchStage: it.researchStage,
+                                dataStores: it.dataStores,
+                                locationUrl: it.locationUrl,
+                                cloudProvider: it.cloudProvider
+                        )
+                        dataLocation.consentCollectionLink = consentCollectionLink
+                        dataLocation.save(flush: true)
+                    }
                 } catch (Exception e) {
                     flash.error = e.getMessage()
                 }

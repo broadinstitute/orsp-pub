@@ -98,6 +98,7 @@ export const InputFieldRadio = hh(class InputFieldRadio extends Component {
           span({ className: "italic" }, ["Previous value: "]),
           (currentOptionLabel)
         ]),
+        span({isRendered: this.props.note, className: 'radioNote'}, [this.props.note]),
         small({ isRendered: this.props.error, className: "errorMessage" }, [this.props.errorMessage])
       ])
     )
