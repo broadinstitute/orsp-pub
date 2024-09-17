@@ -52,6 +52,17 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
     Issue linkedProject
     SampleCollection sampleCollection
     DataUseRestriction restriction
+    String dataSecondaryUse
+    String collaboratorApproval
+    String mtaOrDta
+    String deliveryDate
+    String releaseDate
+
+    static hasMany = [dataLocations: DataLocations]
+
+    static mapping = {
+        dataLocations fetch: 'join'
+    }
 
     static constraints = {
         projectKey nullable: false
@@ -96,7 +107,11 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
         uniqueIdentifying nullable: true
         otherIdentifier nullable: true
         textOtherIdentifier nullable: true
-
+        dataSecondaryUse nullable: true
+        collaboratorApproval nullable: true
+        mtaOrDta nullable: true
+        deliveryDate nullable: true
+        releaseDate nullable: true
     }
 
     static transients = ['linkedProject', 'sampleCollection', 'restriction']

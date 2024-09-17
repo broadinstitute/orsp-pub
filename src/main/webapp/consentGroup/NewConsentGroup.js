@@ -10,6 +10,7 @@ import LoadingWrapper from '../components/LoadingWrapper';
 import defaultTo from 'lodash/defaultTo';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
+import { getDateString } from '../util/Utils';
 
 const LAST_STEP = 1;
 const NEXT_INDICATOR = 0;
@@ -45,7 +46,14 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
       generalDataFormData: {
         noConsentFormReason: ''
       },
-      securityInfoFormData: {},
+      securityInfoFormData: {
+        dataLocations: [{
+          researchStage: null,
+          dataStores: null,
+          locationUrl: null,
+          cloudProvider: null
+        }]
+      },
       linkFormData: {},
       currentStep: 0,
       files: [],
@@ -120,6 +128,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
       ConsentGroup.create(
         consentGroup,
         this.getConsentCollectionData(consentGroup.samples),
+        this.getDataLocations(),
         this.state.files,
         this.state.user.displayName,
         this.state.user.userName)
@@ -206,6 +215,17 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     consentCollectionLink.uniqueIdentifying = this.state.securityInfoFormData.uniqueIdentifying;
     consentCollectionLink.otherIdentifier = this.state.securityInfoFormData.otherIdentifier;
     consentCollectionLink.textOtherIdentifier = isEmpty(this.state.securityInfoFormData.textOtherIdentifier) ? null : this.state.securityInfoFormData.textOtherIdentifier;
+    consentCollectionLink.dataSecondaryUse = this.state.securityInfoFormData.dataSecondaryUse;
+    consentCollectionLink.collaboratorApproval = this.state.securityInfoFormData.collaboratorApproval;
+    consentCollectionLink.mtaOrDta = this.state.securityInfoFormData.mtaOrDta;
+    consentCollectionLink.deliveryDate = getDateString(this.state.securityInfoFormData.deliveryDate);
+    consentCollectionLink.releaseDate = getDateString(this.state.securityInfoFormData.releaseDate);
+    let files = [...this.state.files] || [];
+    files.push(this.state.securityInfoFormData.approvalDocument);
+    this.setState(prev => {
+      prev.files = files;
+      return prev;
+    })
     // International cohorts
     let questions = this.state.determination.questions;
     if (questions !== null && questions.length > 1) {
@@ -219,6 +239,15 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
       consentCollectionLink.internationalCohorts = null;
     }
     return consentCollectionLink;
+  }
+
+  getDataLocations = () => {
+    let dataLocations = [...this.state.securityInfoFormData.dataLocations];
+    dataLocations.forEach(data => {
+      data.researchStage = data.researchStage && data.researchStage.label;
+      data.dataStores = data.dataStores && data.dataStores.map(store => store.label).join(", ");
+    });
+    return dataLocations;
   }
 
   getConsentGroup() {

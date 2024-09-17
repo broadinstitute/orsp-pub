@@ -1,14 +1,32 @@
 import { Component, React } from 'react';
-import { hh, h1, span, a, div, p, b, u, small } from 'react-hyperscript-helpers';
-
-import { WizardStep } from './WizardStep';
+import { hh, h1, span, a, div, p, b, u, small, label, button, i, hr, h, br, input } from 'react-hyperscript-helpers';
 import { InputFieldText } from './InputFieldText';
 import { InputFieldRadio } from './InputFieldRadio';
 import { InputFieldCheckbox } from './InputFieldCheckbox';
 import { isEmpty } from '../util/Utils'
 import './QuestionnaireWorkflow.css';
+import { MultiSelect } from './MultiSelect';
+import { InputFieldSelect } from './InputFieldSelect';
+import DatePicker from 'react-datepicker';
+import { Documents } from './Documents';
+import { User } from '../util/ajax';
+
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
+const REASEARCH_STAGES = [
+  {value: 'pre', label: 'Pre'}, 
+  {value: 'post', label: 'Post'},
+  {value: 'intra_analysis', label: 'Intra Analysis'}
+];
+
+const DATA_LOCATIONS = [
+  {id: '1', value: 'terra', label: 'Terra'}, 
+  {id: '2', value: 'bgp', label: 'Broad Genomics Platform'},
+  {id: '3', value: 'gcp', label: 'Google Cloud Platform (without Terra)'},
+  {id: '4', value: 'aws', label: 'Amazon Web Services'},
+  {id: '5', value: 'bop', label: 'Broad on-prem'},
+  {id: '6', value: 'other', label: 'Other'}
+];
 
 export const Security = hh(class Security extends Component {
 
@@ -55,7 +73,16 @@ export const Security = hh(class Security extends Component {
         biometricIdentifiers: false,
         uniqueIdentifying: false,
         otherIdentifier: false,
-        textOtherIdentifier: ''
+        textOtherIdentifier: '',
+        dataLocations: [{
+          researchStage: null,
+          dataStores: null,
+          locationUrl: null,
+          cloudProvider: null
+        }],
+        approvalDocument: {
+          fileName: null
+        }
       },
       errors: {
         pii: true,
@@ -69,10 +96,13 @@ export const Security = hh(class Security extends Component {
         textOtherIdentifier: true,
         identifiers: true,
         dataType: true,
-        textSharingType: true
+        textSharingType: true,
+        approvalDoc: true
       },
       openSharingText: '(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)',
-      controlledSharingText: '(Data Use LetterNR/link, consent or waiver of consent)'
+      controlledSharingText: '(Data Use LetterNR/link, consent or waiver of consent)',
+      documents: [],
+      collaboratorApprovalRequired: 'false'
     };
   }
 
@@ -84,6 +114,7 @@ export const Security = hh(class Security extends Component {
   handleRadio2Change = (e, field, value) => {
     this.setState(prev => {
       prev.formData[field] = value;
+      if (field === "collaboratorApproval") prev.collaboratorApprovalRequired = value;
       return prev;
     }, () => {
       this.props.handleSecurityValidity(this.validate());
@@ -149,6 +180,7 @@ export const Security = hh(class Security extends Component {
     let identifiers = false;
     let dataType = false;
     let textSharingType = false;
+    let approvalDoc = false;
 
     if (isEmpty(this.state.formData.pii)) {
       pii = true;
@@ -206,6 +238,10 @@ export const Security = hh(class Security extends Component {
       dataType = true;
       isValid = false;
     }
+    if (this.state.collaboratorApprovalRequired === "true") {
+      approvalDoc = true;
+      isValid = false;
+    }
     if (TEXT_SHARING_TYPES.some((type) => type === this.state.formData.sharingType && isEmpty(this.state.formData.textSharingType))) {
       textSharingType = true;
       isValid = false;
@@ -247,6 +283,7 @@ export const Security = hh(class Security extends Component {
         prev.errors.identifiers = identifiers;
         prev.errors.dataType = dataType;
         prev.errors.textSharingType = textSharingType;
+        prev.errors.approvalDoc = approvalDoc;
         return prev;
       });
     }
@@ -261,6 +298,76 @@ export const Security = hh(class Security extends Component {
       }
     });
     return stateError;
+  }
+
+  loadUsersOptions(query, callback) {
+    const dataLocations = DATA_LOCATIONS.filter(item => item.label.toLowerCase().includes(query));
+    let options = dataLocations.map(function (item) {
+      return {
+        key: item.id,
+        value: item.value,
+        label: item.label
+      };
+    });
+    callback(options);
+  };
+
+  addMoreDataLocations = () => {
+    const hasData = this.props.securityInfoData.dataLocations.every(item => 
+        item.researchStage || item.dataStores || item.locationUrl || item.cloudProvider);
+    hasData && this.setState(prev => {
+      prev.formData.dataLocations.push({
+        researchStage: null,
+        dataStores: null,
+        locationUrl: null,
+        cloudProvider: null
+      });
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, 'dataLocations'));
+  };
+
+  handleResearchStageChange = (index) => (selected) => {
+    this.setState(prev => {
+      prev.formData.dataLocations[index]['researchStage'] = selected;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, 'dataLocations'))
+  }
+
+  handleDataLocationsChange = (value, index, key) => {
+    this.setState(prev => {
+      prev.formData.dataLocations[index][key] = value;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, 'dataLocations'))
+  }
+
+  handleDataLocationInputChange = (e, index) => {
+    const field = e.target.name;
+    const value = e.target.value;
+    this.setState(prev => {
+      prev.formData.dataLocations[index][field] = value;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, 'dataLocations'))
+  }
+
+  handleDatePicker = (date, key) => {
+    console.log(date, key);
+    this.setState(prev => {
+      prev.formData[key] = date;
+    }, () => this.props.updateForm(this.state.formData, key));
+  }
+
+  handleCollaboratorApprovalDoc = async (e) => {
+    const file = e.target.files[0];
+    let doc = {}
+    doc.file = file;
+    doc.fileKey = 'Collaborator Approval';
+    doc.fileName = file.name;
+    doc.fileDescription = null;
+    doc.id = Math.random();
+    this.setState(prev => {
+      prev.formData.approvalDocument = doc;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, 'approvalDocument'));
   }
 
   render() {
@@ -671,7 +778,188 @@ export const Security = hh(class Security extends Component {
           onChange: this.handleInputChange,
           errorMessage: "Required field",
           error: this.state.errors.textSharingType && this.props.generalError,
-        })
+        }),
+        div({style: {marginBottom: '20px'}}, [
+          label({
+            style: {color: '#286090', fontSize: '1.071rem'}
+          }, ["Data Location(s)"]),
+          p({}, ["Please provide the expected location where your data will be stored throughout the stages of your research"]),
+          div([this.props.securityInfoData.dataLocations.map(
+            (data, idx) => 
+              div({className: "row"}, [
+                hr({
+                  isRendered: idx > 0,
+                  style: {margin: '8px 6px', background: '#c7c7c7', height: '1px'}
+                }),
+                span({className: "col-lg-6"}, [
+                  InputFieldSelect({
+                    id: idx + "-projectStage",
+                    index: idx,
+                    name: "researchStage",
+                    label: "",
+                    options: REASEARCH_STAGES,
+                    onChange: this.handleResearchStageChange,
+                    value: data.researchStage,
+                    placeholder: "Research Stages",
+                    readOnly: false,
+                    edit: false
+                  })
+                ]),
+                span({className: "col-lg-6"}, [
+                  MultiSelect({
+                    id: "dataLocations",
+                    placeholder: "Data Location(s)",
+                    name: 'dataStores',
+                    loadOptions: this.loadUsersOptions,
+                    handleChange:(selected) => this.handleDataLocationsChange(selected, idx, 'dataStores'),
+                    value: data.dataStores,
+                    isMulti: true,
+                    edit: false
+                  })
+                ]),
+                span({className: "col-lg-6"}, [
+                  InputFieldText({
+                    id: "dataLocationUrl",
+                    name: "locationUrl",
+                    placeholder: "Enter a URL for your data location",
+                    readOnly: false,
+                    value: data.locationUrl,
+                    onChange: (e) => this.handleDataLocationInputChange(e, idx),
+                  })
+                ]),
+                span({className: "col-lg-6"}, [
+                  InputFieldText({
+                    id: "cloudProvider",
+                    name: "cloudProvider",
+                    placeholder: "Cloud Provider",
+                    readOnly: false,
+                    value: data.cloudProvider,
+                    onChange: (e) => this.handleDataLocationInputChange(e, idx),
+                  })
+                ]),
+              ]),
+          )]),
+          button({
+            className: "btn buttonPrimary",
+            style: {margin: '10px 0'},
+            onClick: this.addMoreDataLocations
+          }, [
+            i({
+              className: "glyphicon glyphicon-plus",
+              style: {fontSize: '1rem', paddingRight: '5px'}
+            }), "Add More Locations"]
+          )
+        ]),
+        InputFieldRadio({
+          id: "dataSecondaryUse",
+          name: "dataSecondaryUse",
+          label: span({}, ["Are you willing to share this data for secondary use in accordance with its consent form after primary research activites are complete? "]),
+          moreInfo: 'Secondary research use allows for researchers not on the original protocol to use the data for other research endeavors',
+          value: this.props.securityInfoData.dataSecondaryUse,
+          optionLabels: [
+            "Yes, the Broad may facilitate sharing my data for secondary use via the Broad Data Access Committee",
+            "Yes, it will be shared through an external repository and/or data access committee (i.e. dbGaP)",
+            "No, this data should not be shared for secondary use",
+            "I need assistance from ORSP to answer this question"
+          ],
+          optionValues: [
+            "broadFacilitatedSharing",
+            "externalSharing",
+            "no",
+            "needAssistance"
+          ],
+          onChange: this.handleRadio2Change,
+          required: false,
+          error: false,
+          errorMessage: "Required field"
+        }),
+        InputFieldRadio({
+          id: "collaboratorApproval",
+          name: "collaboratorApproval",
+          label: span({}, ["If you received these samples/data from a collaborator, did that collaborator approve/agree to sharing the data?"]),
+          value: this.props.securityInfoData.collaboratorApproval,
+          optionValues: ["true", "false"],
+          optionLabels: [
+            "Yes, my collaborator has approved sharing. (Please upload an email or other documentation)",
+            "No, I do not have approval for sharing"
+          ],
+          onChange: this.handleRadio2Change,
+          required: false,
+          error: false,
+          errorMessage: "Required field",
+          edit: false,
+          note: "Note: PHI must only be processed and/or stored  on Broad-owned devices"
+        }),
+        div({
+          isRendered: this.props.securityInfoData.collaboratorApproval === "true" && !this.state.formData.approvalDocument.fileName,
+          style: {marginBottom: "20px"}
+        }, [
+          label({
+            htmlFor: "approvalDoc",
+            style: {paddingRight: "5px"}
+          }, [
+            i({className: "btn btn-primary"}, ["Upload Document"]),
+            input({
+              id: "approvalDoc",
+              type: "file",
+              name: "collaboratorApproval",
+              onChange: this.handleCollaboratorApprovalDoc,
+              style: {display: "none"}
+            }),
+          ]),
+          small({ isRendered: this.state.errors.approvalDoc, className: "errorMessage" }, ["Document required"])
+        ]),
+        div({
+          isRendered: this.state.formData.approvalDocument.fileName,
+        }, [
+          p({}, [
+            this.state.formData.approvalDocument.fileName, 
+            i({
+              className: 'glyphicon glyphicon-remove'
+            }, [])
+            ]),
+        ]),
+        InputFieldRadio({
+          id: "mtaOrDta",
+          name: "mtaOrDta",
+          label: span({}, ["Are these samples/data subject to an MTA or DTA? "]),
+          moreInfo: "Broad defers to the provider as to what is needed in terms of paperwork. Therefore, the collaborator should reach out to their institution's " + 
+            "tech transfer office regarding this sample transfer to discuss if an MTA or DTA is necessary for transferring these samples between the sending " + 
+            "institution (e.g. DFCI) and Broad.",
+          value: this.props.securityInfoData.mtaOrDta,
+          optionValues: ["true", "false"],
+          optionLabels: [
+            "Yes",
+            "No"
+          ],
+          onChange: this.handleRadio2Change,
+          required: false,
+          error: false,
+          errorMessage: "Required field",
+          edit: false
+        }),
+        div({
+          className: 'row'
+        }, [
+          span({className: 'col-xs-4'}, [
+            label({className: 'inputFieldLabel'}, ["Target Delivery Date"]), br(),
+            h(DatePicker, ({
+              selected: this.props.securityInfoData.deliveryDate,
+              className: 'DatePicker',
+              onChange: (date) => this.handleDatePicker(date, 'deliveryDate'),
+              placeholderText: 'Please enter the date'
+            }))
+          ]),
+          span({className: 'col-xs-4'}, [
+            label({className: 'inputFieldLabel'}, ["Target Public Release Date (if applicable)"]), br(),
+            h(DatePicker, ({
+              selected: this.props.securityInfoData.releaseDate,
+              className: 'DatePicker',
+              onChange: (date) => this.handleDatePicker(date, 'releaseDate'),
+              placeholderText: 'Please enter the date'
+            }))
+          ])
+        ])
       ])
     )
   }

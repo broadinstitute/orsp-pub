@@ -467,3 +467,14 @@ input[type=checkbox] {
     left: 20%;
   }
 }
+
+.DatePicker {
+  position: relative;
+  min-height: 38px;
+  display: block !important;
+  padding-left: 10px;
+  border: 1px solid #ced4da;
+  font-size: 1rem;
+  color: black;
+  width: 95% !important;
+}

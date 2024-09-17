@@ -141,3 +141,9 @@ export const handleUnauthorized = (location) => {
   Storage.setLocationFrom(location);
   window.location.reload();
 };
+
+export const getDateString = (date) => {
+  if(!date) return null;
+  let inpDate = new Date(date);
+  return inpDate.getDate() + '/' + (inpDate.getMonth() + 1).toString().padStart(2, '0') + '/' + inpDate.getFullYear();
+}

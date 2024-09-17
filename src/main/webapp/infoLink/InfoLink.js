@@ -54,23 +54,29 @@ const InfoLink = hh(class InfoLink extends Component {
     let params = new URLSearchParams(this.props.location.search);
     let sampleCollectionsIds = [];
     this.props.showSpinner();
-    ProjectInfoLink.getProjectSampleCollections(params.get("cclId")).then(
+    let cclId = params.get("cclId");
+    ProjectInfoLink.getProjectSampleCollections(cclId).then(
       data => {
         JSON.parse(data.data.sampleCollections).map(sampleCollection => {
           sampleCollectionsIds.push(sampleCollection);
         });
-        if (this._isMounted) {
-          this.setState(prev => {
-            prev.documents = JSON.parse(data.data.documents);
-            prev.sampleCollections = sampleCollectionsIds;
-            prev.consentName = sampleCollectionsIds[0].consentName;
-            prev.projectName = sampleCollectionsIds[0].projectName;
-            prev.startDate =  sampleCollectionsIds[0].startDate !== undefined ? format(new Date(sampleCollectionsIds[0].startDate), 'MM/DD/YYYY') : null;
-            prev.endDate =  sampleCollectionsIds[0].endDate !== undefined ? format(new Date(sampleCollectionsIds[0].endDate), 'MM/DD/YYYY') : '--';
-            prev.onGoingProcess =  sampleCollectionsIds[0].onGoingProcess;
-            return prev;
-          }, () => this.props.hideSpinner());
-        }
+        ProjectInfoLink.getProjectDataLocations(cclId).then(dataLocations => {
+          if (this._isMounted) {
+            this.setState(prev => {
+              let docs = JSON.parse(data.data.documents)
+              prev.documents = docs.length && docs.filter(doc => doc.fileType !== "Collaborator Approval");
+              prev.sampleCollections = sampleCollectionsIds;
+              prev.consentName = sampleCollectionsIds[0].consentName;
+              prev.projectName = sampleCollectionsIds[0].projectName;
+              prev.startDate =  sampleCollectionsIds[0].startDate !== undefined ? format(new Date(sampleCollectionsIds[0].startDate), 'MM/DD/YYYY') : null;
+              prev.endDate =  sampleCollectionsIds[0].endDate !== undefined ? format(new Date(sampleCollectionsIds[0].endDate), 'MM/DD/YYYY') : '--';
+              prev.onGoingProcess =  sampleCollectionsIds[0].onGoingProcess;
+              prev.sampleCollections[0].dataLocations = dataLocations.data;
+              prev.sampleCollections[0].approvalDoc = docs.length && docs.filter(doc => doc.fileType === "Collaborator Approval");
+              return prev;
+            }, () => this.props.hideSpinner());
+          }
+        }).catch(err => console.log('err >> ', err))
     }).catch(error => {
       if (error.response != null && error.response.status === 401) {
         handleUnauthorized(this.props.history.location)

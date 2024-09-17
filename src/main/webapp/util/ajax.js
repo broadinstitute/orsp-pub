@@ -55,7 +55,7 @@ export const ConsentGroup = {
     return axios.get(UrlConstants.consentNamesSearchURL);
   },
 
-  create(dataProject, dataConsentCollection, files, displayName, userName) {
+  create(dataProject, dataConsentCollection, dataLocations, files, displayName, userName) {
     let data = new FormData();
 
     files.forEach(file => {
@@ -72,7 +72,8 @@ export const ConsentGroup = {
     data.append('displayName', displayName);
     data.append('userName', userName);
     data.append('dataProject', JSON.stringify(dataProject));
-    data.append('dataConsentCollection', JSON.stringify(dataConsentCollection))
+    data.append('dataConsentCollection', JSON.stringify(dataConsentCollection));
+    data.append('dataLocations', JSON.stringify(dataLocations));
     const config = {
       headers: { 'content-type': 'multipart/form-data' }
     };
@@ -442,6 +443,10 @@ export const DataUse = {
 export const ProjectInfoLink = {
   getProjectSampleCollections(cclId) {
     return axios.get(UrlConstants.infoLinkUrl + '?cclId=' + cclId);
+  },
+  
+  getProjectDataLocations(cclId) {
+    return axios.get(UrlConstants.infoLinkDataLocationUrl + '?cclId=' + cclId);
   }
 };
 

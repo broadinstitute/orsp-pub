@@ -82,6 +82,7 @@ export const UrlConstants = {
   getAllOrganizationsUrl: context + '/api/get-organizations',
  
   infoLinkUrl: context + '/api/info-link',
+  infoLinkDataLocationUrl: context + '/api/info-link-data-locations',
   showRestrictionsUrl: context + '/api/dur',
   submissionsUrl: context + '/api/submissions',
   submissionsAddNewUrl: '/submissions/add-new',

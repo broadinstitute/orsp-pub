@@ -10,6 +10,7 @@ import groovy.util.logging.Slf4j
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.CollectionLinkStatus
 import org.broadinstitute.orsp.ConsentCollectionLink
+import org.broadinstitute.orsp.DataLocations
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
@@ -27,6 +28,7 @@ class SampleConsentLinkController extends AuthenticatedController {
         JsonParser parser = new JsonParser()
         User user = getUser()
         ConsentCollectionLink consentCollectionLink = IssueUtils.getJson(ConsentCollectionLink.class, parser.parse(request.parameterMap["dataConsentCollection"].toString())[0])
+        DataLocations dataLocations = IssueUtils.getJson(DataLocations.class, parser.parse(request.parameterMap["dataLocations"].toString())[0])
         JsonElement jsonFileDescription = parser.parse(request?.parameterMap["fileData"].toString())
         JsonArray fileData
         if (jsonFileDescription.jsonArray) {
@@ -37,6 +39,16 @@ class SampleConsentLinkController extends AuthenticatedController {
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
             consentCollectionLink.status = queryService.areLinksApproved(consentCollectionLink.projectKey, consentCollectionLink.consentKey) ? CollectionLinkStatus.APPROVED.name : CollectionLinkStatus.PENDING.name
             persistenceService.saveConsentCollectionLink(consentCollectionLink)
+            dataLocations.each {
+                def dataLocation = new DataLocations(
+                        researchStage: it.researchStage,
+                        dataStores: it.dataStores,
+                        locationUrl: it.locationUrl,
+                        cloudProvider: it.cloudProvider
+                )
+                dataLocation.consentCollectionLink = consentCollectionLink
+                dataLocation.save(flush: true)
+            }
             notifyService.sendAddedCGToProjectNotification(consentCollectionLink.consentKey, consentCollectionLink.projectKey, consentCollectionLink, user.displayName)
             Issue issue = Issue.findByProjectKey(consentCollectionLink.projectKey)
             if (!files?.isEmpty()) {

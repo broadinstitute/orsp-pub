@@ -49,6 +49,11 @@ class ConsentCollectionLinkDTO {
     String uniqueIdentifying
     String otherIdentifier
     String textOtherIdentifier
+    String dataSecondaryUse
+    String collaboratorApproval
+    String mtaOrDta
+    String deliveryDate
+    String releaseDate
 
     void setId(Number id) {
         this.id = id
