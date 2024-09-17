@@ -238,7 +238,7 @@ export const Security = hh(class Security extends Component {
       dataType = true;
       isValid = false;
     }
-    if (this.state.collaboratorApprovalRequired === "true") {
+    if (this.state.collaboratorApprovalRequired === "true" && !this.state.formData.approvalDocument.fileName) {
       approvalDoc = true;
       isValid = false;
     }
@@ -367,7 +367,17 @@ export const Security = hh(class Security extends Component {
     this.setState(prev => {
       prev.formData.approvalDocument = doc;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'approvalDocument'));
+    }, () => {
+      this.props.handleSecurityValidity(this.validate());
+      this.props.updateForm(this.state.formData, 'approvalDocument');
+    });
+  }
+
+  handleFileRemoval = () => {
+    this.setState(prev => {
+      prev.formData.approvalDocument = {fileName: null};
+      return prev;
+    }, () => this.props.handleSecurityValidity(this.validate()));
   }
 
   render() {
@@ -911,11 +921,15 @@ export const Security = hh(class Security extends Component {
         ]),
         div({
           isRendered: this.state.formData.approvalDocument.fileName,
+          style: {marginBottom: "20px"}
         }, [
-          p({}, [
+          span({
+            className: "file-chip"
+          }, [
             this.state.formData.approvalDocument.fileName, 
             i({
-              className: 'glyphicon glyphicon-remove'
+              className: 'glyphicon glyphicon-remove',
+              onClick: this.handleFileRemoval
             }, [])
             ]),
         ]),

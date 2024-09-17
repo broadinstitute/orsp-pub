@@ -478,3 +478,20 @@ input[type=checkbox] {
   color: black;
   width: 95% !important;
 }
+
+.file-chip {
+  display: inline;
+  border: 1px solid #777777;
+  background-color: #dcdfdf;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.file-chip i {
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.file-chip i:hover {
+  color: #2c3e50;
+}
