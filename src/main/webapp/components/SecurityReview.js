@@ -288,14 +288,17 @@ export const SecurityReview = hh(class SecurityReview extends Component {
             p({isRendered: isEmpty(dataSecondaryUse)}, ["--"])
           ]),
 
-          div({ className: "answerWrapper" }, [
+          div({ className: "answerWrapper", style: {marginBottom: "10px"} }, [
             label({}, ["If you received these samples/data from a collaborator, did that collaborator approve/agree to sharing the data? "]),
             div({isRendered: collaboratorApproval === "true"}, ["Yes, my collaborator has approved sharing."]),
             div({isRendered: collaboratorApproval === "false"}, ["No, I do not have approval for sharing."]),
             p({isRendered: isEmpty(collaboratorApproval)}, ["--"])
           ]),
-          div({isRendered: collaboratorApproval === "true" && approvalDoc.fileName}, [
-            label({}, ["Documentation: "]),
+          div({
+            isRendered: collaboratorApproval === "true" && approvalDoc.fileName,
+            style: {marginBottom: "20px"}
+          }, [
+            label({style: {marginRight: "7px"}}, ["Documentation: "]),
             span({}, [
               a({
                 href: `${UrlConstants.downloadDocumentUrl}?uuid=${approvalDoc.uuid}`,
