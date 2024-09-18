@@ -14,9 +14,9 @@ import { User } from '../util/ajax';
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 const REASEARCH_STAGES = [
-  {value: 'pre', label: 'Pre'}, 
-  {value: 'post', label: 'Post'},
-  {value: 'intra_analysis', label: 'Intra Analysis'}
+  {id: '1', value: 'pre', label: 'Pre'}, 
+  {id: '2', value: 'post', label: 'Post'},
+  {id: '3', value: 'intra_analysis', label: 'Intra Analysis'}
 ];
 
 const DATA_LOCATIONS = [
@@ -300,9 +300,21 @@ export const Security = hh(class Security extends Component {
     return stateError;
   }
 
-  loadUsersOptions(query, callback) {
+  loadDataLocationsOptions(query, callback) {
     const dataLocations = DATA_LOCATIONS.filter(item => item.label.toLowerCase().includes(query));
     let options = dataLocations.map(function (item) {
+      return {
+        key: item.id,
+        value: item.value,
+        label: item.label
+      };
+    });
+    callback(options);
+  };
+
+  loadResearchStageOptions(query, callback) {
+    const researchStages = REASEARCH_STAGES.filter(item => item.label.toLowerCase().includes(query));
+    let options = researchStages.map(function (item) {
       return {
         key: item.id,
         value: item.value,
@@ -330,14 +342,21 @@ export const Security = hh(class Security extends Component {
     this.setState(prev => {
       prev.formData.dataLocations[index]['researchStage'] = selected;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'dataLocations'))
+    }, () => this.props.updateForm(this.state.formData, 'dataLocations'));
   }
 
   handleDataLocationsChange = (value, index, key) => {
     this.setState(prev => {
       prev.formData.dataLocations[index][key] = value;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'dataLocations'))
+    }, () => this.props.updateForm(this.state.formData, 'dataLocations'));
+  }
+
+  handleResearchStagesChange = (value, index, key) => {
+    this.setState(prev => {
+      prev.formData.dataLocations[index][key] = value;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, 'researchStage'));
   }
 
   handleDataLocationInputChange = (e, index) => {
@@ -346,7 +365,7 @@ export const Security = hh(class Security extends Component {
     this.setState(prev => {
       prev.formData.dataLocations[index][field] = value;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'dataLocations'))
+    }, () => this.props.updateForm(this.state.formData, 'dataLocations'));
   }
 
   handleDatePicker = (date, key) => {
@@ -802,16 +821,14 @@ export const Security = hh(class Security extends Component {
                   style: {margin: '8px 6px', background: '#c7c7c7', height: '1px'}
                 }),
                 span({className: "col-lg-6"}, [
-                  InputFieldSelect({
-                    id: idx + "-projectStage",
-                    index: idx,
-                    name: "researchStage",
-                    label: "",
-                    options: REASEARCH_STAGES,
-                    onChange: this.handleResearchStageChange,
+                  MultiSelect({
+                    id: "researchStage",
+                    placeholder: "Research Stage (Pre/Post/Intra Analysis)",
+                    name: 'researchStage',
+                    loadOptions: this.loadResearchStageOptions,
+                    handleChange:(selected) => this.handleResearchStagesChange(selected, idx, 'researchStage'),
                     value: data.researchStage,
-                    placeholder: "Research Stages",
-                    readOnly: false,
+                    isMulti: true,
                     edit: false
                   })
                 ]),
@@ -820,7 +837,7 @@ export const Security = hh(class Security extends Component {
                     id: "dataLocations",
                     placeholder: "Data Location(s)",
                     name: 'dataStores',
-                    loadOptions: this.loadUsersOptions,
+                    loadOptions: this.loadDataLocationsOptions,
                     handleChange:(selected) => this.handleDataLocationsChange(selected, idx, 'dataStores'),
                     value: data.dataStores,
                     isMulti: true,
