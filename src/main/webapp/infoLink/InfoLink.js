@@ -64,7 +64,7 @@ const InfoLink = hh(class InfoLink extends Component {
           if (this._isMounted) {
             this.setState(prev => {
               let docs = JSON.parse(data.data.documents)
-              prev.documents = docs.length && docs.filter(doc => doc.fileType !== "Collaborator Approval");
+              prev.documents = docs.length ? docs.filter(doc => doc.fileType !== "Collaborator Approval") : [];
               prev.sampleCollections = sampleCollectionsIds;
               prev.consentName = sampleCollectionsIds[0].consentName;
               prev.projectName = sampleCollectionsIds[0].projectName;
@@ -72,7 +72,7 @@ const InfoLink = hh(class InfoLink extends Component {
               prev.endDate =  sampleCollectionsIds[0].endDate !== undefined ? format(new Date(sampleCollectionsIds[0].endDate), 'MM/DD/YYYY') : '--';
               prev.onGoingProcess =  sampleCollectionsIds[0].onGoingProcess;
               prev.sampleCollections[0].dataLocations = dataLocations.data;
-              prev.sampleCollections[0].approvalDoc = docs.length && docs.filter(doc => doc.fileType === "Collaborator Approval");
+              prev.sampleCollections[0].approvalDoc = docs.length ? docs.filter(doc => doc.fileType === "Collaborator Approval")[0] : {};
               return prev;
             }, () => this.props.hideSpinner());
           }

@@ -41,7 +41,9 @@ class AuthenticatedController implements Interceptor, UserInfo, ExceptionHandler
               "Protocol",
               "Response To Conditions",
               "Summary-of-Changes",
-              "Supplemental Document"]
+              "Supplemental Document",
+              "Collaborator Approval"
+            ]
 
     @Override
     boolean before() {
