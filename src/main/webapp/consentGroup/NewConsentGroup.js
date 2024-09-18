@@ -244,7 +244,7 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
   getDataLocations = () => {
     let dataLocations = [...this.state.securityInfoFormData.dataLocations];
     dataLocations.forEach(data => {
-      data.researchStage = data.researchStage && data.researchStage.label;
+      data.researchStage = data.researchStage && data.researchStage.map(stage => stage.label).join(", ");
       data.dataStores = data.dataStores && data.dataStores.map(store => store.label).join(", ");
     });
     return dataLocations;
