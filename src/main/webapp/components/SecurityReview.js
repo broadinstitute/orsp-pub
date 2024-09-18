@@ -99,7 +99,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
       deliveryDate = '',
       releaseDate = '',
       dataLocations = [],
-      approvalDoc
+      approvalDoc = {}
     } = this.props.sample;
 
     let stores = store.split(",");
@@ -294,7 +294,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
             div({isRendered: collaboratorApproval === "false"}, ["No, I do not have approval for sharing."]),
             p({isRendered: isEmpty(collaboratorApproval)}, ["--"])
           ]),
-          p({isRendered: collaboratorApproval === "true"}, [
+          p({isRendered: collaboratorApproval === "true" && approvalDoc.fileName}, [
             a({
               href: `${UrlConstants.downloadDocumentUrl}?uuid=${approvalDoc.uuid}`,
               target: '_blank',
