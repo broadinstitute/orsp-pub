@@ -294,16 +294,19 @@ export const SecurityReview = hh(class SecurityReview extends Component {
             div({isRendered: collaboratorApproval === "false"}, ["No, I do not have approval for sharing."]),
             p({isRendered: isEmpty(collaboratorApproval)}, ["--"])
           ]),
-          p({isRendered: collaboratorApproval === "true" && approvalDoc.fileName}, [
-            a({
-              href: `${UrlConstants.downloadDocumentUrl}?uuid=${approvalDoc.uuid}`,
-              target: '_blank',
-              title: approvalDoc.fileName,
-            }, [
-              span({
-                className: 'glyphicon glyphicon-download submission-download'
-              }, []), " ",
-              approvalDoc.fileName > 14 ? approvalDoc.fileName.slice(14) + '...' : approvalDoc.fileName
+          div({isRendered: collaboratorApproval === "true" && approvalDoc.fileName}, [
+            label({}, ["Documentation: "]),
+            span({}, [
+              a({
+                href: `${UrlConstants.downloadDocumentUrl}?uuid=${approvalDoc.uuid}`,
+                target: '_blank',
+                title: approvalDoc.fileName,
+              }, [
+                span({
+                  className: 'glyphicon glyphicon-download submission-download'
+                }, []), " ",
+                approvalDoc.fileName > 14 ? approvalDoc.fileName.slice(14) + '...' : approvalDoc.fileName
+              ]),
             ]),
           ]),
           
