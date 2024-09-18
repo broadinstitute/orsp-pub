@@ -63,7 +63,7 @@ const InfoLink = hh(class InfoLink extends Component {
         ProjectInfoLink.getProjectDataLocations(cclId).then(dataLocations => {
           if (this._isMounted) {
             this.setState(prev => {
-              let docs = JSON.parse(data.data.documents)
+              let docs = JSON.parse(data.data.documents)[0];
               prev.documents = docs.length ? docs.filter(doc => doc.fileType !== "Collaborator Approval") : [];
               prev.sampleCollections = sampleCollectionsIds;
               prev.consentName = sampleCollectionsIds[0].consentName;
