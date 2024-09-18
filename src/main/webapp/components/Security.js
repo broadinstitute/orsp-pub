@@ -908,7 +908,7 @@ export const Security = hh(class Security extends Component {
             htmlFor: "approvalDoc",
             style: {paddingRight: "5px"}
           }, [
-            i({className: "btn btn-primary"}, ["Upload Document"]),
+            i({className: "btn btn-primary"}, ["Upload Documentation"]),
             input({
               id: "approvalDoc",
               type: "file",
@@ -917,7 +917,7 @@ export const Security = hh(class Security extends Component {
               style: {display: "none"}
             }),
           ]),
-          small({ isRendered: this.state.errors.approvalDoc, className: "errorMessage" }, ["Document required"])
+          small({ isRendered: this.state.errors.approvalDoc, className: "errorMessage" }, ["Documentation required"])
         ]),
         div({
           isRendered: this.state.formData.approvalDocument.fileName,
