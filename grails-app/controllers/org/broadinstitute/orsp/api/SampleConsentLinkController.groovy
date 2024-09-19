@@ -28,7 +28,9 @@ class SampleConsentLinkController extends AuthenticatedController {
         JsonParser parser = new JsonParser()
         User user = getUser()
         ConsentCollectionLink consentCollectionLink = IssueUtils.getJson(ConsentCollectionLink.class, parser.parse(request.parameterMap["dataConsentCollection"].toString())[0])
-        DataLocations dataLocations = IssueUtils.getJson(DataLocations.class, parser.parse(request.parameterMap["dataLocations"].toString())[0])
+        JsonSlurper slurper = new JsonSlurper();
+        List<DataLocations> dataLocations = slurper.parseText(request.parameterMap["dataLocations"].toString())
+        dataLocations = dataLocations[0]
         JsonElement jsonFileDescription = parser.parse(request?.parameterMap["fileData"].toString())
         JsonArray fileData
         if (jsonFileDescription.jsonArray) {

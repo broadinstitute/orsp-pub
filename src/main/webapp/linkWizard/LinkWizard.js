@@ -4,7 +4,7 @@ import { Wizard } from '../components/Wizard';
 import { SelectSampleConsent } from './SelectSampleConsent';
 import { LinkQuestions } from './LinkQuestions';
 import { ConsentCollectionLink, User } from '../util/ajax';
-import { handleUnauthorized, isEmpty } from '../util/Utils';
+import { getDateString, handleUnauthorized, isEmpty } from '../util/Utils';
 import '../index.css';
 import * as qs from 'query-string';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -61,7 +61,14 @@ const LinkWizard = hh( class LinkWizard extends Component {
       showInternationalCohortsError: false,
       showErrorInfoSecurity: false,
       isInfoSecurityValid: false,
-      securityInfoFormData: {},
+      securityInfoFormData: {
+        dataLocations: [{
+          researchStage: null,
+          dataStores: null,
+          locationUrl: null,
+          cloudProvider: null
+        }]
+      },
     }
   }
 
@@ -231,6 +238,17 @@ const LinkWizard = hh( class LinkWizard extends Component {
     consentCollectionLink.uniqueIdentifying = this.state.securityInfoFormData.uniqueIdentifying;
     consentCollectionLink.otherIdentifier = this.state.securityInfoFormData.otherIdentifier;
     consentCollectionLink.textOtherIdentifier = isEmpty(this.state.securityInfoFormData.textOtherIdentifier) ? null : this.state.securityInfoFormData.textOtherIdentifier;
+    consentCollectionLink.dataSecondaryUse = this.state.securityInfoFormData.dataSecondaryUse;
+    consentCollectionLink.collaboratorApproval = this.state.securityInfoFormData.collaboratorApproval;
+    consentCollectionLink.mtaOrDta = this.state.securityInfoFormData.mtaOrDta;
+    consentCollectionLink.deliveryDate = getDateString(this.state.securityInfoFormData.deliveryDate);
+    consentCollectionLink.releaseDate = getDateString(this.state.securityInfoFormData.releaseDate);
+    let files = [...this.state.files] || [];
+    files.push(this.state.securityInfoFormData.approvalDocument);
+    this.setState(prev => {
+      prev.files = [...files];
+      return prev;
+    })
     // date range
     consentCollectionLink.startDate = this.state.startDate;
     consentCollectionLink.endDate = this.state.endDate;
@@ -250,15 +268,24 @@ const LinkWizard = hh( class LinkWizard extends Component {
     return consentCollectionLink;
   };
 
+  getDataLocations = () => {
+    let dataLocations = [...this.state.securityInfoFormData.dataLocations];
+    dataLocations.forEach(data => {
+      data.researchStage = data.researchStage && data.researchStage.map(stage => stage.label).join(", ");
+      data.dataStores = data.dataStores && data.dataStores.map(store => store.label).join(", ");
+    });
+    return dataLocations;
+  }
+
   submitLink = async () => {
     this.setState({ submitError: false });
     this.props.showSpinner();
     if (this.validateForm()) {
       this.removeErrorMessage();
       this.changeSubmitState();
-      const documents = this.state.files;
       const consentCollectionData = this.getConsentCollectionData();
-      ConsentCollectionLink.create(consentCollectionData, documents).then(resp => {
+      const documents = this.state.files;
+      ConsentCollectionLink.create(consentCollectionData, this.getDataLocations(), documents).then(resp => {
         this.props.hideSpinner();
         this.props.history.push('/project/main?projectKey=' + qs.parse(this.props.location.search).projectKey + '&tab=consent-groups&new', {tab: 'consent-groups'});
       }).catch(error => {
