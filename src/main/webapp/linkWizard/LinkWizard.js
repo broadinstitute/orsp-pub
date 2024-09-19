@@ -243,12 +243,6 @@ const LinkWizard = hh( class LinkWizard extends Component {
     consentCollectionLink.mtaOrDta = this.state.securityInfoFormData.mtaOrDta;
     consentCollectionLink.deliveryDate = getDateString(this.state.securityInfoFormData.deliveryDate);
     consentCollectionLink.releaseDate = getDateString(this.state.securityInfoFormData.releaseDate);
-    let files = [...this.state.files] || [];
-    files.push(this.state.securityInfoFormData.approvalDocument);
-    this.setState(prev => {
-      prev.files = [...files];
-      return prev;
-    })
     // date range
     consentCollectionLink.startDate = this.state.startDate;
     consentCollectionLink.endDate = this.state.endDate;
@@ -285,6 +279,7 @@ const LinkWizard = hh( class LinkWizard extends Component {
       this.changeSubmitState();
       const consentCollectionData = this.getConsentCollectionData();
       const documents = this.state.files;
+      documents.push(this.state.securityInfoFormData.approvalDocument);
       ConsentCollectionLink.create(consentCollectionData, this.getDataLocations(), documents).then(resp => {
         this.props.hideSpinner();
         this.props.history.push('/project/main?projectKey=' + qs.parse(this.props.location.search).projectKey + '&tab=consent-groups&new', {tab: 'consent-groups'});
