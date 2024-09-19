@@ -369,7 +369,6 @@ export const Security = hh(class Security extends Component {
   }
 
   handleDatePicker = (date, key) => {
-    console.log(date, key);
     this.setState(prev => {
       prev.formData[key] = date;
     }, () => this.props.updateForm(this.state.formData, key));
