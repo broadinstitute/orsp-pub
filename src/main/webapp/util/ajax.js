@@ -444,14 +444,14 @@ export const ProjectInfoLink = {
   getProjectSampleCollections(cclId) {
     return axios.get(UrlConstants.infoLinkUrl + '?cclId=' + cclId);
   },
-  
+
   getProjectDataLocations(cclId) {
     return axios.get(UrlConstants.infoLinkDataLocationUrl + '?cclId=' + cclId);
   }
 };
 
 export const ConsentCollectionLink = {
-  create(dataConsentCollection, files) {
+  create(dataConsentCollection, dataLocations, files) {
     let data = new FormData();
 
     files.forEach(file => {
@@ -465,6 +465,7 @@ export const ConsentCollectionLink = {
       }
     });
     data.append('dataConsentCollection', JSON.stringify(dataConsentCollection));
+    data.append('dataLocations', JSON.stringify(dataLocations));
     const config = {
       headers: { 'content-type': 'multipart/form-data' }
     };
