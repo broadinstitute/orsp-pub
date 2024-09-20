@@ -9,7 +9,7 @@ import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { AlertMessage } from '../components/AlertMessage';
 import { ConsentGroup, DataUse, DUL, Search } from '../util/ajax';
-import { MultiSelect } from '../components/MultiSelect';
+import { AsyncMultiSelect } from '../components/AsyncMultiSelect';
 import _ from 'lodash';
 import { isEmpty } from '../util/Utils';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -946,7 +946,7 @@ const DataUseLetter = hh(class DataUseLetter extends Component {
               }),
               //if otherDisease is checked (OK)
               div({ isRendered: this.state.formData.diseaseRestrictedOptions.otherDisease === true, className: "subGroup", style: { 'marginTop': '5px', 'marginBottom': '0' } }, [
-                MultiSelect({
+                AsyncMultiSelect({
                   id: "inputOtherDiseaseSpecify",
                   label: "Please select",
                   name: "otherDiseaseSpecify",

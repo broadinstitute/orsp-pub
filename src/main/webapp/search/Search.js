@@ -2,7 +2,7 @@ import React from "react";
 import { Typeahead, Menu, MenuItem } from "react-bootstrap-typeahead";
 import axios from "axios";
 
-import { MultiSelect } from '../components/MultiSelect';
+import { AsyncMultiSelect } from '../components/AsyncMultiSelect';
 import ProjectAutocomplete from "../util/ProjectAutocomplete";
 import SearchResults from "./SearchResults";
 import UserAutocomplete from "../util/UserAutocomplete";
@@ -399,7 +399,7 @@ class Search extends React.Component {
               />
             </div>
             <div className="form-group col-md-6">
-              <MultiSelect
+              <AsyncMultiSelect
                 id = {"sc_select"}
                 label = {"Sample Collection"}
                 name = {'sc'}
@@ -408,7 +408,7 @@ class Search extends React.Component {
                 value = {this.state.collection}
                 isMulti = {false}
                 edit = {false}>
-              </MultiSelect>
+              </AsyncMultiSelect>
             </div>
           </div>
 

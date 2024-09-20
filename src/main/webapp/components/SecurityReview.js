@@ -16,7 +16,8 @@ const secondaryUseTypes = {
   broadFacilitatedSharing: "Yes, the Broad may facilitate sharing my data for secondary use via the Broad Data Access Committee",
   externalSharing: "Yes, it will be shared through an external repository and/or data access committee (i.e. dbGaP)",
   no: "No, this data should not be shared for secondary use",
-  needAssistance: "I need assistance from ORSP to answer this question"
+  needAssistance: "I need assistance from ORSP to answer this question",
+  uncertain: "Uncertain"
 }
 export const SecurityReview = hh(class SecurityReview extends Component {
 
@@ -95,7 +96,6 @@ export const SecurityReview = hh(class SecurityReview extends Component {
       textOtherIdentifier = '',
       dataSecondaryUse = '',
       collaboratorApproval = '',
-      mtaOrDta = '',
       deliveryDate = '',
       releaseDate = '',
       dataLocations = [],
@@ -292,6 +292,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
             label({}, ["If you received these samples/data from a collaborator, did that collaborator approve/agree to sharing the data? "]),
             div({isRendered: collaboratorApproval === "true"}, ["Yes, my collaborator has approved sharing."]),
             div({isRendered: collaboratorApproval === "false"}, ["No, I do not have approval for sharing."]),
+            div({isRendered: collaboratorApproval === "uncertain"}, ["Uncertain"]),
             p({isRendered: isEmpty(collaboratorApproval)}, ["--"])
           ]),
           div({
@@ -311,13 +312,6 @@ export const SecurityReview = hh(class SecurityReview extends Component {
                 approvalDoc.fileName > 14 ? approvalDoc.fileName.slice(14) + '...' : approvalDoc.fileName
               ]),
             ]),
-          ]),
-          
-          div({ className: "answerWrapper" }, [
-            label({}, ["Are these samples/data subject to an MTA or DTA? "]),
-            div({isRendered: mtaOrDta === "true"}, ["Yes"]),
-            div({isRendered: mtaOrDta === "false"}, ["No"]),
-            p({isRendered: isEmpty(mtaOrDta)}, ["--"])
           ]),
 
           div({

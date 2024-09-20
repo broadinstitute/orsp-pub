@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { button, div, h, h2, hh, p, b, span, i } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
-import { MultiSelect } from '../components/MultiSelect';
+import { AsyncMultiSelect } from '../components/AsyncMultiSelect';
 import { Fundings } from '../components/Fundings';
 import { AlertMessage } from '../components/AlertMessage';
 import RequestClarificationDialog from '../components/RequestClarificationDialog';
@@ -1233,7 +1233,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
         div({ id: "principalInvestigator" }, [
           Panel({ title: "Principal Investigator" }, [
-            MultiSelect({
+            AsyncMultiSelect({
               id: "pi_select",
               label: "Broad PIs",
               name: 'piList',
@@ -1271,7 +1271,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
               edit: true
             }),
 
-            MultiSelect({
+            AsyncMultiSelect({
               id: "inputProjectManager",
               label: "Broad Project Managers",
               name: 'pmList',
@@ -1330,7 +1330,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
               ])
             ]),
 
-            MultiSelect({
+            AsyncMultiSelect({
               id: "collaborator_select",
               label: "Broad individuals who require access to this project record",
               isDisabled: false,

@@ -51,7 +51,6 @@ class ConsentCollectionLinkDTO {
     String textOtherIdentifier
     String dataSecondaryUse
     String collaboratorApproval
-    String mtaOrDta
     String deliveryDate
     String releaseDate
 

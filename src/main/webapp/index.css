@@ -495,3 +495,12 @@ input[type=checkbox] {
 .file-chip i:hover {
   color: #2c3e50;
 }
+
+/* Override react-select clases */
+.css-vj8t7z {
+  border-radius: 0 !important;
+}
+
+.css-1hwfws3 {
+  font-size: 1.15rem !important;
+}

@@ -4,7 +4,7 @@ import { InputField } from './InputField';
 import AsyncSelect from 'react-select/lib/Async';
 import './InputField.css';
 
-export const MultiSelect = hh(class MultiSelect extends Component {
+export const AsyncMultiSelect = hh(class AsyncMultiSelect extends Component {
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
