@@ -4,7 +4,7 @@ import { Storage } from '../util/Storage'
 import { Reports, Search, User } from '../util/ajax';
 import { Link } from 'react-router-dom';
 import { UrlConstants } from '../util/UrlConstants';
-import { MultiSelect } from '../components/MultiSelect';
+import { AsyncMultiSelect } from './AsyncMultiSelect';
 import GoogleLoginButton from '../components/GoogleLoginButton';
 import { GoogleLogout } from 'react-google-login';
 import LoadingWrapper from '../components/LoadingWrapper';
@@ -251,7 +251,7 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
                 ]),
                 div({ className: "right-container" }, [
                   div({ isRendered: component.isBroad, className: "navbar-form" }, [
-                    MultiSelect({
+                    AsyncMultiSelect({
                       id: "pk_select",
                       label: "",
                       styles: styles.customStyles,
