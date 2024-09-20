@@ -5,11 +5,8 @@ import { InputFieldRadio } from './InputFieldRadio';
 import { InputFieldCheckbox } from './InputFieldCheckbox';
 import { isEmpty } from '../util/Utils'
 import './QuestionnaireWorkflow.css';
-import { MultiSelect } from './MultiSelect';
-import { InputFieldSelect } from './InputFieldSelect';
 import DatePicker from 'react-datepicker';
-import { Documents } from './Documents';
-import { User } from '../util/ajax';
+import ReactSelect from './ReactSelect';
 
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
@@ -97,7 +94,6 @@ export const Security = hh(class Security extends Component {
         identifiers: true,
         dataType: true,
         textSharingType: true,
-        approvalDoc: true
       },
       openSharingText: '(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)',
       controlledSharingText: '(Data Use LetterNR/link, consent or waiver of consent)',
@@ -180,7 +176,6 @@ export const Security = hh(class Security extends Component {
     let identifiers = false;
     let dataType = false;
     let textSharingType = false;
-    let approvalDoc = false;
 
     if (isEmpty(this.state.formData.pii)) {
       pii = true;
@@ -238,10 +233,6 @@ export const Security = hh(class Security extends Component {
       dataType = true;
       isValid = false;
     }
-    if (this.state.collaboratorApprovalRequired === "true" && !this.state.formData.approvalDocument.fileName) {
-      approvalDoc = true;
-      isValid = false;
-    }
     if (TEXT_SHARING_TYPES.some((type) => type === this.state.formData.sharingType && isEmpty(this.state.formData.textSharingType))) {
       textSharingType = true;
       isValid = false;
@@ -283,7 +274,6 @@ export const Security = hh(class Security extends Component {
         prev.errors.identifiers = identifiers;
         prev.errors.dataType = dataType;
         prev.errors.textSharingType = textSharingType;
-        prev.errors.approvalDoc = approvalDoc;
         return prev;
       });
     }
@@ -326,7 +316,7 @@ export const Security = hh(class Security extends Component {
 
   addMoreDataLocations = () => {
     const hasData = this.props.securityInfoData.dataLocations.every(item => 
-        item.researchStage || item.dataStores || item.locationUrl || item.cloudProvider);
+        !isEmpty(item.researchStage) || !isEmpty(item.dataStores) || !isEmpty(item.locationUrl) || !isEmpty(item.cloudProvider));
     hasData && this.setState(prev => {
       prev.formData.dataLocations.push({
         researchStage: null,
@@ -386,7 +376,6 @@ export const Security = hh(class Security extends Component {
       prev.formData.approvalDocument = doc;
       return prev;
     }, () => {
-      this.props.handleSecurityValidity(this.validate());
       this.props.updateForm(this.state.formData, 'approvalDocument');
     });
   }
@@ -395,7 +384,7 @@ export const Security = hh(class Security extends Component {
     this.setState(prev => {
       prev.formData.approvalDocument = {fileName: null};
       return prev;
-    }, () => this.props.handleSecurityValidity(this.validate()));
+    });
   }
 
   render() {
@@ -817,30 +806,26 @@ export const Security = hh(class Security extends Component {
               div({className: "row"}, [
                 hr({
                   isRendered: idx > 0,
-                  style: {margin: '8px 6px', background: '#c7c7c7', height: '1px'}
+                  style: {margin: '8px 6px', background: '#c7c7c7', height: '1px', zIndex: 0}
                 }),
                 span({className: "col-lg-6"}, [
-                  MultiSelect({
-                    id: "researchStage",
+                  ReactSelect({
+                    allowCustomData: false,
+                    options: REASEARCH_STAGES,
                     placeholder: "Research Stage (Pre/Post/Intra Analysis)",
-                    name: 'researchStage',
-                    loadOptions: this.loadResearchStageOptions,
                     handleChange:(selected) => this.handleResearchStagesChange(selected, idx, 'researchStage'),
                     value: data.researchStage,
-                    isMulti: true,
-                    edit: false
+                    isMulti: true
                   })
                 ]),
                 span({className: "col-lg-6"}, [
-                  MultiSelect({
-                    id: "dataLocations",
+                  ReactSelect({
+                    allowCustomData: true,
+                    options: DATA_LOCATIONS,
                     placeholder: "Data Location(s)",
-                    name: 'dataStores',
-                    loadOptions: this.loadDataLocationsOptions,
-                    handleChange:(selected) => this.handleDataLocationsChange(selected, idx, 'dataStores'),
                     value: data.dataStores,
-                    isMulti: true,
-                    edit: false
+                    handleChange: (selected) => this.handleDataLocationsChange(selected, idx, 'dataStores'),
+                    isMulti: true
                   })
                 ]),
                 span({className: "col-lg-6"}, [
@@ -886,13 +871,15 @@ export const Security = hh(class Security extends Component {
             "Yes, the Broad may facilitate sharing my data for secondary use via the Broad Data Access Committee",
             "Yes, it will be shared through an external repository and/or data access committee (i.e. dbGaP)",
             "No, this data should not be shared for secondary use",
-            "I need assistance from ORSP to answer this question"
+            "I need assistance from ORSP to answer this question",
+            "Uncertain"
           ],
           optionValues: [
             "broadFacilitatedSharing",
             "externalSharing",
             "no",
-            "needAssistance"
+            "needAssistance",
+            "uncertain"
           ],
           onChange: this.handleRadio2Change,
           required: false,
@@ -904,10 +891,11 @@ export const Security = hh(class Security extends Component {
           name: "collaboratorApproval",
           label: span({}, ["If you received these samples/data from a collaborator, did that collaborator approve/agree to sharing the data?"]),
           value: this.props.securityInfoData.collaboratorApproval,
-          optionValues: ["true", "false"],
+          optionValues: ["true", "false", "uncertin"],
           optionLabels: [
             "Yes, my collaborator has approved sharing. (Please upload an email or other documentation)",
-            "No, I do not have approval for sharing"
+            "No, I do not have approval for sharing",
+            "Uncertain"
           ],
           onChange: this.handleRadio2Change,
           required: false,
@@ -933,7 +921,6 @@ export const Security = hh(class Security extends Component {
               style: {display: "none"}
             }),
           ]),
-          small({ isRendered: this.state.errors.approvalDoc, className: "errorMessage" }, ["Documentation required"])
         ]),
         div({
           isRendered: this.state.formData.approvalDocument.fileName,
@@ -949,25 +936,6 @@ export const Security = hh(class Security extends Component {
             }, [])
             ]),
         ]),
-        InputFieldRadio({
-          id: "mtaOrDta",
-          name: "mtaOrDta",
-          label: span({}, ["Are these samples/data subject to an MTA or DTA? "]),
-          moreInfo: "Broad defers to the provider as to what is needed in terms of paperwork. Therefore, the collaborator should reach out to their institution's " + 
-            "tech transfer office regarding this sample transfer to discuss if an MTA or DTA is necessary for transferring these samples between the sending " + 
-            "institution (e.g. DFCI) and Broad.",
-          value: this.props.securityInfoData.mtaOrDta,
-          optionValues: ["true", "false"],
-          optionLabels: [
-            "Yes",
-            "No"
-          ],
-          onChange: this.handleRadio2Change,
-          required: false,
-          error: false,
-          errorMessage: "Required field",
-          edit: false
-        }),
         div({
           className: 'row'
         }, [

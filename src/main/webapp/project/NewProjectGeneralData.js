@@ -5,7 +5,7 @@ import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { Fundings } from '../components/Fundings';
-import { MultiSelect } from '../components/MultiSelect';
+import { AsyncMultiSelect } from '../components/AsyncMultiSelect';
 import { Search } from '../util/ajax';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
@@ -183,7 +183,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         ]),
 
         Panel({ title: "Principal Investigator ", moreInfo: "(if applicable)" }, [
-          MultiSelect({
+          AsyncMultiSelect({
             id: "pi_select",
             label: "Broad PIs",
             isDisabled: false,
@@ -216,7 +216,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             onChange: this.handleInputChange,
             edit: false
           }),
-          MultiSelect({
+          AsyncMultiSelect({
             id: "inputProjectManager",
             label: "Broad Project Managers",
             isDisabled: false,
@@ -255,7 +255,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             errorMessage: "Required field",
             edit: false
           }),
-          MultiSelect({
+          AsyncMultiSelect({
             id: "collaborator_select",
             label: "Broad individuals who require access to this project record",
             isDisabled: false,

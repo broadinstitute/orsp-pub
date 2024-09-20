@@ -31694,7 +31694,7 @@ var InputFieldFile = exports.InputFieldFile = (0, _reactHyperscriptHelpers.hh)(f
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.MultiSelect = undefined;
+exports.AsyncMultiSelect = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -31716,16 +31716,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
-  _inherits(MultiSelect, _Component);
+var AsyncMultiSelect = exports.AsyncMultiSelect = (0, _reactHyperscriptHelpers.hh)(function (_Component) {
+  _inherits(AsyncMultiSelect, _Component);
 
-  function MultiSelect() {
-    _classCallCheck(this, MultiSelect);
+  function AsyncMultiSelect() {
+    _classCallCheck(this, AsyncMultiSelect);
 
-    return _possibleConstructorReturn(this, (MultiSelect.__proto__ || Object.getPrototypeOf(MultiSelect)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (AsyncMultiSelect.__proto__ || Object.getPrototypeOf(AsyncMultiSelect)).apply(this, arguments));
   }
 
-  _createClass(MultiSelect, [{
+  _createClass(AsyncMultiSelect, [{
     key: 'componentDidCatch',
     value: function componentDidCatch(error, info) {
       console.log('----------------------- error ----------------------');
@@ -31755,7 +31755,7 @@ var MultiSelect = exports.MultiSelect = (0, _reactHyperscriptHelpers.hh)(functio
     }
   }]);
 
-  return MultiSelect;
+  return AsyncMultiSelect;
 }(_react.Component));
 
 /***/ }),
@@ -39468,7 +39468,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         disabled: true,
         required: true,
         onChange: this.handleInputChange
-      })]), (0, _Panel.Panel)({ title: "Principal Investigator ", moreInfo: "(if applicable)" }, [(0, _MultiSelect.MultiSelect)({
+      })]), (0, _Panel.Panel)({ title: "Principal Investigator ", moreInfo: "(if applicable)" }, [(0, _MultiSelect.AsyncMultiSelect)({
         id: "pi_select",
         label: "Broad PI",
         isDisabled: false,
@@ -39477,7 +39477,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         value: this.state.formData.piName,
         placeholder: "Start typing the PI Name",
         isMulti: false
-      }), (0, _MultiSelect.MultiSelect)({
+      }), (0, _MultiSelect.AsyncMultiSelect)({
         id: "inputProjectManager",
         label: "Broad Project Manager",
         isDisabled: false,
@@ -39502,7 +39502,7 @@ var NewProjectGeneralData = exports.NewProjectGeneralData = (0, _reactHyperscrip
         onChange: this.handleInputChange,
         error: this.props.errors.studyDescription,
         errorMessage: "Required field"
-      }), (0, _MultiSelect.MultiSelect)({
+      }), (0, _MultiSelect.AsyncMultiSelect)({
         id: "collaborator_select",
         label: "Individuals who require access to this project record",
         isDisabled: false,

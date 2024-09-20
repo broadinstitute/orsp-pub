@@ -4,7 +4,7 @@ import { InputFieldText } from '../components/InputFieldText';
 import { InputYesNo } from '../components/InputYesNo';
 import { ConsentGroup, DataUse, Search } from '../util/ajax';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
-import { MultiSelect } from '../components/MultiSelect';
+import { AsyncMultiSelect } from '../components/AsyncMultiSelect';
 import { AlertMessage } from '../components/AlertMessage';
 import { createObjectCopy, isEmpty } from '../util/Utils';
 import get from 'lodash/get';
@@ -588,7 +588,7 @@ const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component
 
           div({ className: "row" }, [
             div({ className: "col-sm-7" }, [
-              MultiSelect({
+              AsyncMultiSelect({
                 id: "diseasesSelect",
                 label: "Future use is limited to research involving the following disease area(s) [DS]",
                 name: "otherDiseaseSpecify",
@@ -727,7 +727,7 @@ const DataUseRestrictionEdit = hh(class DataUseRestrictionEdit extends Component
           })
         ]),
         div({ style: styles.borderedContainer }, [
-          MultiSelect({
+          AsyncMultiSelect({
             id: "populationRestrictionsSelect",
             label: "Future use is limited to research involving a specific population [RS-POP] ",
             name: "populationRestrictions",

@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { button, div, h, hh, span, i } from 'react-hyperscript-helpers';
 import { Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
-import { MultiSelect } from '../components/MultiSelect';
+import { AsyncMultiSelect } from './AsyncMultiSelect';
 import { AlertMessage } from './AlertMessage';
 import { ClarificationRequest, Search } from '../util/ajax';
 import { isEmpty } from '../util/Utils';
@@ -214,7 +214,7 @@ const RequestClarificationDialog = hh(class RequestClarificationDialog extends C
           ]),
         ]),
         h(ModalBody, { className: "dialogBody", id: "clarification-modal-body" }, [
-          MultiSelect({
+          AsyncMultiSelect({
             isRendered: this.props.linkClarification === true,
             id: "pm_select",
             label: "Project Member",

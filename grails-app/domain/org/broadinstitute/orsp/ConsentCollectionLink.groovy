@@ -54,7 +54,6 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
     DataUseRestriction restriction
     String dataSecondaryUse
     String collaboratorApproval
-    String mtaOrDta
     String deliveryDate
     String releaseDate
 
@@ -109,7 +108,6 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
         textOtherIdentifier nullable: true
         dataSecondaryUse nullable: true
         collaboratorApproval nullable: true
-        mtaOrDta nullable: true
         deliveryDate nullable: true
         releaseDate nullable: true
     }
