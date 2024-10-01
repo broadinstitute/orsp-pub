@@ -57,5 +57,6 @@ export const CONSENT_DOCUMENTS = [
   'IC pre-2015',
   'IC post-2015',
   'Other',
-  'Supplemental Document'
+  'Supplemental Document',
+  'Collaborator Approval'
 ];

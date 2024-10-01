@@ -61,6 +61,10 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     return labels[store];
   };
 
+  redirectUrl = (url) => {
+    url.includes('http') ? window.open(url, '_blank') : window.open('//' + url, '_blank');
+  }
+
   render() {
     const {
       textSharingType = '',
@@ -270,7 +274,10 @@ export const SecurityReview = hh(class SecurityReview extends Component {
                   ]),
                   span({className: "col-lg-6"}, [
                     label({style: {fontWeight: 600}}, ["Data Location URL"]),
-                    p({}, [a({href: data.locationUrl, target: "_blank"}, [data.locationUrl])]),
+                    p({}, [a({
+                      className: "link",
+                      onClick: () => this.redirectUrl(data.locationUrl)
+                    }, [data.locationUrl])]),
                     p({isRendered: isEmpty(data.locationUrl)}, ["--"])
                   ]),
                   span({className: "col-lg-6"}, [
