@@ -62,13 +62,13 @@ class NewConsentGroupController extends AuthenticatedController {
             JsonSlurper slurper = new JsonSlurper();
             List<DataLocations> dataLocations = slurper.parseText(request.parameterMap["dataLocations"].toString())
             dataLocations = dataLocations[0]
-            JsonElement jsonFileDescription = parser.parse(request?.parameterMap["fileData"].toString())
+            JsonElement jsonFile = parser.parse(request?.parameterMap["fileData"].toString())
             JsonArray fileData
             Issue issue = IssueUtils.getJson(Issue.class, dataProjectJson[0])
             consentCollectionLink = IssueUtils.getJson(ConsentCollectionLink.class, dataConsentCollectionJson[0])
             Issue source = queryService.findByKey(issue.getSource())
-            if (jsonFileDescription.jsonArray) {
-                fileData = jsonFileDescription.asJsonArray
+            if (jsonFile.jsonArray) {
+                fileData = jsonFile.asJsonArray
             }
             if (source != null) {
                 issue.setRequestDate(new Date())

@@ -1169,42 +1169,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
           successClarification: this.successNotification,
         }),
 
-        /*div({ id: "notesToORSP" }, [
-            Panel({ title: "Notes to ORSP", isRendered: this.state.readOnly === false || !isEmpty(this.state.formData.projectExtraProps.editDescription) }, [
-              div({ isRendered: this.projectType === "IRB Project" }, [
-                InputFieldRadio({
-                  id: "radioDescribeEdits",
-                  name: "describeEditType",
-                  currentValue: this.state.current.projectExtraProps.describeEditType,
-                  label: "Please choose one of the following to describe the proposed edits: ",
-                  value: this.state.formData.projectExtraProps.describeEditType,
-                  optionValues: ["newAmendment", "requestingAssistance", "clarificationResponse"],
-                  optionLabels: [
-                    "I am informing Broad's ORSP of a new amendment I already submitted to my IRB of record",
-                    "I am requesting assistance in updating an existing project",
-                    "I am responding to a request for clarifications from ORSP"
-                  ],
-                  onChange: this.handleProjectExtraPropsChangeRadio,
-                  readOnly: this.state.readOnly,
-                  required: true,
-                  error: this.state.editTypeError,
-                  errorMessage: "Required field"
-                })
-              ]),
-                InputFieldTextArea({
-                  id: "inputDescribeEdits",
-                  name: "editDescription",
-                  label: "You may use this space to add additional information or clarifications related to your edits below",
-                  currentValue: this.state.current.projectExtraProps.editDescription,
-                  value: this.state.formData.projectExtraProps.editDescription === null ? undefined : this.state.formData.projectExtraProps.editDescription,
-                  readOnly: this.state.readOnly,
-                  required: true,
-                  onChange: this.handleProjectExtraPropsChange,
-                  error: this.state.editDescriptionError,
-                  errorMessage: "Required field"
-                })
-            ])
-          ]),*/
+        /* Note to ORPS removed PR-#1454 */
 
           div({ id: "requestor" }, [
             Panel({ title: "Requestor" }, [
