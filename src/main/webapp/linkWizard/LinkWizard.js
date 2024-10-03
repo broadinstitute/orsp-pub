@@ -240,8 +240,8 @@ const LinkWizard = hh( class LinkWizard extends Component {
     consentCollectionLink.textOtherIdentifier = isEmpty(this.state.securityInfoFormData.textOtherIdentifier) ? null : this.state.securityInfoFormData.textOtherIdentifier;
     consentCollectionLink.dataSecondaryUse = this.state.securityInfoFormData.dataSecondaryUse;
     consentCollectionLink.collaboratorApproval = this.state.securityInfoFormData.collaboratorApproval;
-    consentCollectionLink.deliveryDate = getDateString(this.state.securityInfoFormData.deliveryDate);
-    consentCollectionLink.releaseDate = getDateString(this.state.securityInfoFormData.releaseDate);
+    consentCollectionLink.deliveryDate = this.parseDate(this.state.securityInfoFormData.deliveryDate);
+    consentCollectionLink.releaseDate = this.parseDate(this.state.securityInfoFormData.releaseDate);
     // date range
     consentCollectionLink.startDate = this.state.startDate;
     consentCollectionLink.endDate = this.state.endDate;
@@ -268,6 +268,13 @@ const LinkWizard = hh( class LinkWizard extends Component {
       data.dataStores = data.dataStores && data.dataStores.map(store => store.label).join(", ");
     });
     return dataLocations;
+  }
+
+  parseDate(date) {
+    if (date !== null) {
+      let d = new Date(date).toISOString();
+      return d.slice(0, d.indexOf("T"));
+    }
   }
 
   submitLink = async () => {

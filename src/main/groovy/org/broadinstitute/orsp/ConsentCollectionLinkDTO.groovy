@@ -51,8 +51,8 @@ class ConsentCollectionLinkDTO {
     String textOtherIdentifier
     String dataSecondaryUse
     String collaboratorApproval
-    String deliveryDate
-    String releaseDate
+    Date deliveryDate
+    Date releaseDate
 
     void setId(Number id) {
         this.id = id
