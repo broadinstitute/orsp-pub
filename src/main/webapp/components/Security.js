@@ -891,7 +891,7 @@ export const Security = hh(class Security extends Component {
           name: "collaboratorApproval",
           label: span({}, ["If you received these samples/data from a collaborator, did that collaborator approve/agree to sharing the data?"]),
           value: this.props.securityInfoData.collaboratorApproval,
-          optionValues: ["true", "false", "uncertin"],
+          optionValues: ["true", "false", "uncertain"],
           optionLabels: [
             "Yes, my collaborator has approved sharing. (Please upload an email or other documentation)",
             "No, I do not have approval for sharing",

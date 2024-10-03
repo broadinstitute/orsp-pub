@@ -54,8 +54,8 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
     DataUseRestriction restriction
     String dataSecondaryUse
     String collaboratorApproval
-    String deliveryDate
-    String releaseDate
+    Date deliveryDate
+    Date releaseDate
 
     static hasMany = [dataLocations: DataLocations]
 

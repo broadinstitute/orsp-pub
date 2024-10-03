@@ -1,6 +1,6 @@
 import { Component, React } from 'react';
 import { u, hh, span, a, div, label, ul, li, p, hr, br } from 'react-hyperscript-helpers';
-import { isEmpty } from "../util/Utils";
+import { getDateString, isEmpty } from "../util/Utils";
 import './QuestionnaireWorkflow.css';
 import { UrlConstants } from '../util/UrlConstants';
 
@@ -326,12 +326,12 @@ export const SecurityReview = hh(class SecurityReview extends Component {
           }, [
             span({className: 'col-xs-4'}, [
               label({className: 'inputFieldLabel'}, ["Target Delivery Date"]), br(),
-              div({}, [deliveryDate]),
+              div({}, [getDateString(deliveryDate, 'mmddyyyy')]),
               p({isRendered: isEmpty(deliveryDate)}, ["--"])
           ]),
             span({className: 'col-xs-4'}, [
               label({className: 'inputFieldLabel'}, ["Target Public Release Date (if applicable)"]), br(),
-              div({}, [releaseDate]),
+              div({}, [getDateString(releaseDate, 'mmddyyyy')]),
               p({isRendered: isEmpty(releaseDate)}, ["--"])
           ])
           ])
