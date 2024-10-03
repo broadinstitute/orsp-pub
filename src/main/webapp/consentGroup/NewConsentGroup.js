@@ -217,8 +217,8 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
     consentCollectionLink.textOtherIdentifier = isEmpty(this.state.securityInfoFormData.textOtherIdentifier) ? null : this.state.securityInfoFormData.textOtherIdentifier;
     consentCollectionLink.dataSecondaryUse = this.state.securityInfoFormData.dataSecondaryUse;
     consentCollectionLink.collaboratorApproval = this.state.securityInfoFormData.collaboratorApproval;
-    consentCollectionLink.deliveryDate = this.parseDate(this.state.securityInfoFormData.deliveryDate);
-    consentCollectionLink.releaseDate = this.parseDate(this.state.securityInfoFormData.releaseDate);
+    consentCollectionLink.deliveryDate = this.state.securityInfoFormData.deliveryDate;
+    consentCollectionLink.releaseDate = this.state.securityInfoFormData.releaseDate;
     let files = [...this.state.files] || [];
     files.push(this.state.securityInfoFormData.approvalDocument);
     this.setState(prev => {
