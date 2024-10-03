@@ -142,8 +142,13 @@ export const handleUnauthorized = (location) => {
   window.location.reload();
 };
 
-export const getDateString = (date) => {
+export const getDateString = (date, format) => {
   if(!date) return null;
   let inpDate = new Date(date);
-  return inpDate.getDate() + '/' + (inpDate.getMonth() + 1).toString().padStart(2, '0') + '/' + inpDate.getFullYear();
+  if (format === 'mmddyyyy')
+    return (inpDate.getMonth() + 1).toString().padStart(2, '0') + '/' + inpDate.getDate().toString().padStart(2, '0') + '/' + inpDate.getFullYear();
+  if (format === 'ddmmyyyy')
+    return inpDate.getDate().toString().padStart(2, '0') + '/' + (inpDate.getMonth() + 1).toString().padStart(2, '0') + '/' + inpDate.getFullYear();
+  if (format === 'yyyymmdd')
+    return inpDate.getFullYear() + '/' + (inpDate.getMonth() + 1).toString().padStart(2, '0') + '/' + inpDate.getDate().toString().padStart(2, '0');
 }
