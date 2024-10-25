@@ -222,7 +222,7 @@ export const Documents = hh(class Documents extends Component {
     this.setState({ 
       showAddKeyDocuments: !this.state.showAddKeyDocuments,
       dropEvent: null
-    }, () => console.log(this.props.documents));
+    });
   };
 
   remove = (row) => {

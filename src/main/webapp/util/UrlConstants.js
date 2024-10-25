@@ -25,6 +25,7 @@ export const UrlConstants = {
   useExistingConsentGroupUrl: '/consent-group/use-existing',
   getConsentGroupByUUID: context + '/api/consent-group/find-by-uuid',
   createConsentGroupURL: context + '/api/consent-group/create',
+  updateConsentGroupURL: context + '/api/consent-group/update',
   fillablePdfURL: context + '/api/consent-group/get-fillable-pdf',
   useRestrictionUrl: context + '/api/consent-group/use-restriction',
   exportedConsentGroupUrl: context + '/api/consent-group/exported',

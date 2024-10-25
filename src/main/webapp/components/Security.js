@@ -10,6 +10,7 @@ import ReactSelect from './ReactSelect';
 
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
+
 const REASEARCH_STAGES = [
   {id: '1', value: 'pre', label: 'Pre'}, 
   {id: '2', value: 'post', label: 'Post'},
@@ -33,50 +34,6 @@ export const Security = hh(class Security extends Component {
     super(props);
     this.state = {
       formData: {
-        pii: '',
-        compliance: '',
-        sharingType: '',
-        textSharingType: '',
-        textCompliance: '',
-        publiclyAvailable: '',
-        store: [],
-        terra: false,
-        bgp: false,
-        gcp: false,
-        aws: false,
-        bop: false,
-        otherStore: false,
-        externalAvailability: '',
-        textStore: '',
-        piiDt: false,
-        phi: false,
-        genomicData: false,
-        names: false,
-        dates: false,
-        telephone: false,
-        geographicData: false,
-        fax: false,
-        socialSecurityNumber: false,
-        emailAddresses: false,
-        medicalNumbers: false,
-        accountNumbers: false,
-        healthPlanNumbers: false,
-        licenseNumbers: false,
-        vehicleIdentifiers: false,
-        webUrls: false,
-        deviceIdentifiers: false,
-        internetProtocolAddresses: false,
-        facePhotos: false,
-        biometricIdentifiers: false,
-        uniqueIdentifying: false,
-        otherIdentifier: false,
-        textOtherIdentifier: '',
-        dataLocations: [{
-          researchStage: null,
-          dataStores: null,
-          locationUrl: null,
-          cloudProvider: null
-        }],
         approvalDocument: {
           fileName: null
         }
@@ -105,6 +62,10 @@ export const Security = hh(class Security extends Component {
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
     return { hasError: true }
+  }
+
+  componentDidMount() {
+    this.setState({formData: this.props.securityInfoData});
   }
 
   handleRadio2Change = (e, field, value) => {
@@ -328,13 +289,6 @@ export const Security = hh(class Security extends Component {
     }, () => this.props.updateForm(this.state.formData, 'dataLocations'));
   };
 
-  handleResearchStageChange = (index) => (selected) => {
-    this.setState(prev => {
-      prev.formData.dataLocations[index]['researchStage'] = selected;
-      return prev;
-    }, () => this.props.updateForm(this.state.formData, 'dataLocations'));
-  }
-
   handleDataLocationsChange = (value, index, key) => {
     this.setState(prev => {
       prev.formData.dataLocations[index][key] = value;
@@ -406,7 +360,7 @@ export const Security = hh(class Security extends Component {
             name: "terra",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Terra']),
-            checked: this.state.formData.terra,
+            checked: this.props.securityInfoData.terra,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -414,7 +368,7 @@ export const Security = hh(class Security extends Component {
             name: "bgp",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Broad Genomics Platform']),
-            checked: this.state.formData.bgp,
+            checked: this.props.securityInfoData.bgp,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -422,7 +376,7 @@ export const Security = hh(class Security extends Component {
             name: "gcp",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Google Cloud Platform (without Terra)']),
-            checked: this.state.formData.gcp,
+            checked: this.props.securityInfoData.gcp,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -430,7 +384,7 @@ export const Security = hh(class Security extends Component {
             name: "aws",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Amazon Web Services']),
-            checked: this.state.formData.aws,
+            checked: this.props.securityInfoData.aws,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -438,7 +392,7 @@ export const Security = hh(class Security extends Component {
             name: "bop",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Broad on-prem']),
-            checked: this.state.formData.bop,
+            checked: this.props.securityInfoData.bop,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -446,7 +400,7 @@ export const Security = hh(class Security extends Component {
             name: "otherStore",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Other']),
-            checked: this.state.formData.otherStore,
+            checked: this.props.securityInfoData.otherStore,
             readOnly: this.state.readOnly
           }),
           div({}, [
@@ -493,7 +447,7 @@ export const Security = hh(class Security extends Component {
             name: "piiDt",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['PII']),
-            checked: this.state.formData.piiDt,
+            checked: this.props.securityInfoData.piiDt,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -501,7 +455,7 @@ export const Security = hh(class Security extends Component {
             name: "phi",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['PHI']),
-            checked: this.state.formData.phi,
+            checked: this.props.securityInfoData.phi,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -509,7 +463,7 @@ export const Security = hh(class Security extends Component {
             name: "genomicData",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Genomic Data']),
-            checked: this.state.formData.genomicData,
+            checked: this.props.securityInfoData.genomicData,
             readOnly: this.state.readOnly,
             error: this.state.errors.textOtherIdentifier && this.props.generalError,
             errorMessage: "Required field"
@@ -526,7 +480,7 @@ export const Security = hh(class Security extends Component {
             name: "names",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Names']),
-            checked: this.state.formData.names,
+            checked: this.props.securityInfoData.names,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -534,7 +488,7 @@ export const Security = hh(class Security extends Component {
             name: "dates",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Dates, except year']),
-            checked: this.state.formData.dates,
+            checked: this.props.securityInfoData.dates,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -542,7 +496,7 @@ export const Security = hh(class Security extends Component {
             name: "telephone",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Telephone numbers']),
-            checked: this.state.formData.telephone,
+            checked: this.props.securityInfoData.telephone,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -550,7 +504,7 @@ export const Security = hh(class Security extends Component {
             name: "geographicData",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Geographic data']),
-            checked: this.state.formData.geographicData,
+            checked: this.props.securityInfoData.geographicData,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -558,7 +512,7 @@ export const Security = hh(class Security extends Component {
             name: "fax",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['FAX numbers']),
-            checked: this.state.formData.fax,
+            checked: this.props.securityInfoData.fax,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -566,7 +520,7 @@ export const Security = hh(class Security extends Component {
             name: "socialSecurityNumber",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Social Security numbers']),
-            checked: this.state.formData.socialSecurityNumber,
+            checked: this.props.securityInfoData.socialSecurityNumber,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -574,7 +528,7 @@ export const Security = hh(class Security extends Component {
             name: "emailAddresses",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Email addresses']),
-            checked: this.state.formData.emailAddresses,
+            checked: this.props.securityInfoData.emailAddresses,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -582,7 +536,7 @@ export const Security = hh(class Security extends Component {
             name: "medicalNumbers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Medical record numbers']),
-            checked: this.state.formData.medicalNumbers,
+            checked: this.props.securityInfoData.medicalNumbers,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -590,7 +544,7 @@ export const Security = hh(class Security extends Component {
             name: "accountNumbers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Account numbers']),
-            checked: this.state.formData.accountNumbers,
+            checked: this.props.securityInfoData.accountNumbers,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -598,7 +552,7 @@ export const Security = hh(class Security extends Component {
             name: "healthPlanNumbers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Health plan beneficiary numbers']),
-            checked: this.state.formData.healthPlanNumbers,
+            checked: this.props.securityInfoData.healthPlanNumbers,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -606,7 +560,7 @@ export const Security = hh(class Security extends Component {
             name: "licenseNumbers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Certificate/license numbers']),
-            checked: this.state.formData.licenseNumbers,
+            checked: this.props.securityInfoData.licenseNumbers,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -614,7 +568,7 @@ export const Security = hh(class Security extends Component {
             name: "vehicleIdentifiers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Vehicle identifiers and serial numbers including license plates']),
-            checked: this.state.formData.vehicleIdentifiers,
+            checked: this.props.securityInfoData.vehicleIdentifiers,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -622,7 +576,7 @@ export const Security = hh(class Security extends Component {
             name: "webUrls",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Web URLs']),
-            checked: this.state.formData.webUrls,
+            checked: this.props.securityInfoData.webUrls,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -630,7 +584,7 @@ export const Security = hh(class Security extends Component {
             name: "deviceIdentifiers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Device identifiers and serial numbers']),
-            checked: this.state.formData.deviceIdentifiers,
+            checked: this.props.securityInfoData.deviceIdentifiers,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -638,7 +592,7 @@ export const Security = hh(class Security extends Component {
             name: "internetProtocolAddresses",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Internet protocol addresses']),
-            checked: this.state.formData.internetProtocolAddresses,
+            checked: this.props.securityInfoData.internetProtocolAddresses,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -646,7 +600,7 @@ export const Security = hh(class Security extends Component {
             name: "facePhotos",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Full face photos and comparable images']),
-            checked: this.state.formData.facePhotos,
+            checked: this.props.securityInfoData.facePhotos,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -654,7 +608,7 @@ export const Security = hh(class Security extends Component {
             name: "biometricIdentifiers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Biometric identifiers (i.e. retinal scan, fingerprints)']),
-            checked: this.state.formData.biometricIdentifiers,
+            checked: this.props.securityInfoData.biometricIdentifiers,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -662,7 +616,7 @@ export const Security = hh(class Security extends Component {
             name: "uniqueIdentifying",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Any unique identifying number or code']),
-            checked: this.state.formData.uniqueIdentifying,
+            checked: this.props.securityInfoData.uniqueIdentifying,
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -670,7 +624,7 @@ export const Security = hh(class Security extends Component {
             name: "otherIdentifier",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Other']),
-            checked: this.state.formData.otherIdentifier,
+            checked: this.props.securityInfoData.otherIdentifier,
             readOnly: this.state.readOnly
           }),
           small({ isRendered: this.state.errors.identifiers && this.props.generalError, className: "errorMessage" }, ['Required Fields'])
@@ -905,16 +859,16 @@ export const Security = hh(class Security extends Component {
           note: "Note: PHI must only be processed and/or stored  on Broad-owned devices"
         }),
         div({
-          isRendered: this.props.securityInfoData.collaboratorApproval === "true" && !this.state.formData.approvalDocument.fileName,
+          isRendered: this.props.securityInfoData.collaboratorApproval === "true" && isEmpty(this.state.formData.approvalDocument.fileName),
           style: {marginBottom: "20px"}
         }, [
           label({
-            htmlFor: "approvalDoc",
+            htmlFor: "approvalDocument",
             style: {paddingRight: "5px"}
           }, [
             i({className: "btn btn-primary"}, ["Upload Documentation"]),
             input({
-              id: "approvalDoc",
+              id: "approvalDocument",
               type: "file",
               name: "collaboratorApproval",
               onChange: this.handleCollaboratorApprovalDoc,
@@ -923,7 +877,7 @@ export const Security = hh(class Security extends Component {
           ]),
         ]),
         div({
-          isRendered: this.state.formData.approvalDocument.fileName,
+          isRendered: !isEmpty(this.state.formData.approvalDocument.fileName),
           style: {marginBottom: "20px"}
         }, [
           span({

@@ -81,6 +81,28 @@ export const ConsentGroup = {
     return axios.post(UrlConstants.createConsentGroupURL, data, config);
   },
 
+  update(params) {
+    const {securityInfo, dataLocations, file} = params
+    let data = new FormData();
+
+    if (file.file) {
+      data.append(file.fileKey, file.file, file.file.name);
+      const fileData = {
+        fileName: file.file.name,
+        fileDescription: file.fileDescription
+      }
+      data.append('fileData', JSON.stringify(fileData));
+    }
+
+    data.append('securityInfoData', JSON.stringify(securityInfo));
+    data.append('dataLocations', JSON.stringify(dataLocations));
+    const config = {
+      headers: { 'content-type': 'multipart/form-data' }
+    };
+
+    return axios.post(UrlConstants.updateConsentGroupURL, data, config);
+  },
+
   getConsentGroup(consentKey) {
     return axios.get(UrlConstants.getConsentGroup + '?id=' + consentKey);
   },
