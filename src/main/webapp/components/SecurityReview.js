@@ -115,6 +115,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     this.setState({sampleProps: createObjectCopy(securityInfoData)});
     let store = securityInfoData.store.split(',');
     store.forEach(item => securityInfoData[item] = true);
+    if (!isEmpty(securityInfoData.textStore)) securityInfoData.otherStore = true;
     let dataLocations = createObjectCopy(securityInfoData.dataLocations);
     dataLocations.forEach(loc => {
       let researchStage = !isEmpty(loc.researchStage) ? loc.researchStage.split(',') : [];
@@ -210,7 +211,6 @@ export const SecurityReview = hh(class SecurityReview extends Component {
   }
 
   handleSecurityInfoSubmit = () => {
-    // this.setState({sampleProps: this.state.securityInfoData});
     const {approvalDocument, dataLocations, ...securityInfo} = this.state.securityInfoData;
     securityInfo.projectKey = securityInfo.projectKey ? securityInfo.projectKey : securityInfo.linkedProjectKey;
     if (typeof securityInfo.store !== 'string') securityInfo.store = securityInfo.store.join(',');
