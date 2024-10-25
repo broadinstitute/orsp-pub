@@ -11,6 +11,7 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
     String consentKey
     String sampleCollectionId
     Date creationDate
+    Date updatedDate
     String pii
     String requireMta
     String compliance
@@ -68,6 +69,7 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
         consentKey nullable: false
         sampleCollectionId nullable: true
         creationDate nullable: false
+        updatedDate nullable: true
         pii nullable: true
         requireMta nullable: true
         compliance nullable: true

@@ -72,7 +72,7 @@ const InfoLink = hh(class InfoLink extends Component {
               prev.endDate =  sampleCollectionsIds[0].endDate !== undefined ? format(new Date(sampleCollectionsIds[0].endDate), 'MM/DD/YYYY') : '--';
               prev.onGoingProcess =  sampleCollectionsIds[0].onGoingProcess;
               prev.sampleCollections[0].dataLocations = dataLocations.data;
-              prev.sampleCollections[0].approvalDoc = docs[0].length ? docs[0].filter(doc => doc.fileType === "Collaborator Approval")[0] : {};
+              prev.sampleCollections[0].approvalDocument = docs[0].length ? docs[0].filter(doc => doc.fileType === "Collaborator Approval")[0] : {};
               return prev;
             }, () => this.props.hideSpinner());
           }

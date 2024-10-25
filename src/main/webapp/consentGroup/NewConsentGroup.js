@@ -10,7 +10,6 @@ import LoadingWrapper from '../components/LoadingWrapper';
 import defaultTo from 'lodash/defaultTo';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
-import { getDateString } from '../util/Utils';
 
 const LAST_STEP = 1;
 const NEXT_INDICATOR = 0;
@@ -47,12 +46,53 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
         noConsentFormReason: ''
       },
       securityInfoFormData: {
+        pii: '',
+        compliance: '',
+        sharingType: '',
+        textSharingType: '',
+        textCompliance: '',
+        publiclyAvailable: '',
+        store: [],
+        terra: false,
+        bgp: false,
+        gcp: false,
+        aws: false,
+        bop: false,
+        otherStore: false,
+        externalAvailability: '',
+        textStore: '',
+        piiDt: false,
+        phi: false,
+        genomicData: false,
+        names: false,
+        dates: false,
+        telephone: false,
+        geographicData: false,
+        fax: false,
+        socialSecurityNumber: false,
+        emailAddresses: false,
+        medicalNumbers: false,
+        accountNumbers: false,
+        healthPlanNumbers: false,
+        licenseNumbers: false,
+        vehicleIdentifiers: false,
+        webUrls: false,
+        deviceIdentifiers: false,
+        internetProtocolAddresses: false,
+        facePhotos: false,
+        biometricIdentifiers: false,
+        uniqueIdentifying: false,
+        otherIdentifier: false,
+        textOtherIdentifier: '',
         dataLocations: [{
           researchStage: null,
           dataStores: null,
           locationUrl: null,
           cloudProvider: null
-        }]
+        }],
+        approvalDocument: {
+          fileName: null
+        }
       },
       linkFormData: {},
       currentStep: 0,

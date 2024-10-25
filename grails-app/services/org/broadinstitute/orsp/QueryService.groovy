@@ -2052,4 +2052,18 @@ class QueryService implements Status {
         result
     }
 
+    def getStorageDocUuid(String id, String type) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        String query = 'select uuid from storage_document where consent_collection_link_id= :id and file_type= :type'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('id', id)
+        sqlQuery.setParameter('type', type)
+        final result = sqlQuery.with {
+            list()
+        }
+        println(result)
+        result
+    }
+
 }

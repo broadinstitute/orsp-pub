@@ -28,13 +28,13 @@ class SampleConsentLinkController extends AuthenticatedController {
         JsonParser parser = new JsonParser()
         User user = getUser()
         ConsentCollectionLink consentCollectionLink = IssueUtils.getJson(ConsentCollectionLink.class, parser.parse(request.parameterMap["dataConsentCollection"].toString())[0])
-        JsonSlurper slurper = new JsonSlurper();
+        JsonSlurper slurper = new JsonSlurper()
         List<DataLocations> dataLocations = slurper.parseText(request.parameterMap["dataLocations"].toString())
         dataLocations = dataLocations[0]
-        JsonElement jsonFileDescription = parser.parse(request?.parameterMap["fileData"].toString())
+        JsonElement jsonFile = parser.parse(request?.parameterMap["fileData"].toString())
         JsonArray fileData
-        if (jsonFileDescription.jsonArray) {
-            fileData = jsonFileDescription.asJsonArray
+        if (jsonFile.jsonArray) {
+            fileData = jsonFile.asJsonArray
         }
         try {
             consentCollectionLink.creationDate = new Date()
@@ -66,4 +66,52 @@ class SampleConsentLinkController extends AuthenticatedController {
             handleException(e)
         }
     }
+
+    def updateConsentGroup() {
+        JsonParser parser = new JsonParser()
+        User user = getUser()
+        ConsentCollectionLink consentCollectionLink = IssueUtils.getJson(ConsentCollectionLink.class, parser.parse(request.parameterMap["securityInfoData"].toString())[0])
+        JsonSlurper slurper = new JsonSlurper()
+        List<DataLocations> dataLocations = slurper.parseText(request.parameterMap["dataLocations"].toString())
+        dataLocations = dataLocations[0]
+        JsonElement jsonFile = parser.parse(request?.parameterMap["fileData"].toString())
+        JsonArray fileData
+        if (jsonFile.jsonArray) {
+            fileData = jsonFile.asJsonArray
+        }
+        try {
+            List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
+            consentCollectionLink.status = queryService.areLinksApproved(consentCollectionLink.projectKey, consentCollectionLink.consentKey) ? CollectionLinkStatus.APPROVED.name : CollectionLinkStatus.PENDING.name
+            persistenceService.updateConsentCollectionLink(consentCollectionLink)
+            dataLocations.each {
+                DataLocations existingDataLocations = DataLocations.findById(it.id)
+                if (existingDataLocations) {
+                    existingDataLocations.researchStage = it.researchStage
+                    existingDataLocations.dataStores = it.dataStores
+                    existingDataLocations.locationUrl = it.locationUrl
+                    existingDataLocations.cloudProvider = it.cloudProvider
+                    existingDataLocations.save(flush: true, failOnError: true)
+                } else {
+                    throw new Exception("DataLocation not found for ID: ${dataLocations.id}")
+                }
+            }
+            if (!files?.isEmpty()) {
+                def docIdRef = queryService.getStorageDocUuid(consentCollectionLink.id.toString(), "Collaborator Approval")
+                if (docIdRef.size()) {
+                    long docId = docIdRef[0] as long
+                    storageProviderService.deleteDocument(docId)
+                }
+                files.forEach {
+                    String description = fileData.find {data -> data.fileName.value == it.originalFilename }.fileDescription.value
+                    storageProviderService.saveMultipartFile(user.displayName, user.userName, consentCollectionLink?.consentKey, it.name, it, consentCollectionLink, description)
+                }
+            }
+            response.status = 200
+            render([message: "Successfully updated"] as JSON)
+        } catch (Exception e) {
+            log.error("There was an error trying to update consent group: " + e.message)
+            handleException(e)
+        }
+    }
+
 }

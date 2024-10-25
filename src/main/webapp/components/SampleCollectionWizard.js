@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, hh, label, span } from 'react-hyperscript-helpers';
+import { div, hh, label, span, button } from 'react-hyperscript-helpers';
 import { SecurityReview } from "./SecurityReview";
 import { IntCohortsReview } from "./IntCohortsReview";
 import { isEmpty } from "../util/Utils";
@@ -17,6 +17,7 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
     super(props);
     this.state = {
       currentStepIndex: isEmpty(this.props.sample.internationalCohorts) ? 1 : 0,
+      editSecurity: false
     };
   }
 
@@ -105,6 +106,21 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
     }
   };
 
+  setEditSecurity = (value) => {
+    this.setState({editSecurity: value});
+  }
+
+  handleEditDataSecurity = () => {
+    this.childRef.getLabelObj();
+    this.childRef.getCopyOfNonEditedSecurityInfoData();
+    this.setEditSecurity(true);
+  }
+
+  handleCancelEdit = () => {
+    this.childRef.setNonEditedSecurityInfoData();
+    this.setEditSecurity(false);
+  }
+
   render() {
     const { currentStepIndex } = this.state;
     return (
@@ -114,7 +130,21 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
             div({ isRendered: !isEmpty(this.props.sample.internationalCohorts), className: "tab " + (currentStepIndex === 0 ? "active" : ""), onClick: this.goStep(0)}, ["International Cohorts"]),
             div({ className: "tab " + (currentStepIndex === 1 ? "active" : ""), onClick: this.goStep(1)}, ["Data Security"]),
             div({ isRendered: !!this.props.sample.requireMta, className: "tab "  + (currentStepIndex === 2 ? "active" : ""), onClick: this.goStep(2)}, ["MTA"]),
-            div({ className: "tab "  + (currentStepIndex === 3 ? "active" : ""), onClick: this.goStep(3)}, ["Documents"])
+            div({ className: "tab "  + (currentStepIndex === 3 ? "active" : ""), onClick: this.goStep(3)}, ["Documents"]),
+            div({isRendered: currentStepIndex === 1, className: "floatRight"}, [
+              button({
+                isRendered: !this.state.editSecurity,
+                className: "btn buttonPrimary",
+                style: {marginRight: '10px', position: 'relative', bottom: '5px'},
+                onClick: this.handleEditDataSecurity
+              }, ['Edit Data Security']),
+              button({
+                isRendered: this.state.editSecurity,
+                className: "btn buttonSecondary",
+                style: {marginRight: '10px', position: 'relative', bottom: '5px'},
+                onClick: this.handleCancelEdit
+              }, ['Cancel'])
+            ])
           ]),
           div({ className: "linkTabContent" }, [
             IntCohortsReview({
@@ -128,7 +158,11 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
             SecurityReview({
               currentStep: currentStepIndex,
               step: 1,
-              sample : this.props.sample
+              sample : this.props.sample,
+              editSecurity: this.state.editSecurity,
+              setEditSecurity: this.setEditSecurity,
+              handleCancelEdit: this.handleCancelEdit,
+              ref: (ref) => (this.childRef = ref)
             }),
             this.buildMta(currentStepIndex),
             this.buildDocumentsTable(currentStepIndex, headers)
