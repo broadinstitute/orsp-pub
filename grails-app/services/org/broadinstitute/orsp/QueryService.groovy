@@ -2062,7 +2062,6 @@ class QueryService implements Status {
         final result = sqlQuery.with {
             list()
         }
-        println(result)
         result
     }
 
