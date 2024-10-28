@@ -91,8 +91,6 @@ class SampleConsentLinkController extends AuthenticatedController {
                     existingDataLocations.locationUrl = it.locationUrl
                     existingDataLocations.cloudProvider = it.cloudProvider
                     existingDataLocations.save(flush: true, failOnError: true)
-                } else {
-                    throw new Exception("DataLocation not found for ID: ${dataLocations.id}")
                 }
             }
             if (!files?.isEmpty()) {
