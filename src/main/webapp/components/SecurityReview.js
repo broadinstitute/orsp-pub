@@ -116,7 +116,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     let store = securityInfoData.store.split(',');
     store.forEach(item => securityInfoData[item] = true);
     if (!isEmpty(securityInfoData.textStore)) securityInfoData.otherStore = true;
-    let dataLocations = createObjectCopy(securityInfoData.dataLocations);
+    let dataLocations = !isEmpty(securityInfoData.dataLocations) ? createObjectCopy(securityInfoData.dataLocations) : this.state.securityInfoData.dataLocations;
     !isEmpty(dataLocations) && dataLocations.forEach(loc => {
       let researchStage = !isEmpty(loc.researchStage) ? loc.researchStage.split(',') : [];
       loc.researchStage = [];
