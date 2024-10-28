@@ -130,6 +130,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
       })
     });
     securityInfoData.dataLocations = dataLocations;
+    securityInfoData.approvalDocument = isEmpty(securityInfoData.approvalDocument) ? {fileName: null} : securityInfoData.approvalDocument;
     this.setState((prev) => {
       securityInfoData.deliveryDate = !isEmpty(securityInfoData.deliveryDate) ? new Date(securityInfoData.deliveryDate) : '';
       securityInfoData.releaseDate = !isEmpty(securityInfoData.releaseDate) ? new Date(securityInfoData.releaseDate) : '';
