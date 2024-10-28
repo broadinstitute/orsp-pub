@@ -140,7 +140,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
 
   getLabelObj = () => {
     let dataLocations = this.state.securityInfoData.dataLocations;
-    dataLocations.forEach(loc => {
+    !isEmpty(dataLocations) && dataLocations.forEach(loc => {
       if (typeof loc.researchStage === 'string') {
         let researchStage = !isEmpty(loc.researchStage) ? loc.researchStage.split(',') : [];
         loc.researchStage = [];
@@ -219,7 +219,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     const REQ_OBJ = {
       securityInfo, 
       file: approvalDocument,
-      dataLocations: this.getDataLocations(dataLocations)
+      dataLocations: !isEmpty(dataLocations) ? this.getDataLocations(dataLocations) : []
     }
     ConsentGroup.update(REQ_OBJ)
     .then(() => {
@@ -255,7 +255,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     this.state.tempSecurityInfoData.deliveryDate = !isEmpty(this.state.tempSecurityInfoData.deliveryDate) ? new Date(this.state.tempSecurityInfoData.deliveryDate) : null;
     this.state.tempSecurityInfoData.releaseDate = !isEmpty(this.state.tempSecurityInfoData.releaseDate) ? new Date(this.state.tempSecurityInfoData.releaseDate) : null;
     let tempData = createObjectCopy(this.state.tempSecurityInfoData);
-    tempData.dataLocations = this.getDataLocations(tempData.dataLocations);
+    tempData.dataLocations = !isEmpty(tempData.dataLocations) ? this.getDataLocations(tempData.dataLocations) : [];
     this.setState({
       securityInfoData: this.state.tempSecurityInfoData,
       sampleProps: tempData
