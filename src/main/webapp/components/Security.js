@@ -355,7 +355,7 @@ export const Security = hh(class Security extends Component {
         InputFieldRadio({
           id: "radioPII",
           name: "pii",
-          label: "1.Will your project involve receiving at or distributing from Broad any personally identifiable information (PII), protected health information (PHI), or genomic data? ",
+          label: "1. Will your project involve receiving at or distributing from Broad any personally identifiable information (PII), protected health information (PHI), or genomic data? ",
           moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", className: "link", target: "_blank" }, ["visit this link"]), "."]),
           value: this.props.securityInfoData.pii,
           optionValues: ["true", "false", "uncertain"],
@@ -372,7 +372,7 @@ export const Security = hh(class Security extends Component {
         }),
         div({ isRendered: this.props.securityInfoData.pii === "true", style: { 'marginBottom': '20px' } }, [
           p({ className: "inputFieldLabel" }, [
-            "Which of these types of data does your project involve? ",
+            "a. Which of these types of data does your project involve? ",
             span({ className: "normal" }, ["Select all that apply."])
           ]),
           InputFieldCheckbox({
@@ -599,7 +599,7 @@ export const Security = hh(class Security extends Component {
         InputFieldRadio({
           id: "radioPubliclyAvailable",
           name: "publiclyAvailable",
-          label: span({}, ["2.Will your project make ", u({}, ["any data that is not publicly available"]), " accessible to external collaborators over the internet (but not using Terra)?"]),
+          label: span({}, ["2. Will your project make ", u({}, ["any data that is not publicly available"]), " accessible to external collaborators over the internet (but not using Terra)?"]),
           moreInfo: " This includes, for example, putting data in a Google Cloud Platform bucket outside of Terra and making it available to external parties. Another example is a custom application facing the public internet, or another digital file sharing service.",
           value: this.props.securityInfoData.publiclyAvailable,
           optionValues: ["true", "false", "uncertain"],
@@ -617,7 +617,7 @@ export const Security = hh(class Security extends Component {
         InputFieldRadio({
           id: "radioCompliance",
           name: "compliance",
-          label: span({}, ["3.Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "? "]),
+          label: span({}, ["3. Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "? "]),
           moreInfo: "Information security compliance requirements should be described in project award letters, contracts, or other agreements. If no agreement exists for a project, Broad has not agreed to meet a specific compliance requirement. PLEASE NOTE THAT AS OF 01/25/2025, DATA OBTAINED FROM FEDERAL REPOSITORIES (SUCH AS dbGaP) ARE REQUIRED TO BE STORED AND PROCESSED ON SYSTEMS COMPLIANT WITH NIST 800-171 AND THEREFOR ARE SUBJECT TO SPECIFIC DATA SECURITY REQUIREMENTS.",
           value: this.props.securityInfoData.compliance,
           optionValues: ["true", "false", "uncertain"],
@@ -637,7 +637,7 @@ export const Security = hh(class Security extends Component {
             isRendered: this.props.securityInfoData.compliance === "true",
             id: "inputCompliance",
             name: "textCompliance",
-            label: "Please specify which regulations must be adhered to below:",
+            label: "a. Please specify which regulations must be adhered to below:",
             value: this.props.securityInfoData.textCompliance,
             disabled: false,
             required: false,
@@ -649,7 +649,7 @@ export const Security = hh(class Security extends Component {
         InputFieldRadio({
           id: "radioAccessible",
           name: "sharingType",
-          label: span({}, ["4.Will the individual level data collected or generated as part of this project be shared to fulfill Broad Institute’s obligation for data sharing for the project via: "]),
+          label: span({}, ["4. Will the individual level data collected or generated as part of this project be shared to fulfill Broad Institute’s obligation for data sharing for the project via: "]),
           value: this.props.securityInfoData.sharingType,
           optionLabels: [
             "An open/unrestricted repository (such as GEO)",
@@ -675,7 +675,7 @@ export const Security = hh(class Security extends Component {
           isRendered: TEXT_SHARING_TYPES.some((type) => type === this.state.formData.sharingType),
           id: "inputAccessible",
           name: "textSharingType",
-          label: "Name of Database(s):",
+          label: "a. Name of Database(s):",
           value: this.props.securityInfoData.textSharingType,
           disabled: false,
           required: false,
@@ -686,7 +686,7 @@ export const Security = hh(class Security extends Component {
         div({style: {marginBottom: '20px'}}, [
           label({
             style: {color: '#286090', fontSize: '1.071rem'}
-          }, ["5.Data Location(s)"]),
+          }, ["5. Data Location(s)"]),
           p({}, ["Please provide the expected location where your data will be stored throughout the stages of your research"]),
           div([this.props.securityInfoData.dataLocations.map(
             (data, idx) => 
@@ -776,7 +776,7 @@ export const Security = hh(class Security extends Component {
         InputFieldRadio({
           id: "collaboratorApproval",
           name: "collaboratorApproval",
-          label: span({}, ["7.If you received these samples/data from a collaborator, did that collaborator approve/agree to sharing the data?"]),
+          label: span({}, ["7. If you received these samples/data from a collaborator, did that collaborator approve/agree to sharing the data?"]),
           value: this.props.securityInfoData.collaboratorApproval,
           optionValues: ["true", "false", "uncertain"],
           optionLabels: [
@@ -822,11 +822,28 @@ export const Security = hh(class Security extends Component {
             }, [])
             ]),
         ]),
+        InputFieldRadio({
+          id: "mtaOrDta",
+          name: "mtaOrDta",
+          label: span({}, ["8. Has the tech transfer office of the institution providing samples/data confirmed that a Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
+          moreInfo: b({style: { 'fontStyle': 'italic' }}, [" Please note:  All samples transferred from DFCI require a material transfer agreement.  Contact ",span({style: { 'textDecoration': 'underline' }}, ["agreements@broadinstitute.org "]),"  for assistance."]),
+          value: this.props.securityInfoData.mtaOrDta,
+          optionValues: ["true", "false"],
+          optionLabels: [
+            "Yes",
+            "No"
+          ],
+          onChange: this.handleRadio2Change,
+          required: false,
+          error: false,
+          errorMessage: "Required field",
+          edit: false
+        }),        
         div({
           className: 'row'
         }, [
           span({className: 'col-xs-4'}, [
-            label({className: 'inputFieldLabel'}, ["8.Target Delivery Date"]), br(),
+            label({className: 'inputFieldLabel'}, ["9. Target Delivery Date"]), br(),
             h(DatePicker, ({
               selected: this.props.securityInfoData.deliveryDate,
               className: 'DatePicker',
@@ -835,7 +852,7 @@ export const Security = hh(class Security extends Component {
             }))
           ]),
           span({className: 'col-xs-4'}, [
-            label({className: 'inputFieldLabel'}, ["9.Target Public Release Date (if applicable)"]), br(),
+            label({className: 'inputFieldLabel'}, ["10. Target Public Release Date (if applicable)"]), br(),
             h(DatePicker, ({
               selected: this.props.securityInfoData.releaseDate,
               className: 'DatePicker',
