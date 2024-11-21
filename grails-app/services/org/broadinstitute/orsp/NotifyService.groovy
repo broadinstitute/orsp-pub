@@ -513,11 +513,9 @@ class NotifyService implements SendgridSupport, Status {
      * @param arguments NotifyArguments
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
-    Map<Boolean, String> sendSecurityInfo(Issue issue, User user, ConsentCollectionLink consentCollectionLink, String subjectDisplayName) {
+    Map<Boolean, String> sendSecurityInfo(Issue issue, User user, ConsentCollectionLink consentCollectionLink, String subjectDisplayName, Boolean notifyableDatalocationsFound) {
         Map<Boolean, String> result = new HashMap<>()
-        if ((consentCollectionLink.getStore().contains('terra') || consentCollectionLink.getStore().contains('bgp')) &&
-            (getValue(consentCollectionLink.getGenomicData()) == YES && (getValue(consentCollectionLink.getPiiDt()) == YES || getValue(consentCollectionLink.getPhi()) == YES))
-        ) {
+        if (notifyableDatalocationsFound && (getValue(consentCollectionLink.getPiiDt()) == YES || getValue(consentCollectionLink.getPhi()) == YES)) {
             Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
             Collection<String> reporter = new LinkedList<String>()
             reporter.add(issue.getReporter())
@@ -829,10 +827,10 @@ class NotifyService implements SendgridSupport, Status {
     }
 
 
-    Map<Boolean, String> consentGroupCreation(Issue issue, ConsentCollectionLink consentCollectionLink) {
+    Map<Boolean, String> consentGroupCreation(Issue issue, ConsentCollectionLink consentCollectionLink, Boolean notifyableDatalocationsFound) {
         User user = userService.findUser(issue.reporter)
         sendAdminNotification(IssueType.SAMPLE_DATA_COHORTS.name, issue)
-        sendSecurityInfo(issue, user, consentCollectionLink, user.displayName)
+        sendSecurityInfo(issue, user, consentCollectionLink, user.displayName, notifyableDatalocationsFound)
     }
 
     Map<Boolean, String> projectCreation(Issue issue, String reviewerUsername) {

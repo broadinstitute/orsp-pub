@@ -80,6 +80,7 @@ class PersistenceService {
                 consentCollectionLink.projectKey = existingLink.projectKey
                 consentCollectionLink.creationDate = existingLink.creationDate
                 existingLink.consentKey = consentCollectionLink.consentKey
+                existingLink.questionnaireVersion = consentCollectionLink.questionnaireVersion
                 existingLink.pii = consentCollectionLink.pii
                 existingLink.requireMta = consentCollectionLink.requireMta
                 existingLink.compliance = consentCollectionLink.compliance
@@ -123,6 +124,7 @@ class PersistenceService {
                 existingLink.restriction = consentCollectionLink.restriction
                 existingLink.dataSecondaryUse = consentCollectionLink.dataSecondaryUse
                 existingLink.collaboratorApproval = consentCollectionLink.collaboratorApproval
+                existingLink.mtaOrDta = consentCollectionLink.mtaOrDta
                 existingLink.deliveryDate = consentCollectionLink.deliveryDate
                 existingLink.releaseDate = consentCollectionLink.releaseDate
                 existingLink.updatedDate = new Date()

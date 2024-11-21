@@ -82,6 +82,7 @@ class SampleConsentLinkController extends AuthenticatedController {
         try {
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
             consentCollectionLink.status = queryService.areLinksApproved(consentCollectionLink.projectKey, consentCollectionLink.consentKey) ? CollectionLinkStatus.APPROVED.name : CollectionLinkStatus.PENDING.name
+            consentCollectionLink.questionnaireVersion = "v2";
             persistenceService.updateConsentCollectionLink(consentCollectionLink)
             dataLocations.each {
                 DataLocations existingDataLocations = DataLocations.findById(it.id)
@@ -90,7 +91,28 @@ class SampleConsentLinkController extends AuthenticatedController {
                     existingDataLocations.dataStores = it.dataStores
                     existingDataLocations.locationUrl = it.locationUrl
                     existingDataLocations.cloudProvider = it.cloudProvider
+                    existingDataLocations.terraUrl = it.terraUrl
+                    existingDataLocations.gcsaUrl = it.gcsaUrl
+                    existingDataLocations.gdriveUrl = it.gdriveUrl
+                    existingDataLocations.onpremUrl = it.onpremUrl
+                    existingDataLocations.bilCluster = it.bilCluster
+                    existingDataLocations.otherText = it.otherText
                     existingDataLocations.save(flush: true, failOnError: true)
+                } else {
+                    def dataLocation = new DataLocations(
+                            researchStage: it.researchStage,
+                            dataStores: it.dataStores,
+                            locationUrl: it.locationUrl,
+                            cloudProvider: it.cloudProvider,
+                            terraUrl: it.terraUrl,
+                            gcsaUrl: it.gcsaUrl,
+                            gdriveUrl: it.gdriveUrl,
+                            onpremUrl: it.onpremUrl,
+                            bilCluster: it.bilCluster,
+                            otherText: it.otherText
+                    )
+                    dataLocation.consentCollectionLink = consentCollectionLink
+                    dataLocation.save(flush: true)
                 }
             }
             if (!files?.isEmpty()) {
