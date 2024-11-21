@@ -233,10 +233,11 @@ export const SecurityReview = hh(class SecurityReview extends Component {
       dataLocations: !isEmpty(dataLocations) ? this.getDataLocations(dataLocations) : []
     }
     ConsentGroup.update(REQ_OBJ)
-    .then(() => {
+    .then((data) => {
       let savedData = createObjectCopy(this.state.securityInfoData);
       if (typeof savedData.store === 'object') savedData.store = savedData.store.join(',');
       savedData.questionnaireVersion = "v2";
+      savedData.approvalDocument.uuid = data.docId;
       this.setState({
         sampleProps: savedData,
         alert: {msg: 'Data Security updated Successfully', showMsg: true, type: 'success'}

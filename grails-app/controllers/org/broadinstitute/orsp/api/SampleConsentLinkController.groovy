@@ -12,6 +12,7 @@ import org.broadinstitute.orsp.CollectionLinkStatus
 import org.broadinstitute.orsp.ConsentCollectionLink
 import org.broadinstitute.orsp.DataLocations
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.StorageDocument
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
@@ -123,11 +124,11 @@ class SampleConsentLinkController extends AuthenticatedController {
                 }
                 files.forEach {
                     String description = fileData.find {data -> data.fileName.value == it.originalFilename }.fileDescription.value
-                    storageProviderService.saveMultipartFile(user.displayName, user.userName, consentCollectionLink?.consentKey, it.name, it, consentCollectionLink, description)
+                    StorageDocument doc = storageProviderService.saveMultipartFile(user.displayName, user.userName, consentCollectionLink?.consentKey, it.name, it, consentCollectionLink, description)
                 }
             }
             response.status = 200
-            render([message: "Successfully updated"] as JSON)
+            render([message: "Successfully updated", docId: doc.uuid] as JSON)
         } catch (Exception e) {
             log.error("There was an error trying to update consent group: " + e.message)
             handleException(e)
