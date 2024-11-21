@@ -116,6 +116,7 @@ class SampleConsentLinkController extends AuthenticatedController {
                     dataLocation.save(flush: true)
                 }
             }
+            StorageDocument doc = new StorageDocument()
             if (!files?.isEmpty()) {
                 def docIdRef = queryService.getStorageDocUuid(consentCollectionLink.id.toString(), "Collaborator Approval")
                 if (docIdRef.size()) {
@@ -124,7 +125,7 @@ class SampleConsentLinkController extends AuthenticatedController {
                 }
                 files.forEach {
                     String description = fileData.find {data -> data.fileName.value == it.originalFilename }.fileDescription.value
-                    StorageDocument doc = storageProviderService.saveMultipartFile(user.displayName, user.userName, consentCollectionLink?.consentKey, it.name, it, consentCollectionLink, description)
+                    doc = storageProviderService.saveMultipartFile(user.displayName, user.userName, consentCollectionLink?.consentKey, it.name, it, consentCollectionLink, description)
                 }
             }
             response.status = 200
