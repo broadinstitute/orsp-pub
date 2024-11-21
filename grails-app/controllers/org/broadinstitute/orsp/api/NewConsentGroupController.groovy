@@ -75,15 +75,25 @@ class NewConsentGroupController extends AuthenticatedController {
                 consent = issueService.createIssue(IssueType.CONSENT_GROUP, issue)
                 consentCollectionLink.consentKey = consent.projectKey
                 consentCollectionLink.creationDate = new Date()
+                consentCollectionLink.questionnaireVersion = "v2"
                 persistenceService.saveEvent(issue.projectKey, user?.displayName, "New Consent Group Added", EventType.SUBMIT_CONSENT_GROUP)
+                Boolean notifyableDatalocationsFound = false;
                 try {
                     persistenceService.saveConsentCollectionLink(consentCollectionLink)
                     dataLocations.each {
+                        notifyableDatalocationsFound = ["Google Drive", "Google Cloud storage assets (e.g. Cloud Storage; BigQuery)", "On prem storage", "Broad-issued laptop", "Other"]
+                                .any { item -> it.dataStores.contains(item) }
                         def dataLocation = new DataLocations(
                                 researchStage: it.researchStage,
                                 dataStores: it.dataStores,
                                 locationUrl: it.locationUrl,
-                                cloudProvider: it.cloudProvider
+                                cloudProvider: it.cloudProvider,
+                                terraUrl: it.terraUrl,
+                                gcsaUrl: it.gcsaUrl,
+                                gdriveUrl: it.gdriveUrl,
+                                onpremUrl: it.onpremUrl,
+                                bilCluster: it.bilCluster,
+                                otherText: it.otherText
                         )
                         dataLocation.consentCollectionLink = consentCollectionLink
                         dataLocation.save(flush: true)
@@ -97,7 +107,7 @@ class NewConsentGroupController extends AuthenticatedController {
                         storageProviderService.saveMultipartFile(user.displayName, user.userName, consent?.projectKey, it.name, it, consentCollectionLink, description)
                     }
                 }
-                notifyService.consentGroupCreation(issue, consentCollectionLink)
+                notifyService.consentGroupCreation(issue, consentCollectionLink, notifyableDatalocationsFound)
                 consent.status = 201
                 render([message: consent] as JSON)
             } else {

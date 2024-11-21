@@ -6,6 +6,7 @@ class ConsentCollectionLinkDTO {
     String linkedProjectKey
     String consentKey
     String sampleCollectionId
+    String questionnaireVersion
     String pii
     String requireMta
     String compliance
@@ -51,6 +52,7 @@ class ConsentCollectionLinkDTO {
     String textOtherIdentifier
     String dataSecondaryUse
     String collaboratorApproval
+    String mtaOrDta
     Date deliveryDate
     Date releaseDate
 

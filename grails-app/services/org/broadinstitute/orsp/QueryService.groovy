@@ -377,7 +377,7 @@ class QueryService implements Status {
                         ' c.medical_numbers medicalNumbers, c.account_numbers accountNumbers, c.health_plan_numbers healthPlanNumbers, c.license_numbers licenseNumbers, c.vehicle_identifiers vehicleIdentifiers, ' +
                         ' c.web_urls webUrls, c.device_identifiers deviceIdentifiers, c.internet_protocol_addresses internetProtocolAddresses, c.face_photos facePhotos, c.biometric_identifiers biometricIdentifiers, ' +
                         ' c.unique_identifying uniqueIdentifying, c.other_identifier otherIdentifier, c.text_other_identifier textOtherIdentifier, c.data_secondary_use dataSecondaryUse, ' +
-                        ' c.collaborator_approval collaboratorApproval, c.delivery_date deliveryDate, c.release_date releaseDate ' +
+                        ' c.collaborator_approval collaboratorApproval, c.mta_or_dta mtaOrDta, c.delivery_date deliveryDate, c.release_date releaseDate, c.questionnaire_version questionnaireVersion ' +
                         ' from consent_collection_link c ' +
                         ' inner join issue ic on ic.project_key = c.consent_key ' +
                         ' inner join issue ip on ip.project_key = c.project_key ' +

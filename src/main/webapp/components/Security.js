@@ -12,17 +12,17 @@ import ReactSelect from './ReactSelect';
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
 
 const REASEARCH_STAGES = [
-  {id: '1', value: 'pre', label: 'Pre'}, 
-  {id: '2', value: 'post', label: 'Post'},
-  {id: '3', value: 'intra_analysis', label: 'Intra Analysis'}
+  {id: '1', value: 'pre', label: 'Pre-analysis'}, 
+  {id: '2', value: 'post', label: 'Post-analysis'},
+  {id: '3', value: 'intra_analysis', label: 'Intra-analysis'}
 ];
 
 const DATA_LOCATIONS = [
   {id: '1', value: 'terra', label: 'Terra'}, 
-  {id: '2', value: 'bgp', label: 'Broad Genomics Platform'},
-  {id: '3', value: 'gcp', label: 'Google Cloud Platform (without Terra)'},
-  {id: '4', value: 'aws', label: 'Amazon Web Services'},
-  {id: '5', value: 'bop', label: 'Broad on-prem'},
+  {id: '2', value: 'gcsa', label: 'Google Cloud storage assets (e.g. Cloud Storage; BigQuery)'},
+  {id: '3', value: 'gdrive', label: 'Google Drive'},
+  {id: '4', value: 'onprem', label: 'On prem storage'},
+  {id: '5', value: 'bil', label: 'Broad-issued laptop'},
   {id: '6', value: 'other', label: 'Other'}
 ];
 
@@ -44,13 +44,12 @@ export const Security = hh(class Security extends Component {
         sharingType: true,
         textCompliance: true,
         externalAvailability: true,
-        store: true,
         textStore: true,
         publiclyAvailable: true,
         textOtherIdentifier: true,
         identifiers: true,
         dataType: true,
-        textSharingType: true,
+        textSharingType: true
       },
       openSharingText: '(Data Use LetterNR/link, consent or waiver of consent, or documentation from source that consent is not available but samples were appropriately collected and publicly available)',
       controlledSharingText: '(Data Use LetterNR/link, consent or waiver of consent)',
@@ -71,6 +70,32 @@ export const Security = hh(class Security extends Component {
   handleRadio2Change = (e, field, value) => {
     this.setState(prev => {
       prev.formData[field] = value;
+      if (field === "pii" && value === "false") {
+        prev.formData.piiDt = false;
+        prev.formData.phi = false;
+        prev.formData.genomicData = false;
+        prev.formData.names = false
+        prev.formData.dates = false;
+        prev.formData.telephone = false;
+        prev.formData.geographicData = false;
+        prev.formData.fax = false;
+        prev.formData.socialSecurityNumber = false;
+        prev.formData.emailAddresses = false;
+        prev.formData.medicalNumbers = false;
+        prev.formData.accountNumbers = false;
+        prev.formData.healthPlanNumbers = false;
+        prev.formData.licenseNumbers = false;
+        prev.formData.vehicleIdentifiers = false;
+        prev.formData.webUrls = false;
+        prev.formData.deviceIdentifiers = false;
+        prev.formData.internetProtocolAddresses = false;
+        prev.formData.facePhotos = false;
+        prev.formData.biometricIdentifiers = false;
+        prev.formData.uniqueIdentifying = false;
+        prev.formData.otherIdentifier = false;
+        prev.formData.textOtherIdentifier = '';
+        prev.formData.externalAvailability = null;
+      }
       if (field === "collaboratorApproval") prev.collaboratorApprovalRequired = value;
       return prev;
     }, () => {
@@ -130,7 +155,6 @@ export const Security = hh(class Security extends Component {
     let isValid = true;
     let textCompliance = false;
     let externalAvailability = false;
-    let store = false;
     let textStore = false;
     let publiclyAvailable = false;
     let textOtherIdentifier = false;
@@ -149,16 +173,6 @@ export const Security = hh(class Security extends Component {
     if ((this.state.formData.piiDt || this.state.formData.phi || this.state.formData.genomicData)
       && isEmpty(this.state.formData.externalAvailability)) {
       externalAvailability = true;
-      isValid = false;
-    }
-
-    if (!this.state.formData.terra &&
-      !this.state.formData.bgp &&
-      !this.state.formData.bop &&
-      !this.state.formData.gcp &&
-      !this.state.formData.aws &&
-      !this.state.formData.otherStore) {
-      store = true;
       isValid = false;
     }
 
@@ -230,7 +244,6 @@ export const Security = hh(class Security extends Component {
         prev.errors.externalAvailability = externalAvailability;
         prev.errors.textStore = textStore;
         prev.errors.publiclyAvailable = publiclyAvailable;
-        prev.errors.store = store;
         prev.errors.textOtherIdentifier = textOtherIdentifier;
         prev.errors.identifiers = identifiers;
         prev.errors.dataType = dataType;
@@ -293,7 +306,9 @@ export const Security = hh(class Security extends Component {
     this.setState(prev => {
       prev.formData.dataLocations[index][key] = value;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'dataLocations'));
+    }, () => {
+      this.props.updateForm(this.state.formData, 'dataLocations')
+    });
   }
 
   handleResearchStagesChange = (value, index, key) => {
@@ -341,6 +356,25 @@ export const Security = hh(class Security extends Component {
     });
   }
 
+  showQuestion = (dataArr, value) => {
+    if(typeof dataArr === 'object' && !isEmpty(dataArr)) {
+      return dataArr.some(item => {
+        if(!isEmpty(item)) {
+          return item.value === value
+        }
+      });
+    }
+    return false;
+  }
+
+  getBoolIfString = (value) => {
+    if (isEmpty(value)) return null;
+    if (typeof value === 'string') {
+      return value === 'true' ? true : false;
+    }
+    return value;
+  }
+
   render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
@@ -370,7 +404,7 @@ export const Security = hh(class Security extends Component {
           errorMessage: "Required field",
           edit: false
         }),
-        div({ isRendered: this.props.securityInfoData.pii === "true", style: { 'marginBottom': '20px' } }, [
+        div({ isRendered: this.getBoolIfString(this.props.securityInfoData.pii), style: { 'marginBottom': '20px' } }, [
           p({ className: "inputFieldLabel" }, [
             "a. Which of these types of data does your project involve? ",
             span({ className: "normal" }, ["Select all that apply."])
@@ -380,7 +414,7 @@ export const Security = hh(class Security extends Component {
             name: "piiDt",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['PII']),
-            checked: this.props.securityInfoData.piiDt,
+            checked: this.getBoolIfString(this.props.securityInfoData.piiDt),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -388,7 +422,7 @@ export const Security = hh(class Security extends Component {
             name: "phi",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['PHI']),
-            checked: this.props.securityInfoData.phi,
+            checked: this.getBoolIfString(this.props.securityInfoData.phi),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -396,16 +430,19 @@ export const Security = hh(class Security extends Component {
             name: "genomicData",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Genomic Data']),
-            checked: this.props.securityInfoData.genomicData,
+            checked: this.getBoolIfString(this.props.securityInfoData.genomicData),
             readOnly: this.state.readOnly,
             error: this.state.errors.textOtherIdentifier && this.props.generalError,
             errorMessage: "Required field"
           }),
           small({ isRendered: this.state.errors.dataType && this.props.generalError, className: "errorMessage" }, ['Required Fields']),
         ]),
-        div({ isRendered: this.props.securityInfoData.piiDt === true || this.props.securityInfoData.phi === true, style: { 'marginBottom': '20px' } }, [
+        div({ 
+          isRendered: this.getBoolIfString(this.props.securityInfoData.pii) && (this.getBoolIfString(this.props.securityInfoData.piiDt) || this.getBoolIfString(this.props.securityInfoData.phi)), 
+          style: { 'marginBottom': '20px' }
+        }, [
           p({ className: "inputFieldLabel" }, [
-            "Does your data contain any of the following direct identifiers? ",
+            "b. Does your data contain any of the following direct identifiers? ",
             span({ className: "normal" }, ["Select all that apply."])
           ]),
           InputFieldCheckbox({
@@ -413,7 +450,7 @@ export const Security = hh(class Security extends Component {
             name: "names",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Names']),
-            checked: this.props.securityInfoData.names,
+            checked: this.getBoolIfString(this.props.securityInfoData.names),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -421,7 +458,7 @@ export const Security = hh(class Security extends Component {
             name: "dates",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Dates, except year']),
-            checked: this.props.securityInfoData.dates,
+            checked: this.getBoolIfString(this.props.securityInfoData.dates),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -429,7 +466,7 @@ export const Security = hh(class Security extends Component {
             name: "telephone",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Telephone numbers']),
-            checked: this.props.securityInfoData.telephone,
+            checked: this.getBoolIfString(this.props.securityInfoData.telephone),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -437,7 +474,7 @@ export const Security = hh(class Security extends Component {
             name: "geographicData",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Geographic data']),
-            checked: this.props.securityInfoData.geographicData,
+            checked: this.getBoolIfString(this.props.securityInfoData.geographicData),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -445,7 +482,7 @@ export const Security = hh(class Security extends Component {
             name: "fax",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['FAX numbers']),
-            checked: this.props.securityInfoData.fax,
+            checked: this.getBoolIfString(this.props.securityInfoData.fax),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -453,7 +490,7 @@ export const Security = hh(class Security extends Component {
             name: "socialSecurityNumber",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Social Security numbers']),
-            checked: this.props.securityInfoData.socialSecurityNumber,
+            checked: this.getBoolIfString(this.props.securityInfoData.socialSecurityNumber),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -461,7 +498,7 @@ export const Security = hh(class Security extends Component {
             name: "emailAddresses",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Email addresses']),
-            checked: this.props.securityInfoData.emailAddresses,
+            checked: this.getBoolIfString(this.props.securityInfoData.emailAddresses),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -469,7 +506,7 @@ export const Security = hh(class Security extends Component {
             name: "medicalNumbers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Medical record numbers']),
-            checked: this.props.securityInfoData.medicalNumbers,
+            checked: this.getBoolIfString(this.props.securityInfoData.medicalNumbers),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -477,7 +514,7 @@ export const Security = hh(class Security extends Component {
             name: "accountNumbers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Account numbers']),
-            checked: this.props.securityInfoData.accountNumbers,
+            checked: this.getBoolIfString(this.props.securityInfoData.accountNumbers),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -485,7 +522,7 @@ export const Security = hh(class Security extends Component {
             name: "healthPlanNumbers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Health plan beneficiary numbers']),
-            checked: this.props.securityInfoData.healthPlanNumbers,
+            checked: this.getBoolIfString(this.props.securityInfoData.healthPlanNumbers),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -493,7 +530,7 @@ export const Security = hh(class Security extends Component {
             name: "licenseNumbers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Certificate/license numbers']),
-            checked: this.props.securityInfoData.licenseNumbers,
+            checked: this.getBoolIfString(this.props.securityInfoData.licenseNumbers),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -501,7 +538,7 @@ export const Security = hh(class Security extends Component {
             name: "vehicleIdentifiers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Vehicle identifiers and serial numbers including license plates']),
-            checked: this.props.securityInfoData.vehicleIdentifiers,
+            checked: this.getBoolIfString(this.props.securityInfoData.vehicleIdentifiers),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -509,7 +546,7 @@ export const Security = hh(class Security extends Component {
             name: "webUrls",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Web URLs']),
-            checked: this.props.securityInfoData.webUrls,
+            checked: this.getBoolIfString(this.props.securityInfoData.webUrls),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -517,7 +554,7 @@ export const Security = hh(class Security extends Component {
             name: "deviceIdentifiers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Device identifiers and serial numbers']),
-            checked: this.props.securityInfoData.deviceIdentifiers,
+            checked: this.getBoolIfString(this.props.securityInfoData.deviceIdentifiers),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -525,7 +562,7 @@ export const Security = hh(class Security extends Component {
             name: "internetProtocolAddresses",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Internet protocol addresses']),
-            checked: this.props.securityInfoData.internetProtocolAddresses,
+            checked: this.getBoolIfString(this.props.securityInfoData.internetProtocolAddresses),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -533,7 +570,7 @@ export const Security = hh(class Security extends Component {
             name: "facePhotos",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Full face photos and comparable images']),
-            checked: this.props.securityInfoData.facePhotos,
+            checked: this.getBoolIfString(this.props.securityInfoData.facePhotos),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -541,7 +578,7 @@ export const Security = hh(class Security extends Component {
             name: "biometricIdentifiers",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Biometric identifiers (i.e. retinal scan, fingerprints)']),
-            checked: this.props.securityInfoData.biometricIdentifiers,
+            checked: this.getBoolIfString(this.props.securityInfoData.biometricIdentifiers),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -549,7 +586,7 @@ export const Security = hh(class Security extends Component {
             name: "uniqueIdentifying",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Any unique identifying number or code']),
-            checked: this.props.securityInfoData.uniqueIdentifying,
+            checked: this.getBoolIfString(this.props.securityInfoData.uniqueIdentifying),
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
@@ -557,7 +594,7 @@ export const Security = hh(class Security extends Component {
             name: "otherIdentifier",
             onChange: this.handleDataTypesChange,
             label: span({ className: "normal" }, ['Other']),
-            checked: this.props.securityInfoData.otherIdentifier,
+            checked: this.getBoolIfString(this.props.securityInfoData.otherIdentifier),
             readOnly: this.state.readOnly
           }),
           small({ isRendered: this.state.errors.identifiers && this.props.generalError, className: "errorMessage" }, ['Required Fields'])
@@ -577,11 +614,14 @@ export const Security = hh(class Security extends Component {
             errorMessage: "Required field"
           })
         ]),
-        div({ isRendered: this.props.securityInfoData.piiDt === true || this.props.securityInfoData.phi === true || this.props.securityInfoData.genomicData === true, style: { 'marginBottom': '20px' } }, [
+        div({ 
+          isRendered: this.getBoolIfString(this.props.securityInfoData.pii) && (this.getBoolIfString(this.props.securityInfoData.piiDt) || this.getBoolIfString(this.props.securityInfoData.phi) || this.getBoolIfString(this.props.securityInfoData.genomicData)), 
+          style: { 'marginBottom': '20px' }
+        }, [
           InputFieldRadio({
             id: "radioFirecloud",
             name: "externalAvailability",
-            label: span({}, ["Will your project make PII, PHI, or genomic data available to external collaborators via FireCloud/Terra?"]),
+            label: span({}, ["c. Will your project make PII, PHI, or genomic data available to external collaborators via FireCloud/Terra?"]),
             value: this.props.securityInfoData.externalAvailability,
             optionValues: ["true", "false", "uncertain"],
             optionLabels: [
@@ -637,7 +677,7 @@ export const Security = hh(class Security extends Component {
             isRendered: this.props.securityInfoData.compliance === "true",
             id: "inputCompliance",
             name: "textCompliance",
-            label: "a. Please specify which regulations must be adhered to below:",
+            label: "Please specify which regulations must be adhered to below:",
             value: this.props.securityInfoData.textCompliance,
             disabled: false,
             required: false,
@@ -671,23 +711,25 @@ export const Security = hh(class Security extends Component {
           errorMessage: "Required field"
         }),
 
-        InputFieldText({
-          isRendered: TEXT_SHARING_TYPES.some((type) => type === this.state.formData.sharingType),
-          id: "inputAccessible",
-          name: "textSharingType",
-          label: "a. Name of Database(s):",
-          value: this.props.securityInfoData.textSharingType,
-          disabled: false,
-          required: false,
-          onChange: this.handleInputChange,
-          errorMessage: "Required field",
-          error: this.state.errors.textSharingType && this.props.generalError,
-        }),
+        div({ style: { 'marginBottom': '20px' } }, [
+          InputFieldText({
+            isRendered: TEXT_SHARING_TYPES.some((type) => type === this.state.formData.sharingType),
+            id: "inputAccessible",
+            name: "textSharingType",
+            label: "Name of Database(s):",
+            value: this.props.securityInfoData.textSharingType,
+            disabled: false,
+            required: false,
+            onChange: this.handleInputChange,
+            errorMessage: "Required field",
+            error: this.state.errors.textSharingType && this.props.generalError,
+          }),
+        ]),
         div({style: {marginBottom: '20px'}}, [
           label({
             style: {color: '#286090', fontSize: '1.071rem'}
           }, ["5. Data Location(s)"]),
-          p({}, ["Please provide the expected location where your data will be stored throughout the stages of your research"]),
+          p({}, ["Please provide the expected location where your data will be stored throughout the research lifecycle. Use the checkboxes to multi-select research stages that will share a single storage location."]),
           div([this.props.securityInfoData.dataLocations.map(
             (data, idx) => 
               div({className: "row"}, [
@@ -696,27 +738,32 @@ export const Security = hh(class Security extends Component {
                   style: {margin: '8px 6px', background: '#c7c7c7', height: '1px', zIndex: 0}
                 }),
                 span({className: "col-lg-6"}, [
-                  ReactSelect({
+                  h(ReactSelect, {
+                    key: "researchStage" + idx,
                     allowCustomData: false,
                     options: REASEARCH_STAGES,
-                    placeholder: "Research Stage (Pre/Post/Intra Analysis)",
+                    placeholder: "Research Stage (Pre-analysis/Post-analysis/Intra-analysis)",
                     handleChange:(selected) => this.handleResearchStagesChange(selected, idx, 'researchStage'),
                     value: data.researchStage,
-                    isMulti: true
+                    isMulti: true,
+                    hideSelectedOptions: false
                   })
                 ]),
                 span({className: "col-lg-6"}, [
-                  ReactSelect({
-                    allowCustomData: true,
+                  h(ReactSelect, {
+                    key: "dataLocations" + idx,
                     options: DATA_LOCATIONS,
                     placeholder: "Data Location(s)",
                     value: data.dataStores,
                     handleChange: (selected) => this.handleDataLocationsChange(selected, idx, 'dataStores'),
-                    isMulti: true
+                    isMulti: true,
+                    allowCustomData: true,
+                    hideSelectedOptions: true
                   })
                 ]),
                 span({className: "col-lg-6"}, [
                   InputFieldText({
+                    key: "locationUrl" + idx,
                     id: "dataLocationUrl",
                     name: "locationUrl",
                     placeholder: "Enter a URL for your data location",
@@ -727,6 +774,7 @@ export const Security = hh(class Security extends Component {
                 ]),
                 span({className: "col-lg-6"}, [
                   InputFieldText({
+                    key: "cloudProvider" + idx,
                     id: "cloudProvider",
                     name: "cloudProvider",
                     placeholder: "Cloud Provider",
@@ -735,6 +783,94 @@ export const Security = hh(class Security extends Component {
                     onChange: (e) => this.handleDataLocationInputChange(e, idx),
                   })
                 ]),
+                div({style: {margin: "0 5px"}}, [
+                  span({className: "col-12 ml-15"}, [
+                    InputFieldText({
+                      isRendered: this.showQuestion(data.dataStores, "terra"),
+                      key: "terra-text" + idx,
+                      id: "terra-text",
+                      name: "terraUrl",
+                      label: "Terra: What is the URL of the Terra Workspace or Terra Data Repository (TDR) snapshot?",
+                      value: data.terraUrl,
+                      disabled: false,
+                      required: false,
+                      onChange: (e) => this.handleDataLocationInputChange(e, idx),
+                      errorMessage: "Required field",
+                      error: false,
+                      style:{margin: "0 5px"}
+                    }),
+                    InputFieldText({
+                      isRendered: this.showQuestion(data.dataStores, "gcsa"),
+                      key: "gcsa-text" + idx,
+                      id: "gcsa-text",
+                      name: "gcsaUrl",
+                      label: "Google Cloud storage assets: What is the URL of the GCP Project, and bucket?",
+                      value: data.gcsaUrl,
+                      disabled: false,
+                      required: false,
+                      onChange: (e) => this.handleDataLocationInputChange(e, idx),
+                      errorMessage: "Required field",
+                      error: false,
+                      style:{margin: "0 5px"}
+                    }),
+                    InputFieldText({
+                      isRendered: this.showQuestion(data.dataStores, "gdrive"),
+                      key: "gdrive-text" + idx,
+                      id: "gdrive-text",
+                      name: "gdriveUrl",
+                      label: "Google Drive: What is the folder name and URL?",
+                      value: data.gdriveUrl,
+                      disabled: false,
+                      required: false,
+                      onChange: (e) => this.handleDataLocationInputChange(e, idx),
+                      errorMessage: "Required field",
+                      error: false,
+                      style:{margin: "0 5px"}
+                    }),
+                    InputFieldText({
+                      isRendered: this.showQuestion(data.dataStores, "onprem"),
+                      key: "onprem-text" + idx,
+                      id: "onprem-text",
+                      name: "onpremUrl",
+                      label: "On prem storage: What is the name of the cluster and mountpoint?",
+                      value: data.onpremUrl,
+                      disabled: false,
+                      required: false,
+                      onChange: (e) => this.handleDataLocationInputChange(e, idx),
+                      errorMessage: "Required field",
+                      error: false,
+                      style:{margin: "0 5px"}
+                    }),
+                    InputFieldText({
+                      isRendered: this.showQuestion(data.dataStores, "bil"),
+                      key: "bil-text" + idx,
+                      id: "bil-text",
+                      name: "bilCluster",
+                      label: "Broad-issued laptop: What is the laptop name (sometimes called hostname)?",
+                      value: data.bilCluster,
+                      disabled: false,
+                      required: false,
+                      onChange: (e) => this.handleDataLocationInputChange(e, idx),
+                      errorMessage: "Required field",
+                      error: false,
+                      style:{margin: "0 5px"} 
+                    }),
+                    InputFieldText({
+                      isRendered: this.showQuestion(data.dataStores, "other"),
+                      key: "other-text" + idx,
+                      id: "other-text",
+                      name: "otherText",
+                      label: "Other",
+                      value: data.otherText,
+                      disabled: false,
+                      required: false,
+                      onChange: (e) => this.handleDataLocationInputChange(e, idx),
+                      errorMessage: "Required field",
+                      error: false,
+                      style:{margin: "0 5px"}
+                    })
+                  ])
+                ])
               ]),
           )]),
           button({
@@ -751,8 +887,8 @@ export const Security = hh(class Security extends Component {
         InputFieldRadio({
           id: "dataSecondaryUse",
           name: "dataSecondaryUse",
-          label: span({}, ["6. Are you willing to share this data for secondary use if sharing is permissible according to the 1) terms of the informed consent form, 2) any relevant material or data transfer agreements, and 3) the approval of the researcher who originally collected the samples or data?  (Secondary research makes use of existing data or specimens collected previously for a different purpose.)"]),
-          moreInfo: b({style: { 'fontStyle': 'italic' }}, [" Please note: Answering yes to this question only documents a willingness to share the data or specimens; actual sharing will require review of the consent form(s) by ORSP, review of relevant MTAs or DTAs by OSAP, and the permission of the researcher who originally collected the data or specimens."]),
+          label: span({}, ["6. Are you willing to share this data for secondary use if sharing is permissible according to the 1) terms of the informed consent form, 2) any relevant material or data transfer agreements, and 3) the approval of the researcher who originally collected the samples or data? "]),
+          moreInfo: span( [" (Secondary research makes use of existing data or specimens collected previously for a different purpose.) Please note: Answering yes to this question only documents a willingness to share the data or specimens; actual sharing will require review of the consent form(s) by ORSP, review of relevant MTAs or DTAs by OSAP, and the permission of the researcher who originally collected the data or specimens."]),
           value: this.props.securityInfoData.dataSecondaryUse,
           optionLabels: [
             "Yes, the Broad may facilitate sharing my data for secondary use via the Broad Data Access Committee",
@@ -826,7 +962,8 @@ export const Security = hh(class Security extends Component {
           id: "mtaOrDta",
           name: "mtaOrDta",
           label: span({}, ["8. Has the tech transfer office of the institution providing samples/data confirmed that a Material or Data Transfer Agreement (MTA/DTA) is needed to transfer the materials/data? "]),
-          moreInfo: b({style: { 'fontStyle': 'italic' }}, [" Please note:  All samples transferred from DFCI require a material transfer agreement.  Contact ",span({style: { 'textDecoration': 'underline' }}, ["agreements@broadinstitute.org "]),"  for assistance."]),
+          moreInfo: span( [" Please note: All samples transferred from DFCI require a material transfer agreement.  Contact ", 
+                    span({style: { 'textDecoration': 'underline' }}, ["agreements@broadinstitute.org "]),"  for assistance."]),
           value: this.props.securityInfoData.mtaOrDta,
           optionValues: ["true", "false"],
           optionLabels: [
