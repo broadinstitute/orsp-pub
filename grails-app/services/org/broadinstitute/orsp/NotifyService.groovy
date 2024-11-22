@@ -902,7 +902,7 @@ class NotifyService implements SendgridSupport, Status {
         mails
     }
 
-    Map<Boolean, String> sendAddedCGToProjectNotification(String consentKey, String projectKey, ConsentCollectionLink consentCollectionLink, String subjectDisplayName) {
+    Map<Boolean, String> sendAddedCGToProjectNotification(String consentKey, String projectKey, ConsentCollectionLink consentCollectionLink, String subjectDisplayName, Boolean notifyableDatalocationsFound) {
         Map<String, String> values = new HashMap<>()
         Issue consent = Issue.findByProjectKey(consentKey)
         Issue project = Issue.findByProjectKey(projectKey)
@@ -921,7 +921,7 @@ class NotifyService implements SendgridSupport, Status {
         arguments.view = "/notify/addExistingCG"
         Mail mail = populateMailFromArguments(arguments)
         sendMail(mail, getApiKey(), getSendGridUrl())
-        sendSecurityInfo(consent, user, consentCollectionLink, subjectDisplayName)
+        sendSecurityInfo(consent, user, consentCollectionLink, subjectDisplayName, notifyableDatalocationsFound)
         log.info('Sent notification mail for sendAddedCGToProjectNotification '+ mail)
     }
 

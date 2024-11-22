@@ -103,8 +103,6 @@ const LinkWizard = hh( class LinkWizard extends Component {
         dataLocations: [{
           researchStage: null,
           dataStores: null,
-          locationUrl: null,
-          cloudProvider: null,
           terraUrl: null,
           gcsaUrl: null,
           gdriveUrl: null,
@@ -311,9 +309,12 @@ const LinkWizard = hh( class LinkWizard extends Component {
 
   getDataLocations = () => {
     let dataLocations = [...this.state.securityInfoFormData.dataLocations];
-    dataLocations.forEach(data => {
+    dataLocations.forEach((data, idx) => {
       data.researchStage = data.researchStage && data.researchStage.map(stage => stage.label).join(", ");
       data.dataStores = data.dataStores && data.dataStores.map(store => store.label).join(", ");
+      if(isEmpty(data.dataStores) && isEmpty(data.researchStage)) {
+        dataLocations.splice(idx);
+      }
     });
     return dataLocations;
   }

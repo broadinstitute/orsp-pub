@@ -3,8 +3,6 @@ CREATE TABLE data_locations (
     collection_link_id BIGINT NOT NULL,   -- Foreign key column referencing consent_collection_link
     research_stage VARCHAR(100) DEFAULT NULL,
     data_stores VARCHAR(2048) DEFAULT NULL,
-    location_url VARCHAR(2048) DEFAULT NULL,
-    cloud_provider VARCHAR(255) DEFAULT NULL,
     terra_url VARCHAR(2048) DEFAULT NULL,
     gcsa_url VARCHAR(2048) DEFAULT NULL,
     gdrive_url VARCHAR(2048) DEFAULT NULL,

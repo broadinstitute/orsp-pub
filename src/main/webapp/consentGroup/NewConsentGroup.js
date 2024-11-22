@@ -87,8 +87,6 @@ const NewConsentGroup = hh(class NewConsentGroup extends Component {
         dataLocations: [{
           researchStage: null,
           dataStores: null,
-          locationUrl: null,
-          cloudProvider: null,
           terraUrl: null,
           gcsaUrl: null,
           gdriveUrl: null,
