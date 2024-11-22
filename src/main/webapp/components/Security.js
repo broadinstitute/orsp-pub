@@ -314,6 +314,7 @@ export const Security = hh(class Security extends Component {
       this.setState(prev => prev.formData.dataLocations = DATA_LOCATIONS_COPY);
     }
     this.setState(prev => {
+      prev.formData.dataLocations = DATA_LOCATIONS_COPY;
       prev.formData.dataLocations[index][key] = value;
       return prev;
     }, () => {
