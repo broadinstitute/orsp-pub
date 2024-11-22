@@ -77,7 +77,7 @@ class NewConsentGroupController extends AuthenticatedController {
                 consentCollectionLink.creationDate = new Date()
                 consentCollectionLink.questionnaireVersion = "v2"
                 persistenceService.saveEvent(issue.projectKey, user?.displayName, "New Consent Group Added", EventType.SUBMIT_CONSENT_GROUP)
-                Boolean notifyableDatalocationsFound = false;
+                Boolean notifyableDatalocationsFound = false
                 try {
                     persistenceService.saveConsentCollectionLink(consentCollectionLink)
                     dataLocations.each {
@@ -86,8 +86,6 @@ class NewConsentGroupController extends AuthenticatedController {
                         def dataLocation = new DataLocations(
                                 researchStage: it.researchStage,
                                 dataStores: it.dataStores,
-                                locationUrl: it.locationUrl,
-                                cloudProvider: it.cloudProvider,
                                 terraUrl: it.terraUrl,
                                 gcsaUrl: it.gcsaUrl,
                                 gdriveUrl: it.gdriveUrl,

@@ -217,22 +217,9 @@ export const NewSecurityReview = hh(class NewSecurityReview extends Component {
                   p({}, [data.dataStores]),
                   p({isRendered: isEmpty(data.dataStores)}, ["--"])
                 ]),
-                span({className: "col-lg-6"}, [
-                  label({style: {fontWeight: 600}}, ["Data Location URL"]),
-                  p({}, [a({
-                    className: "link",
-                    onClick: () => this.redirectUrl(data.locationUrl)
-                  }, [data.locationUrl])]),
-                  p({isRendered: isEmpty(data.locationUrl)}, ["--"])
-                ]),
-                span({className: "col-lg-6"}, [
-                  label({style: {fontWeight: 600}}, ["Cloud Provider"]),
-                  p({}, [data.cloudProvider]),
-                  p({isRendered: isEmpty(data.cloudProvider)}, ["--"])
-                ]),
                 div({ className: "col-lg-12", style: {margin: "10px 0 5px"}}, [
                   div({ 
-                    isRendered: data.dataStores.includes("Terra"),
+                    isRendered: !isEmpty(data.dataStores) && data.dataStores.includes("Terra"),
                     className: "answerWrapper " 
                   }, [
                     label({}, ["Terra: What is the URL of the Terra Workspace or Terra Data Repository (TDR) snapshot?"]),
@@ -240,7 +227,7 @@ export const NewSecurityReview = hh(class NewSecurityReview extends Component {
                     }, [isEmpty(data.terraUrl) ? "--" : data.terraUrl]),
                   ]),
                   div({ 
-                    isRendered: data.dataStores.includes("Google Cloud storage assets (e.g. Cloud Storage; BigQuery)"),
+                    isRendered: !isEmpty(data.dataStores) && data.dataStores.includes("Google Cloud storage assets (e.g. Cloud Storage; BigQuery)"),
                     className: "answerWrapper " 
                   }, [
                     label({}, ["Google Cloud storage assets: What is the URL of the GCP Project, and bucket?"]),
@@ -248,7 +235,7 @@ export const NewSecurityReview = hh(class NewSecurityReview extends Component {
                     }, [isEmpty(data.gcsaUrl) ? "--" : data.gcsaUrl]),
                   ]),
                   div({ 
-                    isRendered: data.dataStores.includes("Google Drive"),
+                    isRendered: !isEmpty(data.dataStores) && data.dataStores.includes("Google Drive"),
                     className: "answerWrapper " 
                   }, [
                     label({}, ["Google Drive: What is the folder name and URL?"]),
@@ -256,7 +243,7 @@ export const NewSecurityReview = hh(class NewSecurityReview extends Component {
                     }, [isEmpty(data.gdriveUrl) ? "--" : data.gdriveUrl]),
                   ]),
                   div({ 
-                    isRendered: data.dataStores.includes("On prem storage"),
+                    isRendered: !isEmpty(data.dataStores) && data.dataStores.includes("On prem storage"),
                     className: "answerWrapper " 
                   }, [
                     label({}, ["On prem storage: What is the name of the cluster and mountpoint?"]),
@@ -264,7 +251,7 @@ export const NewSecurityReview = hh(class NewSecurityReview extends Component {
                     }, [isEmpty(data.onpremUrl) ? "--" : data.onpremUrl]),
                   ]),
                   div({ 
-                    isRendered: data.dataStores.includes("Broad-issued laptop"),
+                    isRendered: !isEmpty(data.dataStores) && data.dataStores.includes("Broad-issued laptop"),
                     className: "answerWrapper " 
                   }, [
                     label({}, ["Broad-issued laptop: What is the laptop name (sometimes called hostname)?"]),
@@ -272,7 +259,7 @@ export const NewSecurityReview = hh(class NewSecurityReview extends Component {
                     }, [isEmpty(data.bilCluster) ? "--" : data.bilCluster]),
                   ]),
                   div({ 
-                    isRendered: data.dataStores.includes("Other"),
+                    isRendered: !isEmpty(data.dataStores) && data.dataStores.includes("Other"),
                     className: "answerWrapper " 
                   }, [
                     label({}, ["Other"]),

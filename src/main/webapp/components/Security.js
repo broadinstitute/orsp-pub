@@ -3,7 +3,7 @@ import { hh, h1, span, a, div, p, b, u, small, label, button, i, hr, h, br, inpu
 import { InputFieldText } from './InputFieldText';
 import { InputFieldRadio } from './InputFieldRadio';
 import { InputFieldCheckbox } from './InputFieldCheckbox';
-import { isEmpty } from '../util/Utils'
+import { createObjectCopy, isEmpty } from '../util/Utils'
 import './QuestionnaireWorkflow.css';
 import DatePicker from 'react-datepicker';
 import ReactSelect from './ReactSelect';
@@ -290,20 +290,28 @@ export const Security = hh(class Security extends Component {
 
   addMoreDataLocations = () => {
     const hasData = this.props.securityInfoData.dataLocations.every(item => 
-        !isEmpty(item.researchStage) || !isEmpty(item.dataStores) || !isEmpty(item.locationUrl) || !isEmpty(item.cloudProvider));
+        !isEmpty(item.researchStage) || !isEmpty(item.dataStores));
     hasData && this.setState(prev => {
       prev.formData.dataLocations.push({
         researchStage: null,
-        dataStores: null,
-        locationUrl: null,
-        cloudProvider: null
+        dataStores: null
       });
       return prev;
     }, () => this.props.updateForm(this.state.formData, 'dataLocations'));
   };
 
   handleDataLocationsChange = (value, index, key) => {
+    const DATA_LOCATIONS_COPY = createObjectCopy(this.state.formData.dataLocations);
+    const REMOVED_DATA = DATA_LOCATIONS_COPY[index][key].filter(item => 
+      !value.some(val => item.label === val.label)
+    );
+    REMOVED_DATA.forEach(remItem => {
+      if (remItem.value === "bil") DATA_LOCATIONS_COPY[index].bilCluster = null;
+      if (remItem.value === "other") DATA_LOCATIONS_COPY[index].otherText = null;
+      DATA_LOCATIONS_COPY[index][remItem.value + "Url"] = null;
+    })
     this.setState(prev => {
+      prev.formData.dataLocations = DATA_LOCATIONS_COPY;
       prev.formData.dataLocations[index][key] = value;
       return prev;
     }, () => {
@@ -382,9 +390,18 @@ export const Security = hh(class Security extends Component {
     }
     return (
       div({ className: "questionnaireContainerLight" }, [
-        p({}, ["The following questions help the Broad Risk Management and Information Security teams understand where sensitive data types are stored and how that data is shared with external collaborators. ", b({}, ["Please answer the questions to the best of your ability. "])]),
-        p({ style: { 'marginBottom': '10px' } }, ["The Information Security or Risk Management team may reach out to understand more about your project but your answers to these questions will not stop your project from moving forward. You do not need to wait for a response from the Risk Management or Information Security teams before continuing work.",span({style: { 'textDecoration': 'underline' }}, [" Should storage locations change over time, please keep these fields up-to-date. "])]),
-        p({ style: { 'marginBottom': '25px','fontWeight': '600','fontStyle': 'italic' } }, [b({}, ["Please note: "]), "Protected health information (PHI) must only be processed and/or stored on Broad-owned devices, including Broad’s cloud assets."]),
+        p({}, [
+          "The following questions help the Broad Risk Management and Information Security teams understand where sensitive data types are stored and how that data is shared with external collaborators. ", 
+          b({}, ["Please answer the questions to the best of your ability. "])
+        ]),
+        p({ style: { 'marginBottom': '10px' } }, [
+          `The Information Security or Risk Management team may reach out to understand more about your project but your answers to these questions will not stop your project from moving forward. 
+          You do not need to wait for a response from the Risk Management or Information Security teams before continuing work. `,
+          span({style: { 'textDecoration': 'underline' }}, ["Should storage locations change over time, please keep these fields up-to-date."])
+        ]),
+        p({ style: { 'marginBottom': '25px','fontWeight': '600','fontStyle': 'italic' } }, [
+          b({}, ["Please note: "]), "Protected health information (PHI) must only be processed and/or stored on Broad-owned devices, including Broad’s cloud assets."
+        ]),
         
         InputFieldRadio({
           id: "radioPII",
@@ -640,7 +657,8 @@ export const Security = hh(class Security extends Component {
           id: "radioPubliclyAvailable",
           name: "publiclyAvailable",
           label: span({}, ["2. Will your project make ", u({}, ["any data that is not publicly available"]), " accessible to external collaborators over the internet (but not using Terra)?"]),
-          moreInfo: " This includes, for example, putting data in a Google Cloud Platform bucket outside of Terra and making it available to external parties. Another example is a custom application facing the public internet, or another digital file sharing service.",
+          moreInfo: ` This includes, for example, putting data in a Google Cloud Platform bucket outside of Terra and making it available to external parties. 
+                      Another example is a custom application facing the public internet, or another digital file sharing service.`,
           value: this.props.securityInfoData.publiclyAvailable,
           optionValues: ["true", "false", "uncertain"],
           optionLabels: [
@@ -658,7 +676,11 @@ export const Security = hh(class Security extends Component {
           id: "radioCompliance",
           name: "compliance",
           label: span({}, ["3. Is this project subject to any regulations with specific data security requirements ", span({ className: 'normal' }, ["(FISMA, HIPAA, etc.)"]), "? "]),
-          moreInfo: "Information security compliance requirements should be described in project award letters, contracts, or other agreements. If no agreement exists for a project, Broad has not agreed to meet a specific compliance requirement. PLEASE NOTE THAT AS OF 01/25/2025, DATA OBTAINED FROM FEDERAL REPOSITORIES (SUCH AS dbGaP) ARE REQUIRED TO BE STORED AND PROCESSED ON SYSTEMS COMPLIANT WITH NIST 800-171 AND THEREFOR ARE SUBJECT TO SPECIFIC DATA SECURITY REQUIREMENTS.",
+          moreInfo: span([`Information security compliance requirements should be described in project award letters, contracts, or other agreements. If no agreement exists for a project, 
+                      Broad has not agreed to meet a specific compliance requirement. `, p(),
+                      p([`PLEASE NOTE THAT AS OF 01/25/2025, DATA OBTAINED FROM FEDERAL REPOSITORIES (SUCH AS dbGaP) ARE REQUIRED TO BE STORED AND PROCESSED ON SYSTEMS COMPLIANT WITH NIST 
+                        800-171 AND THEREFOR ARE SUBJECT TO SPECIFIC DATA SECURITY REQUIREMENTS.`])
+                    ]),
           value: this.props.securityInfoData.compliance,
           optionValues: ["true", "false", "uncertain"],
           optionLabels: [
@@ -729,7 +751,10 @@ export const Security = hh(class Security extends Component {
           label({
             style: {color: '#286090', fontSize: '1.071rem'}
           }, ["5. Data Location(s)"]),
-          p({}, ["Please provide the expected location where your data will be stored throughout the research lifecycle. Use the checkboxes to multi-select research stages that will share a single storage location."]),
+          p({}, [
+            `Please provide the expected location where your data will be stored throughout the research lifecycle. Use the checkboxes to multi-select 
+            research stages that will share storage locations between those research stages. Use “Add More Locations” if storage locations change between research stages.`
+          ]),
           div([this.props.securityInfoData.dataLocations.map(
             (data, idx) => 
               div({className: "row"}, [
@@ -757,30 +782,9 @@ export const Security = hh(class Security extends Component {
                     value: data.dataStores,
                     handleChange: (selected) => this.handleDataLocationsChange(selected, idx, 'dataStores'),
                     isMulti: true,
-                    allowCustomData: true,
-                    hideSelectedOptions: true
-                  })
-                ]),
-                span({className: "col-lg-6"}, [
-                  InputFieldText({
-                    key: "locationUrl" + idx,
-                    id: "dataLocationUrl",
-                    name: "locationUrl",
-                    placeholder: "Enter a URL for your data location",
-                    readOnly: false,
-                    value: data.locationUrl,
-                    onChange: (e) => this.handleDataLocationInputChange(e, idx),
-                  })
-                ]),
-                span({className: "col-lg-6"}, [
-                  InputFieldText({
-                    key: "cloudProvider" + idx,
-                    id: "cloudProvider",
-                    name: "cloudProvider",
-                    placeholder: "Cloud Provider",
-                    readOnly: false,
-                    value: data.cloudProvider,
-                    onChange: (e) => this.handleDataLocationInputChange(e, idx),
+                    allowCustomData: false,
+                    hideSelectedOptions: true,
+                    menuIsOpen: false
                   })
                 ]),
                 div({style: {margin: "0 5px"}}, [
@@ -804,7 +808,7 @@ export const Security = hh(class Security extends Component {
                       key: "gcsa-text" + idx,
                       id: "gcsa-text",
                       name: "gcsaUrl",
-                      label: "Google Cloud storage assets: What is the URL of the GCP Project, and bucket?",
+                      label: "Google Cloud storage assets: What is the URL of the GCP Project and bucket?",
                       value: data.gcsaUrl,
                       disabled: false,
                       required: false,

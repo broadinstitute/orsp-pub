@@ -89,8 +89,6 @@ export const SecurityReview = hh(class SecurityReview extends Component {
         dataLocations: [{
           researchStage: null,
           dataStores: null,
-          locationUrl: null,
-          cloudProvider: null,
           terraUrl: null,
           gcsaUrl: null,
           gdriveUrl: null,
@@ -253,13 +251,16 @@ export const SecurityReview = hh(class SecurityReview extends Component {
   }
 
   getDataLocations = (dataLocations) => {
-    dataLocations.forEach(data => {
+    dataLocations.forEach((data, idx) => {
       data.researchStage = data.researchStage && data.researchStage.map(stage => {
         if(!isEmpty(stage)) return stage.label
       }).join(", ");
       data.dataStores = data.dataStores && data.dataStores.map(store => {
         if (!isEmpty(store)) return store.label
       }).join(", ");
+      if(isEmpty(data.dataStores) && isEmpty(data.researchStage)) {
+        dataLocations.splice(idx);
+      }
     });
     return dataLocations;
   }

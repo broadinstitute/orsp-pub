@@ -42,17 +42,24 @@ class SampleConsentLinkController extends AuthenticatedController {
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
             consentCollectionLink.status = queryService.areLinksApproved(consentCollectionLink.projectKey, consentCollectionLink.consentKey) ? CollectionLinkStatus.APPROVED.name : CollectionLinkStatus.PENDING.name
             persistenceService.saveConsentCollectionLink(consentCollectionLink)
+            Boolean notifyableDatalocationsFound = false
             dataLocations.each {
+                notifyableDatalocationsFound = ["Google Drive", "Google Cloud storage assets (e.g. Cloud Storage; BigQuery)", "On prem storage", "Broad-issued laptop", "Other"]
+                        .any { item -> if(it.dataStores) it.dataStores.contains(item) }
                 def dataLocation = new DataLocations(
                         researchStage: it.researchStage,
                         dataStores: it.dataStores,
-                        locationUrl: it.locationUrl,
-                        cloudProvider: it.cloudProvider
+                        terraUrl: it.terraUrl,
+                        gcsaUrl: it.gcsaUrl,
+                        gdriveUrl: it.gdriveUrl,
+                        onpremUrl: it.onpremUrl,
+                        bilCluster: it.bilCluster,
+                        otherText: it.otherText
                 )
                 dataLocation.consentCollectionLink = consentCollectionLink
                 dataLocation.save(flush: true)
             }
-            notifyService.sendAddedCGToProjectNotification(consentCollectionLink.consentKey, consentCollectionLink.projectKey, consentCollectionLink, user.displayName)
+            notifyService.sendAddedCGToProjectNotification(consentCollectionLink.consentKey, consentCollectionLink.projectKey, consentCollectionLink, user.displayName, notifyableDatalocationsFound)
             Issue issue = Issue.findByProjectKey(consentCollectionLink.projectKey)
             if (!files?.isEmpty()) {
                 files.forEach {
@@ -90,8 +97,6 @@ class SampleConsentLinkController extends AuthenticatedController {
                 if (existingDataLocations) {
                     existingDataLocations.researchStage = it.researchStage
                     existingDataLocations.dataStores = it.dataStores
-                    existingDataLocations.locationUrl = it.locationUrl
-                    existingDataLocations.cloudProvider = it.cloudProvider
                     existingDataLocations.terraUrl = it.terraUrl
                     existingDataLocations.gcsaUrl = it.gcsaUrl
                     existingDataLocations.gdriveUrl = it.gdriveUrl
@@ -103,8 +108,6 @@ class SampleConsentLinkController extends AuthenticatedController {
                     def dataLocation = new DataLocations(
                             researchStage: it.researchStage,
                             dataStores: it.dataStores,
-                            locationUrl: it.locationUrl,
-                            cloudProvider: it.cloudProvider,
                             terraUrl: it.terraUrl,
                             gcsaUrl: it.gcsaUrl,
                             gdriveUrl: it.gdriveUrl,
