@@ -302,14 +302,17 @@ export const Security = hh(class Security extends Component {
 
   handleDataLocationsChange = (value, index, key) => {
     const DATA_LOCATIONS_COPY = createObjectCopy(this.state.formData.dataLocations);
-    const REMOVED_DATA = DATA_LOCATIONS_COPY[index][key].filter(item => 
-      !value.some(val => item.label === val.label)
-    );
-    REMOVED_DATA.forEach(remItem => {
-      if (remItem.value === "bil") DATA_LOCATIONS_COPY[index].bilCluster = null;
-      if (remItem.value === "other") DATA_LOCATIONS_COPY[index].otherText = null;
-      DATA_LOCATIONS_COPY[index][remItem.value + "Url"] = null;
-    })
+    if (!isEmpty(DATA_LOCATIONS_COPY[index][key])) {
+      const REMOVED_DATA = DATA_LOCATIONS_COPY[index][key].filter(item => 
+        !value.some(val => item.label === val.label)
+      );
+      REMOVED_DATA.forEach(remItem => {
+        if (remItem.value === "bil") DATA_LOCATIONS_COPY[index].bilCluster = null;
+        if (remItem.value === "other") DATA_LOCATIONS_COPY[index].otherText = null;
+        DATA_LOCATIONS_COPY[index][remItem.value + "Url"] = null;
+      });
+      this.setState(prev => prev.formData.dataLocations = DATA_LOCATIONS_COPY);
+    }
     this.setState(prev => {
       prev.formData.dataLocations = DATA_LOCATIONS_COPY;
       prev.formData.dataLocations[index][key] = value;
