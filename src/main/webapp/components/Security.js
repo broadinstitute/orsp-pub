@@ -972,10 +972,11 @@ export const Security = hh(class Security extends Component {
           moreInfo: span( [" Please note: All samples transferred from DFCI require a material transfer agreement.  Contact ", 
                     span({style: { 'textDecoration': 'underline' }}, ["agreements@broadinstitute.org "]),"  for assistance."]),
           value: this.props.securityInfoData.mtaOrDta,
-          optionValues: ["true", "false"],
+          optionValues: ["true", "false", "uncertain"],
           optionLabels: [
             "Yes",
-            "No"
+            "No",
+            "Uncertain"
           ],
           onChange: this.handleRadio2Change,
           required: false,
@@ -987,7 +988,7 @@ export const Security = hh(class Security extends Component {
           className: 'row'
         }, [
           span({className: 'col-xs-4'}, [
-            label({className: 'inputFieldLabel'}, ["9. Target Delivery Date"]), br(),
+            label({className: 'inputFieldLabel'}, ["9. Target Data Delivery Date"]), br(),
             h(DatePicker, ({
               selected: this.props.securityInfoData.deliveryDate,
               className: 'DatePicker',
@@ -996,7 +997,7 @@ export const Security = hh(class Security extends Component {
             }))
           ]),
           span({className: 'col-xs-4'}, [
-            label({className: 'inputFieldLabel'}, ["10. Target Public Release Date (if applicable)"]), br(),
+            label({className: 'inputFieldLabel'}, ["10. Target Date for Public Release of Data (if applicable)"]), br(),
             h(DatePicker, ({
               selected: this.props.securityInfoData.releaseDate,
               className: 'DatePicker',
