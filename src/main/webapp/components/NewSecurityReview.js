@@ -312,12 +312,12 @@ export const NewSecurityReview = hh(class NewSecurityReview extends Component {
           className: 'row'
         }, [
           span({className: 'col-xs-4'}, [
-            label({className: 'inputFieldLabel'}, ["9.Target Delivery Date"]), br(),
+            label({className: 'inputFieldLabel'}, ["9.Target Data Delivery Date"]), br(),
             div({}, [getDateString(deliveryDate, 'mmddyyyy')]),
             p({isRendered: !(!!deliveryDate)}, ["--"])
           ]),
             span({className: 'col-xs-4'}, [
-              label({className: 'inputFieldLabel'}, ["10.Target Public Release Date (if applicable)"]), br(),
+              label({className: 'inputFieldLabel'}, ["10.Target Date for Public Release of Data (if applicable)"]), br(),
               div({}, [getDateString(releaseDate, 'mmddyyyy')]),
               p({isRendered: !(!!releaseDate)}, ["--"])
           ])
