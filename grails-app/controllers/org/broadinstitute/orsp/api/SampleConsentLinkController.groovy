@@ -39,6 +39,7 @@ class SampleConsentLinkController extends AuthenticatedController {
         }
         try {
             consentCollectionLink.creationDate = new Date()
+            consentCollectionLink.questionnaireVersion = "v2"
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
             consentCollectionLink.status = queryService.areLinksApproved(consentCollectionLink.projectKey, consentCollectionLink.consentKey) ? CollectionLinkStatus.APPROVED.name : CollectionLinkStatus.PENDING.name
             persistenceService.saveConsentCollectionLink(consentCollectionLink)
