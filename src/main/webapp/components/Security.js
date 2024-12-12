@@ -70,7 +70,7 @@ export const Security = hh(class Security extends Component {
   handleRadio2Change = (e, field, value) => {
     this.setState(prev => {
       prev.formData[field] = value;
-      if (field === "pii" && value === "false") {
+      if (field === "pii" && (value === "false" || value === "uncertain")) {
         prev.formData.piiDt = false;
         prev.formData.phi = false;
         prev.formData.genomicData = false;

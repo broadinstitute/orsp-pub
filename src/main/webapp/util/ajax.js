@@ -171,6 +171,10 @@ export const ConsentGroup = {
 
   hardDeleteConsentGroup(consentKey) {
     return axios.delete(UrlConstants.hardDeleteConsentGroup + '?consentKey=' + consentKey);
+  },
+
+  getCclBySequence(parentId, sequenceNumber) {
+    return axios.get(UrlConstants.getCclBySequenceUrl + `?parentId=${parentId}&sequenceNumber=${sequenceNumber}`);
   }
 };
 

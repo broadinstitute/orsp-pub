@@ -4,7 +4,7 @@ import { createObjectCopy, getDateString, isEmpty } from "../util/Utils";
 import './QuestionnaireWorkflow.css';
 import { UrlConstants } from '../util/UrlConstants';
 import { Security } from './Security';
-import { ConsentGroup } from '../util/ajax';
+import { ConsentGroup, ProjectInfoLink } from '../util/ajax';
 import { AlertMessage } from './AlertMessage';
 import { LegacySecurityReview } from './LegacySecurityReview';
 import { NewSecurityReview } from './NewSecurityReview';
@@ -108,7 +108,8 @@ export const SecurityReview = hh(class SecurityReview extends Component {
         msg: '',
         showMsg: false,
         type: 'success'
-      }
+      },
+      prevSeqData: {}
     };
   }
 
@@ -119,10 +120,24 @@ export const SecurityReview = hh(class SecurityReview extends Component {
   init = async () => {
     let securityInfoData = createObjectCopy(this.props.sample);
     this.setState({sampleProps: createObjectCopy(securityInfoData)});
+
+    if (!isEmpty(securityInfoData.parentId)) {
+      ConsentGroup.getCclBySequence(securityInfoData.parentId, (securityInfoData.sequenceNumber - 1))
+      .then((data) => {
+        let prevData = createObjectCopy(data.data[0]);
+        ProjectInfoLink.getProjectDataLocations(prevData.id).then((data) => {
+          prevData.dataLocations = createObjectCopy(data.data);
+          this.setState({prevSeqData: prevData});
+        })
+      })
+      .catch(err => console.log(err));
+    }
+
     if (!isEmpty(securityInfoData.store)) {
       let store = securityInfoData.store.split(',');
       store.forEach(item => securityInfoData[item] = true);
     }
+
     if (!isEmpty(securityInfoData.textStore)) securityInfoData.otherStore = true;
     let dataLocations = !isEmpty(securityInfoData.dataLocations) ? createObjectCopy(securityInfoData.dataLocations) : this.state.securityInfoData.dataLocations;
     !isEmpty(dataLocations) && dataLocations.forEach(loc => {
@@ -137,8 +152,10 @@ export const SecurityReview = hh(class SecurityReview extends Component {
         loc.dataStores.push(DATA_LOCATIONS.find(dataLoc => dataLoc.label.trim() === item.trim()));
       })
     });
+
     securityInfoData.dataLocations = dataLocations;
     securityInfoData.approvalDocument = isEmpty(securityInfoData.approvalDocument) ? {fileName: null} : securityInfoData.approvalDocument;
+    
     this.setState((prev) => {
       securityInfoData.deliveryDate = !isEmpty(securityInfoData.deliveryDate) ? new Date(securityInfoData.deliveryDate) : '';
       securityInfoData.releaseDate = !isEmpty(securityInfoData.releaseDate) ? new Date(securityInfoData.releaseDate) : '';
@@ -204,6 +221,11 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     url.includes('http') ? window.open(url, '_blank') : window.open('//' + url, '_blank');
   }
 
+  redirectToLatestVersion(consentCollectionId, projectKey, consentKey) {
+    const baseUrl = window.location.origin;
+    window.location.href = baseUrl + "/infoLink/showInfoLink?cclId=" + consentCollectionId + "&projectKey=" + projectKey + "&consentKey=" + consentKey;
+  }
+
   updateInfoSecurityFormData = (updatedForm, field) => {
     let securityInfoData = this.state.securityInfoData;
     securityInfoData[field] = updatedForm[field];
@@ -220,6 +242,9 @@ export const SecurityReview = hh(class SecurityReview extends Component {
   }
 
   handleSecurityInfoSubmit = () => {
+    if (JSON.stringify(this.state.tempSecurityInfoData) === JSON.stringify(this.state.securityInfoData)) {
+      return;
+    }
     const {approvalDocument, dataLocations, ...securityInfo} = this.state.securityInfoData;
     securityInfo.projectKey = securityInfo.projectKey ? securityInfo.projectKey : securityInfo.linkedProjectKey;
     if (!isEmpty(securityInfo.store) && typeof securityInfo.store !== 'string') securityInfo.store = securityInfo.store.join(',');
@@ -232,14 +257,22 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     }
     ConsentGroup.update(REQ_OBJ)
     .then((data) => {
+      let response = data.data;
       let savedData = createObjectCopy(this.state.securityInfoData);
       if (typeof savedData.store === 'object') savedData.store = savedData.store.join(',');
-      savedData.questionnaireVersion = "v2";
-      savedData.approvalDocument.uuid = data.data.docId;
+      savedData.questionnaireVersion = response.consentCollectionLink.questionnaireVersion;
+      savedData.approvalDocument.uuid = response.docId;
+      savedData.id = response.consentCollectionLink.id;
+      savedData.sequenceNumber = response.consentCollectionLink.sequenceNumber;
+      savedData.parentId = response.consentCollectionLink.parentId;
       this.setState({
         sampleProps: savedData,
+        securityInfoData: savedData,
         alert: {msg: 'Data Security updated Successfully', showMsg: true, type: 'success'}
-      }, () => {setTimeout(() => this.setState(prev => prev.alert.showMsg = false), 4000)});
+      }, () => {
+        setTimeout(() => this.setState(prev => prev.alert.showMsg = false), 4000);
+        this.redirectToLatestVersion(savedData.id, response.consentCollectionLink.projectKey, savedData.consentKey);
+      });
       this.props.setEditSecurity(false);
     })
     .catch((() => {
@@ -308,7 +341,9 @@ export const SecurityReview = hh(class SecurityReview extends Component {
                 sharingTypeAnswer: this.sharingTypeAnswer,
                 secondaryUseAnswer: this.secondaryUseAnswer,
                 storeOptions: this.storeOptions,
-                getBoolIfString: this.getBoolIfString
+                getBoolIfString: this.getBoolIfString,
+                compareChange: this.props.compareChange,
+                prevSeqData: this.state.prevSeqData
               })
             )
           ]),
@@ -327,7 +362,8 @@ export const SecurityReview = hh(class SecurityReview extends Component {
               hr({style: {margin: "12px 0"}}),
               button({
                 className: "btn buttonPrimary floatRight",
-                onClick: this.handleSecurityInfoSubmit
+                onClick: this.handleSecurityInfoSubmit,
+                disabled: JSON.stringify(this.state.tempSecurityInfoData) === JSON.stringify(this.state.securityInfoData)
               }, ['Submit']),
               button({
                 className: "btn buttonSecondary floatRight",

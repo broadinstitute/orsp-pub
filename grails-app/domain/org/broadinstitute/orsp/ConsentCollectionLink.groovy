@@ -11,8 +11,11 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
     String consentKey
     String sampleCollectionId
     Date creationDate
-    Date updatedDate
+    String updatedBy
     String questionnaireVersion
+    Integer parentId
+    Integer sequenceNumber
+    String isLatest
     String pii
     String requireMta
     String compliance
@@ -64,6 +67,7 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
 
     static mapping = {
         dataLocations fetch: 'join'
+        parentId column: 'parent_id'
     }
 
     static constraints = {
@@ -71,8 +75,11 @@ class ConsentCollectionLink  implements LogicalDelete<ConsentCollectionLink> {
         consentKey nullable: false
         sampleCollectionId nullable: true
         creationDate nullable: false
-        updatedDate nullable: true
+        updatedBy nullable: true
         questionnaireVersion nullable: true
+        parentId nullable: true
+        sequenceNumber nullable: false
+        isLatest nullable: false
         pii nullable: true
         requireMta nullable: true
         compliance nullable: true

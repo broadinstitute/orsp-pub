@@ -2,11 +2,15 @@ package org.broadinstitute.orsp
 
 class ConsentCollectionLinkDTO {
 
-    Long id
+    Integer id
     String linkedProjectKey
     String consentKey
+    String updatedBy
     String sampleCollectionId
     String questionnaireVersion
+    Integer parentId
+    Integer sequenceNumber
+    String isLatest
     String pii
     String requireMta
     String compliance

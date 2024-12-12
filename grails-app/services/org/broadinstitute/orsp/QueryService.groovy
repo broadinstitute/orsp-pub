@@ -377,7 +377,8 @@ class QueryService implements Status {
                         ' c.medical_numbers medicalNumbers, c.account_numbers accountNumbers, c.health_plan_numbers healthPlanNumbers, c.license_numbers licenseNumbers, c.vehicle_identifiers vehicleIdentifiers, ' +
                         ' c.web_urls webUrls, c.device_identifiers deviceIdentifiers, c.internet_protocol_addresses internetProtocolAddresses, c.face_photos facePhotos, c.biometric_identifiers biometricIdentifiers, ' +
                         ' c.unique_identifying uniqueIdentifying, c.other_identifier otherIdentifier, c.text_other_identifier textOtherIdentifier, c.data_secondary_use dataSecondaryUse, ' +
-                        ' c.collaborator_approval collaboratorApproval, c.mta_or_dta mtaOrDta, c.delivery_date deliveryDate, c.release_date releaseDate, c.questionnaire_version questionnaireVersion ' +
+                        ' c.collaborator_approval collaboratorApproval, c.mta_or_dta mtaOrDta, c.delivery_date deliveryDate, c.release_date releaseDate, c.questionnaire_version questionnaireVersion, ' +
+                        ' c.parent_id parentId, c.sequence_number sequenceNumber, c.is_latest isLatest, c.updated_by updatedBy ' +
                         ' from consent_collection_link c ' +
                         ' inner join issue ic on ic.project_key = c.consent_key ' +
                         ' inner join issue ip on ip.project_key = c.project_key ' +
@@ -448,7 +449,7 @@ class QueryService implements Status {
                 ' inner join issue ic on ic.project_key = c.consent_key ' +
                 ' inner join issue ip on ip.project_key = c.project_key ' +
                 ' left join sample_collection sc on sc.collection_id = c.sample_collection_id' +
-                ' where c.consent_key = :consentKey and c.deleted = 0'
+                ' where c.consent_key = :consentKey and c.deleted = 0 and is_latest="Y"'
         List<ConsentCollectionLinkDTO> results = session.createSQLQuery(query)
                 .setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
                 .setString('consentKey', consentKey)
@@ -2062,6 +2063,39 @@ class QueryService implements Status {
         final result = sqlQuery.with {
             list()
         }
+        result
+    }
+
+    List<ConsentCollectionLink> findCCLBySequence(Integer parentId, Integer sequenceNumber) {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        String query = ' select c.id id, c.consent_key consentKey, c.project_key linkedProjectKey, c.pii pii, c.compliance compliance, c.sharing_type sharingType , c.text_sharing_type textSharingType, ' +
+                ' c.text_compliance textCompliance, c.require_mta requireMta, c.sample_collection_id sampleCollectionId, ' +
+                ' c.phi phi, c.pii_dt piiDt, c.text_store textStore, c.publicly_available publiclyAvailable, c.store store, c.external_availability externalAvailability, c.genomic_data genomicData, ' +
+                ' sc.name collectionName, sc.category collectionCategory, sc.group_name collectionGroup, ic.summary consentName, ip.summary projectName, c.international_cohorts internationalCohorts, ' +
+                ' ip.type projectType, c.start_date startDate, c.end_date endDate, c.on_going_process onGoingProcess, ' +
+                ' c.names names, c.dates dates, c.telephone telephone, c.geographic_data geographicData, c.fax fax, c.social_security_number socialSecurityNumber, c.email_addresses emailAddresses, ' +
+                ' c.medical_numbers medicalNumbers, c.account_numbers accountNumbers, c.health_plan_numbers healthPlanNumbers, c.license_numbers licenseNumbers, c.vehicle_identifiers vehicleIdentifiers, ' +
+                ' c.web_urls webUrls, c.device_identifiers deviceIdentifiers, c.internet_protocol_addresses internetProtocolAddresses, c.face_photos facePhotos, c.biometric_identifiers biometricIdentifiers, ' +
+                ' c.unique_identifying uniqueIdentifying, c.other_identifier otherIdentifier, c.text_other_identifier textOtherIdentifier, c.data_secondary_use dataSecondaryUse, ' +
+                ' c.collaborator_approval collaboratorApproval, c.mta_or_dta mtaOrDta, c.delivery_date deliveryDate, c.release_date releaseDate, c.questionnaire_version questionnaireVersion, ' +
+                ' c.parent_id parentId, c.sequence_number sequenceNumber, c.is_latest isLatest, c.updated_by updatedBy ' +
+                ' from consent_collection_link c ' +
+                ' inner join issue ic on ic.project_key = c.consent_key ' +
+                ' inner join issue ip on ip.project_key = c.project_key ' +
+                ' left join sample_collection sc on sc.collection_id = c.sample_collection_id '
+        if (sequenceNumber == 0) {
+            query = query + ' where c.id= :parentId and c.sequence_number= :sequenceNumber'
+        } else {
+            query = query + ' where c.parent_id= :parentId and c.sequence_number= :sequenceNumber'
+        }
+
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter('parentId', parentId)
+        sqlQuery.setParameter('sequenceNumber', sequenceNumber)
+
+        sqlQuery.setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
+        final result = sqlQuery.list()
         result
     }
 
