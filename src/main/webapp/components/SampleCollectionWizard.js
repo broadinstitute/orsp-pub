@@ -147,7 +147,7 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
                 className: "btn buttonSecondary",
                 style: {marginRight: '10px', position: 'relative', bottom: '5px'},
                 onClick: this.handleCompareChange
-              }, ['Compare With Preceding Version']),
+              }, ['Compare With Previous Version']),
               button({
                 isRendered: !this.state.editSecurity && !this.state.compareChange,
                 className: "btn buttonPrimary",
