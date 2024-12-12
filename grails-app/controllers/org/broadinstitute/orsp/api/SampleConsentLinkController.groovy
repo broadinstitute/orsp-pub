@@ -40,6 +40,9 @@ class SampleConsentLinkController extends AuthenticatedController {
         try {
             consentCollectionLink.creationDate = new Date()
             consentCollectionLink.questionnaireVersion = "v2"
+            consentCollectionLink.sequenceNumber = 0
+            consentCollectionLink.isLatest = "Y"
+            consentCollectionLink.updatedBy = user?.displayName
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
             consentCollectionLink.status = queryService.areLinksApproved(consentCollectionLink.projectKey, consentCollectionLink.consentKey) ? CollectionLinkStatus.APPROVED.name : CollectionLinkStatus.PENDING.name
             persistenceService.saveConsentCollectionLink(consentCollectionLink)
@@ -91,34 +94,21 @@ class SampleConsentLinkController extends AuthenticatedController {
         try {
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
             consentCollectionLink.status = queryService.areLinksApproved(consentCollectionLink.projectKey, consentCollectionLink.consentKey) ? CollectionLinkStatus.APPROVED.name : CollectionLinkStatus.PENDING.name
-            consentCollectionLink.questionnaireVersion = "v2";
             persistenceService.updateConsentCollectionLink(consentCollectionLink)
+            ConsentCollectionLink newCCLData = persistenceService.saveConsentCollectionLink(extractConsentCollectionDataFromExisitingCCL(consentCollectionLink))
             dataLocations.each {
-                DataLocations existingDataLocations = DataLocations.findById(it.id)
-                if (existingDataLocations) {
-                    existingDataLocations.researchStage = it.researchStage
-                    existingDataLocations.dataStores = it.dataStores
-                    existingDataLocations.terraUrl = it.terraUrl
-                    existingDataLocations.gcsaUrl = it.gcsaUrl
-                    existingDataLocations.gdriveUrl = it.gdriveUrl
-                    existingDataLocations.onpremUrl = it.onpremUrl
-                    existingDataLocations.bilCluster = it.bilCluster
-                    existingDataLocations.otherText = it.otherText
-                    existingDataLocations.save(flush: true, failOnError: true)
-                } else {
-                    def dataLocation = new DataLocations(
-                            researchStage: it.researchStage,
-                            dataStores: it.dataStores,
-                            terraUrl: it.terraUrl,
-                            gcsaUrl: it.gcsaUrl,
-                            gdriveUrl: it.gdriveUrl,
-                            onpremUrl: it.onpremUrl,
-                            bilCluster: it.bilCluster,
-                            otherText: it.otherText
-                    )
-                    dataLocation.consentCollectionLink = consentCollectionLink
-                    dataLocation.save(flush: true)
-                }
+                def dataLocation = new DataLocations(
+                        researchStage: it.researchStage,
+                        dataStores: it.dataStores,
+                        terraUrl: it.terraUrl,
+                        gcsaUrl: it.gcsaUrl,
+                        gdriveUrl: it.gdriveUrl,
+                        onpremUrl: it.onpremUrl,
+                        bilCluster: it.bilCluster,
+                        otherText: it.otherText
+                )
+                dataLocation.consentCollectionLink = newCCLData
+                dataLocation.save(flush: true)
             }
             StorageDocument doc = new StorageDocument()
             if (!files?.isEmpty()) {
@@ -133,11 +123,87 @@ class SampleConsentLinkController extends AuthenticatedController {
                 }
             }
             response.status = 200
-            render([message: "Successfully updated", docId: doc.uuid] as JSON)
+            render([
+                message: "Successfully updated",
+                docId: doc.uuid,
+                consentCollectionLink: newCCLData,
+                dataLocations: dataLocations
+            ] as JSON)
         } catch (Exception e) {
             log.error("There was an error trying to update consent group: " + e.message)
             handleException(e)
         }
+    }
+
+    def getCCLBySequence() {
+        String parentId = params.parentId
+        String sequenceNumber = params.sequenceNumber
+        def result = queryService.findCCLBySequence(parentId.toInteger(), sequenceNumber.toInteger())
+        response.status = 200
+        render result as JSON
+    }
+
+    def extractConsentCollectionDataFromExisitingCCL(ConsentCollectionLink consentCollectionLink) {
+        User user = getUser()
+        Long parentId = consentCollectionLink.parentId ? consentCollectionLink.parentId : consentCollectionLink.id
+        consentCollectionLink.discard()
+        consentCollectionLink.id = null
+        return new ConsentCollectionLink(
+                projectKey: consentCollectionLink.projectKey,
+                creationDate: new Date(),
+                updatedBy: user.displayName,
+                consentKey: consentCollectionLink.consentKey,
+                questionnaireVersion: consentCollectionLink.questionnaireVersion,
+                sequenceNumber: consentCollectionLink.sequenceNumber + 1,
+                parentId: parentId,
+                isLatest: "Y",
+                pii: consentCollectionLink.pii,
+                requireMta: consentCollectionLink.requireMta,
+                compliance: consentCollectionLink.compliance,
+                sharingType: consentCollectionLink.sharingType,
+                textSharingType: consentCollectionLink.textSharingType,
+                textCompliance: consentCollectionLink.textCompliance,
+                internationalCohorts: consentCollectionLink.internationalCohorts,
+                publiclyAvailable: consentCollectionLink.publiclyAvailable,
+                store: consentCollectionLink.store,
+                externalAvailability: consentCollectionLink.externalAvailability,
+                textStore: consentCollectionLink.textStore,
+                piiDt: consentCollectionLink.piiDt,
+                phi: consentCollectionLink.phi,
+                genomicData: consentCollectionLink.genomicData,
+                names: consentCollectionLink.names,
+                dates: consentCollectionLink.dates,
+                telephone: consentCollectionLink.telephone,
+                geographicData: consentCollectionLink.geographicData,
+                fax: consentCollectionLink.fax,
+                socialSecurityNumber: consentCollectionLink.socialSecurityNumber,
+                emailAddresses: consentCollectionLink.emailAddresses,
+                medicalNumbers: consentCollectionLink.medicalNumbers,
+                accountNumbers: consentCollectionLink.accountNumbers,
+                healthPlanNumbers: consentCollectionLink.healthPlanNumbers,
+                licenseNumbers: consentCollectionLink.licenseNumbers,
+                vehicleIdentifiers: consentCollectionLink.vehicleIdentifiers,
+                webUrls: consentCollectionLink.webUrls,
+                deviceIdentifiers: consentCollectionLink.deviceIdentifiers,
+                internetProtocolAddresses: consentCollectionLink.internetProtocolAddresses,
+                facePhotos: consentCollectionLink.facePhotos,
+                biometricIdentifiers: consentCollectionLink.biometricIdentifiers,
+                uniqueIdentifying: consentCollectionLink.uniqueIdentifying,
+                otherIdentifier: consentCollectionLink.otherIdentifier,
+                textOtherIdentifier: consentCollectionLink.textOtherIdentifier,
+                startDate: consentCollectionLink.startDate,
+                endDate: consentCollectionLink.endDate,
+                onGoingProcess: consentCollectionLink.onGoingProcess,
+                status: consentCollectionLink.status,
+                linkedProject: consentCollectionLink.linkedProject,
+                sampleCollection: consentCollectionLink.sampleCollection,
+                restriction: consentCollectionLink.restriction,
+                dataSecondaryUse: consentCollectionLink.dataSecondaryUse,
+                collaboratorApproval: consentCollectionLink.collaboratorApproval,
+                mtaOrDta: consentCollectionLink.mtaOrDta,
+                deliveryDate: consentCollectionLink.deliveryDate,
+                releaseDate: consentCollectionLink.releaseDate
+        )
     }
 
 }

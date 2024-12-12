@@ -3,12 +3,12 @@ CREATE TABLE data_locations (
     collection_link_id BIGINT NOT NULL,   -- Foreign key column referencing consent_collection_link
     research_stage VARCHAR(100) DEFAULT NULL,
     data_stores VARCHAR(2048) DEFAULT NULL,
-    terra_url VARCHAR(2048) DEFAULT NULL,
-    gcsa_url VARCHAR(2048) DEFAULT NULL,
-    gdrive_url VARCHAR(2048) DEFAULT NULL,
-    onprem_url VARCHAR(2048) DEFAULT NULL,
-    bil_cluster VARCHAR(2048) DEFAULT NULL,
-    other_text VARCHAR(2048) DEFAULT NULL,
+    terra_url TEXT DEFAULT NULL,
+    gcsa_url TEXT DEFAULT NULL,
+    gdrive_url TEXT DEFAULT NULL,
+    onprem_url TEXT DEFAULT NULL,
+    bil_cluster TEXT DEFAULT NULL,
+    other_text TEXT DEFAULT NULL,
     deleted BIT(1) NOT NULL DEFAULT b'0', -- Deleted flag
     version BIGINT NOT NULL,              -- Version column
 

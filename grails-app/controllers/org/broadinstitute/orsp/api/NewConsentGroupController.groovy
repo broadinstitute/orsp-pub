@@ -76,6 +76,9 @@ class NewConsentGroupController extends AuthenticatedController {
                 consentCollectionLink.consentKey = consent.projectKey
                 consentCollectionLink.creationDate = new Date()
                 consentCollectionLink.questionnaireVersion = "v2"
+                consentCollectionLink.sequenceNumber = 0
+                consentCollectionLink.isLatest = "Y"
+                consentCollectionLink.updatedBy = user?.displayName
                 persistenceService.saveEvent(issue.projectKey, user?.displayName, "New Consent Group Added", EventType.SUBMIT_CONSENT_GROUP)
                 Boolean notifyableDatalocationsFound = false
                 try {

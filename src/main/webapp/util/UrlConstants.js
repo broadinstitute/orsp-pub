@@ -41,6 +41,7 @@ export const UrlConstants = {
   deleteNoReasonConsent: context +'/api/consent-group/delete-consent-reason',
   getConsentCollectionLinks: context + '/api/consent-collection-links',
   hardDeleteConsentGroup: context + '/api/consent-group/hard-delete',
+  getCclBySequenceUrl: context + '/api/consent-group/get-ccl-by-sequence',
 
   // File related urls
   attachDocuments: context + '/api/files-helper/attach-document',

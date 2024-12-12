@@ -77,57 +77,7 @@ class PersistenceService {
         try {
             ConsentCollectionLink existingLink = ConsentCollectionLink.findById(consentCollectionLink.id)
             if (existingLink) {
-                consentCollectionLink.projectKey = existingLink.projectKey
-                consentCollectionLink.creationDate = existingLink.creationDate
-                existingLink.consentKey = consentCollectionLink.consentKey
-                existingLink.questionnaireVersion = consentCollectionLink.questionnaireVersion
-                existingLink.pii = consentCollectionLink.pii
-                existingLink.requireMta = consentCollectionLink.requireMta
-                existingLink.compliance = consentCollectionLink.compliance
-                existingLink.sharingType = consentCollectionLink.sharingType
-                existingLink.textSharingType = consentCollectionLink.textSharingType
-                existingLink.textCompliance = consentCollectionLink.textCompliance
-                existingLink.internationalCohorts = consentCollectionLink.internationalCohorts
-                existingLink.publiclyAvailable = consentCollectionLink.publiclyAvailable
-                existingLink.store = consentCollectionLink.store
-                existingLink.externalAvailability = consentCollectionLink.externalAvailability
-                existingLink.textStore = consentCollectionLink.textStore
-                existingLink.piiDt = consentCollectionLink.piiDt
-                existingLink.phi = consentCollectionLink.phi
-                existingLink.genomicData = consentCollectionLink.genomicData
-                existingLink.names = consentCollectionLink.names
-                existingLink.dates = consentCollectionLink.dates
-                existingLink.telephone = consentCollectionLink.telephone
-                existingLink.geographicData = consentCollectionLink.geographicData
-                existingLink.fax = consentCollectionLink.fax
-                existingLink.socialSecurityNumber = consentCollectionLink.socialSecurityNumber
-                existingLink.emailAddresses = consentCollectionLink.emailAddresses
-                existingLink.medicalNumbers = consentCollectionLink.medicalNumbers
-                existingLink.accountNumbers = consentCollectionLink.accountNumbers
-                existingLink.healthPlanNumbers = consentCollectionLink.healthPlanNumbers
-                existingLink.licenseNumbers = consentCollectionLink.licenseNumbers
-                existingLink.vehicleIdentifiers = consentCollectionLink.vehicleIdentifiers
-                existingLink.webUrls = consentCollectionLink.webUrls
-                existingLink.deviceIdentifiers = consentCollectionLink.deviceIdentifiers
-                existingLink.internetProtocolAddresses = consentCollectionLink.internetProtocolAddresses
-                existingLink.facePhotos = consentCollectionLink.facePhotos
-                existingLink.biometricIdentifiers = consentCollectionLink.biometricIdentifiers
-                existingLink.uniqueIdentifying = consentCollectionLink.uniqueIdentifying
-                existingLink.otherIdentifier = consentCollectionLink.otherIdentifier
-                existingLink.textOtherIdentifier = consentCollectionLink.textOtherIdentifier
-                existingLink.startDate = consentCollectionLink.startDate
-                existingLink.endDate = consentCollectionLink.endDate
-                existingLink.onGoingProcess = consentCollectionLink.onGoingProcess
-                existingLink.status = consentCollectionLink.status
-                existingLink.linkedProject = consentCollectionLink.linkedProject
-                existingLink.sampleCollection = consentCollectionLink.sampleCollection
-                existingLink.restriction = consentCollectionLink.restriction
-                existingLink.dataSecondaryUse = consentCollectionLink.dataSecondaryUse
-                existingLink.collaboratorApproval = consentCollectionLink.collaboratorApproval
-                existingLink.mtaOrDta = consentCollectionLink.mtaOrDta
-                existingLink.deliveryDate = consentCollectionLink.deliveryDate
-                existingLink.releaseDate = consentCollectionLink.releaseDate
-                existingLink.updatedDate = new Date()
+                existingLink.isLatest = "N"
                 existingLink.save(flush: true, failOnError: true)
             } else {
                 throw new Exception("ConsentCollectionLink not found for ID: ${consentCollectionLink.id}")

@@ -508,3 +508,15 @@ input[type=checkbox] {
 .ml-15 {
   margin-left: 15px;
 }
+
+del {
+  padding: 1px 5px;
+  background-color: rgba(255, 0, 0, 0.3);
+  margin: 0 6px 0 0;
+}
+
+ins {
+  padding: 1px 5px;
+  background-color: rgba(60, 179, 113, 0.3);
+  margin: 0 6px 0 0;
+}

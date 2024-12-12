@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { div, hh, label, span, button } from 'react-hyperscript-helpers';
+import { div, hh, label, span, button, i } from 'react-hyperscript-helpers';
 import { SecurityReview } from "./SecurityReview";
 import { IntCohortsReview } from "./IntCohortsReview";
 import { isEmpty } from "../util/Utils";
@@ -17,7 +17,8 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
     super(props);
     this.state = {
       currentStepIndex: isEmpty(this.props.sample.internationalCohorts) ? 1 : 0,
-      editSecurity: false
+      editSecurity: false,
+      compareChange: false
     };
   }
 
@@ -121,6 +122,14 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
     this.setEditSecurity(false);
   }
 
+  handleCompareChange = () => {
+    this.setState({compareChange: true})
+  }
+
+  handleCancelCompare = () => {
+    this.setState({compareChange: false});
+  }
+
   render() {
     const { currentStepIndex } = this.state;
     return (
@@ -132,18 +141,25 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
             div({ isRendered: !!this.props.sample.requireMta, className: "tab "  + (currentStepIndex === 2 ? "active" : ""), onClick: this.goStep(2)}, ["MTA"]),
             div({ className: "tab "  + (currentStepIndex === 3 ? "active" : ""), onClick: this.goStep(3)}, ["Documents"]),
             div({isRendered: currentStepIndex === 1, className: "floatRight"}, [
+              i({style: {marginRight: "20px", position: "relative", bottom: "3px"}}, ['Last Modified By: ' + this.props.sample.updatedBy]),
               button({
-                isRendered: !this.state.editSecurity,
+                isRendered: !this.state.compareChange && !this.state.editSecurity && this.props.sample.sequenceNumber !== 0,
+                className: "btn buttonSecondary",
+                style: {marginRight: '10px', position: 'relative', bottom: '5px'},
+                onClick: this.handleCompareChange
+              }, ['Compare With Preceding Version']),
+              button({
+                isRendered: !this.state.editSecurity && !this.state.compareChange,
                 className: "btn buttonPrimary",
                 style: {marginRight: '10px', position: 'relative', bottom: '5px'},
                 onClick: this.handleEditDataSecurity
               }, ['Edit Data Security']),
               button({
-                isRendered: this.state.editSecurity,
+                isRendered: this.state.editSecurity || this.state.compareChange,
                 className: "btn buttonSecondary",
                 style: {marginRight: '10px', position: 'relative', bottom: '5px'},
-                onClick: this.handleCancelEdit
-              }, ['Cancel'])
+                onClick: this.state.compareChange ? this.handleCancelCompare : this.handleCancelEdit
+              }, [this.state.compareChange ? 'Go Back' : 'Cancel'])
             ])
           ]),
           div({ className: "linkTabContent" }, [
@@ -158,8 +174,9 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
             SecurityReview({
               currentStep: currentStepIndex,
               step: 1,
-              sample : this.props.sample,
+              sample: this.props.sample,
               editSecurity: this.state.editSecurity,
+              compareChange: this.state.compareChange,
               setEditSecurity: this.setEditSecurity,
               handleCancelEdit: this.handleCancelEdit,
               ref: (ref) => (this.childRef = ref)

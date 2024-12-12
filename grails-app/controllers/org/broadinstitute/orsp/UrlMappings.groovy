@@ -58,6 +58,7 @@ class UrlMappings {
         '/api/consent-group/get-project-consent-groups'(controller:'newConsentGroup', action:'getProjectConsentGroups', method: 'GET')
         '/api/consent-groups/matching-name'(controller: 'newConsentGroup', action: 'matchConsentName', method: 'GET')
         '/api/consent-group/update'(controller: 'sampleConsentLink', action: 'updateConsentGroup', method: 'POST')
+        '/api/consent-group/get-ccl-by-sequence'(controller: 'sampleConsentLink', action: 'getCCLBySequence', method: 'GET')
 
         // File related end points
         '/api/files-helper/attach-document'(controller: 'fileHelper', action: 'attachDocument', method: 'POST')
