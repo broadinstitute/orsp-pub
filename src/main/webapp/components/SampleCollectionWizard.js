@@ -141,7 +141,12 @@ export const SampleCollectionWizard = hh(class SampleCollectionWizard extends Co
             div({ isRendered: !!this.props.sample.requireMta, className: "tab "  + (currentStepIndex === 2 ? "active" : ""), onClick: this.goStep(2)}, ["MTA"]),
             div({ className: "tab "  + (currentStepIndex === 3 ? "active" : ""), onClick: this.goStep(3)}, ["Documents"]),
             div({isRendered: currentStepIndex === 1, className: "floatRight"}, [
-              i({style: {marginRight: "20px", position: "relative", bottom: "3px"}}, ['Last Modified By: ' + this.props.sample.updatedBy]),
+              i({
+                isRendered: !isEmpty(this.props.sample.updatedBy),
+                style: {marginRight: "20px", position: "relative", bottom: "3px"}
+              }, 
+                ['Last Modified By: ' + this.props.sample.updatedBy]
+              ),
               button({
                 isRendered: !this.state.compareChange && !this.state.editSecurity && this.props.sample.sequenceNumber !== 0,
                 className: "btn buttonSecondary",
