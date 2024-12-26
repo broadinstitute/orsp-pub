@@ -45,6 +45,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
       generalError: false,
       errorSubmit: false,
       descriptionError: false,
+      originDescriptionError: false,
+      actionDescriptionError: false,
+      sharingDescriptionError: false,
       projectTitleError: false,
       editTypeError: false,
       editDescriptionError: false,
@@ -158,7 +161,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       questions: null,
       enabledQuestionsWizard: false,
       sponsorHasError: false,
-      identifierHasError: false
+      identifierHasError: false,
+      isLegacyDescription: true
     };
     this.state.questions = initQuestions();
     this.rejectProject = this.rejectProject.bind(this);
@@ -188,8 +192,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
       issue => {
         // store current issue info here ....
         this.props.initStatusBoxInfo(issue.data);
+        if (isEmpty(issue.data.issue.description)) this.setState({isLegacyDescription: false});
         current.approvalStatus = issue.data.issue.approvalStatus;
         current.description = isEmpty(issue.data.issue.description) ? '' : he.decode(sanitizeHtml(issue.data.issue.description, { allowedTags: [] }));
+        current.originDescription = isEmpty(issue.data.issue.originDescription) ? '' : he.decode(sanitizeHtml(issue.data.issue.originDescription, { allowedTags: [] }));
+        current.actionDescription = isEmpty(issue.data.issue.actionDescription) ? '' : he.decode(sanitizeHtml(issue.data.issue.actionDescription, { allowedTags: [] }));
+        current.sharingDescription = isEmpty(issue.data.issue.sharingDescription) ? '' : he.decode(sanitizeHtml(issue.data.issue.sharingDescription, { allowedTags: [] }));
         current.affiliationOther = issue.data.issue.affiliationOther;
         current.projectExtraProps = issue.data.extraProperties;
         current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb);
@@ -444,6 +452,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
     let project = {};
     project.type = getProjectType(this.state.formData.projectType);
     project.description = this.state.formData.description;
+    project.originDescription = this.state.formData.originDescription;
+    project.actionDescription = this.state.formData.actionDescription;
+    project.sharingDescription = this.state.formData.sharingDescription;
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
     project.attestation = this.state.formData.projectExtraProps.attestation;
@@ -738,6 +749,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
       prev.current = this.state.futureCopy;
       prev.generalError = false;
       prev.descriptionError = false;
+      prev.originDescriptionError = false;
+      prev.actionDescriptionError = false;
+      prev.sharingDescriptionError = false;
       prev.errorSubmit = false;
       prev.showAlert = false;
       prev.readOnly = true;
@@ -956,6 +970,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
   isValid() {
     let descriptionError = false;
+    let originDescriptionError = false;
+    let actionDescriptionError = false;
+    let sharingDescriptionError = false;
     let projectTitleError = false;
     let attestationError = false;
     let editTypeError = false;
@@ -986,8 +1003,20 @@ const ProjectReview = hh(class ProjectReview extends Component {
       editTypeError = true;
       generalError = true;
     }
-    if (isEmpty(this.state.formData.description)) {
+    if (this.state.isLegacyDescription && isEmpty(this.state.formData.description)) {
       descriptionError = true;
+      generalError = true;
+    }
+    if (!this.state.isLegacyDescription && isEmpty(this.state.formData.originDescription)) {
+      originDescriptionError = true;
+      generalError = true;
+    }
+    if (!this.state.isLegacyDescription && isEmpty(this.state.formData.actionDescription)) {
+      actionDescriptionError = true;
+      generalError = true;
+    }
+    if (!this.state.isLegacyDescription && isEmpty(this.state.formData.sharingDescription)) {
+      sharingDescriptionError = true;
       generalError = true;
     }
     if (isEmpty(this.state.formData.projectExtraProps.projectTitle)) {
@@ -1004,6 +1033,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
     }
     this.setState(prev => {
       prev.descriptionError = descriptionError;
+      prev.originDescriptionError = originDescriptionError;
+      prev.actionDescriptionError = actionDescriptionError;
+      prev.sharingDescriptionError = sharingDescriptionError;
       prev.projectTitleError = projectTitleError;
       prev.attestationError = attestationError;
       prev.editDescriptionError = editDescriptionError;
@@ -1018,6 +1050,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
     return !attestationError &&
       !projectTitleError &&
       !descriptionError &&
+      !originDescriptionError &&
+      !actionDescriptionError &&
+      !sharingDescriptionError &&
       !editTypeError &&
       !editDescriptionError &&
       !fundingError &&
@@ -1269,8 +1304,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
         div({ id: "projectSummary" }, [
           Panel({ title: "Project Summary" }, [
-            div({ id: "projectSummaryInputTextArea" }, [
-              div({ isRendered: (this.state.formData.description != this.state.current.description) || !this.state.readOnly }, [
+            div({ 
+              id: "projectSummaryInputTextArea",
+              isRendered: this.state.isLegacyDescription
+            }, [
+              div({ isRendered: (this.state.formData.description !== this.state.current.description) || !this.state.readOnly }, [
                 InputFieldTextArea({
                   id: "inputStudyActivitiesDescription",
                   name: "description",
@@ -1287,10 +1325,105 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 })
               ]),
               
-              div({ isRendered: this.state.readOnly && (this.state.formData.description == this.state.current.description) }, [
+              div({ isRendered: this.state.readOnly && (this.state.formData.description === this.state.current.description) }, [
                 p({ className: "inputFieldLabel" }, "Broad study activities "),
                 div({ className: "inputFieldReadOnly" }, [
                   div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' }}, this.state.current.description)
+                ])
+              ])
+            ]),
+
+            div({ 
+              id: "seperatedDescriptionInputTextArea",
+              isRendered: !this.state.isLegacyDescription,
+             }, [
+              div({ 
+                isRendered: (this.state.formData.originDescription !== this.state.current.originDescription) || !this.state.readOnly,
+                style: {margin: '0 0 20px 0'}
+              }, [
+                InputFieldTextArea({
+                  id: "inputStudyActivitiesDescription",
+                  name: "originDescription",
+                  label: "Describe the sample/data you are receiving and their origin ",
+                  moreInfo: "",
+                  value: this.state.formData.originDescription,
+                  currentValue: this.state.current.originDescription,
+                  readOnly: this.state.readOnly,
+                  readonly: true,
+                  required: true,
+                  onChange: this.handleInputChange,
+                  error: this.state.originDescriptionError,
+                  errorMessage: "Required field"
+                })
+              ]),
+              
+              div({ 
+                isRendered: this.state.readOnly && (this.state.formData.originDescription === this.state.current.originDescription),
+                style: {margin: '0 0 20px 0'}
+              }, [
+                p({ className: "inputFieldLabel" }, "Recieved sample/data and their origin "),
+                div({ className: "inputFieldReadOnly" }, [
+                  div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' }}, this.state.current.originDescription)
+                ])
+              ]),
+
+              div({ 
+                isRendered: (this.state.formData.actionDescription !== this.state.current.actionDescription) || !this.state.readOnly,
+                style: {margin: '20px 0'}
+               }, [
+                InputFieldTextArea({
+                  id: "inputStudyActivitiesDescription",
+                  name: "actionDescription",
+                  label: "Describe what you will do with the samples/data at Broad ",
+                  moreInfo: "",
+                  value: this.state.formData.actionDescription,
+                  currentValue: this.state.current.actionDescription,
+                  readOnly: this.state.readOnly,
+                  readonly: true,
+                  required: true,
+                  onChange: this.handleInputChange,
+                  error: this.state.actionDescriptionError,
+                  errorMessage: "Required field"
+                })
+              ]),
+              
+              div({ 
+                isRendered: this.state.readOnly && (this.state.formData.actionDescription === this.state.current.actionDescription),
+                style: {margin: '20px 0'}
+              }, [
+                p({ className: "inputFieldLabel" }, "Use of samples/data at Broad"),
+                div({ className: "inputFieldReadOnly" }, [
+                  div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' }}, this.state.current.actionDescription)
+                ])
+              ]),
+
+              div({ 
+                isRendered: (this.state.formData.sharingDescription !== this.state.current.sharingDescription) || !this.state.readOnly,
+                style: {margin: '20px 0'}
+              }, [
+                InputFieldTextArea({
+                  id: "inputStudyActivitiesDescription",
+                  name: "sharingDescription",
+                  label: "Describe any sample/data sharing plans, ",
+                  moreInfo: "if applicable (e.g. with a database such as dbGaP or with collaborators inside or outside the Broad)",
+                  value: this.state.formData.sharingDescription,
+                  currentValue: this.state.current.sharingDescription,
+                  readOnly: this.state.readOnly,
+                  readonly: true,
+                  required: true,
+                  onChange: this.handleInputChange,
+                  error: this.state.sharingDescriptionError,
+                  errorMessage: "Required field"
+                })
+              ]),
+              
+              div({ 
+                isRendered: this.state.readOnly && (this.state.formData.sharingDescription === this.state.current.sharingDescription),
+                style: {margin: '20px 0'}
+              }, [
+                p({ className: "inputFieldLabel" }, "Sample/data sharing plans"),
+                div({ className: "inputFieldReadOnly" }, [
+                  div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' }}, this.state.current.sharingDescription)
                 ])
               ])
             ]),

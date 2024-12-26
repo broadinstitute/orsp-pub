@@ -164,6 +164,15 @@ class IssueService implements UserInfo {
         if (input.get(IssueExtraProperty.DESCRIPTION)) {
             issue.setDescription((String) input.get(IssueExtraProperty.DESCRIPTION))
         }
+        if (input.get(IssueExtraProperty.ORIGIN_DESCRIPTION)) {
+            issue.setOriginDescription((String) input.get(IssueExtraProperty.ORIGIN_DESCRIPTION))
+        }
+        if (input.get(IssueExtraProperty.ACTION_DESCRIPTION)) {
+            issue.setActionDescription((String) input.get(IssueExtraProperty.ACTION_DESCRIPTION))
+        }
+        if (input.get(IssueExtraProperty.SHARING_DESCRIPTION)) {
+            issue.setSharingDescription((String) input.get(IssueExtraProperty.SHARING_DESCRIPTION))
+        }
         if (input.get("expirationDate")) {
             issue.setExpirationDate(Date.parse('MM/dd/yyyy', input.get("expirationDate").toString()))
         } else {
