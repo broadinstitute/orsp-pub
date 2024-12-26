@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { u, hh, span, a, div, label, ul, li, p, hr, br } from 'react-hyperscript-helpers';
 import { getDateString, isEmpty } from "../util/Utils";
 import { UrlConstants } from "../util/UrlConstants";
@@ -46,7 +46,7 @@ export const NewSecurityReview = hh(class NewSecurityReview extends Component {
       uniqueIdentifying = '',
       otherIdentifier = '',
       textOtherIdentifier = '',
-      dataSecondaryUse = '',
+      dataSecondaryUse = [],
       collaboratorApproval = '',
       mtaOrDta = '',
       deliveryDate = '',
@@ -197,7 +197,7 @@ export const NewSecurityReview = hh(class NewSecurityReview extends Component {
             }, [isEmpty(textSharingType) ? "--" : textSharingType]),
           ]),
     
-          div({style: {marginBottom: '20px'}}, [
+          div({}, [
             label({
               style: {color: '#286090', fontSize: '1.071rem', marginBottom: '8px'}
             }, ["5. Data Location(s)"]),
@@ -275,7 +275,15 @@ export const NewSecurityReview = hh(class NewSecurityReview extends Component {
     
           div({ className: "answerWrapper" }, [
             label({}, ["6. Are you willing to share this data for secondary use in accordance with its consent form after primary research activites are complete? "]),
-            div({}, [this.props.secondaryUseAnswer(dataSecondaryUse)]),
+            div({}, [
+              dataSecondaryUse.map(item => {
+                return (
+                  <ul>
+                    <li>{this.props.secondaryUseAnswer(item)}</li>
+                  </ul>
+                )
+              })
+            ]),
             p({isRendered: isEmpty(dataSecondaryUse)}, ["--"])
           ]),
     

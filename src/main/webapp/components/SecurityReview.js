@@ -119,6 +119,12 @@ export const SecurityReview = hh(class SecurityReview extends Component {
 
   init = async () => {
     let securityInfoData = createObjectCopy(this.props.sample);
+    if (!isEmpty(securityInfoData.dataSecondaryUse)) {
+      securityInfoData.dataSecondaryUse = securityInfoData.dataSecondaryUse.split(', ');
+      securityInfoData.dataSecondaryUse.forEach(item => {
+        securityInfoData[item] = true;
+      });
+    }
     this.setState({sampleProps: createObjectCopy(securityInfoData)});
 
     if (!isEmpty(securityInfoData.parentId)) {
@@ -242,7 +248,20 @@ export const SecurityReview = hh(class SecurityReview extends Component {
   }
 
   handleSecurityInfoSubmit = () => {
-    if (JSON.stringify(this.state.tempSecurityInfoData) === JSON.stringify(this.state.securityInfoData)) {
+    let tempSecInfo = createObjectCopy(this.state.tempSecurityInfoData);
+    let secInfoData = createObjectCopy(this.state.securityInfoData);
+    let isDSUEdited = false;
+    if(tempSecInfo.dataSecondaryUse.length !== secInfoData.dataSecondaryUse.length) {
+      isDSUEdited = true;
+    } else {
+      isDSUEdited = !tempSecInfo.dataSecondaryUse.every(item => secInfoData.dataSecondaryUse.includes(item));
+    }
+    delete tempSecInfo.dataSecondaryUse;
+    delete secInfoData.dataSecondaryUse;
+    if (JSON.stringify(tempSecInfo) === JSON.stringify(secInfoData) && !isDSUEdited) {
+      this.setState({
+        alert: {showMsg: true, msg: "Please make changes to the form before submitting", type: "warning"}
+      }, () => setTimeout(() => this.setState({alert: {showMsg: false}}), 3000));
       return;
     }
     const {approvalDocument, dataLocations, ...securityInfo} = this.state.securityInfoData;
@@ -250,6 +269,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     if (!isEmpty(securityInfo.store) && typeof securityInfo.store !== 'string') securityInfo.store = securityInfo.store.join(',');
     securityInfo.deliveryDate = securityInfo.deliveryDate ? securityInfo.deliveryDate : null;
     securityInfo.releaseDate = securityInfo.releaseDate ? securityInfo.releaseDate : null;
+    securityInfo.dataSecondaryUse = securityInfo.dataSecondaryUse.join(", ");
     const REQ_OBJ = {
       securityInfo, 
       file: approvalDocument,
@@ -358,12 +378,11 @@ export const SecurityReview = hh(class SecurityReview extends Component {
               handleSecurityValidity: this.handleInfoSecurityValidity,
               securityInfoData: this.state.securityInfoData
             }),
-            div({style: {height: "40px"}}, [
+            div({style: {height: "40px", marginBottom: "20px"}}, [
               hr({style: {margin: "12px 0"}}),
               button({
                 className: "btn buttonPrimary floatRight",
-                onClick: this.handleSecurityInfoSubmit,
-                disabled: JSON.stringify(this.state.tempSecurityInfoData) === JSON.stringify(this.state.securityInfoData)
+                onClick: this.handleSecurityInfoSubmit
               }, ['Submit']),
               button({
                 className: "btn buttonSecondary floatRight",

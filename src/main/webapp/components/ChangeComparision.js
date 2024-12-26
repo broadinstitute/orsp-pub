@@ -45,10 +45,14 @@ const ChangeComparision = hh(class ChangeComparision extends Component {
             }
 
           case 'secondaryUseAnswer':
-            if (this.props.secondaryUseAnswer(value) !== this.props.secondaryUseAnswer(this.props.prevSeqData[key])) {
+            if (value.join(", ") !== this.props.prevSeqData[key]) {
               return span ({}, [
-                  del([this.props.secondaryUseAnswer(this.props.prevSeqData[key])]),
-                  ins([this.props.secondaryUseAnswer(value)])
+                ul({style: {backgroundColor: "rgba(255, 0, 0, 0.3)", textDecoration: "line-through"}}, [
+                  this.props.prevSeqData[key].split(", ").map(item => li([this.props.secondaryUseAnswer(item)]))
+                ]),
+                ul({style: {backgroundColor: "rgba(60, 179, 113, 0.3)", textDecoration: "underline"}}, [
+                  value.map(item => li([this.props.secondaryUseAnswer(item)]))
+                ])
               ]);
             } else {
                 return span([this.props.secondaryUseAnswer(value)]);
@@ -285,7 +289,7 @@ const ChangeComparision = hh(class ChangeComparision extends Component {
               }, [isEmpty(textSharingType) ? "--" : this.compareData('textSharingType', textSharingType)]),
             ]),
       
-            div({style: {marginBottom: '20px'}}, [
+            div({}, [
               label({
                 style: {color: '#286090', fontSize: '1.071rem', marginBottom: '8px'}
               }, ["5. Data Location(s)"]),

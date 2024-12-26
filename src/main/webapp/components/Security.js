@@ -136,6 +136,24 @@ export const Security = hh(class Security extends Component {
     });
   };
 
+  handleDataSecondaryUseChange = (e) => {
+    const value = e.target.checked;
+    const field = e.target.name;
+    this.setState(prev => {
+      prev.formData[field] = value;
+      if (prev.formData.dataSecondaryUse === undefined) prev.formData.dataSecondaryUse = [];
+      if (value) {
+        prev.formData.dataSecondaryUse.push(field);
+      } else {
+        prev.formData.dataSecondaryUse.splice(prev.formData.dataSecondaryUse.indexOf(field))
+      }
+      return prev;
+    }, () => {
+      this.props.handleSecurityValidity(this.validate());
+      this.props.updateForm(this.state.formData, field);
+    })
+  }
+
   handleInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
@@ -891,31 +909,57 @@ export const Security = hh(class Security extends Component {
             }), "Add More Locations"]
           )
         ]),
-        InputFieldRadio({
-          id: "dataSecondaryUse",
-          name: "dataSecondaryUse",
-          label: span({}, ["6. Are you willing to share this data for secondary use if sharing is permissible according to the 1) terms of the informed consent form, 2) any relevant material or data transfer agreements, and 3) the approval of the researcher who originally collected the samples or data? "]),
-          moreInfo: span( [" (Secondary research makes use of existing data or specimens collected previously for a different purpose.) Please note: Answering yes to this question only documents a willingness to share the data or specimens; actual sharing will require review of the consent form(s) by ORSP, review of relevant MTAs or DTAs by OSAP, and the permission of the researcher who originally collected the data or specimens."]),
-          value: this.props.securityInfoData.dataSecondaryUse,
-          optionLabels: [
-            "Yes, the Broad may facilitate sharing my data for secondary use via the Broad Data Access Committee",
-            "Yes, it will be shared through an external repository and/or data access committee (i.e. dbGaP)",
-            "No, this data should not be shared for secondary use",
-            "I need assistance from ORSP to answer this question",
-            "Uncertain"
-          ],
-          optionValues: [
-            "broadFacilitatedSharing",
-            "externalSharing",
-            "no",
-            "needAssistance",
-            "uncertain"
-          ],
-          onChange: this.handleRadio2Change,
-          required: false,
-          error: false,
-          errorMessage: "Required field"
-        }),
+        div({style: { 'marginBottom': '20px' }}, [
+          p({ className: "inputFieldLabel", style: {fontSize: '1.071rem'} }, [
+            `6. Are you willing to share this data for secondary use if sharing is permissible according to the 1) terms of the informed consent form, 
+            2) any relevant material or data transfer agreements, and 3) the approval of the researcher who originally collected the samples or data? `,
+            span({ className: "normal" }, [` (Secondary research makes use of existing data or specimens collected previously for a different purpose.) 
+              Please note: Answering yes to this question only documents a willingness to share the data or specimens; actual sharing will require review 
+              of the consent form(s) by ORSP, review of relevant MTAs or DTAs by OSAP, and the permission of the researcher who originally collected the data or specimens.`])
+          ]),
+        ]),
+        div({style: { 'marginBottom': '20px' }}, [
+          InputFieldCheckbox({
+            id: "dsu_broadFacilitatedSharing",
+            name: "broadFacilitatedSharing",
+            onChange: this.handleDataSecondaryUseChange,
+            label: span({ className: "normal" }, ['Yes, the Broad may facilitate sharing my data for secondary use via the Broad Data Access Committee']),
+            checked: this.getBoolIfString(this.props.securityInfoData.broadFacilitatedSharing),
+            readOnly: this.state.readOnly
+          }),
+          InputFieldCheckbox({
+            id: "dsu_externalSharing",
+            name: "externalSharing",
+            onChange: this.handleDataSecondaryUseChange,
+            label: span({ className: "normal" }, ['Yes, it will be shared through an external repository and/or data access committee (i.e. dbGaP)']),
+            checked: this.getBoolIfString(this.props.securityInfoData.externalSharing),
+            readOnly: this.state.readOnly
+          }),
+          InputFieldCheckbox({
+            id: "dsu_no",
+            name: "no",
+            onChange: this.handleDataSecondaryUseChange,
+            label: span({ className: "normal" }, ['No, this data should not be shared for secondary use']),
+            checked: this.getBoolIfString(this.props.securityInfoData.no),
+            readOnly: this.state.readOnly
+          }),
+          InputFieldCheckbox({
+            id: "dsu_needAssistanceg",
+            name: "needAssistance",
+            onChange: this.handleDataSecondaryUseChange,
+            label: span({ className: "normal" }, ['I need assistance from ORSP to answer this question']),
+            checked: this.getBoolIfString(this.props.securityInfoData.needAssistance),
+            readOnly: this.state.readOnly
+          }),
+          InputFieldCheckbox({
+            id: "dsu_uncertain",
+            name: "uncertain",
+            onChange: this.handleDataSecondaryUseChange,
+            label: span({ className: "normal" }, ['Uncertain']),
+            checked: this.getBoolIfString(this.props.securityInfoData.uncertain),
+            readOnly: this.state.readOnly
+          })
+        ]),
         InputFieldRadio({
           id: "collaboratorApproval",
           name: "collaboratorApproval",
