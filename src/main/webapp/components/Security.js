@@ -920,6 +920,7 @@ export const Security = hh(class Security extends Component {
         ]),
         div({style: { 'marginBottom': '20px' }}, [
           InputFieldCheckbox({
+            isRendered: !this.getBoolIfString(this.props.securityInfoData.no),
             id: "dsu_broadFacilitatedSharing",
             name: "broadFacilitatedSharing",
             onChange: this.handleDataSecondaryUseChange,
@@ -928,6 +929,7 @@ export const Security = hh(class Security extends Component {
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
+            isRendered: !this.getBoolIfString(this.props.securityInfoData.no),
             id: "dsu_externalSharing",
             name: "externalSharing",
             onChange: this.handleDataSecondaryUseChange,
@@ -936,6 +938,7 @@ export const Security = hh(class Security extends Component {
             readOnly: this.state.readOnly
           }),
           InputFieldCheckbox({
+            isRendered: !this.getBoolIfString(this.props.securityInfoData.externalSharing) && !this.getBoolIfString(this.props.securityInfoData.broadFacilitatedSharing),
             id: "dsu_no",
             name: "no",
             onChange: this.handleDataSecondaryUseChange,
