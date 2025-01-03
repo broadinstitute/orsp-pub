@@ -145,7 +145,7 @@ export const Security = hh(class Security extends Component {
       if (value) {
         prev.formData.dataSecondaryUse.push(field);
       } else {
-        prev.formData.dataSecondaryUse.splice(prev.formData.dataSecondaryUse.indexOf(field))
+        prev.formData.dataSecondaryUse.splice(prev.formData.dataSecondaryUse.indexOf(field), 1);
       }
       return prev;
     }, () => {
