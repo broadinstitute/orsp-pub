@@ -295,7 +295,10 @@ export const Project = {
 
   removeAssignedAdmin(projectKey) {
     return axios.delete(UrlConstants.removeAssignedAdmin + '?projectKey=' + projectKey);
+  },
 
+  getProjectByVersion(projectKey, sequenceNumber) {
+    return axios.get(UrlConstants.getProjectByVersion + `?projectKey=${projectKey}&sequenceNumber=${sequenceNumber}`);
   }
 };
 
@@ -341,7 +344,7 @@ export const User = {
         sortDirection: query.sortDirection,
         searchValue: query.searchValue
       }
-    })
+    });
   },
 
   editUserRole(userId, roles) {

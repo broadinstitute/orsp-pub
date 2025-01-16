@@ -3,7 +3,7 @@ import { u, hh, span, a, div, label, ul, li, p, hr, br } from 'react-hyperscript
 import { getDateString, isEmpty } from "../util/Utils";
 import { UrlConstants } from "../util/UrlConstants";
 import './QuestionnaireWorkflow.css';
-import ChangeComparision from "./ChangeComparision";
+import SecurityChangeComparison from "./SecurityChangeComparison";
 
 export const NewSecurityReview = hh(class NewSecurityReview extends Component {
 
@@ -336,7 +336,7 @@ export const NewSecurityReview = hh(class NewSecurityReview extends Component {
         div({
           isRendered: this.props.compareChange,
         }, [
-          ChangeComparision({
+          SecurityChangeComparison({
             sampleProps: this.props.sampleProps,
             stringAnswer: this.props.stringAnswer,
             sharingTypeAnswer: this.props.sharingTypeAnswer,

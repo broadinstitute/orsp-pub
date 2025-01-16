@@ -13,14 +13,12 @@ class Issue implements LogicalDelete<Issue> {
     String status
     String summary
     String description
-    String originDescription
-    String actionDescription
-    String sharingDescription
     String reporter
     String approvalStatus
     Date requestDate
     Date updateDate
     Date expirationDate
+    Integer sequenceNumber
 
     static hasMany = [extraProperties: IssueExtraProperty, fundings: Funding]
 
@@ -36,14 +34,12 @@ class Issue implements LogicalDelete<Issue> {
         status blank: false, nullable: false
         summary blank: false, nullable: false
         description blank: true, nullable: true
-        originDescription blank: true, nullable: true
-        actionDescription blank: true, nullable: true
-        sharingDescription blank: true, nullable: true
         reporter blank: true, nullable: true
         requestDate nullable: false
         updateDate nullable: true
         expirationDate nullable: true
         approvalStatus blank: true, nullable: true
+        sequenceNumber blank: false, nullable: false
     }
 
     // Transients

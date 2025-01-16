@@ -251,6 +251,7 @@ export const SecurityReview = hh(class SecurityReview extends Component {
     let tempSecInfo = createObjectCopy(this.state.tempSecurityInfoData);
     let secInfoData = createObjectCopy(this.state.securityInfoData);
     let isDSUEdited = false;
+    tempSecInfo.dataSecondaryUse = !tempSecInfo.dataSecondaryUse ? [] : tempSecInfo.dataSecondaryUse;
     if(tempSecInfo.dataSecondaryUse.length !== secInfoData.dataSecondaryUse.length) {
       isDSUEdited = true;
     } else {

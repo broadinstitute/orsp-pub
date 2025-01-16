@@ -164,15 +164,6 @@ class IssueService implements UserInfo {
         if (input.get(IssueExtraProperty.DESCRIPTION)) {
             issue.setDescription((String) input.get(IssueExtraProperty.DESCRIPTION))
         }
-        if (input.get(IssueExtraProperty.ORIGIN_DESCRIPTION)) {
-            issue.setOriginDescription((String) input.get(IssueExtraProperty.ORIGIN_DESCRIPTION))
-        }
-        if (input.get(IssueExtraProperty.ACTION_DESCRIPTION)) {
-            issue.setActionDescription((String) input.get(IssueExtraProperty.ACTION_DESCRIPTION))
-        }
-        if (input.get(IssueExtraProperty.SHARING_DESCRIPTION)) {
-            issue.setSharingDescription((String) input.get(IssueExtraProperty.SHARING_DESCRIPTION))
-        }
         if (input.get("expirationDate")) {
             issue.setExpirationDate(Date.parse('MM/dd/yyyy', input.get("expirationDate").toString()))
         } else {
@@ -193,6 +184,7 @@ class IssueService implements UserInfo {
             f.setName(p.get("name").toString())
             f.setAwardNumber(p.get("award").toString())
             f.setProjectKey(issue.projectKey)
+            f.setSequenceNumber(issue.sequenceNumber + 1)
             f
         }
         newFundingList.each {
@@ -303,6 +295,13 @@ class IssueService implements UserInfo {
         }
 
         issue.setUpdateDate(new Date())
+        issue.setSequenceNumber(issue.sequenceNumber + 1)
+
+        def issExtrProp = IssueExtraProperty.findAllByProjectKey(issue.projectKey)
+        issExtrProp.each {
+            it.sequenceNumber = issue.sequenceNumber
+            it.save()
+        }
 
         if (issue.hasErrors()) {
             throw new DomainException(issue.getErrors())
@@ -446,7 +445,8 @@ class IssueService implements UserInfo {
                         issue: issue,
                         name: IssueExtraProperty.ON_HOLD_DAYS,
                         value: differenceInDays,
-                        projectKey: issue.projectKey
+                        projectKey: issue.projectKey,
+                        sequenceNumber: issue.sequenceNumber
                 ).save(flush: true)
             } else {
                 def newOnHoldDays = hasOnHoldDays[0].toString().toInteger() + differenceInDays
@@ -539,6 +539,7 @@ class IssueService implements UserInfo {
 
     Issue createIssue(IssueType type, Issue issue) throws DomainException {
         issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
+        issue.setSequenceNumber(0)
         List<IssueExtraProperty> extraProperties = issue.getNonEmptyExtraProperties()
         Collection<Funding> fundings = issue.getFundings()
         Issue newIssue = initIssue(issue, type)
@@ -560,6 +561,7 @@ class IssueService implements UserInfo {
         extraProperties?.each {
             it.issue = issue
             it.projectKey = issue.projectKey
+            it.sequenceNumber = issue.sequenceNumber
             it.save(flush: true)
         }
     }
@@ -607,6 +609,7 @@ class IssueService implements UserInfo {
             it.setCreated(new Date())
             it.setProjectKey(issue.projectKey)
             issue.addToFundings(it)
+            it.setSequenceNumber(issue.sequenceNumber)
             it.save(flush: true)
         }
     }
@@ -707,7 +710,7 @@ class IssueService implements UserInfo {
                     if (value) {
                         IssueExtraProperty extraProperty = issue.getExtraProperties().find { it.name == name }
                         if (!extraProperty) {
-                            extraProperty = new IssueExtraProperty(issue: issue, name: name, value: value, projectKey: issue.projectKey)
+                            extraProperty = new IssueExtraProperty(issue: issue, name: name, value: value, projectKey: issue.projectKey, sequenceNumber: issue.sequenceNumber)
                         } else {
                             extraProperty.value = value
                         }
@@ -732,10 +735,10 @@ class IssueService implements UserInfo {
                 if (input.containsKey(name)) {
                     def value = input.get(name)
                     if (value && value instanceof String) {
-                        Collections.singletonList(new IssueExtraProperty(issue: issue, name: name, value: (String) value, projectKey: issue.projectKey))
+                        Collections.singletonList(new IssueExtraProperty(issue: issue, name: name, value: (String) value, projectKey: issue.projectKey, sequenceNumber: issue.sequenceNumber))
                     } else if (value && value instanceof List) {
                         ((List<String>) value).collect {
-                            new IssueExtraProperty(issue: issue, name: name, value: it, projectKey: issue.projectKey)
+                            new IssueExtraProperty(issue: issue, name: name, value: it, projectKey: issue.projectKey, sequenceNumber: issue.sequenceNumber)
                         }
                     }
                 }
@@ -752,6 +755,62 @@ class IssueService implements UserInfo {
         Collection<String> accessContacts = extraProperties.findAll ({ it.key == IssueExtraProperty.PM }).values().flatten()
         accessContacts = accessContacts.isEmpty() ? extraProperties.findAll ({ it.key == IssueExtraProperty.ACTOR }).values().flatten() : accessContacts
         accessContacts
+    }
+
+    /**
+     * Create a snapshot of non edited version of issue for versioning
+     *
+     * @param issue - non edited Issue
+     * */
+    @Transactional
+    VersionedIssue saveVersionedIssue(Issue issue) {
+        VersionedIssue verIss = new VersionedIssue()
+        verIss.projectKey = issue.projectKey
+        verIss.type = issue.type
+        verIss.status = issue.status
+        verIss.sequenceNumber = issue.sequenceNumber
+        verIss.summary = issue.summary
+        verIss.description = issue.description
+        verIss.reporter = issue.reporter
+        verIss.approvalStatus = issue.approvalStatus
+        verIss.requestDate = issue.requestDate
+        verIss.updateDate = issue.updateDate
+        verIss.expirationDate = issue.expirationDate
+        verIss.createdAt = new Date()
+        verIss.createdBy = getUser().displayName
+
+        verIss.save(flush: true)
+    }
+
+    def saveVersionedFunding(Issue issue) {
+        VersionedIssue verIss = VersionedIssue.findByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)
+        List<Funding> fundings = Funding.findAllByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)
+
+        fundings.each {
+            new VersionedFunding(
+                    projectKey: issue.projectKey,
+                    source: it.source,
+                    name: it.name,
+                    awardNumber: it.awardNumber,
+                    sequenceNumber: issue.sequenceNumber,
+                    versionedIssue: verIss
+            ).save(flush: true)
+        }
+    }
+
+    def saveVersionedIssueExtraProperties(Issue issue) {
+        VersionedIssue verIss = VersionedIssue.findByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)
+        List<IssueExtraProperty> issExtrProp = IssueExtraProperty.findAllByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)
+
+        issExtrProp.each {
+            new VersionedIssueExtraProperty(
+                    projectKey: issue.projectKey,
+                    sequenceNumber: issue.sequenceNumber,
+                    name: it.name,
+                    value: it.value,
+                    versionedIssue: verIss
+            ).save(flush: true)
+        }
     }
 
 }

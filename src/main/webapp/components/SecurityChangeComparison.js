@@ -3,7 +3,7 @@ import { u, hh, span, a, div, label, ul, li, p, hr, br, ins, del } from 'react-h
 import { getDateString, isEmpty } from "../util/Utils";
 import { UrlConstants } from "../util/UrlConstants";
 
-const ChangeComparision = hh(class ChangeComparision extends Component {
+const SecurityChangeComparison = hh(class SecurityChangeComparison extends Component {
 
     constructor(props) {
         super(props);
@@ -419,4 +419,4 @@ const ChangeComparision = hh(class ChangeComparision extends Component {
       }
 })
 
-export default ChangeComparision;
+export default SecurityChangeComparison;

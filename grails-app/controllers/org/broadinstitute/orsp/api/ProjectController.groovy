@@ -11,11 +11,15 @@ import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.EventType
 import org.broadinstitute.orsp.Funding
 import org.broadinstitute.orsp.Issue
+import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.ProjectExtraProperties
 import org.broadinstitute.orsp.SupplementalRole
 import org.broadinstitute.orsp.User
+import org.broadinstitute.orsp.VersionedFunding
+import org.broadinstitute.orsp.VersionedIssue
+import org.broadinstitute.orsp.VersionedIssueExtraProperty
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
 
@@ -143,6 +147,9 @@ class ProjectController extends AuthenticatedController {
         Map<String, Object> project = IssueUtils.getJson(Map.class, request.JSON)
         Issue issue = Issue.findByProjectKey(params.projectKey)
         try {
+            issueService.saveVersionedIssue(issue)
+            issueService.saveVersionedFunding(issue)
+            issueService.saveVersionedIssueExtraProperties(issue)
             issueService.updateIssue(issue, project)
             response.status = 200
             render([message: 'Project was updated'] as JSON)
@@ -191,5 +198,27 @@ class ProjectController extends AuthenticatedController {
             handleNotFound('Project not found')
         }
         projectType
+    }
+
+    def getProjectBySequenceNumber() {
+        def projectKey = params.projectKey
+        def sequenceNumber = params.sequenceNumber
+
+        def versionedIssue = VersionedIssue.findAllByProjectKeyAndSequenceNumber(projectKey, sequenceNumber)
+        def versionedIssueExtraProp = VersionedIssueExtraProperty.findAllByProjectKeyAndSequenceNumber(projectKey, sequenceNumber)
+        def versionedIssueFunding = VersionedFunding.findAllByProjectKeyAndSequenceNumber(projectKey, sequenceNumber)
+        Collection<User> colls = getCollaborators(
+                versionedIssueExtraProp.findAll {it.name == IssueExtraProperty.COLLABORATOR }.collect {it.value}
+        )
+
+        response.status = 200
+        render([
+                issue: versionedIssue[0],
+                extraProperties: versionedIssueExtraProp,
+                fundings: versionedIssueFunding,
+                pms: getProjectManagersForVersionedIssue(versionedIssue[0]),
+                pis: getPIsForVersionedIssue(versionedIssue[0]),
+                collaborators: colls
+        ] as JSON)
     }
 }

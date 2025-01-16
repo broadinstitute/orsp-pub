@@ -153,7 +153,7 @@ class SampleConsentLinkController extends AuthenticatedController {
                 creationDate: new Date(),
                 updatedBy: user.displayName,
                 consentKey: consentCollectionLink.consentKey,
-                questionnaireVersion: consentCollectionLink.questionnaireVersion,
+                questionnaireVersion: "v2",
                 sequenceNumber: consentCollectionLink.sequenceNumber + 1,
                 parentId: parentId,
                 isLatest: "Y",

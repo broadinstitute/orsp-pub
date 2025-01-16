@@ -46,9 +46,7 @@ const NewProject = hh(class NewProject extends Component {
       currentStep: 0,
       files: [],
       errors: {
-        originDescription: false,
-        actionDescription: false,
-        sharingDescription: false,
+        studyDescription: false,
         pTitle: false,
         fundings: false,
         attestation: false,
@@ -217,10 +215,7 @@ const NewProject = hh(class NewProject extends Component {
     project.type = getProjectType(this.state.determination.projectType);
     project.summary = this.state.generalDataFormData.pTitle !== '' ? this.state.generalDataFormData.pTitle : null;
     project.reporter = this.state.user.userName;
-    project.description = null;
-    project.originDescription = this.state.generalDataFormData.originDescription !== '' ? this.state.generalDataFormData.originDescription : null;
-    project.actionDescription = this.state.generalDataFormData.actionDescription !== '' ? this.state.generalDataFormData.actionDescription : null;
-    project.sharingDescription = this.state.generalDataFormData.sharingDescription !== '' ? this.state.generalDataFormData.sharingDescription : null;
+    project.description = this.state.generalDataFormData.studyDescription !== '' ? this.state.generalDataFormData.studyDescription : null;
     project.fundings = this.getFundings(this.state.generalDataFormData.fundings);
     project.attestation = this.state.attestationFormData.attestation;
     let extraProperties = [];
@@ -364,25 +359,15 @@ const NewProject = hh(class NewProject extends Component {
   }
 
   validateGeneralData(field) {
-    let originDescription = false;
-    let actionDescription = false;
-    let sharingDescription = false;
+    let studyDescription = false;
     let pTitle = false;
     let isValid = true;
     let fundings = false;
     let fundingAwardNumber = false;
     let fundingSponsor = false;
 
-    if (isEmpty(this.state.generalDataFormData.originDescription)) {
-      originDescription = true;
-      isValid = false;
-    }
-    if (isEmpty(this.state.generalDataFormData.actionDescription)) {
-      actionDescription = true;
-      isValid = false;
-    }
-    if (isEmpty(this.state.generalDataFormData.sharingDescription)) {
-      sharingDescription = true;
+    if (isEmpty(this.state.generalDataFormData.studyDescription)) {
+      studyDescription = true;
       isValid = false;
     }
     if (isEmpty(this.state.generalDataFormData.pTitle)) {
@@ -413,29 +398,22 @@ const NewProject = hh(class NewProject extends Component {
     }
     if (field === undefined || field === null || field === 0) {
       this.setState(prev => {
-        prev.errors.originDescription = originDescription;
-        prev.errors.actionDescription = actionDescription;
-        prev.errors.sharingDescription = sharingDescription;
+        prev.errors.studyDescription = studyDescription;
         prev.errors.pTitle = pTitle;
         prev.errors.fundings = fundings;
         prev.errors.fundingAwardNumber = fundingAwardNumber;
         prev.errors.fundingSponsor = fundingSponsor;
         return prev;
       });
-    }
-    else if (field === 'fundings' || field === 'originDescription' || field === 'actionDescription' || field === 'sharingDescription' || field === 'pTitle') {
+    } else if (field === 'fundings' || field === 'studyDescription' || field === 'pTitle') {
 
       this.setState(prev => {
         if (field === 'fundings') {
           prev.errors.fundings = fundings;
           prev.errors.fundingAwardNumber = fundingAwardNumber;
           prev.errors.fundingSponsor = fundingSponsor;
-        } else if (field === 'originDescription') {
-          prev.errors.originDescription = originDescription;
-        } else if (field === 'actionDescription') {
-          prev.errors.actionDescription = actionDescription;
-        } else if (field === 'sharingDescription') {
-          prev.errors.sharingDescription = sharingDescription;
+        } else if (field === 'studyDescription') {
+          prev.errors.studyDescription = studyDescription;
         } else if (field === 'pTitle') {
           prev.errors.pTitle = pTitle;
         }

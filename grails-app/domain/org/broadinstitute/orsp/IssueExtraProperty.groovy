@@ -19,9 +19,6 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String AFFILIATION_OTHER = "affiliationOther"
     public static final String DBGAP = "dbgap"
     public static final String DESCRIPTION = "description"
-    public static final String ORIGIN_DESCRIPTION = "originDescription"
-    public static final String ACTION_DESCRIPTION = "actionDescription"
-    public static final String SHARING_DESCRIPTION = "sharingDescription"
     public static final String CODES = "codes"
     public static final String IRB = "irb"
     public static final String RATIONALE = "rationale"
@@ -130,6 +127,7 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     String name
     String value
     String projectKey
+    Integer sequenceNumber
 
     Issue issue
 

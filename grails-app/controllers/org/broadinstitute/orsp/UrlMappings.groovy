@@ -33,6 +33,7 @@ class UrlMappings {
         '/api/project/update-admin-props'(controller: 'project', action: 'updateAdminOnlyProps')
         '/api/user/projects'(controller: 'issueList', action: 'getProjectsForUser')
         '/api/project/remove-assigned-admin'(controller: 'project', action:'removeAssignedAdmin')
+        '/api/project/version'(controller: 'project', action: 'getProjectBySequenceNumber', method: 'GET')
 
         // Consent Group end-points
         '/api/consent-group'(resource: 'newConsentGroup')

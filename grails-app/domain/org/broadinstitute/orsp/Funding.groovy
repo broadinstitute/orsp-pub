@@ -11,6 +11,7 @@ class Funding  implements LogicalDelete<Funding> {
     String projectKey
     Date created
     Date updated
+    Integer sequenceNumber
 
     static constraints = {
         source blank: true, nullable: true
@@ -20,6 +21,7 @@ class Funding  implements LogicalDelete<Funding> {
         projectKey nullable: false
         created nullable: false
         updated nullable: true
+        sequenceNumber nullable: false
     }
 
     static belongsTo = [issue:Issue]
