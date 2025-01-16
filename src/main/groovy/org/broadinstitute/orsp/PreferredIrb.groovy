@@ -2,7 +2,8 @@ package org.broadinstitute.orsp
 
 enum PreferredIrb {
 
-    PARTNERS("10012", "Partners Health Care"),
+//    PARTNERS("10012", "Partners Health Care"),
+    MGB("10012", "Mass General Brigham"),
     MIT("10013", "MIT"),
     DANA_FARBER("10014", "Dana-Farber Cancer Institute"),
     BID("10015", "Beth Israel Deaconess"),

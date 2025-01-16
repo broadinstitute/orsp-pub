@@ -7,10 +7,8 @@ import { Fundings } from '../components/Fundings';
 import { AlertMessage } from '../components/AlertMessage';
 import RequestClarificationDialog from '../components/RequestClarificationDialog';
 import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
-import { DETERMINATION } from "../util/TypeDescription";
 import { InputYesNo } from '../components/InputYesNo';
 import { InputFieldTextArea } from '../components/InputFieldTextArea';
-import { InputField } from '../components/InputField';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
@@ -29,6 +27,7 @@ import he from 'he';
 import html2canvas from 'html2canvas';
 import jsPDF from "jspdf";
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import ProjectChangeComparision from './ProjectChangeComparison';
 
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
@@ -45,9 +44,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
       generalError: false,
       errorSubmit: false,
       descriptionError: false,
-      originDescriptionError: false,
-      actionDescriptionError: false,
-      sharingDescriptionError: false,
       projectTitleError: false,
       editTypeError: false,
       editDescriptionError: false,
@@ -162,7 +158,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       enabledQuestionsWizard: false,
       sponsorHasError: false,
       identifierHasError: false,
-      isLegacyDescription: true
+      isCompareChanges: false,
+      versionedIssue: {}
     };
     this.state.questions = initQuestions();
     this.rejectProject = this.rejectProject.bind(this);
@@ -192,12 +189,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       issue => {
         // store current issue info here ....
         this.props.initStatusBoxInfo(issue.data);
-        if (isEmpty(issue.data.issue.description)) this.setState({isLegacyDescription: false});
         current.approvalStatus = issue.data.issue.approvalStatus;
         current.description = isEmpty(issue.data.issue.description) ? '' : he.decode(sanitizeHtml(issue.data.issue.description, { allowedTags: [] }));
-        current.originDescription = isEmpty(issue.data.issue.originDescription) ? '' : he.decode(sanitizeHtml(issue.data.issue.originDescription, { allowedTags: [] }));
-        current.actionDescription = isEmpty(issue.data.issue.actionDescription) ? '' : he.decode(sanitizeHtml(issue.data.issue.actionDescription, { allowedTags: [] }));
-        current.sharingDescription = isEmpty(issue.data.issue.sharingDescription) ? '' : he.decode(sanitizeHtml(issue.data.issue.sharingDescription, { allowedTags: [] }));
         current.affiliationOther = issue.data.issue.affiliationOther;
         current.projectExtraProps = issue.data.extraProperties;
         current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb);
@@ -207,6 +200,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         current.collaborators = this.getUsersArray(issue.data.collaborators);
         current.fundings = this.getFundingsArray(issue.data.fundings);
         current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
+        current.sequenceNumber = issue.data.issue.sequenceNumber;
         currentStr = JSON.stringify(current);
         future = JSON.parse((currentStr));
         futureCopy = JSON.parse(currentStr);
@@ -452,9 +446,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
     let project = {};
     project.type = getProjectType(this.state.formData.projectType);
     project.description = this.state.formData.description;
-    project.originDescription = this.state.formData.originDescription;
-    project.actionDescription = this.state.formData.actionDescription;
-    project.sharingDescription = this.state.formData.sharingDescription;
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
     project.attestation = this.state.formData.projectExtraProps.attestation;
@@ -480,6 +471,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.pii = this.state.formData.projectExtraProps.pii;
     project.affiliations = this.state.formData.projectExtraProps.affiliations == null || (this.state.formData.projectExtraProps.affiliations != null && isEmpty(this.state.formData.projectExtraProps.affiliations.value)) ? null : JSON.stringify(this.state.formData.projectExtraProps.affiliations);
     project.affiliationOther = this.state.formData.projectExtraProps.affiliationOther;
+    project.sequenceNumber = this.state.formData.sequenceNumber;
     if (!this.state.formData.projectExtraProps.irb) {
       project.irb = JSON.stringify({label: "--", value: "--"});
     } else {
@@ -749,9 +741,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
       prev.current = this.state.futureCopy;
       prev.generalError = false;
       prev.descriptionError = false;
-      prev.originDescriptionError = false;
-      prev.actionDescriptionError = false;
-      prev.sharingDescriptionError = false;
       prev.errorSubmit = false;
       prev.showAlert = false;
       prev.readOnly = true;
@@ -970,9 +959,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
   isValid() {
     let descriptionError = false;
-    let originDescriptionError = false;
-    let actionDescriptionError = false;
-    let sharingDescriptionError = false;
     let projectTitleError = false;
     let attestationError = false;
     let editTypeError = false;
@@ -1003,20 +989,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       editTypeError = true;
       generalError = true;
     }
-    if (this.state.isLegacyDescription && isEmpty(this.state.formData.description)) {
+    if (isEmpty(this.state.formData.description)) {
       descriptionError = true;
-      generalError = true;
-    }
-    if (!this.state.isLegacyDescription && isEmpty(this.state.formData.originDescription)) {
-      originDescriptionError = true;
-      generalError = true;
-    }
-    if (!this.state.isLegacyDescription && isEmpty(this.state.formData.actionDescription)) {
-      actionDescriptionError = true;
-      generalError = true;
-    }
-    if (!this.state.isLegacyDescription && isEmpty(this.state.formData.sharingDescription)) {
-      sharingDescriptionError = true;
       generalError = true;
     }
     if (isEmpty(this.state.formData.projectExtraProps.projectTitle)) {
@@ -1033,9 +1007,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
     }
     this.setState(prev => {
       prev.descriptionError = descriptionError;
-      prev.originDescriptionError = originDescriptionError;
-      prev.actionDescriptionError = actionDescriptionError;
-      prev.sharingDescriptionError = sharingDescriptionError;
       prev.projectTitleError = projectTitleError;
       prev.attestationError = attestationError;
       prev.editDescriptionError = editDescriptionError;
@@ -1050,9 +1021,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
     return !attestationError &&
       !projectTitleError &&
       !descriptionError &&
-      !originDescriptionError &&
-      !actionDescriptionError &&
-      !sharingDescriptionError &&
       !editTypeError &&
       !editDescriptionError &&
       !fundingError &&
@@ -1122,6 +1090,27 @@ const ProjectReview = hh(class ProjectReview extends Component {
     });
   };
 
+  handleCompareChange = () => {
+    let versionedIssue = {};
+    this.props.showSpinner();
+    Project.getProjectByVersion(this.props.projectKey, (this.state.future.sequenceNumber - 1)).then(verIssue => {
+      versionedIssue = verIssue.data;
+      versionedIssue.projectExtraProps = {};
+      versionedIssue.extraProperties.forEach(item => {
+        versionedIssue.projectExtraProps[item.name] = item.value
+      });
+      versionedIssue.projectExtraProps.irb = isEmpty(versionedIssue.projectExtraProps.irb) ? '' : JSON.parse(versionedIssue.projectExtraProps.irb);
+      versionedIssue.projectExtraProps.affiliations = !versionedIssue.projectExtraProps.affiliations ? [] : this.getAffiliation([versionedIssue.projectExtraProps.affiliations]);
+      versionedIssue.piList = this.getUsersArray(versionedIssue.pis);
+      versionedIssue.pmList = this.getUsersArray(versionedIssue.pms);
+      versionedIssue.collaborators = this.getUsersArray(versionedIssue.collaborators);
+      versionedIssue.fundings = this.getFundingsArray(versionedIssue.fundings);
+      this.setState({
+        versionedIssue: versionedIssue,
+        isCompareChanges: true
+      }, () => this.props.hideSpinner());
+    });
+  };
 
   render() {
     const { projectReviewApproved } = this.state.formData.projectExtraProps;
@@ -1132,27 +1121,39 @@ const ProjectReview = hh(class ProjectReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.exportPdf(),
-          isRendered: this.state.readOnly === true && !component.isViewer && isEmpty(this.state.editedForm)
+          isRendered: this.state.readOnly === true && !component.isViewer && isEmpty(this.state.editedForm) && !this.state.isCompareChanges
         }, ["Print PDF"]),
         button({
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.enableEdit(),
-          isRendered: this.state.readOnly === true && !component.isViewer
+          isRendered: this.state.readOnly === true && !component.isViewer && !this.state.isCompareChanges
         }, ["Edit Information"]),
+        button({
+          className: "btn buttonPrimary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: this.handleCompareChange,
+          isRendered: this.state.readOnly === true && !isEmpty(this.state.future) && this.state.future.sequenceNumber && !this.state.isCompareChanges 
+        }, ["Compare Changes"]),
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.redirectToConsentGroupTab,
-          isRendered: this.state.readOnly === true && !component.isViewer
+          isRendered: this.state.readOnly === true && !component.isViewer && !this.state.isCompareChanges
         }, ["Add Sample/Data Cohort"]),
 
         button({
           className: "btn buttonSecondary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.cancelEdit(),
-          isRendered: this.state.readOnly === false
+          isRendered: this.state.readOnly === false && !this.state.isCompareChanges
         }, ["Cancel"]),
+        button({
+          className: "btn buttonSecondary floatRight",
+          style: { 'marginTop': '15px' },
+          onClick: () => this.setState({isCompareChanges: false}),
+          isRendered: this.state.isCompareChanges
+        }, ["Go Back"]),
 
         ConfirmationDialog({
           closeModal: this.toggleState('rejectProjectDialog'),
@@ -1206,7 +1207,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
         /* Note to ORPS removed PR-#1454 */
 
-          div({ id: "requestor" }, [
+        div({ id: "requestor" }, [
             Panel({ title: "Requestor" }, [
               InputFieldText({
                 id: "inputRequestorName",
@@ -1231,427 +1232,344 @@ const ProjectReview = hh(class ProjectReview extends Component {
             ])
         ]),
 
-        div({ id: "principalInvestigator" }, [
-          Panel({ title: "Principal Investigator" }, [
-            AsyncMultiSelect({
-              id: "pi_select",
-              label: "Broad PIs",
-              name: 'piList',
-              readOnly: this.state.readOnly,
-              loadOptions: this.loadUsersOptions,
-              handleChange: this.handlePIChange,
-              value: this.state.formData.piList,
-              currentValue: this.state.current.piList,
-              isMulti: true
-            }),
+        div({isRendered: !this.state.isCompareChanges}, [
 
-            InputFieldSelect({
-              label: "Primary Investigator Affiliation",
-              id: "affiliations",
-              name: "affiliations",
-              options: PI_AFFILIATION,
-              value: this.state.formData.projectExtraProps.affiliations,
-              currentValue: this.state.current.projectExtraProps.affiliations,
-              onChange: this.handleSelect("affiliations"),
-              readOnly: this.state.readOnly,
-              placeholder: isEmptyArray(this.state.formData.projectExtraProps.affiliations) && this.state.readOnly ? "--" : "Choose an affiliation...",
-              edit: true
-            }),
-
-            InputFieldText({
-              isRendered: !isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.formData.projectExtraProps.affiliations.value === "other" ,
-              id: "affiliationOther",
-              name: "affiliationOther",
-              label: "Primary Investigator Other Affiliation",
-              value: this.state.formData.projectExtraProps.affiliationOther,
-              currentValue: this.state.current.projectExtraProps.affiliationOther,
-              readOnly: this.state.readOnly,
-              required: false,
-              onChange: this.handleProjectExtraPropsChange,
-              edit: true
-            }),
-
-            AsyncMultiSelect({
-              id: "inputProjectManager",
-              label: "Broad Project Managers",
-              name: 'pmList',
-              readOnly: this.state.readOnly,
-              loadOptions: this.loadUsersOptions,
-              handleChange: this.handleProjectManagerChange,
-              value: this.state.formData.pmList,
-              currentValue: this.state.current.pmList,
-              isMulti: true
-            })
-          ])
-        ]),
-
-        div({ id: "funding" }, [
-          Panel({ title: "Funding" }, [
-            Fundings({
-              fundings: this.state.formData.fundings,
-              current: this.state.formData.fundings,
-              updateFundings: this.handleUpdateFundings,
-              readOnly: this.state.readOnly,
-              error: this.state.fundingError,
-              errorIndex: this.state.fundingErrorIndex,
-              fundingAwardNumberError: this.state.fundingAwardNumberError,
-              setError: this.changeFundingError,
-              errorMessage: "Required field",
-              edit: true
-            })
-          ])
-        ]),
-
-        div({ id: "projectSummary" }, [
-          Panel({ title: "Project Summary" }, [
-            div({ 
-              id: "projectSummaryInputTextArea",
-              isRendered: this.state.isLegacyDescription
-            }, [
-              div({ isRendered: (this.state.formData.description !== this.state.current.description) || !this.state.readOnly }, [
-                InputFieldTextArea({
-                  id: "inputStudyActivitiesDescription",
-                  name: "description",
-                  label: "Describe Broad study activities* ",
-                  moreInfo: "(briefly, in 1-2 paragraphs, with attention to whether or not protected health information will be accessed, and any future data sharing plans)",
-                  value: this.state.formData.description,
-                  currentValue: this.state.current.description,
-                  readOnly: this.state.readOnly,
-                  readonly: true,
-                  required: true,
-                  onChange: this.handleInputChange,
-                  error: this.state.descriptionError,
-                  errorMessage: "Required field"
-                })
-              ]),
-              
-              div({ isRendered: this.state.readOnly && (this.state.formData.description === this.state.current.description) }, [
-                p({ className: "inputFieldLabel" }, "Broad study activities "),
-                div({ className: "inputFieldReadOnly" }, [
-                  div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' }}, this.state.current.description)
-                ])
-              ])
-            ]),
-
-            div({ 
-              id: "seperatedDescriptionInputTextArea",
-              isRendered: !this.state.isLegacyDescription,
-             }, [
-              div({ 
-                isRendered: (this.state.formData.originDescription !== this.state.current.originDescription) || !this.state.readOnly,
-                style: {margin: '0 0 20px 0'}
-              }, [
-                InputFieldTextArea({
-                  id: "inputStudyActivitiesDescription",
-                  name: "originDescription",
-                  label: "Describe the sample/data you are receiving and their origin ",
-                  moreInfo: "",
-                  value: this.state.formData.originDescription,
-                  currentValue: this.state.current.originDescription,
-                  readOnly: this.state.readOnly,
-                  readonly: true,
-                  required: true,
-                  onChange: this.handleInputChange,
-                  error: this.state.originDescriptionError,
-                  errorMessage: "Required field"
-                })
-              ]),
-              
-              div({ 
-                isRendered: this.state.readOnly && (this.state.formData.originDescription === this.state.current.originDescription),
-                style: {margin: '0 0 20px 0'}
-              }, [
-                p({ className: "inputFieldLabel" }, "Recieved sample/data and their origin "),
-                div({ className: "inputFieldReadOnly" }, [
-                  div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' }}, this.state.current.originDescription)
-                ])
-              ]),
-
-              div({ 
-                isRendered: (this.state.formData.actionDescription !== this.state.current.actionDescription) || !this.state.readOnly,
-                style: {margin: '20px 0'}
-               }, [
-                InputFieldTextArea({
-                  id: "inputStudyActivitiesDescription",
-                  name: "actionDescription",
-                  label: "Describe what you will do with the samples/data at Broad ",
-                  moreInfo: "",
-                  value: this.state.formData.actionDescription,
-                  currentValue: this.state.current.actionDescription,
-                  readOnly: this.state.readOnly,
-                  readonly: true,
-                  required: true,
-                  onChange: this.handleInputChange,
-                  error: this.state.actionDescriptionError,
-                  errorMessage: "Required field"
-                })
-              ]),
-              
-              div({ 
-                isRendered: this.state.readOnly && (this.state.formData.actionDescription === this.state.current.actionDescription),
-                style: {margin: '20px 0'}
-              }, [
-                p({ className: "inputFieldLabel" }, "Use of samples/data at Broad"),
-                div({ className: "inputFieldReadOnly" }, [
-                  div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' }}, this.state.current.actionDescription)
-                ])
-              ]),
-
-              div({ 
-                isRendered: (this.state.formData.sharingDescription !== this.state.current.sharingDescription) || !this.state.readOnly,
-                style: {margin: '20px 0'}
-              }, [
-                InputFieldTextArea({
-                  id: "inputStudyActivitiesDescription",
-                  name: "sharingDescription",
-                  label: "Describe any sample/data sharing plans, ",
-                  moreInfo: "if applicable (e.g. with a database such as dbGaP or with collaborators inside or outside the Broad)",
-                  value: this.state.formData.sharingDescription,
-                  currentValue: this.state.current.sharingDescription,
-                  readOnly: this.state.readOnly,
-                  readonly: true,
-                  required: true,
-                  onChange: this.handleInputChange,
-                  error: this.state.sharingDescriptionError,
-                  errorMessage: "Required field"
-                })
-              ]),
-              
-              div({ 
-                isRendered: this.state.readOnly && (this.state.formData.sharingDescription === this.state.current.sharingDescription),
-                style: {margin: '20px 0'}
-              }, [
-                p({ className: "inputFieldLabel" }, "Sample/data sharing plans"),
-                div({ className: "inputFieldReadOnly" }, [
-                  div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' }}, this.state.current.sharingDescription)
-                ])
-              ])
-            ]),
-
-            AsyncMultiSelect({
-              id: "collaborator_select",
-              label: "Broad individuals who require access to this project record",
-              isDisabled: false,
-              readOnly: this.state.readOnly,
-              loadOptions: this.loadUsersOptions,
-              handleChange: this.handleProjectCollaboratorChange,
-              value: this.state.formData.collaborators,
-              currentValue: this.state.current.collaborators,
-              placeholder: "Start typing names for project access",
-              isMulti: true
-            }),
-            InputFieldText({
-              id: "inputPTitle",
-              name: "projectTitle",
-              label: "Title of project/protocol",
-              value: this.state.formData.projectExtraProps.projectTitle,
-              currentValue: this.state.current.projectExtraProps.projectTitle,
-              readOnly: this.state.readOnly,
-              required: false,
-              onChange: this.handleProjectExtraPropsChange,
-              error: this.state.projectTitleError,
-              errorMessage: "Required field",
-              edit: true
-            }),
-            InputFieldText({
-              id: "inputIrbProtocolId",
-              name: "protocol",
-              label: "Protocol # at Broad IRB-of-record ",
-              value: this.state.formData.projectExtraProps.protocol,
-              currentValue: this.state.current.projectExtraProps.protocol,
-              readOnly: this.state.readOnly,
-              required: false,
-              onChange: this.handleProjectExtraPropsChange,
-              valueEdited: isEmpty(this.state.current.projectExtraProps.protocol) === !isEmpty(this.state.formData.projectExtraProps.protocol),
-              edit: true
-            }),
-            InputFieldSelect({
-              label: "IRB-of-record",
-              id: "irb",
-              name: "irb",
-              options: PREFERRED_IRB,
-              value: (this.state.formData.projectExtraProps.irb.label === 'Other' && this.state.readOnly && this.state.formData.projectExtraProps.irbReferralText) ? {label: this.state.formData.projectExtraProps.irbReferralText} : this.state.formData.projectExtraProps.irb,
-              currentValue: (this.state.current.projectExtraProps.irb.label === 'Other' && this.state.readOnly && this.state.current.projectExtraProps.irbReferralText) ? {label: this.state.current.projectExtraProps.irbReferralText} : this.state.current.projectExtraProps.irb,
-              onChange: this.handleSelect("irb"),
-              readOnly: this.state.readOnly,
-              placeholder: isEmpty(this.state.formData.projectExtraProps.irb) && this.state.readOnly ? "--" : "Select...",
-              edit: true,
-              isClearable: true
-            })
-          ])
-        ]),
-
-        div({ id: "determinationQuestions" }, [
-          Panel({ isRendered: this.state.enabledQuestionsWizard === false, title: "Determination Questions" }, [
-            div({ isRendered: this.state.readOnly === false && this.state.formData.approvalStatus != 'Approved' && this.state.formData.approvalStatus != 'Completed', className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
-              button({
-                className: "btn buttonPrimary floatRight",
-                onClick: this.enableEditResponses(),
-                isRendered: this.state.readOnly === false && !component.isViewer
-              }, ["Edit Responses"])
-            ]),
-            div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
-              InputYesNo({
-                id: "radioPII",
-                name: "radioPII",
-                label: 'Is this a “fee for service” project? ',
-                moreInfo: '(Commercial service only, no direct federal funding, no data analysis, no data storage, no dbGaP deposition by Broad.)',
-                value: this.state.formData.projectExtraProps.feeForService,
-                currentValue: this.state.current.projectExtraProps.feeForService,
-                readOnly: true,
-                onChange: () => { }
-              })
-            ]),
-            div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.broadInvestigator) }, [
-              InputYesNo({
-                id: "broadInvestigator",
-                name: "broadInvestigator",
-                value: this.state.formData.projectExtraProps.broadInvestigator,
-                currentValue: this.state.current.projectExtraProps.broadInvestigator,
-                moreInfo: span({style: { 'display': 'block' }}, ['Examples of projects that ', b(['DO NOT ']), 'contribute to generalizable knowledge include small case studies and internal technology development/validation projects. ']),
-                label: 'Is a Broad scientist(s) conducting research (generating or contributing to generalizable knowledge, with the intention to publish results)? ',
-                readOnly: true,
-                onChange: () => { }
+          div({ id: "principalInvestigator" }, [
+            Panel({ title: "Principal Investigator" }, [
+              AsyncMultiSelect({
+                id: "pi_select",
+                label: "Broad PIs",
+                name: 'piList',
+                readOnly: this.state.readOnly,
+                loadOptions: this.loadUsersOptions,
+                handleChange: this.handlePIChange,
+                value: this.state.formData.piList,
+                currentValue: this.state.current.piList,
+                isMulti: true
               }),
-              InputFieldTextArea({
-                isRendered: this.state.formData.projectExtraProps.broadInvestigator == "false" || this.state.formData.projectExtraProps.broadInvestigator == false,
-                id: "broadInvestigatorTextValue",
-                name: "broadInvestigatorTextValue",
-                label: "Please provide a rationale for why this project/work would not be considered as research",
-                value: this.state.formData.projectExtraProps.broadInvestigatorTextValue,
-                currentValue: this.state.current.projectExtraProps.broadInvestigatorTextValue,
-                readOnly: true,
+
+              InputFieldSelect({
+                label: "Primary Investigator Affiliation",
+                id: "affiliations",
+                name: "affiliations",
+                options: PI_AFFILIATION,
+                value: this.state.formData.projectExtraProps.affiliations,
+                currentValue: this.state.current.projectExtraProps.affiliations,
+                onChange: this.handleSelect("affiliations"),
+                readOnly: this.state.readOnly,
+                placeholder: isEmptyArray(this.state.formData.projectExtraProps.affiliations) && this.state.readOnly ? "--" : "Choose an affiliation...",
+                edit: true
+              }),
+
+              InputFieldText({
+                isRendered: !isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.formData.projectExtraProps.affiliations.value === "other" ,
+                id: "affiliationOther",
+                name: "affiliationOther",
+                label: "Primary Investigator Other Affiliation",
+                value: this.state.formData.projectExtraProps.affiliationOther,
+                currentValue: this.state.current.projectExtraProps.affiliationOther,
+                readOnly: this.state.readOnly,
                 required: false,
                 onChange: this.handleProjectExtraPropsChange,
-                valueEdited: isEmpty(this.state.current.projectExtraProps.broadInvestigatorTextValue) === !isEmpty(this.state.formData.projectExtraProps.broadInvestigatorTextValue),
                 edit: true
-              })
-            ]),
+              }),
 
-            div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.subjectsDeceased) }, [
-              InputFieldRadio({
-                id:  "subjectsDeceased",
-                label: 'Does this project  involve only specimens or data from deceased individuals?',
-                value: this.state.formData.projectExtraProps.subjectsDeceased,
-                currentValue: this.state.current.projectExtraProps.subjectsDeceased,
-                onChange: () => { },
-                optionValues: ['true', 'false'],
-                optionLabels: [
-                  span(['Yes']), 
-                  span(['No/Unknown'])
-                ],  
-                required: false,
-                edit: false,
-                readOnly: true
-              })
-            ]),
-            div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.sensitiveInformationSource) }, [
-              InputFieldRadio({
-                id:  "sensitiveInformationSource",
-                label: span(['Will specimens or data be provided to the Broad ', i({style: { 'color': '#0A3356' }}, ['without ']), 'identifiable information? ']),
-                value: this.state.formData.projectExtraProps.sensitiveInformationSource,
-                onChange: () => { },
-                optionValues: ['false', 'true'],
-                optionLabels: [
-                  span(['No']), 
-                  span(['Yes'])
-                ],  
-                required: false,
-                edit: false,
-                readOnly: true
-              })
-            ]),
-            div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.isIdReceive) }, [
-              InputYesNo({
-                id: "isIdReceive",
-                name: 'isIdReceive',
-                value: this.state.formData.projectExtraProps.isIdReceive,
-                currentValue: this.state.current.projectExtraProps.isIdReceive,
-                label: 'Does the sample or data provider have access to identifiers?',
-                readOnly: true,
-                onChange: () => { }
-              })
-            ]),
-            div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.isCoPublishing) }, [
-              InputYesNo({
-                id: "isCoPublishing",
-                name: 'isCoPublishing',
-                value: this.state.formData.projectExtraProps.isCoPublishing,
-                currentValue: this.state.current.projectExtraProps.isCoPublishing,
-                label: 'Will anyone at the Broad be co-publishing or jointly analyzing data with the sample/data provider who has access to identifiable information about the original sample/data donor?',
-                readOnly: true,
-                onChange: () => { }
-              })
-            ]),
-            
-            div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.irbReviewedProtocol) &&  (this.state.formData.projectExtraProps.irbReviewedProtocol === 'secondaryResearch' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'sensitiveInformationSource' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'irbReviewedProtocol' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'privateInformation')}, [
-              InputFieldRadio({
-                id:  "irbReviewedProtocol",
-                label: 'Please select the option which best describes your research ',
-                value: this.state.formData.projectExtraProps.irbReviewedProtocol,
-                onChange: () => { },
-                optionValues: ['irbReviewedProtocol', 'sensitiveInformationSource', 'secondaryResearch', 'privateInformation'],
-                optionLabels: [
-                  span(['This is a project that will be/has been reviewed by an IRB, with Broad listed as a study site.']), 
-                  span(['This project will include an intervention/interaction with subjects, or identifiable information or identifiable private biospecimens will be used.']), 
-                  span(['This project is secondary research using data or biospecimens not collected specifically for this study.']),
-                  span(['This is not a secondary use study. The Broad scientist/team will obtain coded private information/biospecimens from another institution that retains a link to identifiers, ', b(['AND ']), ' be unable to readily ascertain the identity of subjects, ', b(['AND ']), 'will not receive a direct federal grant/award at Broad.'])
-                ],              
-                required: false,
-                edit: false,
-                readOnly: true
-              })
-            ]),
-            div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.humanSubjects) }, [
-              InputYesNo({
-                id: "humanSubjects",
-                name: "humanSubjects",
-                value: this.state.formData.projectExtraProps.humanSubjects,
-                currentValue: this.state.current.projectExtraProps.humanSubjects,
-                label: "",
-                moreInfo: span([
-                  span({style: { 'display': 'block' }}, ["Is this a project that only includes interactions involving ", span({style: {fontWeight: 'bold', textDecoration: 'underline'}}, ["surveys or interview procedures"]), " (including visual or auditory recording) ", b(["IF AT LEAST ONE OF THE FOLLOWING IS TRUE:"])]),
-                  span({style: { 'display': 'block' }}, ["(i) The information is recorded in such a manner that the identity of the subjects cannot readily be ascertained;"]), 
-                  span({style: { 'display': 'block' }}, [b(["OR"])]), 
-                  span({style: { 'display': 'block' }}, ["(ii) Any disclosure of the responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects' financial standing, employability, educational advancement, or reputation "])
-                ]),
-                readOnly: true,
-                onChange: () => { }
-              })
-            ]), 
-            div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.interactionSource) }, [
-              InputYesNo({
-                id: "interactionSource",
-                name: "interactionSource",
-                value: this.state.formData.projectExtraProps.interactionSource,
-                currentValue: this.state.current.projectExtraProps.interactionSource,
-                label: "Does the statement below accurately describe your project?",
-                moreInfo: span({style: { 'display': 'block' }}, ["I or another member of the project team (including a collaborator, sample/data contributor, or co-investigator) have recorded study data (including data about biospecimens) in such a way that the identity of the subjects cannot be readily ascertained ",
-                b(["directly or indirectly "]), "through identifiers linked to the subjects; ", b([" AND "]), "no one on the research team will attempt to contact or re-identify subjects."]),              readOnly: true,
-                onChange: () => { }
+              AsyncMultiSelect({
+                id: "inputProjectManager",
+                label: "Broad Project Managers",
+                name: 'pmList',
+                readOnly: this.state.readOnly,
+                loadOptions: this.loadUsersOptions,
+                handleChange: this.handleProjectManagerChange,
+                value: this.state.formData.pmList,
+                currentValue: this.state.current.pmList,
+                isMulti: true
               })
             ])
-          ])
-        ]),
+          ]),
 
-        Panel({ isRendered: this.state.enabledQuestionsWizard === true, title: "Determination Questions"}, [
-          div({ style: { 'marginTop': '55px' }}, [
-            QuestionnaireWorkflow({ questions: this.state.questions, determination: this.state.determination, handler: this.determinationHandler, internationalCohorts: false }),
-              div({ isRendered: this.state.readOnly === false, className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
-                button({
-                  className: "btn buttonSecondary",
-                  onClick: this.cancelEditResponses(),
-                  isRendered: this.state.readOnly === false && !component.isViewer
-                }, ["Cancel"]),
+          div({ id: "funding" }, [
+            Panel({ title: "Funding" }, [
+              Fundings({
+                fundings: this.state.formData.fundings,
+                current: this.state.formData.fundings,
+                updateFundings: this.handleUpdateFundings,
+                readOnly: this.state.readOnly,
+                error: this.state.fundingError,
+                errorIndex: this.state.fundingErrorIndex,
+                fundingAwardNumberError: this.state.fundingAwardNumberError,
+                setError: this.changeFundingError,
+                errorMessage: "Required field",
+                edit: true
+              })
+            ])
+          ]),
+
+          div({ id: "projectSummary" }, [
+            Panel({ title: "Project Summary" }, [
+              div({ id: "projectSummaryInputTextArea" }, [
+                div({ isRendered: (this.state.formData.description !== this.state.current.description) || !this.state.readOnly }, [
+                  InputFieldTextArea({
+                    id: "inputStudyActivitiesDescription",
+                    name: "description",
+                    label: "Describe Broad study activities* ",
+                    moreInfo: "(briefly, in 1-2 paragraphs, with attention to whether or not protected health information will be accessed, and any future data sharing plans)",
+                    value: this.state.formData.description,
+                    currentValue: this.state.current.description,
+                    readOnly: this.state.readOnly,
+                    readonly: true,
+                    required: true,
+                    onChange: this.handleInputChange,
+                    error: this.state.descriptionError,
+                    errorMessage: "Required field"
+                  })
+                ]),
+                
+                div({ isRendered: this.state.readOnly && (this.state.formData.description === this.state.current.description) }, [
+                  p({ className: "inputFieldLabel" }, "Broad study activities "),
+                  div({ className: "inputFieldReadOnly" }, [
+                    div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' }}, this.state.current.description)
+                  ])
+                ])
+              ]),
+
+              AsyncMultiSelect({
+                id: "collaborator_select",
+                label: "Broad individuals who require access to this project record",
+                isDisabled: false,
+                readOnly: this.state.readOnly,
+                loadOptions: this.loadUsersOptions,
+                handleChange: this.handleProjectCollaboratorChange,
+                value: this.state.formData.collaborators,
+                currentValue: this.state.current.collaborators,
+                placeholder: "Start typing names for project access",
+                isMulti: true
+              }),
+              InputFieldText({
+                id: "inputPTitle",
+                name: "projectTitle",
+                label: "Title of project/protocol",
+                value: this.state.formData.projectExtraProps.projectTitle,
+                currentValue: this.state.current.projectExtraProps.projectTitle,
+                readOnly: this.state.readOnly,
+                required: false,
+                onChange: this.handleProjectExtraPropsChange,
+                error: this.state.projectTitleError,
+                errorMessage: "Required field",
+                edit: true
+              }),
+              InputFieldText({
+                id: "inputIrbProtocolId",
+                name: "protocol",
+                label: "Protocol # at Broad IRB-of-record ",
+                value: this.state.formData.projectExtraProps.protocol,
+                currentValue: this.state.current.projectExtraProps.protocol,
+                readOnly: this.state.readOnly,
+                required: false,
+                onChange: this.handleProjectExtraPropsChange,
+                valueEdited: isEmpty(this.state.current.projectExtraProps.protocol) === !isEmpty(this.state.formData.projectExtraProps.protocol),
+                edit: true
+              }),
+              InputFieldSelect({
+                label: "IRB-of-record",
+                id: "irb",
+                name: "irb",
+                options: PREFERRED_IRB,
+                value: (
+                    !isEmpty(this.state.formData.projectExtraProps.irb) && 
+                    this.state.formData.projectExtraProps.irb.label === 'Other' && this.state.readOnly && this.state.formData.projectExtraProps.irbReferralText
+                  ) ? {label: this.state.formData.projectExtraProps.irbReferralText} : this.state.formData.projectExtraProps.irb,
+                currentValue: (
+                    !isEmpty(this.state.formData.projectExtraProps.irb) && 
+                    this.state.current.projectExtraProps.irb.label === 'Other' && this.state.readOnly && this.state.current.projectExtraProps.irbReferralText
+                  ) ? {label: this.state.current.projectExtraProps.irbReferralText} : this.state.current.projectExtraProps.irb,
+                onChange: this.handleSelect("irb"),
+                readOnly: this.state.readOnly,
+                placeholder: isEmpty(this.state.formData.projectExtraProps.irb) && this.state.readOnly ? "--" : "Select...",
+                edit: true,
+                isClearable: true
+              })
+            ])
+          ]),
+
+          div({ id: "determinationQuestions" }, [
+            Panel({ isRendered: this.state.enabledQuestionsWizard === false, title: "Determination Questions" }, [
+              div({ isRendered: this.state.readOnly === false && this.state.formData.approvalStatus != 'Approved' && this.state.formData.approvalStatus != 'Completed', className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
                 button({
                   className: "btn buttonPrimary floatRight",
-                  onClick: this.submitEditResponses(),
-                  disabled: !this.state.determination.endState,
+                  onClick: this.enableEditResponses(),
                   isRendered: this.state.readOnly === false && !component.isViewer
-                }, ["Submit"])
+                }, ["Edit Responses"])
               ]),
-          ])
+              div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.feeForService), className: "firstRadioGroup" }, [
+                InputYesNo({
+                  id: "radioPII",
+                  name: "radioPII",
+                  label: 'Is this a “fee for service” project? ',
+                  moreInfo: '(Commercial service only, no direct federal funding, no data analysis, no data storage, no dbGaP deposition by Broad.)',
+                  value: this.state.formData.projectExtraProps.feeForService,
+                  currentValue: this.state.current.projectExtraProps.feeForService,
+                  readOnly: true,
+                  onChange: () => { }
+                })
+              ]),
+              div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.broadInvestigator) }, [
+                InputYesNo({
+                  id: "broadInvestigator",
+                  name: "broadInvestigator",
+                  value: this.state.formData.projectExtraProps.broadInvestigator,
+                  currentValue: this.state.current.projectExtraProps.broadInvestigator,
+                  moreInfo: span({style: { 'display': 'block' }}, ['Examples of projects that ', b(['DO NOT ']), 'contribute to generalizable knowledge include small case studies and internal technology development/validation projects. ']),
+                  label: 'Is a Broad scientist(s) conducting research (generating or contributing to generalizable knowledge, with the intention to publish results)? ',
+                  readOnly: true,
+                  onChange: () => { }
+                }),
+                InputFieldTextArea({
+                  isRendered: this.state.formData.projectExtraProps.broadInvestigator == "false" || this.state.formData.projectExtraProps.broadInvestigator == false,
+                  id: "broadInvestigatorTextValue",
+                  name: "broadInvestigatorTextValue",
+                  label: "Please provide a rationale for why this project/work would not be considered as research",
+                  value: this.state.formData.projectExtraProps.broadInvestigatorTextValue,
+                  currentValue: this.state.current.projectExtraProps.broadInvestigatorTextValue,
+                  readOnly: true,
+                  required: false,
+                  onChange: this.handleProjectExtraPropsChange,
+                  valueEdited: isEmpty(this.state.current.projectExtraProps.broadInvestigatorTextValue) === !isEmpty(this.state.formData.projectExtraProps.broadInvestigatorTextValue),
+                  edit: true
+                })
+              ]),
+
+              div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.subjectsDeceased) }, [
+                InputFieldRadio({
+                  id:  "subjectsDeceased",
+                  label: 'Does this project  involve only specimens or data from deceased individuals?',
+                  value: this.state.formData.projectExtraProps.subjectsDeceased,
+                  currentValue: this.state.current.projectExtraProps.subjectsDeceased,
+                  onChange: () => { },
+                  optionValues: ['true', 'false'],
+                  optionLabels: [
+                    span(['Yes']), 
+                    span(['No/Unknown'])
+                  ],  
+                  required: false,
+                  edit: false,
+                  readOnly: true
+                })
+              ]),
+              div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.sensitiveInformationSource) }, [
+                InputFieldRadio({
+                  id:  "sensitiveInformationSource",
+                  label: span(['Will specimens or data be provided to the Broad ', i({style: { 'color': '#0A3356' }}, ['without ']), 'identifiable information? ']),
+                  value: this.state.formData.projectExtraProps.sensitiveInformationSource,
+                  onChange: () => { },
+                  optionValues: ['false', 'true'],
+                  optionLabels: [
+                    span(['No']), 
+                    span(['Yes'])
+                  ],  
+                  required: false,
+                  edit: false,
+                  readOnly: true
+                })
+              ]),
+              div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.isIdReceive) }, [
+                InputYesNo({
+                  id: "isIdReceive",
+                  name: 'isIdReceive',
+                  value: this.state.formData.projectExtraProps.isIdReceive,
+                  currentValue: this.state.current.projectExtraProps.isIdReceive,
+                  label: 'Does the sample or data provider have access to identifiers?',
+                  readOnly: true,
+                  onChange: () => { }
+                })
+              ]),
+              div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.isCoPublishing) }, [
+                InputYesNo({
+                  id: "isCoPublishing",
+                  name: 'isCoPublishing',
+                  value: this.state.formData.projectExtraProps.isCoPublishing,
+                  currentValue: this.state.current.projectExtraProps.isCoPublishing,
+                  label: 'Will anyone at the Broad be co-publishing or jointly analyzing data with the sample/data provider who has access to identifiable information about the original sample/data donor?',
+                  readOnly: true,
+                  onChange: () => { }
+                })
+              ]),
+              
+              div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.irbReviewedProtocol) &&  (this.state.formData.projectExtraProps.irbReviewedProtocol === 'secondaryResearch' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'sensitiveInformationSource' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'irbReviewedProtocol' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'privateInformation')}, [
+                InputFieldRadio({
+                  id:  "irbReviewedProtocol",
+                  label: 'Please select the option which best describes your research ',
+                  value: this.state.formData.projectExtraProps.irbReviewedProtocol,
+                  onChange: () => { },
+                  optionValues: ['irbReviewedProtocol', 'sensitiveInformationSource', 'secondaryResearch', 'privateInformation'],
+                  optionLabels: [
+                    span(['This is a project that will be/has been reviewed by an IRB, with Broad listed as a study site.']), 
+                    span(['This project will include an intervention/interaction with subjects, or identifiable information or identifiable private biospecimens will be used.']), 
+                    span(['This project is secondary research using data or biospecimens not collected specifically for this study.']),
+                    span(['This is not a secondary use study. The Broad scientist/team will obtain coded private information/biospecimens from another institution that retains a link to identifiers, ', b(['AND ']), ' be unable to readily ascertain the identity of subjects, ', b(['AND ']), 'will not receive a direct federal grant/award at Broad.'])
+                  ],              
+                  required: false,
+                  edit: false,
+                  readOnly: true
+                })
+              ]),
+              div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.humanSubjects) }, [
+                InputYesNo({
+                  id: "humanSubjects",
+                  name: "humanSubjects",
+                  value: this.state.formData.projectExtraProps.humanSubjects,
+                  currentValue: this.state.current.projectExtraProps.humanSubjects,
+                  label: "",
+                  moreInfo: span([
+                    span({style: { 'display': 'block' }}, ["Is this a project that only includes interactions involving ", span({style: {fontWeight: 'bold', textDecoration: 'underline'}}, ["surveys or interview procedures"]), " (including visual or auditory recording) ", b(["IF AT LEAST ONE OF THE FOLLOWING IS TRUE:"])]),
+                    span({style: { 'display': 'block' }}, ["(i) The information is recorded in such a manner that the identity of the subjects cannot readily be ascertained;"]), 
+                    span({style: { 'display': 'block' }}, [b(["OR"])]), 
+                    span({style: { 'display': 'block' }}, ["(ii) Any disclosure of the responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects' financial standing, employability, educational advancement, or reputation "])
+                  ]),
+                  readOnly: true,
+                  onChange: () => { }
+                })
+              ]), 
+              div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.interactionSource) }, [
+                InputYesNo({
+                  id: "interactionSource",
+                  name: "interactionSource",
+                  value: this.state.formData.projectExtraProps.interactionSource,
+                  currentValue: this.state.current.projectExtraProps.interactionSource,
+                  label: "Does the statement below accurately describe your project?",
+                  moreInfo: span({style: { 'display': 'block' }}, ["I or another member of the project team (including a collaborator, sample/data contributor, or co-investigator) have recorded study data (including data about biospecimens) in such a way that the identity of the subjects cannot be readily ascertained ",
+                  b(["directly or indirectly "]), "through identifiers linked to the subjects; ", b([" AND "]), "no one on the research team will attempt to contact or re-identify subjects."]),              readOnly: true,
+                  onChange: () => { }
+                })
+              ])
+            ])
+          ]),
+
+          Panel({ isRendered: this.state.enabledQuestionsWizard === true, title: "Determination Questions"}, [
+            div({ style: { 'marginTop': '55px' }}, [
+              QuestionnaireWorkflow({ questions: this.state.questions, determination: this.state.determination, handler: this.determinationHandler, internationalCohorts: false }),
+                div({ isRendered: this.state.readOnly === false, className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
+                  button({
+                    className: "btn buttonSecondary",
+                    onClick: this.cancelEditResponses(),
+                    isRendered: this.state.readOnly === false && !component.isViewer
+                  }, ["Cancel"]),
+                  button({
+                    className: "btn buttonPrimary floatRight",
+                    onClick: this.submitEditResponses(),
+                    disabled: !this.state.determination.endState,
+                    isRendered: this.state.readOnly === false && !component.isViewer
+                  }, ["Submit"])
+                ]),
+            ])
+          ]),
         ]),
+
+        ProjectChangeComparision({
+          isRendered: this.state.isCompareChanges,
+          formData: this.state.formData,
+          versionedData: this.state.versionedIssue
+        }),
 
         Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
           p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),

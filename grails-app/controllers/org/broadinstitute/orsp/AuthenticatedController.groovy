@@ -340,4 +340,21 @@ class AuthenticatedController implements Interceptor, UserInfo, ExceptionHandler
         getUser() ? permissionService.issueIsForbidden(issue, getUser().userName, isAdmin(), isViewer()) : false
     }
 
+    protected Collection<User> getProjectManagersForVersionedIssue(VersionedIssue verIssue) {
+        Collection<String> pmUsernames = VersionedIssueExtraProperty.findAllByProjectKeyAndNameAndSequenceNumber(verIssue.projectKey, IssueExtraProperty.PM, verIssue.sequenceNumber)*.value
+        Collection<User> pms = userService.findUsers(pmUsernames) ?: new ArrayList<>()
+        if (pms.isEmpty()) {
+            User reporter = userService.findUser(verIssue.reporter)
+            if (reporter) { pms.add(reporter) }
+        }
+        pms
+    }
+
+    protected Collection<User> getPIsForVersionedIssue(VersionedIssue verIssue) {
+        Collection<String> pis = VersionedIssueExtraProperty.findAllByProjectKeyAndNameAndSequenceNumber(verIssue.projectKey, IssueExtraProperty.PI, verIssue.sequenceNumber)*.value
+        Collection<User> pisForUsers = new ArrayList<>()
+        pisForUsers.addAll(userService.findUsers(pis))
+        pisForUsers
+    }
+
 }

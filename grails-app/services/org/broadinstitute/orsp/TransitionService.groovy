@@ -547,7 +547,8 @@ class TransitionService {
         def prop = new IssueExtraProperty(
                 projectKey: issue.projectKey,
                 name: name,
-                value: value
+                value: value,
+                sequenceNumber: issue.sequenceNumber
         )
         issue.addToExtraProperties(prop)
     }

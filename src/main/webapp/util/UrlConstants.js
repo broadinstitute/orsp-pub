@@ -13,6 +13,7 @@ export const UrlConstants = {
   updateAdminOnlyPropsUrl: context + '/api/project/update-admin-props',
   userProjectUrl: context + '/api/user/projects',
   removeAssignedAdmin: context + '/api/project/remove-assigned-admin',
+  getProjectByVersion: context + '/api/project/version',
 
   // Consent Group
   updateConsentGroupUrl: context + '/api/consent-group',
