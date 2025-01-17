@@ -76,19 +76,25 @@ const ProjectChangeComparision = hh(
   
           return div({ className: "row" }, [
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                  oldSource && !newSource ? del([oldSource]) : 
+                  !oldSource && newSource ? ins([newSource]) : 
                   oldSource !== newSource ? [del([oldSource]), ins([newSource])] : newSource
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                  oldSponsor && !newSponsor ? del([oldSponsor]) : 
+                  !oldSponsor && newSponsor ? ins([newSponsor]) : 
                   oldSponsor !== newSponsor ? [del([oldSponsor]), ins([newSponsor])] : newSponsor
               ]),
               div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                  oldIdentifier && !newIdentifier ? del([oldIdentifier]) : 
+                  !oldIdentifier && newIdentifier ? ins([newIdentifier]) : 
                   oldIdentifier !== newIdentifier ? [del([oldIdentifier]), ins([newIdentifier])] : newIdentifier
               ]),
           ]);
       });
   
       return div({ className: "row" }, [...headers, ...rows]);
-    };  
+    };
 
     render() {
       return div({}, [
