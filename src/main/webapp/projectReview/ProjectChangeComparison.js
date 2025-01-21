@@ -33,7 +33,10 @@ const ProjectChangeComparision = hh(
       if (oldData === "false") oldData = "No"
 
       if (newData !== oldData) {
-        return div([del([oldData]), ins([newData])]);
+        return div([
+          del({isRendered: !isEmpty(oldData)}, [oldData]), 
+          ins({isRendered: !isEmpty(newData)}, [newData])
+        ]);
       } else {
         return newData || "--";
       }
