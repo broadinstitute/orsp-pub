@@ -1133,7 +1133,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
           className: "btn buttonPrimary floatRight",
           style: { 'marginTop': '15px' },
           onClick: this.handleCompareChange,
-          isRendered: this.state.readOnly === true && !isEmpty(this.state.future) && this.state.future.sequenceNumber && !this.state.isCompareChanges 
+          isRendered: this.state.readOnly === true && !isEmpty(this.state.future) && this.state.future.sequenceNumber && !this.state.isCompareChanges && !this.state.reviewSuggestion
         }, ["Compare Changes"]),
         button({
           className: "btn buttonSecondary floatRight",
