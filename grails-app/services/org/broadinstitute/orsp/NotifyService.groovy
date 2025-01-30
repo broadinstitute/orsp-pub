@@ -657,9 +657,8 @@ class NotifyService implements SendgridSupport, Status {
         reporter.add(issue.getReporter())
         Collection<User> reporterToNotify = userService.findUsers(reporter)
         Collection<String> emails = usersToNotify.emailAddress
-        String reporterEmail = reporterToNotify.emailAddress
+        String reporterEmail = reporterToNotify.emailAddress[0]
         emails.add(reporterEmail)
-        log.info('Emails: ', emails)
         NotifyArguments arguments = new NotifyArguments(
                 toAddresses: emails,
                 fromAddress: getDefaultFromAddress(),
