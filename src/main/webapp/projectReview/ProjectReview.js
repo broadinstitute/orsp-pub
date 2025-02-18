@@ -1321,7 +1321,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     required: true,
                     onChange: this.handleInputChange,
                     error: this.state.descriptionError,
-                    errorMessage: "Required field"
+                    errorMessage: "Required field",
+                    showDiff: true
                   })
                 ]),
                 
