@@ -158,8 +158,8 @@ export function compareString(base, current) {
   current = current ? current : '';
   base = base.replace(/\s+$/, '');
   base = base.replace(/<[^>]*>/g, '');
-  base = base.replace(/&nbsp;/g, ' ')
-  current = current.replace(/&nbsp;/g, ' ')
+  base = base.replace(/&nbsp;/g, ' ');
+  current = current.replace(/&nbsp;/g, ' ');
   current = current.replace(/\s+$/, '');
   current = current.replace(/<[^>]*>/g, '');
   const out = diff(base === '' ? [] : base.split(/\s+/), current === '' ? [] : current.split(/\s+/));

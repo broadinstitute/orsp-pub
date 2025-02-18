@@ -3,6 +3,7 @@ import { hh, textarea, div, label, span } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import { compareString } from '../util/Utils';
 import './InputField.css';
+import { isEmpty } from 'lodash';
 
 export const InputFieldTextArea = hh(class InputFieldTextArea extends Component {
 
@@ -50,7 +51,7 @@ export const InputFieldTextArea = hh(class InputFieldTextArea extends Component 
               isRendered: edited, 
               className: "inputFieldCurrent", 
               style: {whiteSpace: "pre-wrap"} 
-            }, [(this.props.currentValueStr !== null) ? this.props.currentValueStr : currentValue]),
+            }, [!isEmpty(this.props.currentValueStr) ? this.props.currentValueStr : currentValue]),
           ]),
       ])
     )
