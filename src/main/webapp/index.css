@@ -520,3 +520,18 @@ ins {
   background-color: rgba(60, 179, 113, 0.3);
   margin: 0 6px 0 0;
 }
+
+#diffChecker {
+  background-color: #FFF4BD ;
+  padding: 10px;
+  white-space: pre-wrap;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  & ins {
+    background-color: rgba(60, 179, 113, 0.6);
+  }
+  & del {
+    background-color: rgba(255, 40, 40, 0.6);
+  }
+}
