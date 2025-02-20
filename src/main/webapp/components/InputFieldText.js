@@ -1,22 +1,25 @@
 import { Component } from 'react';
-import { input, hh, div } from 'react-hyperscript-helpers';
+import { input, hh, div, h } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import { areSomeTheseThingsTruthy } from '../util/Utils';
 import './InputField.css';
+import ChangeHighlighter from './ChangeHighlighter';
 
 export const InputFieldText = hh(class InputFieldText extends Component {
 
   render() {
 
     const { value, currentValue } = this.props;
-    const edited = value !== currentValue && currentValue !== undefined
+    const edited = (value !== currentValue && currentValue !== undefined
       || areSomeTheseThingsTruthy([this.props.valueEdited, this.props.edit]) 
-      && value !== currentValue && currentValue === undefined && value !== '';
+      && value !== currentValue && currentValue === undefined && value !== '') || null;
     return (
-      InputField({
-        label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
-        readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, edited: edited
-      }, [
+      div([
+        InputField({
+          isRendered: !this.props.readOnly,
+          label: this.props.label, moreInfo: this.props.moreInfo, error: this.props.error, errorMessage: this.props.errorMessage,
+          readOnly: this.props.readOnly, value: this.props.value, currentValue: this.props.currentValue, edited: edited
+        }, [
           div({ className: "inputFieldWrapper" }, [
             input({
               type: 'text',
@@ -33,7 +36,17 @@ export const InputFieldText = hh(class InputFieldText extends Component {
               autocomplete: 'off'
             })
           ])
-        ])
+        ]),
+        h(ChangeHighlighter, {
+          edited: edited,
+          readOnly: this.props.readOnly,
+          label: this.props.label,
+          moreInfo: this.props.moreInfo,
+          value: this.props.value,
+          currentValue: this.props.currentValue,
+          currentValueStr: this.props.currentValueStr
+        })
+      ])
     )
   }
 });

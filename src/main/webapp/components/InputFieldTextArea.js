@@ -1,9 +1,8 @@
 import { Component } from 'react';
-import { hh, textarea, div, label, span } from 'react-hyperscript-helpers';
+import { hh, textarea, div, h } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
-import { compareString } from '../util/Utils';
 import './InputField.css';
-import { isEmpty } from 'lodash';
+import ChangeHighlighter from './ChangeHighlighter';
 
 export const InputFieldTextArea = hh(class InputFieldTextArea extends Component {
 
@@ -34,25 +33,15 @@ export const InputFieldTextArea = hh(class InputFieldTextArea extends Component 
               }),
             ]),
           ]),
-          div({
-            isRendered: edited && this.props.showDiff && this.props.readOnly
-          }, [
-            label({ className: "inputFieldLabel" }, [
-              this.props.label, 
-              span({ isRendered: this.props.moreInfo !== undefined, className: "italic" }, [this.props.moreInfo])
-            ]),
-            div({
-              id: "diffChecker",
-              dangerouslySetInnerHTML: {
-                __html: compareString(this.props.currentValue, this.props.value)
-              }
-            }),
-            div({ 
-              isRendered: edited, 
-              className: "inputFieldCurrent", 
-              style: {whiteSpace: "pre-wrap"} 
-            }, [!isEmpty(this.props.currentValueStr) ? this.props.currentValueStr : currentValue]),
-          ]),
+          h(ChangeHighlighter, {
+            edited: edited,
+            readOnly: this.props.readOnly,
+            label: this.props.label,
+            moreInfo: this.props.moreInfo,
+            value: this.props.value,
+            currentValue: this.props.currentValue,
+            currentValueStr: this.props.currentValueStr
+          })
       ])
     )
   }

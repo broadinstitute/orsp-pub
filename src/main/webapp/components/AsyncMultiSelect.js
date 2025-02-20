@@ -3,6 +3,7 @@ import { hh, h, div } from 'react-hyperscript-helpers';
 import { InputField } from './InputField';
 import AsyncSelect from 'react-select/lib/Async';
 import './InputField.css';
+import ChangeHighlighter from './ChangeHighlighter';
 
 export const AsyncMultiSelect = hh(class AsyncMultiSelect extends Component {
 
@@ -42,7 +43,6 @@ export const AsyncMultiSelect = hh(class AsyncMultiSelect extends Component {
   };
 
   render() {
-
     let currentValue  = [];
     let value = [];
 
@@ -75,16 +75,18 @@ export const AsyncMultiSelect = hh(class AsyncMultiSelect extends Component {
     const edited = this.isEdited(currentKeys, keys);
 
     return (
-      InputField({
-        label: this.props.label,
-        error: this.props.error,
-        errorMessage: this.props.errorMessage,
-        readOnly: this.props.readOnly,
-        value: this.props.value,
-        currentValue: currentValue,
-        currentValueStr: currentValueStr,
-        edited: edited
-      }, [
+      div([
+        InputField({
+          isRendered: !this.props.readOnly,
+          label: this.props.label,
+          error: this.props.error,
+          errorMessage: this.props.errorMessage,
+          readOnly: this.props.readOnly,
+          value: this.props.value,
+          currentValue: currentValue,
+          currentValueStr: currentValueStr,
+          edited: edited
+        }, [
           div({ className: "inputFieldSelectWrapper" }, [
             h(AsyncSelect, {
               id: this.props.id,
@@ -100,7 +102,17 @@ export const AsyncMultiSelect = hh(class AsyncMultiSelect extends Component {
               styles: this.props.styles
             })
           ])
-        ])
+        ]),
+        h(ChangeHighlighter, {
+          edited: edited,
+          readOnly: this.props.readOnly,
+          label: this.props.label,
+          moreInfo: this.props.moreInfo,
+          value: this.props.value,
+          currentValue: this.props.currentValue,
+          currentValueStr: currentValueStr
+        })
+      ])
     )
   }
 });

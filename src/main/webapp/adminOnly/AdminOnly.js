@@ -615,29 +615,25 @@ const AdminOnly = hh(class AdminOnly extends Component {
               onChange: this.radioBtnHandler,
               readOnly: !this.state.isAdmin
             }),
-            div({className: 'col-md-11'}, [
-              InputFieldSelect({
-                label: "IRB",
-                id: "preferredIrb",
-                name: "preferredIrb",
-                options: PREFERRED_IRB,
-                value: this.state.formData.preferredIrb,
-                onChange: this.handleSelect("preferredIrb"),
-                readOnly: true,
-                placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
-                edit: false,
-                showRemove: true,
-              }),
-            ]),
-            span({
-              className: 'col-md-1 text-right',
-              onClick: this.clearIRB,
-              style: {'marginTop': '1.5rem', "cursor": "pointer"}
-            }, [
+            div({style: {display: "flex", alignItems: "center"}}, [
+              div({style: {width: "97%"}}, [
+                InputFieldSelect({
+                  label: "IRB",
+                  id: "preferredIrb",
+                  name: "preferredIrb",
+                  options: PREFERRED_IRB,
+                  value: this.state.formData.preferredIrb,
+                  onChange: this.handleSelect("preferredIrb"),
+                  readOnly: true,
+                  placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
+                  edit: false,
+                  showRemove: true,
+                }),
+              ]),
               i({
                 className: 'glyphicon glyphicon-remove',
               }, [])
-            ]), br(), br(),
+            ]),
             InputFieldText({
               id: "preferredIrbText",
               name: "preferredIrbText",
