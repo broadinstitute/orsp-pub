@@ -616,18 +616,20 @@ const AdminOnly = hh(class AdminOnly extends Component {
               readOnly: !this.state.isAdmin
             }),
             div({style: {display: "flex", alignItems: "center"}}, [
-              InputFieldSelect({
-                label: "IRB",
-                id: "preferredIrb",
-                name: "preferredIrb",
-                options: PREFERRED_IRB,
-                value: this.state.formData.preferredIrb,
-                onChange: this.handleSelect("preferredIrb"),
-                readOnly: true,
-                placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
-                edit: false,
-                showRemove: true,
-              }),
+              div({style: {width: "97%"}}, [
+                InputFieldSelect({
+                  label: "IRB",
+                  id: "preferredIrb",
+                  name: "preferredIrb",
+                  options: PREFERRED_IRB,
+                  value: this.state.formData.preferredIrb,
+                  onChange: this.handleSelect("preferredIrb"),
+                  readOnly: true,
+                  placeholder: isEmpty(this.state.formData.preferredIrb) && this.state.readOnly ? "--" : "Select...",
+                  edit: false,
+                  showRemove: true,
+                }),
+              ]),
               i({
                 className: 'glyphicon glyphicon-remove',
               }, [])
