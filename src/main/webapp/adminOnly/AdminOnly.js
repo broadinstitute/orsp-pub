@@ -615,7 +615,7 @@ const AdminOnly = hh(class AdminOnly extends Component {
               onChange: this.radioBtnHandler,
               readOnly: !this.state.isAdmin
             }),
-            div({className: 'col-md-11'}, [
+            div({style: {display: "flex", alignItems: "center"}}, [
               InputFieldSelect({
                 label: "IRB",
                 id: "preferredIrb",
@@ -628,16 +628,10 @@ const AdminOnly = hh(class AdminOnly extends Component {
                 edit: false,
                 showRemove: true,
               }),
-            ]),
-            span({
-              className: 'col-md-1 text-right',
-              onClick: this.clearIRB,
-              style: {'marginTop': '1.5rem', "cursor": "pointer"}
-            }, [
               i({
                 className: 'glyphicon glyphicon-remove',
               }, [])
-            ]), br(), br(),
+            ]),
             InputFieldText({
               id: "preferredIrbText",
               name: "preferredIrbText",
