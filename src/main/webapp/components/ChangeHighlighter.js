@@ -12,13 +12,15 @@ function ChangeHighlighter({
   currentValueStr,
 }) {
   const compareData = (currentValue, value) => {
-    value = Array.isArray(value)
-      ? value.map((item) => item.label.trim()).join(", ")
-      : value;
-    currentValue = Array.isArray(currentValue)
-      ? currentValue.map((item) => item.label.trim()).join(", ")
-      : currentValue;
-    const TEXT_DIFF = diffWords(currentValue="", value="");
+    let currentVal = currentValue || "";
+    let val = value || "";
+    val = Array.isArray(val)
+      ? val.map((item) => item.label.trim()).join(", ")
+      : val;
+    currentVal = Array.isArray(currentVal)
+      ? currentVal.map((item) => item.label.trim()).join(", ")
+      : currentVal;
+    const TEXT_DIFF = diffWords(currentVal, val);
     let result = "";
     TEXT_DIFF.forEach((part) => {
       result += part.added
@@ -62,7 +64,7 @@ function ChangeHighlighter({
           <div className="inputFieldCurrent" style={getConditionalStyles()}>
             {!isEmpty(currentValueStr)
               ? currentValueStr
-              : !isEmpty(currentValue)
+              : currentValue !== value
               ? getStringDataFromObjArr(currentValue)
               : getStringDataFromObjArr(value)}
           </div>
