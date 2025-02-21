@@ -18,7 +18,7 @@ function ChangeHighlighter({
     currentValue = Array.isArray(currentValue)
       ? currentValue.map((item) => item.label.trim()).join(", ")
       : currentValue;
-    const TEXT_DIFF = diffWords(currentValue, value);
+    const TEXT_DIFF = diffWords(currentValue="", value="");
     let result = "";
     TEXT_DIFF.forEach((part) => {
       result += part.added
