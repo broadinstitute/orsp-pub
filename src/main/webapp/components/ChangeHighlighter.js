@@ -1,5 +1,6 @@
 import React from "react";
-import { compareString, isEmpty } from "../util/Utils";
+import { isEmpty } from "../util/Utils";
+import { diffWords } from "diff";
 
 function ChangeHighlighter({
   edited,
@@ -12,12 +13,21 @@ function ChangeHighlighter({
 }) {
   const compareData = (currentValue, value) => {
     value = Array.isArray(value)
-      ? value.map((item) => item.label).join(", ") 
+      ? value.map((item) => item.label.trim()).join(", ")
       : value;
     currentValue = Array.isArray(currentValue)
-      ? currentValue.map((item) => item.label).join(", ")
+      ? currentValue.map((item) => item.label.trim()).join(", ")
       : currentValue;
-    return compareString(currentValue, value);
+    const TEXT_DIFF = diffWords(currentValue, value);
+    let result = "";
+    TEXT_DIFF.forEach((part) => {
+      result += part.added
+        ? `<ins>${part.value}</ins>`
+        : part.removed
+        ? `<del>${part.value}</del>`
+        : part.value;
+    });
+    return result;
   };
 
   const getStringDataFromObjArr = (data) =>
