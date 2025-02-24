@@ -524,14 +524,20 @@ ins {
 #diffChecker {
   background-color: #FFF4BD ;
   padding: 10px;
+  margin-top: 2px;
   white-space: pre-wrap;
   max-height: 300px;
+  min-height: 39px;
   overflow-y: auto;
   overflow-x: hidden;
   & ins {
     background-color: rgba(60, 179, 113, 0.6);
+    padding: 0;
+    margin: 0 2px 0 0;
   }
   & del {
     background-color: rgba(255, 40, 40, 0.6);
+    padding: 0;
+    margin: 0 2px 0 0;
   }
 }
