@@ -152,6 +152,8 @@ class UrlMappings {
         '/api/issue-list'(controller: 'issueList', action: 'issueItems', method: 'GET')
         '/api/auth'(controller: 'auth', action: 'authUser')
 
+        '/api/versioned-issue-list'(controller: 'issueList', action: 'getIssueVersionList', method: 'GET')
+
         // Login text end point
         '/api/login-text'(controller: 'loginText', action: 'getLoginText', method: 'GET')
         '/api/edit-login-text'(controller: 'loginText', action: 'updateLoginText', method: 'PUT')

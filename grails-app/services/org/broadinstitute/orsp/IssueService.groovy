@@ -294,6 +294,7 @@ class IssueService implements UserInfo {
             it.save()
         }
 
+        issue.setUpdateUser(getUser()?.userName)
         issue.setUpdateDate(new Date())
         issue.setSequenceNumber(issue.sequenceNumber + 1)
 
@@ -350,6 +351,8 @@ class IssueService implements UserInfo {
                 // update Issue projectKey
                 issue.setType(issueType.getName())
                 issue.setProjectKey(newProjectKey)
+                issue.setUpdateUser(getUser()?.userName)
+                issue.setUpdateDate(new Date())
                 if (issue.hasErrors()) {
                     throw new DomainException(issue.getErrors())
                 } else {
@@ -471,6 +474,7 @@ class IssueService implements UserInfo {
         }
 
         issue.setUpdateDate(new Date())
+        issue.setUpdateUser(getUser()?.userName)
         if (issue.hasErrors()) {
             throw new DomainException(issue.getErrors())
         } else {
@@ -540,6 +544,7 @@ class IssueService implements UserInfo {
     Issue createIssue(IssueType type, Issue issue) throws DomainException {
         issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
         issue.setSequenceNumber(0)
+        issue.setUpdateUser(getUser()?.userName)
         List<IssueExtraProperty> extraProperties = issue.getNonEmptyExtraProperties()
         Collection<Funding> fundings = issue.getFundings()
         Issue newIssue = initIssue(issue, type)
@@ -618,6 +623,7 @@ class IssueService implements UserInfo {
         Issue newIssue = issue
         newIssue.setRequestDate(new Date())
         newIssue.setUpdateDate(new Date())
+        newIssue.setUpdateUser(getUser()?.userName)
         if (!type.getName().equals(IssueType.CONSENT_GROUP.getName())) {
             newIssue.setApprovalStatus(IssueStatus.Pending.name)
         }

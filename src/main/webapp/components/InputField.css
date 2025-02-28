@@ -3,10 +3,6 @@
   position: relative;
 }
 
-.inputField:first-child {
-  margin-top: 0;
-}
-
 /* Read Only Mode*/
 
 .inputFieldReadOnly .inputFieldText, .inputFieldReadOnly .inputFieldTextarea, .inputFieldReadOnly .inputFieldSelect div, .inputFieldReadOnly .react-datepicker-wrapper .inputFieldDatePicker {
