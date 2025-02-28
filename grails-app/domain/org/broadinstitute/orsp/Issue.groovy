@@ -16,6 +16,7 @@ class Issue implements LogicalDelete<Issue> {
     String reporter
     String approvalStatus
     Date requestDate
+    String updateUser
     Date updateDate
     Date expirationDate
     Integer sequenceNumber
@@ -36,6 +37,7 @@ class Issue implements LogicalDelete<Issue> {
         description blank: true, nullable: true
         reporter blank: true, nullable: true
         requestDate nullable: false
+        updateUser nullable: true
         updateDate nullable: true
         expirationDate nullable: true
         approvalStatus blank: true, nullable: true

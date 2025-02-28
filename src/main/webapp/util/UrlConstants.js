@@ -111,6 +111,7 @@ export const UrlConstants = {
   viewRestrictionUrl: context + '/api/data-use/restriction',
   authUserUrl: context + '/api/auth',
   issueListUrl: context + '/api/issue-list',
+  versionedIssueListUrl: context + '/api/versioned-issue-list',
   profileUrl: context + '/profile',
   aboutUrl: context + '/about',
   viewSearchUrl: context + '/search/index',

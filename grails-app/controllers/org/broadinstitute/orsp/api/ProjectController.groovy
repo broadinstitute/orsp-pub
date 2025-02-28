@@ -218,7 +218,8 @@ class ProjectController extends AuthenticatedController {
                 fundings: versionedIssueFunding,
                 pms: getProjectManagersForVersionedIssue(versionedIssue[0]),
                 pis: getPIsForVersionedIssue(versionedIssue[0]),
-                collaborators: colls
+                collaborators: colls,
+                requestor: userService.findUser(versionedIssue.reporter)
         ] as JSON)
     }
 }
