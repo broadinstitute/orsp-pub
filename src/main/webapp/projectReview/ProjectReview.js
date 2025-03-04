@@ -782,6 +782,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       User.getUserSession().then(
         resp => {
           suggestions.editCreator = resp.data.userName;
+          suggestions.editCreatorName = resp.data.displayName;
           const data = {
             projectKey: this.props.projectKey,
             suggestions: JSON.stringify(suggestions)
@@ -1239,12 +1240,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 }),
                 div({className: "modified-data"}, [
                   span({className: "pr-2"}, ["Last Modified "]),
-                  span({isRendered: this.state.current.updateUser}, [
+                  span({isRendered: this.state.formData.editCreatorName || this.state.current.updateUser}, [
                     span({className: "pr-2"}, ["by"]),
-                    em({className: "pr-2"}, [this.state.current.updateUser]),
+                    em({className: "pr-2 text-bold"}, [this.state.formData.editCreatorName || this.state.current.updateUser]),
                   ]),
                   span({className: "pr-2"}, ["on"]),
-                  em([getDateString(this.state.current.updateDate, 'mmddyyyy')]),
+                  em({className: "text-bold"}, [getDateString(this.state.current.updateDate, 'mmddyyyy')]),
                 ]),
                 div({ id: "requestor" }, [
                     Panel({ title: "Requestor" }, [

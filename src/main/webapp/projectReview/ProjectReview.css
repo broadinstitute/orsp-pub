@@ -108,3 +108,7 @@
 .pr-2 {
     padding-right: 2px;
 }
+
+.text-bold {
+    font-weight: bold;
+}
