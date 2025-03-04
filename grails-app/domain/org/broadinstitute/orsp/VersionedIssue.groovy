@@ -6,6 +6,7 @@ class VersionedIssue implements LogicalDelete<VersionedIssue> {
 
     Integer id
     String projectKey
+    Integer issueNum
     String type
     String status
     String summary
@@ -28,6 +29,7 @@ class VersionedIssue implements LogicalDelete<VersionedIssue> {
 
     static constraints = {
         projectKey blank: false, nullable: false
+        issueNum nullable: true
         type blank: false, nullable: false
         status blank: false, nullable: false
         summary blank: false, nullable: false
