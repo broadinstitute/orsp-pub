@@ -8,7 +8,6 @@ import org.apache.commons.lang.StringUtils
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.Instant
 
 /**
  * This class handles the general update or creation of issues and nothing more.
@@ -784,7 +783,10 @@ class IssueService implements UserInfo {
         verIss.expirationDate = issue.expirationDate
         verIss.createdAt = new Date()
         verIss.createdBy = getUser().displayName
-
+        def issueNumber = getIssueNumberFromString(issue.projectKey)
+        if(issueNumber) {
+            verIss.issueNum = issueNumber.toInteger()
+        }
         verIss.save(flush: true)
     }
 
@@ -816,6 +818,16 @@ class IssueService implements UserInfo {
                     value: it.value,
                     versionedIssue: verIss
             ).save(flush: true)
+        }
+    }
+
+    private static String getIssueNumberFromString(String key) {
+        try {
+            key.replaceAll(";", "")
+            key.find(/\d+/).toInteger()
+        } catch (Exception e) {
+            log.warn("Unable to findIssues issue by key [" + key + "]: " + e)
+            ""
         }
     }
 

@@ -2,7 +2,7 @@ CREATE TABLE `versioned_issue` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `version` bigint NOT NULL,
   `project_key` varchar(255) NOT NULL,
-  `issuenum` bigint DEFAULT NULL,
+  `issue_num` bigint DEFAULT NULL,
   `type` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL,
   `created_at` datetime NOT NULL,
