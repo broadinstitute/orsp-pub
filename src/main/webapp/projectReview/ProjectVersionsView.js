@@ -81,7 +81,7 @@ const ProjectVersionsView = hh(class ProjectVersionsView extends React.Component
                     (expand && expandIdx === idx ? "selected" : "")
                   }
                 >
-                  Version #{issueVersionData.sequenceNumber}
+                  Version #{issueVersionData.sequenceNumber + " " + (issueVersionData.sequenceNumber === 0 ? "Initial Submission/Approval" : "")} 
                 </span>
                 <p className="version-modified">
                   Created by <strong><em>{issueVersionData.createdBy}</em></strong> on
