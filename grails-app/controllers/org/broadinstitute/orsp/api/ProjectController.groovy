@@ -109,7 +109,9 @@ class ProjectController extends AuthenticatedController {
                     Collection<Funding> fundingList = issue.getFundings()
                     ProjectExtraProperties projectExtraProperties = new ProjectExtraProperties(issue)
                     Collection<User> colls = getCollaborators(projectExtraProperties.collaborators)
-                    issue.updateUser = userService.findUser(issue.updateUser).displayName
+                    if (issue.updateUser) {
+                        issue.updateUser = userService.findUser(issue.updateUser).displayName
+                    }
                     render([issue             : issue,
                             requestor         : getRequestorForIssue(issue),
                             pms               : getProjectManagersForIssue(issue),

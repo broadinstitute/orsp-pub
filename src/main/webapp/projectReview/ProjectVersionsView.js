@@ -19,11 +19,6 @@ const ProjectVersionsView = hh(class ProjectVersionsView extends React.Component
   }
 
   handleVerionExpand = ({ projectKey, sequenceNumber }, idx) => {
-    // const ELE = document.getElementById(idx).getBoundingClientRect();
-    // window.scrollTo({
-    //   top: ELE.top + window.scrollY - 100,
-    //   behavior: "smooth",
-    // });
     if (this.state.expand && this.state.expandIdx === idx) {
       this.setState({
         expand: false,
