@@ -4,6 +4,7 @@ import { Fundings } from "../components/Fundings";
 import './ProjectReview.css'
 import { InputYesNo } from "../components/InputYesNo";
 import { InputFieldRadio } from "../components/InputFieldRadio";
+import { InputFieldTextArea } from "../components/InputFieldTextArea";
 
 class ProjectVersionDetailedView extends Component {
   constructor(props) {
@@ -49,8 +50,7 @@ class ProjectVersionDetailedView extends Component {
   }
 
   render() {
-    console.log('versionData :>> ', this.state.formData);
-    const {issue, fundings, extraProperties, requestor, pis, pms, collaborators } = this.state.formData;
+    const {issue, fundings, requestor, pis, pms, collaborators } = this.state.formData;
     return (
       <React.Fragment>
         <div className="project-container">
@@ -137,7 +137,7 @@ class ProjectVersionDetailedView extends Component {
                 <p className="answer-fields">{this.getExtraPropertyValueFromJSON("irb")}</p>
               </div>
             </Panel>
-            <Panel title="Determinatiokn Questions" id="determination-questions">
+            <Panel title="Determination Questions" id="determination-questions">
               {this.getExtraPropertyValue("feeForService") !== "--" && 
                 <div className="mb-15">
                   <InputYesNo
@@ -148,8 +148,8 @@ class ProjectVersionDetailedView extends Component {
                       `(Commercial service only, no direct federal funding, no data 
                       analysis, no data storage, no dbGaP deposition by Broad.)`
                     }
-                    id="radioPII"
-                    name="radioPII"
+                    id="version-radioPII"
+                    name="version-radioPII"
                     value={this.getExtraPropertyValue("feeForService")}
                     readOnly={true}
                     onChange={() => {}}
@@ -168,12 +168,24 @@ class ProjectVersionDetailedView extends Component {
                         generalizable knowledge include small case studies and internal 
                         technology development/validation projects.</span>
                     }
-                    id="broadInvestigator"
-                    name="broadInvestigator"
+                    id="version-broadInvestigator"
+                    name="version-broadInvestigator"
                     value={this.getExtraPropertyValue("broadInvestigator")}
                     readOnly={true}
                     onChange={() => {}}
                   ></InputYesNo>
+                  {this.getExtraPropertyValue("broadInvestigator") === "false" && 
+                    <InputFieldTextArea 
+                      id="version-broadInvestigatorTextValue"
+                      name="version-broadInvestigatorTextValue"
+                      label={
+                        `Please provide a rationale for why this project/work would not be considered as research`
+                      }
+                      value={this.getExtraPropertyValue("broadInvestigatorTextValue")}
+                      readOnly={true}
+                      onChange={() => {}}
+                    />
+                  }
                 </div>
               }
               {this.getExtraPropertyValue("broadInvestigatorTextValue") !== "--" &&
@@ -189,8 +201,8 @@ class ProjectVersionDetailedView extends Component {
                       `Does this project  involve only specimens or data from deceased individuals?`
                     }
                     moreInfo={""}
-                    id="subjectsDeceased"
-                    name="subjectsDeceased"
+                    id="version-subjectsDeceased"
+                    name="version-subjectsDeceased"
                     value={this.getExtraPropertyValue("subjectsDeceased")}
                     readOnly={true}
                     onChange={() => {}}
@@ -203,11 +215,11 @@ class ProjectVersionDetailedView extends Component {
                 <div className="mb-15">
                   <InputFieldRadio
                     label={
-                      <span>Will specimens or data be provided to the Broad ', <i style={{'color': '#0A3356'}}>without </i>, identifiable information? </span>
+                      <span>Will specimens or data be provided to the Broad <i style={{'color': '#0A3356'}}>without </i> identifiable information? </span>
                     }
                     moreInfo={""}
-                    id="sensitiveInformationSource"
-                    name="sensitiveInformationSource"
+                    id="version-sensitiveInformationSource"
+                    name="version-sensitiveInformationSource"
                     value={this.getExtraPropertyValue("sensitiveInformationSource")}
                     readOnly={true}
                     onChange={() => {}}
@@ -223,8 +235,8 @@ class ProjectVersionDetailedView extends Component {
                       `Does the sample or data provider have access to identifiers?`
                     }
                     moreInfo={""}
-                    id="isIdReceive"
-                    name="isIdReceive"
+                    id="version-isIdReceive"
+                    name="version-isIdReceive"
                     value={this.getExtraPropertyValue("isIdReceive")}
                     readOnly={true}
                     onChange={() => {}}
@@ -240,8 +252,8 @@ class ProjectVersionDetailedView extends Component {
                       information about the original sample/data donor?`
                     }
                     moreInfo={""}
-                    id="isCoPublishing"
-                    name="isCoPublishing"
+                    id="version-isCoPublishing"
+                    name="version-isCoPublishing"
                     value={this.getExtraPropertyValue("isCoPublishing")}
                     readOnly={true}
                     onChange={() => {}}
@@ -255,8 +267,8 @@ class ProjectVersionDetailedView extends Component {
                       `Please select the option which best describes your research `
                     }
                     moreInfo={""}
-                    id="irbReviewedProtocol"
-                    name="irbReviewedProtocol"
+                    id="version-irbReviewedProtocol"
+                    name="version-irbReviewedProtocol"
                     value={this.getExtraPropertyValue("irbReviewedProtocol")}
                     readOnly={true}
                     onChange={() => {}}
@@ -295,8 +307,8 @@ class ProjectVersionDetailedView extends Component {
                         </span>
                       </span>
                     }
-                    id="humanSubjects"
-                    name="humanSubjects"
+                    id="version-humanSubjects"
+                    name="version-humanSubjects"
                     value={this.getExtraPropertyValue("humanSubjects")}
                     readOnly={true}
                     onChange={() => {}}
@@ -318,8 +330,8 @@ class ProjectVersionDetailedView extends Component {
                         no one on the research team will attempt to contact or re-identify subjects.
                       </span>
                     }
-                    id="interactionSource"
-                    name="interactionSource"
+                    id="version-interactionSource"
+                    name="version-interactionSource"
                     value={this.getExtraPropertyValue("interactionSource")}
                     readOnly={true}
                     onChange={() => {}}
