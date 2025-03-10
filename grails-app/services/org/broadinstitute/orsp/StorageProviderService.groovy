@@ -24,6 +24,9 @@ import org.springframework.web.multipart.MultipartFile
 
 import java.nio.charset.Charset
 import java.security.GeneralSecurityException
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 /**
  * TODO: Move all transactions to persistence service
  */
@@ -392,7 +395,8 @@ class StorageProviderService implements Status {
     }
 
     private GenericUrl getUrlForDocument(StorageDocument document) {
-        new GenericUrl(getBucketUrl() + document.projectKey + "/" + document.uuid)
+        def projectKey = queryService.findProjectKeyIfChanged(document)
+        new GenericUrl(getBucketUrl() + projectKey + "/" + document.uuid)
     }
 
     private GenericUrl getUrlForKey(String key) {
