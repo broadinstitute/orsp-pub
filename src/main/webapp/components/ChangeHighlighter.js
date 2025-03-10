@@ -64,7 +64,7 @@ function ChangeHighlighter({
           <div className="inputFieldCurrent" style={getConditionalStyles()}>
             {!isEmpty(currentValueStr)
               ? currentValueStr
-              : currentValue !== value
+              : (!isEmpty(currentValue) && currentValue !== value)
               ? getStringDataFromObjArr(currentValue)
               : getStringDataFromObjArr(value)}
           </div>
