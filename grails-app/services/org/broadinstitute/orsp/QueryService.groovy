@@ -25,6 +25,9 @@ import org.hibernate.transform.Transformers
 
 import javax.sql.DataSource
 import java.sql.SQLException
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 /**
  * This class should handle generic domain class queries and avoid persistence updates.
@@ -2097,6 +2100,29 @@ class QueryService implements Status {
         sqlQuery.setResultTransformer(Transformers.aliasToBean(ConsentCollectionLinkDTO.class))
         final result = sqlQuery.list()
         result
+    }
+
+    def findProjectKeyIfChanged(StorageDocument document) {
+        def docProjectKey = document.projectKey
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        String query = "SELECT DISTINCT before_update FROM project_key_updates where after_update=:projectKey and table_name=\"storage_document\""
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        sqlQuery.setParameter("projectKey", docProjectKey)
+        final result = sqlQuery.uniqueResult()
+        def projectKey = ""
+        def formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        def specificDate = LocalDateTime.parse("2025-03-07 00:00:00", formatter)
+        def dateToCheck = document.creationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+        if (dateToCheck.isAfter(specificDate)) {
+            projectKey = docProjectKey
+        } else if (result){
+            projectKey = result;
+        } else {
+            projectKey = docProjectKey
+        }
+
+        projectKey
     }
 
 }
