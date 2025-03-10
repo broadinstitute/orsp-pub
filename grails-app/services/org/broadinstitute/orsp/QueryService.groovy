@@ -2114,7 +2114,7 @@ class QueryService implements Status {
         def formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         // Below is the date when ORSP prefix change script (JIRA: CRIC:2004) was run on production to
         // change older legacy project (ORSP-XXXX) prefix to the corresponding project type
-        def specificDate = LocalDateTime.parse("2025-03-07 00:00:00", formatter)
+        def specificDate = LocalDateTime.parse("2025-03-06 00:00:00", formatter)
         def dateToCheck = document.creationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
         if (dateToCheck.isAfter(specificDate)) {
             projectKey = docProjectKey
