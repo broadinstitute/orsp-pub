@@ -2112,8 +2112,8 @@ class QueryService implements Status {
         final result = sqlQuery.uniqueResult()
         def projectKey = ""
         def formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        // Below is the date when ORSP prefix change script was run on production
-        // to change older legacy projects ORSP-XXXX prefix to the corresponding project prefix
+        // Below is the date when ORSP prefix change script (JIRA: CRIC:2004) was run on production to
+        // change older legacy project (ORSP-XXXX) prefix to the corresponding project type
         def specificDate = LocalDateTime.parse("2025-03-07 00:00:00", formatter)
         def dateToCheck = document.creationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
         if (dateToCheck.isAfter(specificDate)) {
