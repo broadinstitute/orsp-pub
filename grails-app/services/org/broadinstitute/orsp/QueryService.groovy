@@ -2118,7 +2118,7 @@ class QueryService implements Status {
         def dateToCheck = document.creationDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
         if (dateToCheck.isAfter(specificDate)) {
             projectKey = docProjectKey
-        } else if (result){
+        } else if (result) {
             projectKey = result
         } else {
             projectKey = docProjectKey

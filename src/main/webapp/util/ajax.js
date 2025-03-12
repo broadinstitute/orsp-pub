@@ -299,7 +299,12 @@ export const Project = {
 
   getProjectByVersion(projectKey, sequenceNumber) {
     return axios.get(UrlConstants.getProjectByVersion + `?projectKey=${projectKey}&sequenceNumber=${sequenceNumber}`);
+  },
+
+  getIssueVersionList(projectKey) {
+    return axios.get(UrlConstants.versionedIssueListUrl + '?projectKey=' + projectKey);
   }
+
 };
 
 export const DocumentHandler = {

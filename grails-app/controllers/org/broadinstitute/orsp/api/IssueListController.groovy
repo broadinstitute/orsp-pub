@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils
 import org.broadinstitute.orsp.AuthenticatedController
 import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.SupplementalRole
+import org.broadinstitute.orsp.VersionedIssue
 import org.broadinstitute.orsp.utils.IssueUtils
 
 import java.text.SimpleDateFormat
@@ -71,6 +72,15 @@ class IssueListController extends AuthenticatedController {
         } else {
             queryService.findByUserNames(users, limit)
         }
+    }
+
+    /**
+     * Get the list of versions of an issue
+     * */
+    List<VersionedIssue> getIssueVersionList() {
+        String projectKey = params.projectKey
+        List<VersionedIssue> verIsssue = VersionedIssue.findAllByProjectKey(projectKey, [sort: "sequenceNumber", order: "desc"])
+        render verIsssue as JSON
     }
 
 }

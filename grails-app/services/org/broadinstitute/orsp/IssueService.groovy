@@ -8,7 +8,6 @@ import org.apache.commons.lang.StringUtils
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.Instant
 
 /**
  * This class handles the general update or creation of issues and nothing more.
@@ -294,6 +293,7 @@ class IssueService implements UserInfo {
             it.save()
         }
 
+        issue.setUpdateUser(getUser()?.userName)
         issue.setUpdateDate(new Date())
         issue.setSequenceNumber(issue.sequenceNumber + 1)
 
@@ -350,6 +350,8 @@ class IssueService implements UserInfo {
                 // update Issue projectKey
                 issue.setType(issueType.getName())
                 issue.setProjectKey(newProjectKey)
+                issue.setUpdateUser(getUser()?.userName)
+                issue.setUpdateDate(new Date())
                 if (issue.hasErrors()) {
                     throw new DomainException(issue.getErrors())
                 } else {
@@ -471,6 +473,7 @@ class IssueService implements UserInfo {
         }
 
         issue.setUpdateDate(new Date())
+        issue.setUpdateUser(getUser()?.userName)
         if (issue.hasErrors()) {
             throw new DomainException(issue.getErrors())
         } else {
@@ -540,6 +543,7 @@ class IssueService implements UserInfo {
     Issue createIssue(IssueType type, Issue issue) throws DomainException {
         issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
         issue.setSequenceNumber(0)
+        issue.setUpdateUser(getUser()?.userName)
         List<IssueExtraProperty> extraProperties = issue.getNonEmptyExtraProperties()
         Collection<Funding> fundings = issue.getFundings()
         Issue newIssue = initIssue(issue, type)
@@ -618,6 +622,7 @@ class IssueService implements UserInfo {
         Issue newIssue = issue
         newIssue.setRequestDate(new Date())
         newIssue.setUpdateDate(new Date())
+        newIssue.setUpdateUser(getUser()?.userName)
         if (!type.getName().equals(IssueType.CONSENT_GROUP.getName())) {
             newIssue.setApprovalStatus(IssueStatus.Pending.name)
         }
@@ -778,7 +783,10 @@ class IssueService implements UserInfo {
         verIss.expirationDate = issue.expirationDate
         verIss.createdAt = new Date()
         verIss.createdBy = getUser().displayName
-
+        def issueNumber = getIssueNumberFromString(issue.projectKey)
+        if(issueNumber) {
+            verIss.issueNum = issueNumber.toInteger()
+        }
         verIss.save(flush: true)
     }
 
@@ -810,6 +818,16 @@ class IssueService implements UserInfo {
                     value: it.value,
                     versionedIssue: verIss
             ).save(flush: true)
+        }
+    }
+
+    private static String getIssueNumberFromString(String key) {
+        try {
+            key.replaceAll(";", "")
+            key.find(/\d+/).toInteger()
+        } catch (Exception e) {
+            log.warn("Unable to findIssues issue by key [" + key + "]: " + e)
+            ""
         }
     }
 
