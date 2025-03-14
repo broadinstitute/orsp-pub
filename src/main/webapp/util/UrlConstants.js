@@ -146,6 +146,9 @@ export const UrlConstants = {
   deleteReviewer: context + '/api/delete-reviewer',
   getReviewerAssignedCount: context + '/api/get-reviewer-assigned-count',
   getProjectCount: context + '/api/get-project-count',
-  getDistinctiveReviewers: context + '/api/get-distinctive-reviewers'
+  getDistinctiveReviewers: context + '/api/get-distinctive-reviewers',
+  
+  piiReport: context + '/pii-report',
+  piiReportUrl: context + '/api/pii-report',
 };
 

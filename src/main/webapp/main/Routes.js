@@ -29,6 +29,7 @@ import { LogintText } from '../loginText/LoginText';
 import ComplianceReport from '../complianceReport/ComplianceReport'
 import ManageReviewers from '../manageReviewers/ManageReviewers';
 import IRBReport from '../IRBReport/IRBReport';
+import PIIReport from '../PIIReport/PIIReport';
 
 
 const Routes = ( props ) => (
@@ -56,6 +57,7 @@ const Routes = ( props ) => (
     <AuthenticatedRoute path= {"/loginText"} component={LogintText} props={props} admin={true} />
     <AuthenticatedRoute path= {"/compliance-report"} component={ComplianceReport} props={props} admin={true} />
     <AuthenticatedRoute path= {"/irb-report"} component={IRBReport} props={props} admin={true} />
+    <AuthenticatedRoute path= {"/pii-report"} component={PIIReport} props={props} admin={true} />
     <AuthenticatedRoute path= {"/manage-reviewers"} component={ManageReviewers} props={props} admin={true} />
     <Route path= {["/about"]} exact render = {(routeProps) =>  <AboutPage {...routeProps} {...props}/> }/>
     <Route path= {"/"} exact render = {(routeProps) =>  Storage.userIsLogged() ? <LandingPage {...routeProps} {...props}/> : <AboutPage {...routeProps} {...props}/> }/>

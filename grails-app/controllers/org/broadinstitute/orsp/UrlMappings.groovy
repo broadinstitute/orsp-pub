@@ -178,6 +178,9 @@ class UrlMappings {
         // IRB Report
         '/api/irb-report'(controller: 'report', action: 'getIRBReport', method: 'GET')
 
+        // PII/PHI Report
+        '/api/pii-report'(controller: 'report', action: 'getPiiPhiReport', method: 'GET')
+
         // Custom Error handlers.
         "500"(controller: "error", action: "error500")
         "404"(controller: "error", action: "error404")

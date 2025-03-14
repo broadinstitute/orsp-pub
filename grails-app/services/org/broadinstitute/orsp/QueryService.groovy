@@ -2127,4 +2127,28 @@ class QueryService implements Status {
         projectKey
     }
 
+    def getPiiPhiReport() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        String query = 'SELECT t1.project_key as "Project Key", t1.approval_status as "Status", ' +
+                'case when t2.pii="true" then "Yes" when t2.pii="false" then "No" else "Nil" end as "PII/PHI/Genomic Data", ' +
+                'case when t2.pii_dt="true" then "Yes" when t2.pii_dt="false" then "No" else "Nil" end as PII, ' +
+                'case when t2.phi="true" then "Yes" when t2.phi="false" then "No" else "Nil" end as PHI, ' +
+                'case when t2.genomic_data="true" then "Yes" when t2.genomic_data="false" then "No" else "Nil" end as "Genomic Data" ' +
+                'from issue t1 inner join consent_collection_link t2 on t1.project_key = t2.project_key ' +
+                'where t1.approval_status="Approved" and t2.pii="true"'
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final result = sqlQuery.list().collect {row ->
+            [
+                    projectKey: row[0],
+                    status: row[1],
+                    pii: row[2],
+                    piidt: row[3],
+                    phi: row[4],
+                    genomic: row[5]
+            ]
+        }
+        result
+    }
+
 }
