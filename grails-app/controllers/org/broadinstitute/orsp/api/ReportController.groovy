@@ -142,4 +142,13 @@ class ReportController extends AuthenticatedController {
             handleException(e)
         }
     }
+
+    def getPiiPhiReport() {
+        try {
+            List piiPhiData = queryService.getPiiPhiReport()
+            render piiPhiData as JSON
+        } catch (Exception e) {
+            handleException(e)
+        }
+    }
 }

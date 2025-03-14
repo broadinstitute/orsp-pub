@@ -585,6 +585,10 @@ export const Reports = {
 
   getIRBReport() {
     return axios.get(UrlConstants.irbReportUrl);
+  },
+
+  getPiiReport() {
+    return axios.get(UrlConstants.piiReportUrl);
   }
 };
 

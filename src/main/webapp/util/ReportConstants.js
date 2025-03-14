@@ -340,4 +340,43 @@ export const IRB_REPORT_COLUMNS = [
     sort: true,
     editable: false
   }
+];
+
+export const PII_PHI_REPORT_COLUMNS = [
+  {
+    dataField: 'projectKey',
+    text: 'Project Key',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'status',
+    text: 'Status',
+    sort: false,
+    editable: false
+  },
+  {
+    dataField: 'pii',
+    text: 'PII/PHI/Genomic',
+    sort: false,
+    editable: false
+  },
+  {
+    dataField: 'piidt',
+    text: 'PII',
+    sort: false,
+    editable: false
+  },
+  {
+    dataField: 'phi',
+    text: 'PHI',
+    sort: false,
+    editable: false
+  },
+  {
+    dataField: 'genomic',
+    text: 'Genomic Data',
+    sort: false,
+    editable: false
+  }
 ]
