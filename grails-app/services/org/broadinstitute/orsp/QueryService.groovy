@@ -2136,7 +2136,7 @@ class QueryService implements Status {
                 'case when t2.phi="true" then "Yes" when t2.phi="false" then "No" else "Nil" end as PHI, ' +
                 'case when t2.genomic_data="true" then "Yes" when t2.genomic_data="false" then "No" else "Nil" end as "Genomic Data" ' +
                 'from issue t1 inner join consent_collection_link t2 on t1.project_key = t2.project_key ' +
-                'where t1.approval_status="Approved" and t2.pii="true"'
+                'where t1.approval_status="Approved" and t2.pii="true" and (t2.pii_dt="true" or t2.phi="true")'
         final SQLQuery sqlQuery = session.createSQLQuery(query)
         final result = sqlQuery.list().collect {row ->
             [
