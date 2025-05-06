@@ -47,7 +47,7 @@ spec:
           periodSeconds: 3
           successThreshold: 1
           failureThreshold: 10
-          timeoutSeconds: 1
+          timeoutSeconds: 10
         livenessProbe:
           httpGet:
             port: 8080
@@ -57,7 +57,7 @@ spec:
           periodSeconds: 5
           successThreshold: 1
           failureThreshold: 1
-          timeoutSeconds: 1
+          timeoutSeconds: 10
         volumeMounts:
         - mountPath: "/orsp-config"
           name: orsp-config
