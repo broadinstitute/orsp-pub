@@ -504,10 +504,19 @@ const NewProject = hh(class NewProject extends Component {
   }
 
   coiAttestationHandler = (coiAttestationKey) => {
+    const ATTESTATION_KEY_PAIRS = new Map([
+      ['codedConfirmed', 'codedNotApplicable'],
+      ['codedNotApplicable', 'codedConfirmed'],
+      ['financialConfirmed', 'financialNotApplicable'],
+      ['financialNotApplicable', 'financialConfirmed']
+    ]);
+    const PAIR_KEY = ATTESTATION_KEY_PAIRS.get(coiAttestationKey);
+
     this.setState((prev) => ({
       coiAttestation:{
         ...prev.coiAttestation,
-        [coiAttestationKey]: !prev.coiAttestation[coiAttestationKey]
+        [coiAttestationKey]: !prev.coiAttestation[coiAttestationKey],
+        ...(PAIR_KEY ? { [PAIR_KEY]: false } : {})
       }
     }));
   };
