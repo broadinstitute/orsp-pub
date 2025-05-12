@@ -1,0 +1,13 @@
+.ml-10 {
+    margin-left: 10px;
+}
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+#coi_attestation_component {
+    label {
+        font-weight: 500;
+    }
+}

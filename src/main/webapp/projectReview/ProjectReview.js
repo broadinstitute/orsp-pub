@@ -17,7 +17,7 @@ import get from 'lodash/get';
 import head from 'lodash/head';
 import orderBy from 'lodash/orderBy';
 import isEmptyArray from 'lodash/isEmpty';
-import { getDateString, isEmpty, scrollToTop } from '../util/Utils';
+import { getBoolIfString, getDateString, isEmpty, scrollToTop } from '../util/Utils';
 import { initQuestions, getProjectType } from '../util/DeterminationQuestions';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
@@ -31,6 +31,7 @@ import ProjectChangeComparision from './ProjectChangeComparison';
 import MultiTab from '../components/MultiTab';
 import ProjectVersionsView from './ProjectVersionsView';
 import './ProjectReview.css'
+import { CoiAttestation } from "../components/CoiAttestation";
 
 
 const TEXT_SHARING_TYPES = ['open', 'controlled', 'both'];
@@ -164,7 +165,16 @@ const ProjectReview = hh(class ProjectReview extends Component {
       isCompareChanges: false,
       versionedIssue: {},
       issueVersionList: [],
-      activeTab: "current_version"
+      activeTab: "current_version",
+      coiAttestation : {
+        accuracyConfirmed: false,
+        authorizationConfirmed: false,
+        codedConfirmed: false,
+        codedNotApplicable: false,
+        dataSharingConfirmed: false,
+        financialConfirmed: false,
+        financialNotApplicable: false
+      }
     };
     this.state.questions = initQuestions();
     this.rejectProject = this.rejectProject.bind(this);
@@ -212,7 +222,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         future = JSON.parse((currentStr));
         futureCopy = JSON.parse(currentStr);
         this.projectType = issue.data.issue.type;
-
+        this.updateCoiAttestation(issue.data.extraProperties);
         Review.getSuggestions(this.props.projectKey).then(
           data => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -1016,10 +1026,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
       projectTitleError = true;
       generalError = true;
     }
-    if (isEmpty(this.state.formData.projectExtraProps.attestation)) {
-      attestationError = true;
-      generalError = true;
-    }
     if (this.state.sponsorHasError || this.state.identifierHasError) {
       fundingAdditionalFieldError = true;
       generalError = true;
@@ -1134,6 +1140,21 @@ const ProjectReview = hh(class ProjectReview extends Component {
   handleTabChange = (tab) => {
     this.setState({ activeTab: tab });
   };
+
+  updateCoiAttestation = (attestations) => {
+    this.setState(() => ({
+      coiAttestation: {
+        accuracyConfirmed: attestations.accuracyConfirmed,
+        authorizationConfirmed: attestations.authorizationConfirmed,
+        codedConfirmed: attestations.codedConfirmed,
+        codedNotApplicable: attestations.codedNotApplicable,
+        dataSharingConfirmed: attestations.dataSharingConfirmed,
+        financialConfirmed: attestations.financialConfirmed,
+        financialNotApplicable: attestations.financialNotApplicable
+      }
+    }))
+  }
+
 
   render() {
     const { projectReviewApproved } = this.state.formData.projectExtraProps;
@@ -1613,17 +1634,31 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 }),
         
                 Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
-                  p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
-                  p({}, '[If obtaining coded specimens/data] I certify that no Broad staff or researchers working on this project will have access to information that would enable the identification of individuals from whom coded samples and/or data were derived. I also certify that Broad staff and researchers will make no attempt to ascertain information about these individuals.'),
-                  InputFieldCheckbox({
-                    id: "ckb_attestation",
-                    name: "attestation",
-                    onChange: this.handleAttestationCheck,
-                    label: "I confirm",
-                    checked: this.state.formData.projectExtraProps.attestation === true || this.state.formData.projectExtraProps.attestation === "true",
-                    readOnly: true,
-                    error: false
-                  }),
+                    div({
+                      isRendered: getBoolIfString(this.state.formData.projectExtraProps.attestation)
+                    },[
+                      p({}, `I confirm that the information provided above is accurate and complete. The Broad researcher 
+                        associated with the project is aware of this application, and I have the authority 
+                        to submit it on his/her behalf.`),
+                      p({}, `[If obtaining coded specimens/data] I certify that no Broad staff or researchers working on 
+                          this project will have access to information that would enable the identification of 
+                          individuals from whom coded samples and/or data were derived. I also certify that Broad staff 
+                          and researchers will make no attempt to ascertain information about these individuals.`),
+                      InputFieldCheckbox({
+                        id: "ckb_attestation",
+                        name: "attestation",
+                        onChange: this.handleAttestationCheck,
+                        label: "I confirm",
+                        checked: getBoolIfString(this.state.formData.projectExtraProps.attestation),
+                        readOnly: true,
+                        error: false,
+                      })
+                    ]),
+                  CoiAttestation({
+                    isRendered: String(this.state.formData.projectExtraProps.attestation) !== "true",
+                    coiAttestation: this.state.coiAttestation,
+                    isReadOnly: true,
+                  })
                 ]),
                 AlertMessage({
                   msg: this.state.alertMessage !== '' ? this.state.alertMessage : 'Please complete all required fields',

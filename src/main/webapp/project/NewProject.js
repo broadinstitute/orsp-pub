@@ -4,7 +4,6 @@ import { NewProjectGeneralData } from './NewProjectGeneralData';
 import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
-import { DETERMINATION } from '../util/TypeDescription';
 import { LoginText, Project, Reviewer, User } from '../util/ajax';
 import { handleUnauthorized, isEmpty } from '../util/Utils';
 import { getProjectType } from '../util/DeterminationQuestions';
@@ -55,7 +54,24 @@ const NewProject = hh(class NewProject extends Component {
       formerProjectType: null,
       defaultValueForAbout: 'default',
       reviewersData: [],
-      assignedCount: 0
+      assignedCount: 0,
+      coiAttestation : {
+        accuracyConfirmed: false,
+        authorizationConfirmed: false,
+        codedConfirmed: false,
+        codedNotApplicable: false,
+        dataSharingConfirmed: false,
+        financialConfirmed: false,
+        financialNotApplicable: false
+      },
+      coiAttestationError:{
+        accuracyError: false,
+        authorizationError: false,
+        codedConfirmedError:false,
+        dataSharingError: false,
+        financialError: false,
+      }
+
     };
     this.updateGeneralDataFormData = this.updateGeneralDataFormData.bind(this);
     this.updateAttestationFormData = this.updateAttestationFormData.bind(this);
@@ -155,17 +171,19 @@ const NewProject = hh(class NewProject extends Component {
       this.changeStateSubmitButton();
       let projectData = this.getProject();
       let reviewer = '';
+      let coiAttestation = this.state.coiAttestation;
       projectData.extraProperties.forEach(item => {
         if (item.name === 'assignedAdmin') {
           reviewer = item.value;
         }
       })
       Project.createProject(
-        projectData,
-        this.state.files,
-        this.state.user.displayName,
-        this.state.user.userName,
-        reviewer
+          projectData,
+          this.state.files,
+          this.state.user.displayName,
+          this.state.user.userName,
+          reviewer,
+          coiAttestation
         ).then(resp => {
           this.props.history.push('/project/main?projectKey=' + resp.data.message.projectKey + '&tab=review&new');
         }).catch(error => {
@@ -225,7 +243,13 @@ const NewProject = hh(class NewProject extends Component {
     extraProperties.push({name: 'projectTitle', value: this.state.generalDataFormData.pTitle !== '' ? this.state.generalDataFormData.pTitle : null});
     extraProperties.push({name: 'protocol', value: this.state.generalDataFormData.irbProtocolId !== '' ? this.state.generalDataFormData.irbProtocolId : null});
     extraProperties.push({name: 'notCGSpecify', value: this.state.generalDataFormData.notCGSpecify !== '' ? this.state.generalDataFormData.notCGSpecify : null});
-    extraProperties.push({name: 'attestation', value: this.state.attestationFormData.attestation !== '' ? this.state.attestationFormData.attestation : null});
+    extraProperties.push({name: 'accuracyConfirmed', value: this.state.coiAttestation.accuracyConfirmed  ? this.state.coiAttestation.accuracyConfirmed : null});
+    extraProperties.push({name: 'authorizationConfirmed', value: this.state.coiAttestation.authorizationConfirmed  ? this.state.coiAttestation.authorizationConfirmed : null});
+    extraProperties.push({name: 'codedConfirmed', value: this.state.coiAttestation.codedConfirmed  ? this.state.coiAttestation.codedConfirmed : null});
+    extraProperties.push({name: 'codedNotApplicable', value: this.state.coiAttestation.codedNotApplicable  ? this.state.coiAttestation.codedNotApplicable : null});
+    extraProperties.push({name: 'dataSharingConfirmed', value: this.state.coiAttestation.dataSharingConfirmed  ? this.state.coiAttestation.dataSharingConfirmed : null});
+    extraProperties.push({name: 'financialConfirmed', value: this.state.coiAttestation.financialConfirmed  ? this.state.coiAttestation.financialConfirmed : null});
+    extraProperties.push({name: 'financialNotApplicable', value: this.state.coiAttestation.financialNotApplicable  ? this.state.attestationFormData.attestation : null});
     extraProperties.push({name: 'projectAvailability', value: 'available'});
     if (!this.state.generalDataFormData.irb) {
       extraProperties.push({name: 'irb', value: null})
@@ -313,7 +337,7 @@ const NewProject = hh(class NewProject extends Component {
   validateForm = () => {
     const isDeterminationQuestionsValid = this.validateDeterminationQuestions();
     const isGeneralDataValid = this.validateGeneralData();
-    const isAttestationFormValid = this.validateAttestationForm();
+    const isAttestationFormValid = this.isCoiAttestationValid();
     return isDeterminationQuestionsValid && isGeneralDataValid && isAttestationFormValid
   };
 
@@ -479,6 +503,93 @@ const NewProject = hh(class NewProject extends Component {
     });
   }
 
+  coiAttestationHandler = (coiAttestationKey) => {
+    this.setState((prev) => ({
+      coiAttestation:{
+        ...prev.coiAttestation,
+        [coiAttestationKey]: !prev.coiAttestation[coiAttestationKey]
+      }
+    }));
+  };
+
+  // Maps COI attestation fields to respective error status
+  checkCoiAttestationError = (field) => {
+    const coi = this.state.coiAttestation;
+    switch (field) {
+      case 'accuracyConfirmed':
+        this.UpdateCoiAttestationErrorStatus('accuracyError', !coi.accuracyConfirmed);
+        break;
+
+      case 'authorizationConfirmed':
+        this.UpdateCoiAttestationErrorStatus('authorizationError', !coi.authorizationConfirmed);
+        break;
+
+      case 'dataSharingConfirmed':
+        this.UpdateCoiAttestationErrorStatus('dataSharingError', !coi.dataSharingConfirmed);
+        break;
+
+      case 'codedConfirmed':
+      case 'codedNotApplicable': {
+        const isValid = coi.codedConfirmed || coi.codedNotApplicable;
+        this.UpdateCoiAttestationErrorStatus('codedConfirmedError', !isValid);
+        break;
+      }
+
+      case 'financialConfirmed':
+      case 'financialNotApplicable': {
+        const isValid = coi.financialConfirmed || coi.financialNotApplicable;
+        this.UpdateCoiAttestationErrorStatus('financialError', !isValid);
+        break;
+      }
+      default:
+        console.log("No match found");
+    }
+  };
+
+  //Update Error state for based on user interaction in CoiAttestation .js
+  UpdateCoiAttestationErrorStatus  = (coiAttestationErrorStatus, value) => {
+    this.setState(prev => ({
+      coiAttestationError: {
+        ...prev.coiAttestationError,
+        [coiAttestationErrorStatus]: value
+      }
+    }))
+  }
+
+  // validate if all the mandatory questions are answered in CoiAttestation .js
+  isCoiAttestationValid = () => {
+    const { coiAttestation } = this.state;
+    const {
+      accuracyConfirmed,
+      authorizationConfirmed,
+      codedConfirmed,
+      codedNotApplicable,
+      dataSharingConfirmed,
+      financialConfirmed,
+      financialNotApplicable
+    } = coiAttestation;
+    const CODED = codedConfirmed || codedNotApplicable;
+    const FINANCIAL = financialConfirmed || financialNotApplicable;
+    const IS_ATTESTATION_VALID =
+        accuracyConfirmed &&
+        authorizationConfirmed &&
+        dataSharingConfirmed &&
+        CODED &&
+        FINANCIAL;
+
+    Object.keys(coiAttestation).forEach((key) => {
+      this.checkCoiAttestationError(key);
+    });
+
+    this.setState((prev) =>({
+      errors:{
+        ...prev.errors,
+        attestation:  !IS_ATTESTATION_VALID
+      }
+    }));
+    return IS_ATTESTATION_VALID;
+  };
+
   render() {
     const { currentStep, determination } = this.state;
     let projectType = determination.projectType;
@@ -522,7 +633,10 @@ const NewProject = hh(class NewProject extends Component {
               options: this.state.documentOptions,
               removeErrorMessage: this.removeErrorMessage,
               updateForm: this.updateAttestationFormData,
-              formData: this.state.attestationFormData
+              formData: this.state.attestationFormData,
+              coiAttestation: this.state.coiAttestation,
+              coiAttestationHandler:this.coiAttestationHandler,
+              coiAttestationError: this.state.coiAttestationError
             })
         ])
       ])

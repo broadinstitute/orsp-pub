@@ -35,6 +35,13 @@ class ProjectExtraProperties {
 
     // Attestation
     String attestation
+    String accuracyConfirmed
+    String authorizationConfirmed
+    String codedConfirmed
+    String codedNotApplicable
+    String dataSharingConfirmed
+    String financialConfirmed
+    String financialNotApplicable
 
     // Admin Only
     String irbReferralText
@@ -101,6 +108,13 @@ class ProjectExtraProperties {
 
         // Attestation
         this.setAttestation(project.attestation() ?: null)
+        this.setAccuracyConfirmed(project.accuracyConfirmed()?:null)
+        this.setAuthorizationConfirmed(project.authorizationConfirmed()?:null)
+        this.setCodedConfirmed(project.codedConfirmed()?:null)
+        this.setCodedNotApplicable(project.codedNotApplicable()?:null)
+        this.setDataSharingConfirmed(project.dataSharingConfirmed()?:null)
+        this.setFinancialConfirmed(project.financialConfirmed()?:null)
+        this.setFinancialNotApplicable(project.financialNotApplicable()?:null)
 
         // Admin Only
         this.setIrbReferralText(project.getIrbReferralText() ?: "")

@@ -67,6 +67,15 @@ class IssueExtraProperty  implements LogicalDelete<IssueExtraProperty> {
     public static final String SAMPLES = "samples"
     public static final String INSTITUTIONAL_SOURCES = "institutionalSources"
     public static final String ATTESTATION = "attestation"
+
+    public static final String ACCURACY_CONFIRMED = "accuracyConfirmed"
+    public static final String AUTHORIZATION_CONFIRMED = "authorizationConfirmed"
+    public static final String CODED_CONFIRMED = "codedConfirmed"
+    public static final String CODED_NOT_APPLICABLE = "codedNotApplicable"
+    public static final String DATA_SHARING_CONFIRMED = "dataSharingConfirmed"
+    public static final String FINANCIAL_CONFIRMED = "financialConfirmed"
+    public static final String FINANCIAL_NOT_APPLICABLE = "financialNotApplicable"
+
     public static final String NO_CONSENT_FORM_REASON = "noConsentFormReason"
     public static final String COLLABORATORS = "collaborators"
     public static final String EDIT_CREATOR = "editCreator"
