@@ -1,9 +1,9 @@
 import { Component } from 'react';
 import { WizardStep } from '../components/WizardStep';
-import { button, div, h, h1, hh, p, small, a, br } from 'react-hyperscript-helpers';
-import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
+import { div, h, h1, hh, p, a, br } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { Table } from '../components/Table';
+import { CoiAttestation } from '../components/CoiAttestation';
 import AddDocumentDialog from '../components/AddDocumentDialog'
 import { User } from '../util/ajax';
 
@@ -196,17 +196,12 @@ export const NewProjectDocuments = hh(class NewProjectDocuments extends Componen
             }),
             div({ style: { 'marginTop': '25px' }}, [
               Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
-                p({}, 'I confirm that the information provided above is accurate and complete. The Broad researcher associated with the project is aware of this application, and I have the authority to submit it on his/her behalf.'),
-                p({}, '[If obtaining coded specimens/data] I certify that no Broad staff or researchers working on this project will have access to information that would enable the identification of individuals from whom coded samples and/or data were derived. I also certify that Broad staff and researchers will make no attempt to ascertain information about these individuals.'),
-                InputFieldCheckbox({
-                  id: "ckb_attestation",
-                  name: "attestation",
-                  onChange: this.handleAttestationCheck,
-                  label: "I confirm",
-                  checked: this.props.formData.attestation,
-                  required: true
-                }),
-                small({ isRendered: this.props.errors.attestation, className: "errorMessage" }, 'Required Field')
+                CoiAttestation({
+                  coiAttestation: this.props.coiAttestation,
+                  handler : this.props.coiAttestationHandler,
+                  coiAttestationError: this.props.coiAttestationError,
+                  isReadOnly: false,
+                })
               ])
             ])
           ])

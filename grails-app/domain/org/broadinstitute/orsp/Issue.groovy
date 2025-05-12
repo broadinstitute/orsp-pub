@@ -136,6 +136,21 @@ class Issue implements LogicalDelete<Issue> {
     // Attestation
     transient String attestation() { getExtraProperties().find { it.name == IssueExtraProperty.ATTESTATION }?.value }
 
+    transient String accuracyConfirmed() { getExtraProperties().find { it.name == IssueExtraProperty.ACCURACY_CONFIRMED }?.value }
+
+    transient String authorizationConfirmed() { getExtraProperties().find { it.name == IssueExtraProperty.AUTHORIZATION_CONFIRMED }?.value }
+
+    transient String codedConfirmed() { getExtraProperties().find { it.name == IssueExtraProperty.CODED_CONFIRMED }?.value }
+
+    transient String codedNotApplicable() { getExtraProperties().find { it.name == IssueExtraProperty.CODED_NOT_APPLICABLE }?.value }
+
+    transient String dataSharingConfirmed() { getExtraProperties().find { it.name == IssueExtraProperty.DATA_SHARING_CONFIRMED }?.value }
+
+    transient String financialConfirmed() { getExtraProperties().find { it.name == IssueExtraProperty.FINANCIAL_CONFIRMED }?.value }
+
+    transient String financialNotApplicable() { getExtraProperties().find { it.name == IssueExtraProperty.FINANCIAL_NOT_APPLICABLE }?.value }
+
+
     // Admin Only
     transient String getIrbReferralText() { getExtraProperties().find { it.name == IssueExtraProperty.IRB_REFERRAL_TEXT }?.value }
 

@@ -234,7 +234,7 @@ export const Files = {
 
 export const Project = {
 
-  createProject(projectData, files, displayName, userName, reviewer) {
+  createProject(projectData, files, displayName, userName, reviewer, coiAttestation) {
     let data = new FormData();
     files.forEach(file => {
       if (file.file != null) {
@@ -249,7 +249,8 @@ export const Project = {
     data.append('displayName', displayName);
     data.append('userName', userName);
     data.append('projectData', JSON.stringify(projectData));
-    data.append('reviewer', reviewer)
+    data.append('reviewer', reviewer);
+    data.append('coiAttestation', JSON.stringify(coiAttestation));
     const config = {
       headers: { 'content-type': 'multipart/form-data' }
     };

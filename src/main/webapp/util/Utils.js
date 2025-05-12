@@ -152,3 +152,11 @@ export const getDateString = (date, format) => {
   if (format === 'yyyymmdd')
     return inpDate.getFullYear() + '/' + (inpDate.getMonth() + 1).toString().padStart(2, '0') + '/' + inpDate.getDate().toString().padStart(2, '0');
 }
+
+export const getBoolIfString = (value) => {
+  if (isEmpty(value)) return null;
+  if (typeof value === 'string') {
+    return value === 'true' ? true : false;
+  }
+  return value;
+}
