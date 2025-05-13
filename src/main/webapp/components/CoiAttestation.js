@@ -20,8 +20,6 @@ export const CoiAttestation = hh( class CoiAttestation extends Component{
     render() {
         return (
             div({id:'coi_attestation_component'},[
-                p({},[`Please check, if Duos is using the attestation information and if any changes are needed
-                with that integration`]),
                 div({className: "mt-10"}, [
                     div({className: "mt-10"},[
                         p({className:'bold'},['1. Accuracy of Information']),
