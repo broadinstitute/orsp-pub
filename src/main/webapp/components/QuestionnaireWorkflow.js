@@ -17,7 +17,8 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       nextQuestionIndex: null,
       projectType: null,
       endState: true,
-      questions: []
+      questions: [],
+      descriptionError:false
     };
   }
 
@@ -218,6 +219,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
       return prev;
     }, () => {
       this.evaluateAnswer(value);
+      this.setQuestionDescriptionError()
     });
   }
 
@@ -239,7 +241,23 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     this.setState(prev => {
       prev.questions[prev.currentQuestionIndex].textValue = value;
       return prev;
+    }, () => {
+      this.setQuestionDescriptionError()
     })
+  }
+
+  setQuestionDescriptionError = () => {
+    const { currentQuestionIndex, questions } = this.state;
+    const CURRENT_QUESTION = questions[currentQuestionIndex];
+
+    const SHOW_ERROR =
+        CURRENT_QUESTION.id === 1 &&
+        CURRENT_QUESTION.answer === false &&
+        !CURRENT_QUESTION.textValue;
+
+    this.setState({ 
+      descriptionError: SHOW_ERROR 
+    }, () => this.props.handler(this.state));
   }
 
   render() {
@@ -253,7 +271,7 @@ export const QuestionnaireWorkflow = hh(class QuestionnaireWorkflow extends Comp
     }
 
     const { currentQuestionIndex } = this.state;
-    
+
     return (
       div({ className: this.props.questionnaireUnwrapped === true ? 'questionnaireContainerLight' : 'questionnaireContainer' }, [
         div({ className: "questionnaireProgressBar col-lg-4 col-md-5 col-sm-5 col-4" }, [

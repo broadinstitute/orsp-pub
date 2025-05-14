@@ -36,7 +36,8 @@ const NewProject = hh(class NewProject extends Component {
         requiredError: false,
         currentQuestionIndex: 0,
         nextQuestionIndex: 1,
-        endState: false
+        endState: false,
+        descriptionError: false,
       },
       generalDataFormData: {},
       attestationFormData: {
@@ -343,8 +344,10 @@ const NewProject = hh(class NewProject extends Component {
 
   validateDeterminationQuestions() {
     let isValid = true;
-    if (this.state.determination.requiredError || this.state.determination.endState === false) {
+    if (this.state.determination.requiredError || this.state.determination.endState === false || this.state.determination.descriptionError) {
       isValid = false;
+    } else {
+      this.removeErrorMessage();
     }
     this.setState(prev => {
       prev.showErrorDeterminationQuestions = !isValid;
@@ -454,7 +457,7 @@ const NewProject = hh(class NewProject extends Component {
         prev.showErrorDeterminationQuestions = false;
       }
       return prev;
-    });
+    }, () => this.removeErrorMessage());
   };
 
   fileHandler = (docs) => {
