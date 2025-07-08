@@ -83,7 +83,7 @@ export const About = hh(class About extends Component {
                   ["Genomic Services Outside Research Attestation Form FINAL.docx"]), `). Signed copies of the attestation must be sent to`, 
                 a({href: "mailto: orsp@broadinstitute.org"}, ["orsp@broadinstitute.org"]), `. Such projects can use`, 
                 span({style: {color: "rgb(211 79 79)"}}, ["ORSP-ID NE-9182 when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing)."])
-              ]),
+              ]), br(),
               li([
                 "Projects that are exclusively fee-for-service work for external entities (e.g. pharmaceutical companies, researchers with no " +
                 "Broad affiliation or Broad email address), and that do not involve research collaborations (e.g. substantial contributions to " +
@@ -92,7 +92,7 @@ export const About = hh(class About extends Component {
                 "contact ", a({href:"mailto: agreements@broadinstitute.org"}, ["agreements@broadinstitute.org"]), " agreements@broadinstitute.org. ",
                 span({style: {color: "rgb(211 79 79)"}}, ["Fee-for-service projects that have been reviewed by OSAP may use ORSP-ID NE-8596 " +
                 "when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing)."])
-              ]),br(),
+              ]), br(),
               li([
                 "Projects that involve ", span({style: {textDecoration: "underline"}}, ["only commercially/publicly available biospecimens"]), 
                 " (e.g. cell lines sourced from ATCC) or publicly available data " +
