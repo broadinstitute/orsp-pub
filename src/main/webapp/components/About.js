@@ -79,9 +79,9 @@ export const About = hh(class About extends Component {
                 is being performed entirely outside of Broad; and b) the research does not include a direct federal grant to Broad. 
                 These projects do require the signature of the Principal Investigator on the “Genomic Services Attestation for Broad 
                 Affiliates Conducting External Research” (`,
-                a({href: "https://docs.google.com/document/d/1KT_qKeR63JRO3mXZrdx3F_NeS_UqO63g/edit?usp=sharing&ouid=103012123884219122270&rtpof=true&sd=true"}
-                  ["Genomic Services Outside Research Attestation Form FINAL.docx"]), `). Signed copies of the attestation must be sent to`, 
-                a({href: "mailto: orsp@broadinstitute.org"}, ["orsp@broadinstitute.org"]), `. Such projects can use`, 
+                a({href: "https://docs.google.com/document/d/1KT_qKeR63JRO3mXZrdx3F_NeS_UqO63g/edit?usp=sharing&ouid=103012123884219122270&rtpof=true&sd=true"},
+                  ["Genomic Services Outside Research Attestation Form FINAL.docx"]), `). Signed copies of the attestation must be sent to `, 
+                a({href: "mailto: orsp@broadinstitute.org"}, ["orsp@broadinstitute.org"]), `. Such projects can use `, 
                 span({style: {color: "rgb(211 79 79)"}}, ["ORSP-ID NE-9182 when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing)."])
               ]), br(),
               li([
