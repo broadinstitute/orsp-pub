@@ -279,7 +279,7 @@ const SecurityChangeComparison = hh(class SecurityChangeComparison extends Compo
             ]),
       
             div({ className: "answerWrapper" }, [
-              label({}, ["4. Will the individual level data collected or generated as part of this project be shared to fulfill Broad Institute’s obligation for data sharing for the project via: "]),
+              label({}, ["4. Will the individual level data collected or generated as part of this project be shared via: "]),
               div({}, [this.compareData('sharingType', sharingType, 'sharingTypeAnswer')]),
             ]),
       

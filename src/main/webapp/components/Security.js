@@ -732,7 +732,7 @@ export const Security = hh(class Security extends Component {
         InputFieldRadio({
           id: "radioAccessible",
           name: "sharingType",
-          label: span({}, ["4. Will the individual level data collected or generated as part of this project be shared to fulfill Broad Institute’s obligation for data sharing for the project via: "]),
+          label: span({}, ["4. Will the individual level data collected or generated as part of this project be shared via: "]),
           value: this.props.securityInfoData.sharingType,
           optionLabels: [
             "An open/unrestricted repository (such as GEO)",
