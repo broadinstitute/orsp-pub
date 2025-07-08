@@ -50,7 +50,7 @@ export const About = hh(class About extends Component {
           p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
             a({
               isRendered: component.isBroad && showAccessDetails,
-              href:"https://iwww.broadinstitute.org/sponsored-research/research-subject-protection/office-research-subject-protection", target: "_blank"}, [
+              href:"https://intranet.broadinstitute.org/orsp", target: "_blank"}, [
                 "ORSP on the Broad Intranet"
             ]),
           ]),
@@ -112,17 +112,6 @@ export const About = hh(class About extends Component {
           p({ isRendered: this.props.showWarning, 
               style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize, padding:"15px", border:"1px solid #CCCCCC", borderRadius:"6px", margin:"20px 0 30px 0"}},[
             "Please note that Microsoft Edge and Internet Explorer are not supported browsers for the ORSP Portal. Please use Google Chrome or Firefox instead."
-          ]),
-          div({ isRendered:  component.isBroad && showAccessDetails}, [
-              h3({ style: { fontSize: styles.titleSize }}, ["User Guide"]),
-              p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }},[
-                "To access detailed instructions about how to use the ORSP portal, please visit: ",
-                br({}),
-                a({
-                  href:"https://intranet.broadinstitute.org/research-subject-protection/orsp-online-portal-submission-system", target: "_blank"},
-                  ["https://intranet.broadinstitute.org/research-subject-protection/orsp-online-portal-submission-system"]
-                )
-              ])
           ])
         ])  
       ])
