@@ -73,6 +73,18 @@ export const About = hh(class About extends Component {
             "any Broad project that involves either biospecimens or data originating from human sources, with the following exceptions: "]),
             ul([
               li([
+                `Projects that involve Broad affiliates conducting external research, when Broad or BCL perform genomic services 
+                (without any analysis other than standard pipeline analyses that are run as part of data generation) on specimens 
+                collected in connection with research where the requester holds a Broad affiliation, provided that: a) the research 
+                is being performed entirely outside of Broad; and b) the research does not include a direct federal grant to Broad. 
+                These projects do require the signature of the Principal Investigator on the “Genomic Services Attestation for Broad 
+                Affiliates Conducting External Research” (`,
+                a({href: "https://docs.google.com/document/d/1KT_qKeR63JRO3mXZrdx3F_NeS_UqO63g/edit?usp=sharing&ouid=103012123884219122270&rtpof=true&sd=true"}
+                  ["Genomic Services Outside Research Attestation Form FINAL.docx"]), `). Signed copies of the attestation must be sent to`, 
+                a({href: "mailto: orsp@broadinstitute.org"}, ["orsp@broadinstitute.org"]), `. Such projects can use`, 
+                span({style: {color: "rgb(211 79 79)"}}, ["ORSP-ID NE-9182 when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing)."])
+              ]),
+              li([
                 "Projects that are exclusively fee-for-service work for external entities (e.g. pharmaceutical companies, researchers with no " +
                 "Broad affiliation or Broad email address), and that do not involve research collaborations (e.g. substantial contributions to " +
                 "research design, joint data analysis, etc) with Broad-affiliated researchers.  Such projects are, however, subject to review by " +
