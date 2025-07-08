@@ -23,12 +23,15 @@ export const PREFERRED_IRB = [
 ];
 
 export const PI_AFFILIATION = [
-  { label: 'Broad', value: 'broad' },
-  { label: 'Partners', value: 'partners' },
-  { label: 'DFCI', value: 'dfci' },
+  { label: 'Broad Institute', value: 'broad' },
+  { label: 'Mass General Brigham', value: 'massGeneralBrigham' },
   { label: 'MIT', value: 'mit' },
-  { label: 'Children\'s Hospital', value: 'childrenHosp' },
-  { label: 'Harvard', value: 'harvard' },
+  { label: 'Dana-Farber Cancer Institute', value: 'danaFarberCancerInst' },
+  { label: 'Beth Israel Deaconess', value: 'bethIsraelDeaconess' },
+  { label: 'Boston Children\'s Hospital', value: 'bostonChildrenHosp' },
+  { label: 'Harvard Medical School (and Dental Medicine)', value: 'harvardMedicalSchool' },
+  { label: 'Harvard School of Public Health', value: 'harvardSchoolPublicHealth' },
+  { label: 'Harvard Faculty of Arts & Sciences', value: 'harvardFacultyArtsAndSciences' },
   { label: 'Other (specify below)', value: 'other' }
 ];
 
