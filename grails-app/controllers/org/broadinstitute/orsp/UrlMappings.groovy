@@ -165,6 +165,7 @@ class UrlMappings {
         // Scheduler APIs
         '/api/get-weekly-report'(controller: 'scheduler', action: 'generateWeeklyReport', method: 'GET')
         '/api/get-annual-report'(controller: 'scheduler', action: 'generateAnnualReviewReport', method: 'GET')
+        '/api/get-unapproved-cohorts-report'(controller: 'scheduler', action: 'generateUnApprovedCohortReport', method: 'GET')
 
         // Reviewer API end points
         '/api/get-reviewers'(controller: 'reviewer', action: 'index', method: 'GET')

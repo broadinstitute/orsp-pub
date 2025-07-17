@@ -9,12 +9,17 @@ class SchedulerController {
     SchedulerService schedulerService
 
     def generateWeeklyReport() {
-        schedulerService.getWeeklyReportData()
+        schedulerService.getWeeklyReportDataOfPendingProjects()
         response.status = 200
     }
 
     def generateAnnualReviewReport() {
         schedulerService.getAnnualRenewalProject()
+        response.status = 200
+    }
+
+    def generateUnApprovedCohortReport() {
+        schedulerService.generateUnApprovedCohortReport()
         response.status = 200
     }
 
