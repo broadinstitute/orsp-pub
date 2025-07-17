@@ -153,7 +153,7 @@ class SchedulerService {
         return response.status
     }
 
-    def getWeeklyReportData() {
+    def getWeeklyReportDataOfPendingProjects() {
         List csvData = [['Project Key', 'Title', 'Assigned Reviewer', 'Submission Date', 'Status']]
         SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
         final session = sessionFactory.currentSession
@@ -259,4 +259,48 @@ class SchedulerService {
                 '<br>"<i>This is an automated mail. Please don\'t reply.</i>"'
         sendMail('ORSP anniversary project notification', [getAdminRecipient()], subject, htmlContent, base64EncodedCSV, filename, 'text/csv')
     }
+    
+    def generateUnApprovedCohortReport() {
+        List csvData = [['Project Key', 'Title', 'Project Type', 'Information Sub-Status', 'Documents Sub-Status']]
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+
+        final String query = new StringBuilder()
+                .append('SELECT ')
+                .append('t1.project_key AS "Project Key", ')
+                .append('CONCAT(\'"\', REPLACE(t1.summary, \'"\', \'\\\'\'), \'"\') AS Title, ')
+                .append('t1.type AS "Project Type", ')
+                .append('\'Pending\' AS "Information Sub-Status", ')
+                .append('CONCAT(\'"\', GROUP_CONCAT(CONCAT(\'(\', sd.file_name, \' - \', sd.status, \')\') SEPARATOR \', \'), \'"\') AS "Documents Sub-Status" ')
+                .append('FROM issue t1 ')
+                .append('LEFT JOIN storage_document sd ON t1.project_key = sd.project_key ')
+                .append('WHERE t1.type = \'Consent Group\' ')
+                .append('AND t1.project_key NOT IN ( ')
+                .append('SELECT project_key FROM issue_extra_property WHERE name = \'projectReviewApproved\' ')
+                .append(') ')
+                .append('GROUP BY t1.project_key, t1.summary, t1.type;')
+                .toString()
+
+        final SQLQuery sqlQuery = session.createSQLQuery(query)
+        final result = sqlQuery.with { it -> list() }
+
+        csvData.addAll(result)
+
+        String formatDate = new SimpleDateFormat("MM.dd.yyyy").format(new Date())
+        String filename = 'ORSP_Approval_Pending_Consents_or_Cohorts-' + formatDate + '.csv'
+
+        def csvContent = convertListToCSV(csvData)
+        def attachmentBytes = csvContent.getBytes('UTF-8')
+        def base64EncodedCSV = Base64.getEncoder().encodeToString(attachmentBytes)
+
+        String from = getDefaultFromAddress()
+        List<String> emailList = getConfig('unApprovedCohortReportRecipients').split(',').collect { it.trim() }
+        String subject = 'Weekly Report of Unapproved Consent/Cohort Projects - ' + formatDate
+        String htmlContent = "<p>Hi team, <br>Attached herewith is the report of consent/cohort that have not been approved by ORSP as of " + formatDate + "." +
+                "<p>Thanks,<br>ORSP</p>" +
+                "<i>This is an automated mail. Please don't reply.</i></p>"
+
+        sendMail('Unapproved Consent/Cohort Report', emailList, subject, htmlContent, base64EncodedCSV, filename, 'text/csv')
+    }
+
 }
