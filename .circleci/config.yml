@@ -5,7 +5,7 @@ orbs:
 executors:
   cloud-sdk:
     docker:
-      - image: google/cloud-sdk
+      - image: google/cloud-sdk:530.0.0
 commands:
   build-env:
     description: "Build/push image to GCR"
