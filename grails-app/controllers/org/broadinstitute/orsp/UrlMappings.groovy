@@ -15,10 +15,9 @@ class UrlMappings {
         "/api/report/get-all-fundings"(controller: 'report', action: "getAllFundings", method: 'GET')
         "/api/report/review-categories"(controller: 'report', action: "findReviewCategories")
         "/api/report/get-review-categories"(controller: 'report', action: "getReviewCategories")
-        '/api/swagger/**'(controller: 'api', action: 'swagger')
-
-        // Compliance report end point
         "/api/report/compliance-report"(controller: "report", action: "getComplianceReportDetails", method: "GET")
+        "/api/report/get-pi-list"(controller: "report", action: "getPiList", method: "GET")
+        '/api/swagger/**'(controller: 'api', action: 'swagger')
 
         // Project end points
         '/api/project'(resource: 'project')

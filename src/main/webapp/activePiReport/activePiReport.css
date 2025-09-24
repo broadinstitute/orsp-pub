@@ -1,0 +1,20 @@
+.pi-table .react-bootstrap-table {
+    max-height: 600px;
+    overflow: auto;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ced4da;
+}
+
+.pi-table .react-bootstrap-table thead {
+    position: sticky;
+    top: -1px;
+    z-index: 2;
+    background-color: #e6e9ed;
+}
+
+.pi-table .table-containter .table thead tr th {
+    white-space: normal;
+    text-overflow: unset;
+    padding-left: 4px;
+    width: 110px;
+}

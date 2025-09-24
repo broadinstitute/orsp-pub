@@ -590,6 +590,10 @@ export const Reports = {
 
   getPiiReport() {
     return axios.get(UrlConstants.piiReportUrl);
+  },
+
+  getAllPiList() {
+    return axios.get(UrlConstants.getPiListUrl);
   }
 };
 
