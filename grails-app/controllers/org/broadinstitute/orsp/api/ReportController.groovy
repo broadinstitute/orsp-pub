@@ -151,4 +151,13 @@ class ReportController extends AuthenticatedController {
             handleException(e)
         }
     }
+
+    def getPiList() {
+        try {
+            List piList = queryService.getPiList()
+            render piList as JSON
+        } catch (Exception e) {
+            handleException(e)
+        }
+    }
 }

@@ -2151,4 +2151,29 @@ class QueryService implements Status {
         result
     }
 
+    List getPiList() {
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+        def query = new StringBuilder()
+        query.append("SELECT DISTINCT ")
+        query.append("u.user_name, ")
+        query.append("u.display_name, ")
+        query.append("u.email_address ")
+        query.append("FROM issue_extra_property iep ")
+        query.append("JOIN user u ")
+        query.append("ON iep.value = u.user_name ")
+        query.append("WHERE iep.deleted = 0 ")
+        query.append("AND iep.name = 'pi';")
+        def queryString = query.toString()
+        final SQLQuery sqlQuery = session.createSQLQuery(queryString)
+        final result = sqlQuery.list().collect {row ->
+            [
+                    user_name: row[0],
+                    display_name: row[1],
+                    email_address: row[2]
+            ]
+        }
+        result
+    }
+
 }

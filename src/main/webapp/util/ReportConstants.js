@@ -380,3 +380,30 @@ export const PII_PHI_REPORT_COLUMNS = [
     editable: false
   }
 ]
+
+export const PI_LIST_REPORT = [
+  {
+    dataField: 'user_name',
+    text: 'Username',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'display_name',
+    text: 'Full Name',
+    sort: true,
+    editable: false
+  },
+  {
+    dataField: 'email_address',
+    text: 'Email Address',
+    sort: true,
+    editable: false
+  }
+]
+
+export const PI_LIST_REPORT_DEFAULT_SORT = [{
+  dataField: 'user_name',
+  order: 'asc',
+  editable: false
+}];
