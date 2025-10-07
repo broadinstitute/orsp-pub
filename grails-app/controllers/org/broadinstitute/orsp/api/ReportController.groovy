@@ -160,4 +160,13 @@ class ReportController extends AuthenticatedController {
             handleException(e)
         }
     }
+
+    def excludeDataFromReport() {
+        try {
+            queryService.excludeRowFromReport(params.reportType, params.tableIdentifier, params.columnIdentifier, params.identifierValue)
+            render([message: "Excluded successfully"] as JSON)
+        } catch (Exception e) {
+            handleException(e)
+        }
+    }
 }

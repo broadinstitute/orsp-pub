@@ -2173,7 +2173,54 @@ class QueryService implements Status {
                     email_address: row[2]
             ]
         }
-        result
+        def filteredResult = filterExcludedRows(result, "PI_report", "user_name", "user")
+
+        return filteredResult
+    }
+
+    List filterExcludedRows(List resultList, String reportType, String columnIdentifier, String tableIdentifier) {
+        if (!resultList || resultList.isEmpty()) {
+            return []
+        }
+
+        SessionFactory sessionFactory = grailsApplication.getMainContext().getBean('sessionFactory')
+        final session = sessionFactory.currentSession
+
+        def query = new StringBuilder()
+        query.append("SELECT DISTINCT r.identifier_value ")
+        query.append("FROM report_exclusions r ")
+        query.append("WHERE r.report_type = :reportType ")
+        query.append("AND r.column_identifier = :columnIdentifier ")
+        query.append("AND r.table_identifier = :tableIdentifier ")
+
+        def sqlQuery = session.createSQLQuery(query.toString())
+        sqlQuery.setParameter("reportType", reportType)
+        sqlQuery.setParameter("columnIdentifier", columnIdentifier)
+        sqlQuery.setParameter("tableIdentifier", tableIdentifier)
+
+        def excludedList = sqlQuery.list().collect { it.toString() }
+
+        def filtered = resultList.findAll { !excludedList.contains(it."${columnIdentifier}") }
+
+        return filtered
+    }
+
+    def excludeRowFromReport(String reportType, String tableIdentifier, String columnIdentifier, String identifierValue) {
+        def sessionFactory = grailsApplication.mainContext.getBean('sessionFactory')
+        def session = sessionFactory.currentSession
+
+        def sql = """
+            INSERT INTO report_exclusions (report_type, table_identifier, column_identifier, identifier_value)
+            VALUES (:reportType, :tableIdentifier, :columnIdentifier, :identifierValue)
+        """
+
+        def query = session.createSQLQuery(sql)
+        query.setParameter('reportType', reportType)
+        query.setParameter('tableIdentifier', tableIdentifier)
+        query.setParameter('columnIdentifier', columnIdentifier)
+        query.setParameter('identifierValue', identifierValue)
+
+        query.executeUpdate()
     }
 
 }
