@@ -151,5 +151,6 @@ export const UrlConstants = {
   piiReport: context + '/pii-report',
   piiReportUrl: context + '/api/pii-report',
   getPiListUrl: context + '/api/report/get-pi-list',
-  getPiList: context + '/active-pi-report'
+  getPiList: context + '/active-pi-report',
+  deletePiListUrl: context + '/api/report/delete-pi-report'
 };

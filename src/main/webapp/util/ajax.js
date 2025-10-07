@@ -594,7 +594,13 @@ export const Reports = {
 
   getAllPiList() {
     return axios.get(UrlConstants.getPiListUrl);
+  },
+  
+  deletePiFromList(reportType, tableIdentifier, columnIdentifier, identifierValue) {
+    return axios.delete(
+        UrlConstants.deletePiListUrl + "?reportType=" + reportType + "&tableIdentifier=" + tableIdentifier + "&columnIdentifier=" + columnIdentifier + "&identifierValue=" + identifierValue);
   }
+
 };
 
 export const ProjectMigration = {

@@ -18,3 +18,9 @@
     padding-left: 4px;
     width: 110px;
 }
+
+.delete-btn-align-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
