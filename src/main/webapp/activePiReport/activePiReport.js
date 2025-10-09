@@ -57,6 +57,7 @@ const ActivePiReport = (props) => {
         text: 'Actions',
         sort: false,
         editable: false,
+        csvExport : false,
         headerStyle: {width: '20px', textAlign: 'center'},
         formatter: (cell, row, rowIndex, colIndex) =>
             <div className='delete-btn-align-center'>
