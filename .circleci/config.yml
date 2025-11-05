@@ -133,7 +133,8 @@ jobs:
   deploy-dev:
     executor: cloud-sdk
     steps:
-      - checkout
+      - checkout:
+         method: blobless
       - build-env:
           sa_key_name: "GCLOUD_ORSP_DEV"
           env: "dev"
