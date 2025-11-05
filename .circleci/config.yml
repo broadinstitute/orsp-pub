@@ -134,7 +134,7 @@ jobs:
     executor: cloud-sdk
     steps:
       - checkout:
-         method: blobless
+          method: blobless
       - build-env:
           sa_key_name: "GCLOUD_ORSP_DEV"
           env: "dev"
@@ -156,7 +156,8 @@ jobs:
   deploy-staging:
     executor: cloud-sdk
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - build-env:
           sa_key_name: "GCLOUD_ORSP_DEV"
           env: "staging"
@@ -178,7 +179,8 @@ jobs:
   deploy-production:
     executor: cloud-sdk
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - run:
           name: Call remote deploy job
           command: |
