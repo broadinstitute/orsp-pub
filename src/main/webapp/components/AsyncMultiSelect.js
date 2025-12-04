@@ -85,7 +85,8 @@ export const AsyncMultiSelect = hh(class AsyncMultiSelect extends Component {
           value: this.props.value,
           currentValue: currentValue,
           currentValueStr: currentValueStr,
-          edited: edited
+          edited: edited,
+          required: this.props.required
         }, [
           div({ className: "inputFieldSelectWrapper" }, [
             h(AsyncSelect, {
@@ -99,7 +100,8 @@ export const AsyncMultiSelect = hh(class AsyncMultiSelect extends Component {
               placeholder: !this.props.readOnly && this.props.placeholder !== undefined ? this.props.placeholder : '--',
               className: "inputFieldSelect",
               classNamePrefix: "select",
-              styles: this.props.styles
+              styles: this.props.styles,
+              required: this.props.required
             })
           ])
         ]),

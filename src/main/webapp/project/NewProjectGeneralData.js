@@ -182,20 +182,23 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           })
         ]),
 
-        Panel({ title: "Principal Investigator ", moreInfo: "(if applicable)" }, [
+        Panel({ title: "Study Staff/Key Personnel"}, [
           AsyncMultiSelect({
             id: "pi_select",
-            label: "Broad PIs",
+            label: "Principal Investigator (PI) Responsible for Project Conduct and Oversight (required)",
             isDisabled: false,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handlePIChange,
             value: this.state.formData.piNames,
             placeholder: "Start typing the PI Names",
-            isMulti: true,
+            isMulti: false,
+            required: true,
+            error: this.props.errors.piNames,
+            errorMessage: "Required field",
             edit: false
           }),
           InputFieldSelect({
-            label: "Primary Investigator Affiliation ",
+            label: "PI’s Primary Institutional Affiliation (required)",
             id: "affiliations",
             name: "affiliations",
             options: PI_AFFILIATION,
@@ -203,7 +206,10 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             onChange: this.handleSelectChange("affiliations"),
             placeholder: "Choose an affiliation...",
             readOnly: false,
-            edit: false
+            edit: false,
+            required: true,
+            error: this.props.errors.affiliations,
+            errorMessage: "Required field"
           }),
           InputFieldText({
             isRendered: this.state.formData.affiliations.value === "other",
@@ -218,13 +224,16 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           }),
           AsyncMultiSelect({
             id: "inputProjectManager",
-            label: "Broad Project Managers",
+            label: "Key Study Contact (will receive email notifications about this project) (required)",
             isDisabled: false,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handlePMChange,
             value: this.state.formData.projectManagers,
             placeholder: "Start typing the Project Manager Name",
-            isMulti: true,
+            isMulti: false,
+            required: true,
+            error: this.props.errors.projectManagers,
+            errorMessage: "Required field",
             edit: false
           }),
         ]),

@@ -102,16 +102,16 @@ const ProjectChangeComparision = hh(
     render() {
       return div({}, [
         div({ id: "principalInvestigator" }, [
-          Panel({ title: "Principal Investigator" }, [
+          Panel({ title: "Study Staff/Key Personnel" }, [
             div([
-              label({className: 'inputFieldLabel'}, ["Broad PIs"]),
+              label({className: 'inputFieldLabel'}, ["Principal Investigator (PI) Responsible for Project Conduct and Oversight (required)"]),
               p({}, [
                 this.compareData(this.props.formData.piList, this.props.versionedData.piList, "jsonArray"),
               ]),
             ]),
 
             div([
-              label({className: 'inputFieldLabel'}, ["Primary Investigator Affiliation"]),
+              label({className: 'inputFieldLabel'}, ["PI’s Primary Institutional Affiliation (required)"]),
               p({}, [
                 this.compareData(this.props.formData.projectExtraProps.affiliations, this.props.versionedData.projectExtraProps.affiliations, "json"),
               ]),
@@ -128,7 +128,7 @@ const ProjectChangeComparision = hh(
             ]),
 
             div([
-              label({className: 'inputFieldLabel'}, ["Broad Project Managers"]),
+              label({className: 'inputFieldLabel'}, ["Key Study Contact (will receive email notifications about this project) (required)"]),
               p({}, [
                 this.compareData(this.props.formData.pmList, this.props.versionedData.pmList, "jsonArray"),
               ]),

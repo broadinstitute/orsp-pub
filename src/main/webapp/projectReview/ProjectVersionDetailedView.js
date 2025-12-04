@@ -77,9 +77,9 @@ class ProjectVersionDetailedView extends Component {
                 <p className="answer-fields">{requestor.emailAddress}</p>
               </div>
             </Panel>
-            <Panel title="Principal Investigator" id="principal-investigator">
+            <Panel title="Study Staff/Key Personnel" id="principal-investigator">
               <div className="mb-15">
-                <label>Broad PIs</label>
+                <label>Principal Investigator (PI) Responsible for Project Conduct and Oversight (required)</label>
                 <p className="answer-fields">
                   {pis.length 
                     ? pis.map((pi, idx) => (
@@ -89,11 +89,11 @@ class ProjectVersionDetailedView extends Component {
                 </p>
               </div>
               <div className="mb-15">
-                <label>Primary Investigator Affiliation</label>
+                <label> PI’s Primary Institutional Affiliation (required)</label>
                 <p className="answer-fields">{this.getExtraPropertyValueFromJSON("affiliations")}</p>
               </div>
               <div className="mb-15">
-                <label>Broad Project Managers</label>
+                <label>Key Study Contact (will receive email notifications about this project) (required)</label>
                 <p className="answer-fields">
                   {pms.length 
                     ? pms.map((pm, idx) => (
