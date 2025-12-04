@@ -5,7 +5,7 @@ import { NewProjectDetermination } from './NewProjectDetermination';
 import { NewProjectDocuments } from './NewProjectDocuments';
 import { PROJECT_DOCUMENTS } from '../util/DocumentType';
 import { LoginText, Project, Reviewer, User } from '../util/ajax';
-import { handleUnauthorized, isEmpty } from '../util/Utils';
+import { handleUnauthorized, isEmpty, isSelectEmpty } from '../util/Utils';
 import { getProjectType } from '../util/DeterminationQuestions';
 import { hh, div } from 'react-hyperscript-helpers';
 import 'regenerator-runtime/runtime';
@@ -50,7 +50,10 @@ const NewProject = hh(class NewProject extends Component {
         pTitle: false,
         fundings: false,
         attestation: false,
-        fundingAwardNumber: false
+        fundingAwardNumber: false,
+        piNames: false,
+        projectManagers: false,
+        affiliations: false
       },
       formerProjectType: null,
       defaultValueForAbout: 'default',
@@ -388,6 +391,9 @@ const NewProject = hh(class NewProject extends Component {
   validateGeneralData(field) {
     let studyDescription = false;
     let pTitle = false;
+    let piNames = false;
+    let projectManagers = false;
+    let affiliations = false;
     let isValid = true;
     let fundings = false;
     let fundingAwardNumber = false;
@@ -423,6 +429,21 @@ const NewProject = hh(class NewProject extends Component {
         }
       });
     }
+    // PI and Project Manager required checks
+    if (this.state.generalDataFormData.piNames === undefined || isEmpty(this.state.generalDataFormData.piNames) || this.state.generalDataFormData.piNames.length === 0) {
+      piNames = true;
+      isValid = false;
+    }
+    if (this.state.generalDataFormData.projectManagers === undefined || isEmpty(this.state.generalDataFormData.projectManagers) || this.state.generalDataFormData.projectManagers.length === 0) {
+      projectManagers = true;
+      isValid = false;
+    }
+
+    // PI's Primary Institutional Affiliation required check
+    if (isSelectEmpty(this.state.generalDataFormData.affiliations)) {
+      affiliations = true;
+      isValid = false;
+    }
     if (field === undefined || field === null || field === 0) {
       this.setState(prev => {
         prev.errors.studyDescription = studyDescription;
@@ -430,6 +451,9 @@ const NewProject = hh(class NewProject extends Component {
         prev.errors.fundings = fundings;
         prev.errors.fundingAwardNumber = fundingAwardNumber;
         prev.errors.fundingSponsor = fundingSponsor;
+        prev.errors.piNames = piNames;
+        prev.errors.projectManagers = projectManagers;
+        prev.errors.affiliations = affiliations;
         return prev;
       });
     } else if (field === 'fundings' || field === 'studyDescription' || field === 'pTitle') {
@@ -443,6 +467,15 @@ const NewProject = hh(class NewProject extends Component {
           prev.errors.studyDescription = studyDescription;
         } else if (field === 'pTitle') {
           prev.errors.pTitle = pTitle;
+        }
+        if (field === 'piNames') {
+          prev.errors.piNames = piNames;
+        }
+        if (field === 'projectManagers') {
+          prev.errors.projectManagers = projectManagers;
+        }
+        if (field === 'affiliations') {
+          prev.errors.affiliations = affiliations;
         }
         return prev;
       });
