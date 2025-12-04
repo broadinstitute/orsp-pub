@@ -94,14 +94,27 @@ export const Wizard = hh(class Wizard extends Component {
                 "contact ", a({href:"mailto: agreements@broadinstitute.org"}, ["agreements@broadinstitute.org"]), " agreements@broadinstitute.org. ",
                 span({style: {color: "rgb(211 79 79)"}}, ["Fee-for-service projects that have been reviewed by OSAP may use ORSP-ID NE-8596 " +
                 "when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing)."])
-              ]),br(),
+              ]), br(),
               li([
                 "Projects that involve ", span({style: {textDecoration: "underline"}}, ["only commercially/publicly available biospecimens"]), 
-                " (e.g. cell lines sourced from ATCC) or publicly available data " +
+                " (e.g. cell lines sourced from ATCC) or their derivatives or publicly available data " +
                 "(e.g. open source data such as GEO, or controlled access data available via a data access committee such as dbGaP, provided that " +
                 "IRB approval is not a condition for access). ", 
                 span({style: {color: "rgb(211 79 79)"}}, ["Such projects can use ORSP-ID NHSR-8716 when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing). "]), 
                 "Please note that projects involving the use of human embryonic stem cells DO require ORSP review."
+              ]), br(),
+              li([
+                `Projects that involve Broad affiliates conducting external research, when Broad or BCL perform genomic services 
+                (without any analysis other than standard pipeline analyses that are run as part of data generation) on specimens 
+                collected in connection with research where the requester holds a Broad affiliation, provided that: a) the research 
+                is being performed entirely outside of Broad; and b) the research does not include a direct federal grant to Broad. 
+                These projects do require the signature of the Principal Investigator on the “Genomic Services Attestation for Broad 
+                Affiliates Conducting External Research” (`,
+                a({href: "https://docs.google.com/document/d/1KT_qKeR63JRO3mXZrdx3F_NeS_UqO63g/edit?usp=sharing&ouid=103012123884219122270&rtpof=true&sd=true"}, 
+                  ["Genomic Services Outside Research Attestation Form"]),
+                `). Signed copies of the attestation must be sent to `, a({href: "mailto:orsp@broadinstitute.org"}, ["orsp@broadinstitute.org"]), 
+                `. Such projects can use `,
+                span({style: {color: "rgb(211 79 79)"}}, ["ORSP-ID NE-9182 when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing)."])
               ])
             ]),
           p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
