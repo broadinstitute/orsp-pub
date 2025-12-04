@@ -38,6 +38,30 @@ export const isEmpty = (value) => {
   }
 }
 
+// Returns true when a select-style value is effectively empty.
+// Handles:
+// - null/undefined/empty string
+// - objects like { value: '', key: '', label: '' }
+// - arrays where all entries are placeholders or empty
+export const isSelectEmpty = (val) => {
+  if (val === undefined || val === null) return true;
+  if (typeof val === 'string') return val === '';
+  if (Array.isArray(val)) {
+    if (val.length === 0) return true;
+    return val.every(item => isSelectEmpty(item));
+  }
+  if (typeof val === 'object') {
+    // consider object empty if it has no keys
+    if (!Object.keys(val).length) return true;
+    // prefer checking meaningful properties
+    if ('value' in val) return val.value === '' || val.value === null || val.value === undefined;
+    if ('key' in val) return val.key === '' || val.key === null || val.key === undefined;
+    // fallback: not empty
+    return false;
+  }
+  return false;
+}
+
 export const createObjectCopy = (obj) => {
   let copy = {};
   if (!isEmpty(obj)) {
