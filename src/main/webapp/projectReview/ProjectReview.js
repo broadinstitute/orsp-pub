@@ -1464,8 +1464,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
                           InputFieldTextArea({
                             id: "inputStudyActivitiesDescription",
                             name: "description",
-                            label: "Describe Broad study activities* ",
-                            moreInfo: "(briefly, in 1-2 paragraphs, with attention to whether or not protected health information will be accessed, and any future data sharing plans)",
+                            label: "Briefly describe the study activities that will occur at the Broad. ",
+                            moreInfo: `Indicate whether protected health information or other identifiable data will be accessed, 
+                                        and summarize any planned data sharing. If applicable, please also note any planned use of 
+                                        artificial intelligence or large language models (LLMs)`,
                             value: this.state.formData.description,
                             currentValue: this.state.current.description,
                             readOnly: this.state.readOnly,
