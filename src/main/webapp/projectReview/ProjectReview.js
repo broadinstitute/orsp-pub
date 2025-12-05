@@ -17,7 +17,7 @@ import get from 'lodash/get';
 import head from 'lodash/head';
 import orderBy from 'lodash/orderBy';
 import isEmptyArray from 'lodash/isEmpty';
-import { getBoolIfString, getDateString, isEmpty, scrollToTop, isSelectEmpty } from '../util/Utils';
+import { getBoolIfString, getDateString, isEmpty, scrollToTop } from '../util/Utils';
 import { initQuestions, getProjectType } from '../util/DeterminationQuestions';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
@@ -49,15 +49,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
       errorSubmit: false,
       descriptionError: false,
       projectTitleError: false,
-      affiliationsError: false,
       editTypeError: false,
       editDescriptionError: false,
       fundingError: false,
       fundingErrorIndex: [],
       internationalCohortsError: false,
       fundingAwardNumberError: false,
-      piListError: false,
-      pmListError: false,
       showDialog: false,
       approveInfoDialog: false,
       projectSubmittedDialog: false,
@@ -737,86 +734,32 @@ const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   submitEditResponses = (e) => () => {
-    this.props.showSpinner();
-
-    // Clear previous submit error and run validation, then proceed only if valid.
     this.setState(prev => {
-      prev.errorSubmit = false;
-      prev.generalError = false;
-      return prev;
-    }, () => {
-      const valid = this.isValid();
-      if (valid) {
-        this.setState(prev => {
-          prev.readOnly = true;
-          prev.errorSubmit = false;
-          prev.enabledQuestionsWizard = false;
-          if (get(prev.formData.projectExtraProps, 'affiliations.value', '') !== 'other') {
-            prev.formData.projectExtraProps.affiliationOther = '';
+      let questions = this.state.determination.questions;
+      if (questions.length > 1) {
+        questions.map(q => {
+          if (q.answer !== null) {
+            prev.formData.projectExtraProps[q.key] = q.answer;
+          } else {
+            prev.formData.projectExtraProps[q.key] = '';
           }
-          return prev;
-        }, () => {
-          let suggestions = this.state.formData;
-          User.getUserSession().then(
-            resp => {
-              suggestions.editCreator = resp.data.userName;
-              suggestions.editCreatorName = resp.data.displayName;
-              const data = {
-                projectKey: this.props.projectKey,
-                suggestions: JSON.stringify(suggestions)
-              };
-
-              if (this.state.reviewSuggestion) {
-                Review.updateSuggestions(data).then(
-                  resp => {
-                    this.props.updateContent();
-                    this.props.hideSpinner();
-                    this.setState(prev => {
-                      prev.showAlert = true;
-                      prev.alertMessage = "Edits saved";
-                      prev.alertType = 'success';
-                      return prev;
-                    });
-                  }).catch(error => {
-                    this.props.hideSpinner();
-                    this.setState(() => { throw error; });
-                  });
-              } else {
-                Review.createSuggestions(data).then(
-                  resp => {
-                    this.props.updateContent();
-                    this.props.hideSpinner();
-                    this.setState(prev => {
-                      prev.showAlert = true;
-                      prev.alertMessage = "Edits submitted";
-                      prev.alertType = 'success';
-                      return prev;
-                    });
-                  }).catch(error => {
-                    this.props.hideSpinner();
-                    this.setState(() => { throw error; });
-                  });
-              }
-            }).catch(error => {
-              this.props.hideSpinner();
-              this.setState(() => { throw error; });
-            });
+          if (q.textValue !== null  || q.textValue !== '') {
+            prev.formData.projectExtraProps[q.key+"TextValue"] = q.textValue;
+          } else {
+            prev.formData.projectExtraProps[q.key+"TextValue"] = '';
+          }
         });
-      } else {
-        this.setState({ errorSubmit: true }, () => this.props.hideSpinner());
       }
-    });
-    this.init();
-    this.setState(prev => {
-      prev.formData = this.state.futureCopy;
-      prev.current = this.state.futureCopy;
-      prev.generalError = false;
-      prev.descriptionError = false;
-      prev.errorSubmit = false;
-      prev.showAlert = false;
-      prev.readOnly = true;
+      if (this.state.determination.endState) {
+        prev.formData.projectType = this.state.determination.projectType
+      }
+      prev.enabledQuestionsWizard = false;
       return prev;
-    });
+    },
+      () => {
+        if (this.state.errorSubmit === true) this.isValid()
+      });
+
   };
 
   cancelEdit = (e) => () => {
@@ -1049,10 +992,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     let attestationError = false;
     let editTypeError = false;
     let editDescriptionError = false;
-    let affiliationsError = false;
     let fundingErrorIndex = [];
-    let piListError = false;
-    let pmListError = false;
     let generalError = false;
     let questions = false;
     let fundingAwardNumber = false;
@@ -1086,21 +1026,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
       projectTitleError = true;
       generalError = true;
     }
-    // Affiliation required check (treat placeholder objects/arrays as empty)
-    if (isSelectEmpty(this.state.formData.projectExtraProps.affiliations)) {
-      affiliationsError = true;
-      generalError = true;
-    }
-
-    // PI and PM required checks (treat placeholder objects/arrays as empty)
-    if (isSelectEmpty(this.state.formData.piList)) {
-      piListError = true;
-      generalError = true;
-    }
-    if (isSelectEmpty(this.state.formData.pmList)) {
-      pmListError = true;
-      generalError = true;
-    }
     if (this.state.sponsorHasError || this.state.identifierHasError) {
       fundingAdditionalFieldError = true;
       generalError = true;
@@ -1108,9 +1033,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
     this.setState(prev => {
       prev.descriptionError = descriptionError;
       prev.projectTitleError = projectTitleError;
-      prev.affiliationsError = affiliationsError;
-      prev.piListError = piListError;
-      prev.pmListError = pmListError;
       prev.attestationError = attestationError;
       prev.editDescriptionError = editDescriptionError;
       prev.editTypeError = editTypeError;
@@ -1128,12 +1050,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       !editDescriptionError &&
       !fundingError &&
       !questions &&
-      !affiliationsError &&
-      !piListError &&
-      !pmListError &&
       !fundingAwardNumber &&
       !fundingAdditionalFieldError;
-      
   }
 
   changeFundingError = () => {
@@ -1378,24 +1296,21 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 div({isRendered: !this.state.isCompareChanges}, [
         
                   div({ id: "principalInvestigator" }, [
-                    Panel({ title: "Study Staff/Key Personnel" }, [
+                    Panel({ title: "Principal Investigator" }, [
                       AsyncMultiSelect({
                         id: "pi_select",
-                        label: "Principal Investigator (PI) Responsible for Project Conduct and Oversight (required)",
+                        label: "Broad PIs",
                         name: 'piList',
                         readOnly: this.state.readOnly,
                         loadOptions: this.loadUsersOptions,
                         handleChange: this.handlePIChange,
                         value: this.state.formData.piList,
                         currentValue: this.state.current.piList,
-                        isMulti: false,
-                        required: true,
-                        error: this.state.piListError,
-                        errorMessage: "Required field"
+                        isMulti: true
                       }),
         
                       InputFieldSelect({
-                        label: "PI’s Primary Institutional Affiliation (required)",
+                        label: "Primary Investigator Affiliation",
                         id: "affiliations",
                         name: "affiliations",
                         options: PI_AFFILIATION,
@@ -1404,10 +1319,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         onChange: this.handleSelect("affiliations"),
                         readOnly: this.state.readOnly,
                         placeholder: isEmptyArray(this.state.formData.projectExtraProps.affiliations) && this.state.readOnly ? "--" : "Choose an affiliation...",
-                        edit: true,
-                        required: true,
-                        error: this.state.affiliationsError,
-                        errorMessage: "Required field"
+                        edit: true
                       }),
         
                       InputFieldText({
@@ -1425,17 +1337,14 @@ const ProjectReview = hh(class ProjectReview extends Component {
         
                       AsyncMultiSelect({
                         id: "inputProjectManager",
-                        label: "Key Study Contact (will receive email notifications about this project) (required)",
+                        label: "Broad Project Managers",
                         name: 'pmList',
                         readOnly: this.state.readOnly,
                         loadOptions: this.loadUsersOptions,
                         handleChange: this.handleProjectManagerChange,
                         value: this.state.formData.pmList,
                         currentValue: this.state.current.pmList,
-                        isMulti: false,
-                        required: true,
-                        error: this.state.pmListError,
-                        errorMessage: "Required field"
+                        isMulti: true
                       })
                     ])
                   ]),
@@ -1464,10 +1373,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
                           InputFieldTextArea({
                             id: "inputStudyActivitiesDescription",
                             name: "description",
-                            label: "Briefly describe the study activities that will occur at the Broad. ",
-                            moreInfo: `Indicate whether protected health information or other identifiable data will be accessed, 
-                                        and summarize any planned data sharing. If applicable, please also note any planned use of 
-                                        artificial intelligence or large language models (LLMs)`,
+                            label: "Describe Broad study activities* ",
+                            moreInfo: "(briefly, in 1-2 paragraphs, with attention to whether or not protected health information will be accessed, and any future data sharing plans)",
                             value: this.state.formData.description,
                             currentValue: this.state.current.description,
                             readOnly: this.state.readOnly,
