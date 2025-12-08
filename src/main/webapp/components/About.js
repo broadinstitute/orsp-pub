@@ -74,11 +74,20 @@ export const About = hh(class About extends Component {
             ul([
               li([
                 "Projects that involve ", span({style: {textDecoration: "underline"}}, ["only commercially/publicly available biospecimens"]),
-                " (e.g. cell lines sourced from ATCC) or their derivatives or publicly available data " +
+                " (e.g. cell lines sourced from ATCC) or their derivatives, or publicly available data " +
                 "(e.g. open source data such as GEO, or controlled access data available via a data access committee such as dbGaP, provided that " +
                 "IRB approval is not a condition for access). ",
                 span({style: {color: "rgb(211 79 79)"}}, ["Such projects can use ORSP-ID NHSR-8716 when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing). "]),
                 "Please note that projects involving the use of human embryonic stem cells DO require ORSP review."
+              ]), br(),
+              li([
+                "Projects that are exclusively fee-for-service work for external entities (e.g. pharmaceutical companies, researchers with no " +
+                "Broad affiliation or Broad email address), and that do not involve research collaborations (e.g. substantial contributions to " +
+                "research design, joint data analysis, etc) with Broad-affiliated researchers.  Such projects are, however, subject to review by " +
+                "Broad’s Office of Strategic Alliances and Partnerships (OSAP).  For additional information about OSAP review, " +
+                "contact ", a({href:"mailto: agreements@broadinstitute.org"}, ["agreements@broadinstitute.org"]), " agreements@broadinstitute.org. ",
+                span({style: {color: "rgb(211 79 79)"}}, ["Fee-for-service projects that have been reviewed by OSAP may use ORSP-ID NE-8596 " +
+                "when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing)."])
               ]), br(),
               li([
                 `Projects that involve Broad affiliates conducting external research, when Broad or BCL perform genomic services 
@@ -91,15 +100,6 @@ export const About = hh(class About extends Component {
                     ["Genomic Services Outside Research Attestation Form"]), `). Signed copies of the attestation must be sent to `,
                 a({href: "mailto: orsp@broadinstitute.org"}, ["orsp@broadinstitute.org"]), `. Such projects can use `,
                 span({style: {color: "rgb(211 79 79)"}}, ["ORSP-ID NE-9182 when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing)."])
-              ]), br(),
-              li([
-                "Projects that are exclusively fee-for-service work for external entities (e.g. pharmaceutical companies, researchers with no " +
-                "Broad affiliation or Broad email address), and that do not involve research collaborations (e.g. substantial contributions to " +
-                "research design, joint data analysis, etc) with Broad-affiliated researchers.  Such projects are, however, subject to review by " +
-                "Broad’s Office of Strategic Alliances and Partnerships (OSAP).  For additional information about OSAP review, " +
-                "contact ", a({href:"mailto: agreements@broadinstitute.org"}, ["agreements@broadinstitute.org"]), " agreements@broadinstitute.org. ",
-                span({style: {color: "rgb(211 79 79)"}}, ["Fee-for-service projects that have been reviewed by OSAP may use ORSP-ID NE-8596 " +
-                "when placing orders to the Genomics Platform/Broad Clinical Labs (including Walk-Up Sequencing)."])
               ])
             ]),
             p({ style: { fontFamily : styles.fontFamily, fontSize: styles.textFontSize }}, [
