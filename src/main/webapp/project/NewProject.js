@@ -50,7 +50,10 @@ const NewProject = hh(class NewProject extends Component {
         pTitle: false,
         fundings: false,
         attestation: false,
-        fundingAwardNumber: false
+        fundingAwardNumber: false,
+        piName: false,
+        piAffiliations: false,
+        KeyStudyContact: false
       },
       formerProjectType: null,
       defaultValueForAbout: 'default',
@@ -392,7 +395,22 @@ const NewProject = hh(class NewProject extends Component {
     let fundings = false;
     let fundingAwardNumber = false;
     let fundingSponsor = false;
+    let piName = false;
+    let piAffiliations = false;
+    let KeyStudyContact = false;
 
+    if (isEmpty(this.state.generalDataFormData.affiliations)) {
+      piAffiliations = true;
+      isValid = false;
+    }
+    if (isEmpty(this.state.generalDataFormData.piNames)) {
+      piName = true;
+      isValid = false;
+    }
+    if(isEmpty(this.state.generalDataFormData.projectManagers)) {
+      KeyStudyContact = true
+      isValid = false;
+    }
     if (isEmpty(this.state.generalDataFormData.studyDescription)) {
       studyDescription = true;
       isValid = false;
@@ -430,10 +448,12 @@ const NewProject = hh(class NewProject extends Component {
         prev.errors.fundings = fundings;
         prev.errors.fundingAwardNumber = fundingAwardNumber;
         prev.errors.fundingSponsor = fundingSponsor;
+        prev.errors.piName = piName;
+        prev.errors.KeyStudyContact = KeyStudyContact;
+        prev.errors.piAffiliations = piAffiliations;
         return prev;
       });
-    } else if (field === 'fundings' || field === 'studyDescription' || field === 'pTitle') {
-
+    } else if (['fundings', 'studyDescription', 'pTitle', 'piNames', 'projectManagers', 'affiliations'].includes(field)) {
       this.setState(prev => {
         if (field === 'fundings') {
           prev.errors.fundings = fundings;
@@ -443,6 +463,12 @@ const NewProject = hh(class NewProject extends Component {
           prev.errors.studyDescription = studyDescription;
         } else if (field === 'pTitle') {
           prev.errors.pTitle = pTitle;
+        } else if (field === 'piNames') {
+          prev.errors.piName = piName
+        } else if (field === 'projectManagers') {
+          prev.errors.KeyStudyContact = KeyStudyContact;
+        } else if (field === 'affiliations') {
+          prev.errors.piAffiliations = piAffiliations;
         }
         return prev;
       });
