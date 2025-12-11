@@ -407,7 +407,7 @@ const NewProject = hh(class NewProject extends Component {
       piName = true;
       isValid = false;
     }
-    if(isEmpty(this.state.generalDataFormData.projectManagers)) {
+    if (isEmpty(this.state.generalDataFormData.projectManagers)) {
       KeyStudyContact = true
       isValid = false;
     }
