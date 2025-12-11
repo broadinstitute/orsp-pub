@@ -1,5 +1,5 @@
 import { Component, React } from 'react';
-import { h1, hh, li, span, ul } from 'react-hyperscript-helpers';
+import { h1, hh, li, small, span, ul } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -133,6 +133,9 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   };
 
   handlePIChange = (data, action) => {
+    if (data !== null && !Array.isArray(data)) {
+      data = [data];
+    }
     this.setState(prev => {
       prev.formData.piNames = data;
       return prev;
@@ -140,6 +143,9 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   };
 
   handlePMChange = (data, action) => {
+    if (data !== null && !Array.isArray(data)) {
+      data = [data];
+    }
     this.setState(prev => {
       prev.formData.projectManagers = data;
       return prev;
@@ -157,7 +163,10 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     return (
       WizardStep({
         title: this.props.title, step: 0, currentStep: this.props.currentStep,
-        error: this.props.errors.fundings || this.props.errors.fundingAwardNumber || this.props.errors.fundingSponsor || this.props.errors.studyDescription || this.props.errors.pTitle,
+        error: this.props.errors.fundings || this.props.errors.fundingAwardNumber ||
+               this.props.errors.fundingSponsor || this.props.errors.studyDescription ||
+               this.props.errors.pTitle || this.props.errors.piName ||
+               this.props.errors.piAffiliations || this.props.errors.KeyStudyContact,
         errorMessage: 'Please complete all required fields'}, [
         Panel({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?", tooltipMsg: "Future correspondence regarding this project will be directed to this individual" }, [
           InputFieldText({
@@ -182,19 +191,21 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           })
         ]),
 
-        Panel({ title: "Principal Investigator"}, [
+        Panel({ title: "Study Staff/Key Personnel"}, [
           AsyncMultiSelect({
             id: "pi_select",
-            label: "Broad PIs",
+            label: "Principal Investigator (PI) Responsible for Project Conduct and Oversight (required)",
             isDisabled: false,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handlePIChange,
             value: this.state.formData.piNames,
             placeholder: "Start typing the PI Names",
-            isMulti: true
+            isMulti: false,
+            error: this.props.errors.piName
           }),
+          small({ isRendered: this.props.errors.piName, className: "errorMessage" }, ['Required field']),
           InputFieldSelect({
-            label: "Primary Investigator Affiliation",
+            label: "PI’s Primary Institutional Affiliation (required)",
             id: "affiliations",
             name: "affiliations",
             options: PI_AFFILIATION,
@@ -202,8 +213,10 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             onChange: this.handleSelectChange("affiliations"),
             placeholder: "Choose an affiliation...",
             readOnly: false,
-            edit: false
+            edit: false,
+            error: this.props.errors.piAffiliations
           }),
+          small({ isRendered: this.props.errors.piAffiliations, className: "errorMessage" }, ['Required field']),
           InputFieldText({
             isRendered: this.state.formData.affiliations.value === "other",
             id: "affiliationOther",
@@ -217,14 +230,16 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           }),
           AsyncMultiSelect({
             id: "inputProjectManager",
-            label: "Broad Project Managers",
+            label: "Key Study Contact (will receive email notifications about this project) (required)",
             isDisabled: false,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handlePMChange,
             value: this.state.formData.projectManagers,
             placeholder: "Start typing the Project Manager Name",
-            isMulti: true
+            isMulti: false,
+            error: this.props.errors.KeyStudyContact
           }),
+          small({ isRendered: this.props.errors.KeyStudyContact, className: "errorMessage" }, ['Required field']),
         ]),
 
         Panel({ title: "Funding*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [
