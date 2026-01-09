@@ -9,6 +9,7 @@ import { AsyncMultiSelect } from '../components/AsyncMultiSelect';
 import { Search } from '../util/ajax';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
+import { KeyPersonnel } from '../components/KeyPersonnel';
 
 const fundingTooltip =
   ul({}, [
@@ -109,7 +110,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   loadUsersOptions(query, callback) {
     if (query.length > 2) {
       Search.getMatchingQuery(query).then(response => {
-        if (this._isMounted) {
+        if (this._isMounted) {console.log(query,'Dropdown data in load PI 1');
           let options = response.data.map(function (item) {
             return {
               key: item.id,
@@ -240,6 +241,12 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             error: this.props.errors.KeyStudyContact
           }),
           small({ isRendered: this.props.errors.KeyStudyContact, className: "errorMessage" }, ['Required field']),
+        ]),
+
+        Panel({ title: "Key Personnel*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [
+ 
+          KeyPersonnel()
+ 
         ]),
 
         Panel({ title: "Funding*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [
