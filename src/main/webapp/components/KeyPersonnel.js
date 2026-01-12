@@ -110,10 +110,14 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                 div({ className: "row" }, [
                     div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                         div({ className: "row " }, [                            
-                            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                            div({ className: isOther
+      ? "col-lg-4 col-md-4 col-sm-4 col-12"
+      : "col-lg-6 col-md-6 col-sm-6 col-12" }, [
                                 label({ className: "inputFieldLabel noMargin" }, ["Name"])
                             ]),
-                            div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                            div({ className: isOther
+      ? "col-lg-4 col-md-4 col-sm-4 col-12"
+      : "col-lg-6 col-md-6 col-sm-6 col-12" }, [
                                 label({ className: "inputFieldLabel noMargin" }, ["Role"])
                             ]),isOther &&
                              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
