@@ -4,6 +4,7 @@ import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { AsyncMultiSelect } from '../components/AsyncMultiSelect';
 import { Fundings } from '../components/Fundings';
+import { KeyPersonnel } from '../components/KeyPersonnel';
 import { AlertMessage } from '../components/AlertMessage';
 import RequestClarificationDialog from '../components/RequestClarificationDialog';
 import { QuestionnaireWorkflow } from '../components/QuestionnaireWorkflow';
@@ -53,6 +54,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       editDescriptionError: false,
       fundingError: false,
       fundingErrorIndex: [],
+      keyPersonnelError: false,
+      keyPersonnelErrorIndex: [],
       internationalCohortsError: false,
       fundingAwardNumberError: false,
       showDialog: false,
@@ -100,6 +103,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
           current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
           future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
         }],
+        keyPersonnel: [{
+          current: { name: null, role: '', roleOther: '' },
+          future: { name: null, role: '', roleOther: '' }
+        }],
         requestor: {
           displayName: '',
           emailAddress: ''
@@ -126,6 +133,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
         fundings: [{
           current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
           future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
+        }],
+        keyPersonnel: [{
+          current: { name: null, role: '', roleOther: '' },
+          future: { name: null, role: '', roleOther: '' }
         }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
@@ -214,6 +225,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         current.pmList = this.getUsersArray(issue.data.pms);
         current.collaborators = this.getUsersArray(issue.data.collaborators);
         current.fundings = this.getFundingsArray(issue.data.fundings);
+        current.keyPersonnel = this.getKeyPersonnelArray(issue.data.keyPersonnel || []);
         current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
         current.sequenceNumber = issue.data.issue.sequenceNumber;
         current.updateUser = issue.data.issue.updateUser;
@@ -351,6 +363,33 @@ const ProjectReview = hh(class ProjectReview extends Component {
     return fundingsArray;
   }
 
+  getKeyPersonnelArray(keyPersonnel) {
+    let keyPersonnelArray = [];
+    if (keyPersonnel !== undefined && keyPersonnel !== null && keyPersonnel.length > 0) {
+      keyPersonnel.map(kp => {
+        keyPersonnelArray.push({
+          current: {
+            name: kp.name ? this.getUsersArray([kp.name])[0] : null,
+            role: kp.role ? { label: kp.role, value: kp.role.split(" ").join("_").toLowerCase() } : '',
+            roleOther: kp.roleOther || ''
+          },
+          future: {
+            name: kp.name ? this.getUsersArray([kp.name])[0] : null,
+            role: kp.role ? { label: kp.role, value: kp.role.split(" ").join("_").toLowerCase() } : '',
+            roleOther: kp.roleOther || ''
+          }
+        });
+      });
+    } else {
+      // Return empty array with one empty entry
+      keyPersonnelArray = [{
+        current: { name: null, role: '', roleOther: '' },
+        future: { name: null, role: '', roleOther: '' }
+      }];
+    }
+    return keyPersonnelArray;
+  }
+
   approveRevision = () => {
     this.props.showSpinner();
     this.setState({
@@ -476,6 +515,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.description = this.state.formData.description;
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
+    project.keyPersonnel = this.getKeyPersonnel(this.state.formData.keyPersonnel);
     project.attestation = this.state.formData.projectExtraProps.attestation;
     project.projectReviewApproved = this.state.formData.projectExtraProps.projectReviewApproved;
     project.protocol = this.state.formData.projectExtraProps.protocol || "--";
@@ -572,6 +612,24 @@ const ProjectReview = hh(class ProjectReview extends Component {
       });
     }
     return fundingList;
+  }
+
+  getKeyPersonnel(keyPersonnel) {
+    let keyPersonnelList = [];
+    if (keyPersonnel !== null && keyPersonnel.length > 0) {
+      keyPersonnel.map((kp, idx) => {
+        let kpItem = {};
+        if (kp.future.name !== null && kp.future.name !== undefined) {
+          kpItem.name = kp.future.name.key || kp.future.name.value;
+          kpItem.role = kp.future.role && kp.future.role.label ? kp.future.role.label : '';
+          kpItem.roleOther = kp.future.roleOther || '';
+          if (kpItem.name) {
+            keyPersonnelList.push(kpItem);
+          }
+        }
+      });
+    }
+    return keyPersonnelList;
   }
 
   compareObj(obj1, obj2) {
@@ -880,6 +938,15 @@ const ProjectReview = hh(class ProjectReview extends Component {
     });
   };
 
+  handleUpdateKeyPersonnel = (updated) => {
+    this.setState(prev => {
+      prev.formData.keyPersonnel = updated;
+      prev.keyPersonnelError = false;
+      prev.generalError = false;
+      return prev;
+    });
+  };
+
   handleProjectCollaboratorChange = (data, action) => {
     this.setState(prev => {
       prev.formData.collaborators = data;
@@ -1130,6 +1197,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       versionedIssue.pmList = this.getUsersArray(versionedIssue.pms);
       versionedIssue.collaborators = this.getUsersArray(versionedIssue.collaborators);
       versionedIssue.fundings = this.getFundingsArray(versionedIssue.fundings);
+      versionedIssue.keyPersonnel = this.getKeyPersonnelArray(versionedIssue.keyPersonnel || []);
       this.setState({
         versionedIssue: versionedIssue,
         isCompareChanges: true
@@ -1360,6 +1428,22 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         errorIndex: this.state.fundingErrorIndex,
                         fundingAwardNumberError: this.state.fundingAwardNumberError,
                         setError: this.changeFundingError,
+                        errorMessage: "Required field",
+                        edit: true
+                      })
+                    ])
+                  ]),
+
+                  div({ id: "keyPersonnel" }, [
+                    Panel({ title: "Key Personnel" }, [
+                      KeyPersonnel({
+                        keyPersonnel: this.state.formData.keyPersonnel,
+                        current: this.state.formData.keyPersonnel,
+                        updateKeyPersonnel: this.handleUpdateKeyPersonnel,
+                        readOnly: this.state.readOnly,
+                        error: this.state.keyPersonnelError,
+                        errorIndex: this.state.keyPersonnelErrorIndex,
+                        setError: () => this.setState(prev => { prev.keyPersonnelError = false; return prev; }),
                         errorMessage: "Required field",
                         edit: true
                       })

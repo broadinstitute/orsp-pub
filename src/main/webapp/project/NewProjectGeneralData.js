@@ -41,6 +41,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         irbProtocolId: '',
         irb: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
+        keyPersonnel: [{ name: null, role: '', roleOther: '' }],
         collaborators: []
       },
       formerData: {
@@ -53,6 +54,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         irbProtocolId: '',
         irb: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
+        keyPersonnel: [{ name: null, role: '', roleOther: '' }],
         collaborators: []
       },
       errors: {
@@ -77,6 +79,14 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       prev.formData.fundings = updated;
       return prev;
     }, () => this.props.updateForm(this.state.formData, 'fundings'));
+    this.props.removeErrorMessage();
+  };
+
+  handleUpdateKeyPersonnel = (updated) => {
+    this.setState(prev => {
+      prev.formData.keyPersonnel = updated;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, 'keyPersonnel'));
     this.props.removeErrorMessage();
   };
 
@@ -244,9 +254,14 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         ]),
 
         Panel({ title: "Key Personnel*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [
- 
-          KeyPersonnel()
- 
+          KeyPersonnel({
+            readOnly: false,
+            keyPersonnel: this.state.formData.keyPersonnel,
+            updateKeyPersonnel: this.handleUpdateKeyPersonnel,
+            error: this.props.errors.keyPersonnel,
+            errorMessage: "Required field",
+            edit: false
+          })
         ]),
 
         Panel({ title: "Funding*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [
