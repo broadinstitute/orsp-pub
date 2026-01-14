@@ -11,6 +11,13 @@ const ProjectChangeComparision = hh(
     }
 
     compareData = (newData, oldData, dataType="") => {
+      // Handle array types before converting to empty string
+      if (dataType === "fundings") {
+        return this.getFundingComparison(newData || [], oldData || []);
+      } else if (dataType === "keyPersonnel") {
+        return this.getKeyPersonnelComparison(newData || [], oldData || []);
+      }
+
       newData = isEmpty(newData) ? "" : newData;
       oldData = isEmpty(oldData) ? "" : oldData;
 
@@ -20,8 +27,6 @@ const ProjectChangeComparision = hh(
       } else if (dataType === "json") {
         newData = !isEmpty(newData) ? newData.label : null;
         oldData = !isEmpty(oldData) ? oldData.label : null;
-      } else if (dataType === "fundings") {
-        return this.getFundingComparison(newData, oldData);
       } else if (dataType === "irbReviewedProtocol") {
         newData = this.getIrbReviewDescription(newData);
         oldData = this.getIrbReviewDescription(oldData);
@@ -99,6 +104,58 @@ const ProjectChangeComparision = hh(
       return div({ className: "row" }, [...headers, ...rows]);
     };
 
+    getKeyPersonnelComparison = (newData, oldData) => {
+      const headers = [
+          div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [label({ className: "inputFieldLabel" }, ["Name"])]),
+          div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [label({ className: "inputFieldLabel" }, ["Role"])]),
+          div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [label({ className: "inputFieldLabel" }, ["Role (Other)"])]),
+      ];
+  
+      const maxLength = Math.max(newData ? newData.length : 0, oldData ? oldData.length : 0);
+  
+      const rows = Array.from({ length: maxLength }, (_, index) => {
+          const oldItem = oldData && oldData[index] ? oldData[index] : {};
+          const newItem = newData && newData[index] ? newData[index] : {};
+  
+          // Compare future (new) values with current (old) values
+          const oldName = oldItem.current && oldItem.current.name ? oldItem.current.name.label : "";
+          const newName = newItem.future && newItem.future.name ? newItem.future.name.label : "";
+  
+          const oldRole = oldItem.current && oldItem.current.role ? oldItem.current.role.label : "";
+          const newRole = newItem.future && newItem.future.role ? newItem.future.role.label : "";
+  
+          const oldRoleOther = oldItem.current && oldItem.current.roleOther ? oldItem.current.roleOther : "";
+          const newRoleOther = newItem.future && newItem.future.roleOther ? newItem.future.roleOther : "";
+  
+          // Determine if "Role (Other)" should be shown (if either old or new role is "other")
+          const showRoleOther = (oldItem.current && oldItem.current.role && oldItem.current.role.value === "other") ||
+                                (newItem.future && newItem.future.role && newItem.future.role.value === "other");
+  
+          return div({ className: "row" }, [
+              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                  oldName && !newName ? del([oldName]) : 
+                  !oldName && newName ? ins([newName]) : 
+                  oldName !== newName ? [del([oldName]), ins([newName])] : (newName || "--")
+              ]),
+              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                  oldRole && !newRole ? del([oldRole]) : 
+                  !oldRole && newRole ? ins([newRole]) : 
+                  oldRole !== newRole ? [del([oldRole]), ins([newRole])] : (newRole || "--")
+              ]),
+              div({ 
+                className: "col-lg-4 col-md-4 col-sm-4 col-12",
+                isRendered: showRoleOther
+              }, [
+                  oldRoleOther && !newRoleOther ? del([oldRoleOther]) : 
+                  !oldRoleOther && newRoleOther ? ins([newRoleOther]) : 
+                  oldRoleOther !== newRoleOther ? [del([oldRoleOther]), ins([newRoleOther])] : (newRoleOther || "--")
+              ]),
+          ]);
+      });
+  
+      return div({ className: "row" }, [...headers, ...rows]);
+    };
+
     render() {
       return div({}, [
         div({ id: "principalInvestigator" }, [
@@ -139,6 +196,18 @@ const ProjectChangeComparision = hh(
             Panel({ title: "Funding" }, [
               div([
                 this.compareData(this.props.formData.fundings, this.props.versionedData.fundings, "fundings")
+              ]),
+            ])
+          ]),
+
+          div({ 
+            id: "keyPersonnel",
+            isRendered: (this.props.formData.keyPersonnel && this.props.formData.keyPersonnel.length > 0) ||
+                        (this.props.versionedData.keyPersonnel && this.props.versionedData.keyPersonnel.length > 0)
+          }, [
+            Panel({ title: "Key Personnel" }, [
+              div([
+                this.compareData(this.props.formData.keyPersonnel, this.props.versionedData.keyPersonnel, "keyPersonnel")
               ]),
             ])
           ]),
