@@ -120,7 +120,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   loadUsersOptions(query, callback) {
     if (query.length > 2) {
       Search.getMatchingQuery(query).then(response => {
-        if (this._isMounted) {console.log(query,'Dropdown data in load PI 1');
+        if (this._isMounted) {
           let options = response.data.map(function (item) {
             return {
               key: item.id,
@@ -259,6 +259,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             keyPersonnel: this.state.formData.keyPersonnel,
             updateKeyPersonnel: this.handleUpdateKeyPersonnel,
             error: this.props.errors.keyPersonnel,
+            errorIndex: this.props.errors.keyPersonnelErrorIndex || [],
             errorMessage: "Required field",
             edit: false
           })

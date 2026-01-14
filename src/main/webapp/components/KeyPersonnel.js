@@ -106,10 +106,11 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
 
   handleKeyPersonnelChange = (e) => {
     if (!this.props.edit) {
-      let keyPersonnel = this.props.keyPersonnel;
+      let keyPersonnel = [...this.props.keyPersonnel];
       const field = e.target.name;
       const value = e.target.value;
-      const index = e.target.getAttribute('index');
+      const index = parseInt(e.target.getAttribute('index'));
+      keyPersonnel[index] = { ...keyPersonnel[index] };
       keyPersonnel[index][field] = value;
       this.setState(prev => {
         prev.keyPersonnel = keyPersonnel;
@@ -118,13 +119,17 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
         this.props.updateKeyPersonnel(this.state.keyPersonnel)
       });
     } else {
-      let future = this.props.keyPersonnel;
+      let keyPersonnel = [...this.props.keyPersonnel];
       const field = e.target.name;
       const value = e.target.value;
-      const index = e.target.getAttribute('index');
-      future[index].future[field] = value;
+      const index = parseInt(e.target.getAttribute('index'));
+      keyPersonnel[index] = { 
+        ...keyPersonnel[index],
+        future: { ...keyPersonnel[index].future }
+      };
+      keyPersonnel[index].future[field] = value;
       this.setState(prev => {
-        prev.future = future;
+        prev.future = keyPersonnel;
         return prev;
       }, () => this.props.updateKeyPersonnel(this.state.future));
     }
@@ -132,7 +137,8 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
 
   handleNameChange = (index) => (data, action) => {
     if (!this.props.edit) {
-      let keyPersonnel = this.props.keyPersonnel;
+      let keyPersonnel = [...this.props.keyPersonnel];
+      keyPersonnel[index] = { ...keyPersonnel[index] };
       keyPersonnel[index].name = data;
       this.setState(prev => {
         prev.keyPersonnel = keyPersonnel;
@@ -141,11 +147,15 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
         this.props.updateKeyPersonnel(this.state.keyPersonnel)
       });
     } else {
-      let future = this.props.keyPersonnel;
-      future[index].future.name = data;
+      let keyPersonnel = [...this.props.keyPersonnel];
+      keyPersonnel[index] = { 
+        ...keyPersonnel[index],
+        future: { ...keyPersonnel[index].future }
+      };
+      keyPersonnel[index].future.name = data;
       this.setState(prev => {
-        prev.future = future;
-        if (this.props.error) this.props.setError();
+        prev.future = keyPersonnel;
+        if (this.props.error && this.props.setError) this.props.setError();
         return prev;
       }, () => this.props.updateKeyPersonnel(this.state.future));
     }
@@ -153,19 +163,32 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
 
   handleRoleSelect = (index) => (selectedOption) => {
     if (!this.props.edit) {
-      let select = this.props.keyPersonnel;
-      select[index].role = selectedOption;
+      let keyPersonnel = [...this.props.keyPersonnel];
+      keyPersonnel[index] = { ...keyPersonnel[index] };
+      keyPersonnel[index].role = selectedOption;
+      // Clear roleOther if not "other"
+      if (!selectedOption || selectedOption.value !== "other") {
+        keyPersonnel[index].roleOther = '';
+      }
       this.setState(prev => {
-        prev.keyPersonnel = select;
+        prev.keyPersonnel = keyPersonnel;
         return prev;
       }, () => this.props.updateKeyPersonnel(this.state.keyPersonnel)
       )
     } else {
-      let select = this.props.keyPersonnel;
-      select[index].future.role = selectedOption;
+      let keyPersonnel = [...this.props.keyPersonnel];
+      keyPersonnel[index] = { 
+        ...keyPersonnel[index],
+        future: { ...keyPersonnel[index].future }
+      };
+      keyPersonnel[index].future.role = selectedOption;
+      // Clear roleOther if not "other"
+      if (!selectedOption || selectedOption.value !== "other") {
+        keyPersonnel[index].future.roleOther = '';
+      }
       this.setState(prev => {
-        prev.future = select;
-        if (this.props.error) this.props.setError();
+        prev.future = keyPersonnel;
+        if (this.props.error && this.props.setError) this.props.setError();
         return prev;
       }, () => this.props.updateKeyPersonnel(this.state.future)
       )
@@ -195,20 +218,50 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
   // this.props.error is used to hide error highlights on change, and validating again on submit.
   getNameError = (index) => {
     let hasError = false;
+    const kp = this.props.keyPersonnel[index];
+    if (!kp) return false;
+    
+    const name = this.props.edit ? kp.future.name : kp.name;
+    const isNameEmpty = name === null || name === undefined || (Array.isArray(name) && name.length === 0);
+    
     if (this.props.edit === true) {
-      hasError = this.props.error && this.props.errorIndex && this.props.errorIndex.includes(index)
+      hasError = this.props.error && this.props.errorIndex && this.props.errorIndex.includes(index) && isNameEmpty;
     } else {
-      hasError = this.props.error && index === 0
+      hasError = this.props.error && index === 0 && isNameEmpty;
     }
     return hasError
   };
 
   getRoleError = (index) => {
     let hasError = false;
+    const kp = this.props.keyPersonnel[index];
+    if (!kp) return false;
+    
+    const role = this.props.edit ? kp.future.role : kp.role;
+    const isRoleEmpty = !role || isEmpty(role.value);
+    
     if (this.props.edit === true) {
-      hasError = this.props.error && this.props.errorIndex && this.props.errorIndex.includes(index)
+      hasError = this.props.error && this.props.errorIndex && this.props.errorIndex.includes(index) && isRoleEmpty;
     } else {
-      hasError = this.props.error && index === 0
+      hasError = this.props.error && index === 0 && isRoleEmpty;
+    }
+    return hasError
+  };
+
+  getRoleOtherError = (index) => {
+    let hasError = false;
+    const kp = this.props.keyPersonnel[index];
+    const isOther = this.props.edit 
+      ? (kp.future.role && kp.future.role.value === "other")
+      : (kp.role && kp.role.value === "other");
+    
+    if (isOther) {
+      const roleOther = this.props.edit ? kp.future.roleOther : kp.roleOther;
+      if (this.props.edit === true) {
+        hasError = this.props.error && this.props.errorIndex && this.props.errorIndex.includes(index) && isEmpty(roleOther);
+      } else {
+        hasError = this.props.error && index === 0 && isEmpty(roleOther);
+      }
     }
     return hasError
   };
@@ -224,11 +277,14 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
         div({ className: "row" }, [
           div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
             div({ className: "row " + (this.props.readOnly ? 'inputFieldReadOnly' : '') }, [
-              div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
+              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                 label({ className: "inputFieldLabel noMargin" }, ["Name"])
               ]),
-              div({ className: "col-lg-6 col-md-6 col-sm-6 col-12" }, [
+              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                 label({ className: "inputFieldLabel noMargin" }, ["Role"])
+              ]),
+              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                label({ className: "inputFieldLabel noMargin" }, ["Role (Other)"])
               ])
             ])
           ]),
@@ -251,9 +307,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
             div({ className: "row", style: { 'marginBottom': '15px' } }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
-                  div({ className: isOther
-                    ? "col-lg-4 col-md-4 col-sm-4 col-12"
-                    : "col-lg-6 col-md-6 col-sm-6 col-12" }, [
+                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                     AsyncMultiSelect({
                       id: idx + "-name",
                       index: idx,
@@ -268,9 +322,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       readOnly: this.props.readOnly
                     })
                   ]),
-                  div({ className: isOther
-                    ? "col-lg-4 col-md-4 col-sm-4 col-12"
-                    : "col-lg-6 col-md-6 col-sm-6 col-12" }, [
+                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                     InputFieldSelect({
                       label: "",
                       id: idx + "-role",
@@ -288,7 +340,6 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       placeholder: "Choose a role..."
                     })
                   ]),
-                  isOther &&
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                     InputFieldText({
                       id: idx + "-roleOther",
@@ -297,11 +348,13 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       label: "",
                       value: this.props.edit ? kp.future.roleOther : kp.roleOther,
                       currentValue: this.props.edit ? current[idx] && current[idx].current.roleOther : kp.roleOther,
-                      disabled: false,
+                      disabled: !isOther,
                       required: false,
                       onChange: this.handleKeyPersonnelChange,
                       readOnly: this.props.readOnly,
-                      edit: this.props.edit
+                      edit: this.props.edit,
+                      error: isOther && this.getRoleOtherError(idx),
+                      errorMessage: this.props.errorMessage
                     })
                   ])
                 ])

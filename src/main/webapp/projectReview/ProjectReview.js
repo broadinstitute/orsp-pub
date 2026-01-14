@@ -56,6 +56,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       fundingErrorIndex: [],
       keyPersonnelError: false,
       keyPersonnelErrorIndex: [],
+      hasKeyPersonnel: false,
       internationalCohortsError: false,
       fundingAwardNumberError: false,
       showDialog: false,
@@ -225,7 +226,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
         current.pmList = this.getUsersArray(issue.data.pms);
         current.collaborators = this.getUsersArray(issue.data.collaborators);
         current.fundings = this.getFundingsArray(issue.data.fundings);
-        current.keyPersonnel = this.getKeyPersonnelArray(issue.data.keyPersonnel || []);
+        const hasKeyPersonnelData = issue.data.keyPersonnel !== undefined && issue.data.keyPersonnel !== null && issue.data.keyPersonnel.length > 0;
+        if (hasKeyPersonnelData) {
+          current.keyPersonnel = this.getKeyPersonnelArray(issue.data.keyPersonnel);
+        }
         current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
         current.sequenceNumber = issue.data.issue.sequenceNumber;
         current.updateUser = issue.data.issue.updateUser;
@@ -246,6 +250,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
             if (this._isMounted) {
               if (data.data !== '') {
                 formData = JSON.parse(data.data.suggestions);
+                // Ensure keyPersonnel exists in formData if it existed in original
+                if (hasKeyPersonnelData && (!formData.keyPersonnel || formData.keyPersonnel.length === 0)) {
+                  formData.keyPersonnel = current.keyPersonnel;
+                }
                 this.props.hideSpinner();
                 this.setState(prev => {
                   prev.formData = formData;
@@ -255,6 +263,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                   prev.editedForm = JSON.parse(data.data.suggestions);
                   prev.reviewSuggestion = true;
                   prev.isAdmin = component.isAdmin;
+                  prev.hasKeyPersonnel = hasKeyPersonnelData;
                   return prev;
                 });
                 this.props.changeInfoStatus(false);
@@ -268,6 +277,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                   prev.futureCopy = futureCopy;
                   prev.reviewSuggestion = false;
                   prev.isAdmin = component.isAdmin;
+                  prev.hasKeyPersonnel = hasKeyPersonnelData;
                   return prev;
                 });
               }
@@ -380,13 +390,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
           }
         });
       });
-    } else {
-      // Return empty array with one empty entry
-      keyPersonnelArray = [{
-        current: { name: null, role: '', roleOther: '' },
-        future: { name: null, role: '', roleOther: '' }
-      }];
     }
+    // Return empty array if no data exists (don't create empty entry for old projects)
     return keyPersonnelArray;
   }
 
@@ -515,7 +520,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.description = this.state.formData.description;
     project.summary = this.state.formData.projectExtraProps.projectTitle;
     project.fundings = this.getFundings(this.state.formData.fundings);
-    project.keyPersonnel = this.getKeyPersonnel(this.state.formData.keyPersonnel);
+    if (this.state.formData.keyPersonnel && this.state.formData.keyPersonnel.length > 0) {
+      project.keyPersonnel = this.getKeyPersonnel(this.state.formData.keyPersonnel);
+    }
     project.attestation = this.state.formData.projectExtraProps.attestation;
     project.projectReviewApproved = this.state.formData.projectExtraProps.projectReviewApproved;
     project.protocol = this.state.formData.projectExtraProps.protocol || "--";
@@ -942,6 +949,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     this.setState(prev => {
       prev.formData.keyPersonnel = updated;
       prev.keyPersonnelError = false;
+      prev.keyPersonnelErrorIndex = [];
       prev.generalError = false;
       return prev;
     });
@@ -1060,10 +1068,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
     let editTypeError = false;
     let editDescriptionError = false;
     let fundingErrorIndex = [];
+    let keyPersonnelErrorIndex = [];
     let generalError = false;
     let questions = false;
     let fundingAwardNumber = false;
     let fundingAdditionalFieldError = false;
+    let keyPersonnelError = false;
     let fundingError = this.state.formData.fundings.filter((obj, idx) => {
       if (isEmpty(obj.future.source.label) && (!isEmpty(obj.future.sponsor) || !isEmpty(obj.future.identifier))
         || (idx === 0 && isEmpty(obj.future.source.label) && isEmpty(obj.current.source.label))) {
@@ -1077,6 +1087,37 @@ const ProjectReview = hh(class ProjectReview extends Component {
       }
     }).length > 0;
     if (fundingError) generalError = true;
+    
+    // Validate keyPersonnel if it exists
+    if (this.state.hasKeyPersonnel && this.state.formData.keyPersonnel) {
+      if (this.state.formData.keyPersonnel === undefined || this.state.formData.keyPersonnel.length === 0) {
+        keyPersonnelError = true;
+        generalError = true;
+      } else {
+        this.state.formData.keyPersonnel.forEach((kp, idx) => {
+          let hasError = false;
+          if (kp.future.name === null || kp.future.name === undefined || (Array.isArray(kp.future.name) && kp.future.name.length === 0)) {
+            hasError = true;
+            keyPersonnelError = true;
+            generalError = true;
+          }
+          if (!kp.future.role || isEmpty(kp.future.role.value)) {
+            hasError = true;
+            keyPersonnelError = true;
+            generalError = true;
+          }
+          if (kp.future.role && kp.future.role.value === "other" && isEmpty(kp.future.roleOther)) {
+            hasError = true;
+            keyPersonnelError = true;
+            generalError = true;
+          }
+          if (hasError) {
+            keyPersonnelErrorIndex.push(idx);
+          }
+        });
+      }
+    }
+    
     if (this.state.projectType === "IRB Project" && isEmpty(this.state.formData.projectExtraProps.editDescription)) {
       editDescriptionError = true;
       generalError = true;
@@ -1105,6 +1146,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       prev.editTypeError = editTypeError;
       prev.fundingError = fundingError;
       prev.fundingErrorIndex = fundingErrorIndex;
+      prev.keyPersonnelError = keyPersonnelError;
+      prev.keyPersonnelErrorIndex = keyPersonnelErrorIndex;
       prev.generalError = generalError;
       prev.fundingAwardNumberError = fundingAwardNumber;
       return prev;
@@ -1116,6 +1159,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       !editTypeError &&
       !editDescriptionError &&
       !fundingError &&
+      !keyPersonnelError &&
       !questions &&
       !fundingAwardNumber &&
       !fundingAdditionalFieldError;
@@ -1197,7 +1241,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
       versionedIssue.pmList = this.getUsersArray(versionedIssue.pms);
       versionedIssue.collaborators = this.getUsersArray(versionedIssue.collaborators);
       versionedIssue.fundings = this.getFundingsArray(versionedIssue.fundings);
-      versionedIssue.keyPersonnel = this.getKeyPersonnelArray(versionedIssue.keyPersonnel || []);
+      if (versionedIssue.keyPersonnel !== undefined && versionedIssue.keyPersonnel !== null && versionedIssue.keyPersonnel.length > 0) {
+        versionedIssue.keyPersonnel = this.getKeyPersonnelArray(versionedIssue.keyPersonnel);
+      }
       this.setState({
         versionedIssue: versionedIssue,
         isCompareChanges: true
@@ -1434,7 +1480,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     ])
                   ]),
 
-                  div({ id: "keyPersonnel" }, [
+                  div({ id: "keyPersonnel", isRendered: this.state.hasKeyPersonnel && this.state.formData.keyPersonnel && this.state.formData.keyPersonnel.length > 0 }, [
                     Panel({ title: "Key Personnel" }, [
                       KeyPersonnel({
                         keyPersonnel: this.state.formData.keyPersonnel,
