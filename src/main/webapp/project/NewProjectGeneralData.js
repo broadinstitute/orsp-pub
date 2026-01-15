@@ -41,7 +41,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         irbProtocolId: '',
         irb: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
-        keyPersonnel: [{ name: null, role: '', roleOther: '' }],
+        keyPersons: [{ name: null, role: '', otherRole: '' }],
         collaborators: []
       },
       formerData: {
@@ -54,7 +54,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         irbProtocolId: '',
         irb: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
-        keyPersonnel: [{ name: null, role: '', roleOther: '' }],
+        keyPersons: [{ name: null, role: '', otherRole: '' }],
         collaborators: []
       },
       errors: {
@@ -82,11 +82,11 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.props.removeErrorMessage();
   };
 
-  handleUpdateKeyPersonnel = (updated) => {
+  handleUpdateKeyPersons = (updated) => {
     this.setState(prev => {
-      prev.formData.keyPersonnel = updated;
+      prev.formData.keyPersons = updated;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'keyPersonnel'));
+    }, () => this.props.updateForm(this.state.formData, 'keyPersons'));
     this.props.removeErrorMessage();
   };
 
@@ -256,10 +256,10 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         Panel({ title: "Key Personnel*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [
           KeyPersonnel({
             readOnly: false,
-            keyPersonnel: this.state.formData.keyPersonnel,
-            updateKeyPersonnel: this.handleUpdateKeyPersonnel,
-            error: this.props.errors.keyPersonnel,
-            errorIndex: this.props.errors.keyPersonnelErrorIndex || [],
+            keyPersons: this.state.formData.keyPersons,
+            updateKeyPersons: this.handleUpdateKeyPersons,
+            error: this.props.errors.keyPersons,
+            errorIndex: this.props.errors.keyPersonsErrorIndex || [],
             errorMessage: "Required field",
             edit: false
           })

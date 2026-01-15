@@ -54,8 +54,8 @@ const NewProject = hh(class NewProject extends Component {
         piName: false,
         piAffiliations: false,
         KeyStudyContact: false,
-        keyPersonnel: false,
-        keyPersonnelErrorIndex: []
+        keyPersons: false,
+        keyPersonsErrorIndex: []
       },
       formerProjectType: null,
       defaultValueForAbout: 'default',
@@ -241,7 +241,7 @@ const NewProject = hh(class NewProject extends Component {
     project.reporter = this.state.user.userName;
     project.description = this.state.generalDataFormData.studyDescription !== '' ? this.state.generalDataFormData.studyDescription : null;
     project.fundings = this.getFundings(this.state.generalDataFormData.fundings);
-    project.keyPersonnel = this.getKeyPersonnel(this.state.generalDataFormData.keyPersonnel);
+    project.keyPersons = this.getKeyPersons(this.state.generalDataFormData.keyPersons);
     project.attestation = this.state.attestationFormData.attestation;
     let extraProperties = [];
 
@@ -323,21 +323,21 @@ const NewProject = hh(class NewProject extends Component {
     return fundingList;
   }
 
-  getKeyPersonnel(keyPersonnel) {
-    let keyPersonnelList = [];
-    if (keyPersonnel !== null && keyPersonnel.length > 0) {
-      keyPersonnel.map((kp, idx) => {
+  getKeyPersons(keyPersons) {
+    let keyPersonsList = [];
+    if (keyPersons !== null && keyPersons.length > 0) {
+      keyPersons.map((kp, idx) => {
         // Only include entries that have a name and role
         if (kp.name !== null && kp.name !== undefined && kp.role && kp.role.value) {
           let kpItem = {};
           kpItem.name = kp.name.key || kp.name.value; // Use key (userName) or value as fallback
           kpItem.role = kp.role.label || kp.role.value; // Use label or value
-          kpItem.roleOther = kp.roleOther || '';
-          keyPersonnelList.push(kpItem);
+          kpItem.otherRole = kp.otherRole || '';
+          keyPersonsList.push(kpItem);
         }
       });
     }
-    return keyPersonnelList;
+    return keyPersonsList;
   }
 
   stepChanged = (newStep) => {
@@ -418,8 +418,8 @@ const NewProject = hh(class NewProject extends Component {
     let piName = false;
     let piAffiliations = false;
     let KeyStudyContact = false;
-    let keyPersonnel = false;
-    let keyPersonnelErrorIndex = [];
+    let keyPersons = false;
+    let keyPersonsErrorIndex = [];
 
     if (isEmpty(this.state.generalDataFormData.affiliations)) {
       piAffiliations = true;
@@ -463,29 +463,29 @@ const NewProject = hh(class NewProject extends Component {
         }
       });
     }
-    if (this.state.generalDataFormData.keyPersonnel === undefined || this.state.generalDataFormData.keyPersonnel.length === 0) {
-      keyPersonnel = true;
+    if (this.state.generalDataFormData.keyPersons === undefined || this.state.generalDataFormData.keyPersons.length === 0) {
+      keyPersons = true;
       isValid = false;
     } else {
-      this.state.generalDataFormData.keyPersonnel.forEach((kp, idx) => {
+      this.state.generalDataFormData.keyPersons.forEach((kp, idx) => {
         let hasError = false;
         if (kp.name === null || kp.name === undefined || (Array.isArray(kp.name) && kp.name.length === 0)) {
           hasError = true;
-          keyPersonnel = true;
+          keyPersons = true;
           isValid = false;
         }
         if (!kp.role || isEmpty(kp.role.value)) {
           hasError = true;
-          keyPersonnel = true;
+          keyPersons = true;
           isValid = false;
         }
-        if (kp.role && kp.role.value === "other" && isEmpty(kp.roleOther)) {
+        if (kp.role && kp.role.value === "other" && isEmpty(kp.otherRole)) {
           hasError = true;
-          keyPersonnel = true;
+          keyPersons = true;
           isValid = false;
         }
         if (hasError) {
-          keyPersonnelErrorIndex.push(idx);
+          keyPersonsErrorIndex.push(idx);
         }
       });
     }
@@ -496,14 +496,14 @@ const NewProject = hh(class NewProject extends Component {
         prev.errors.fundings = fundings;
         prev.errors.fundingAwardNumber = fundingAwardNumber;
         prev.errors.fundingSponsor = fundingSponsor;
-        prev.errors.keyPersonnel = keyPersonnel;
-        prev.errors.keyPersonnelErrorIndex = keyPersonnelErrorIndex;
+        prev.errors.keyPersons = keyPersons;
+        prev.errors.keyPersonsErrorIndex = keyPersonsErrorIndex;
         prev.errors.piName = piName;
         prev.errors.KeyStudyContact = KeyStudyContact;
         prev.errors.piAffiliations = piAffiliations;
         return prev;
       });
-    } else if (['fundings', 'studyDescription', 'pTitle', 'piNames', 'projectManagers', 'affiliations', 'keyPersonnel'].includes(field)) {
+    } else if (['fundings', 'studyDescription', 'pTitle', 'piNames', 'projectManagers', 'affiliations', 'keyPersons'].includes(field)) {
       this.setState(prev => {
         if (field === 'fundings') {
           prev.errors.fundings = fundings;
@@ -519,10 +519,10 @@ const NewProject = hh(class NewProject extends Component {
           prev.errors.KeyStudyContact = KeyStudyContact;
         } else if (field === 'affiliations') {
           prev.errors.piAffiliations = piAffiliations;
-        } else if (field === 'keyPersonnel') {
-          // Validate and set errors for keyPersonnel when field changes
-          prev.errors.keyPersonnel = keyPersonnel;
-          prev.errors.keyPersonnelErrorIndex = keyPersonnelErrorIndex;
+        } else if (field === 'keyPersons') {
+          // Validate and set errors for keyPersons when field changes
+          prev.errors.keyPersons = keyPersons;
+          prev.errors.keyPersonsErrorIndex = keyPersonsErrorIndex;
         }
         return prev;
       });

@@ -14,8 +14,8 @@ const ProjectChangeComparision = hh(
       // Handle array types before converting to empty string
       if (dataType === "fundings") {
         return this.getFundingComparison(newData || [], oldData || []);
-      } else if (dataType === "keyPersonnel") {
-        return this.getKeyPersonnelComparison(newData || [], oldData || []);
+      } else if (dataType === "keyPersons") {
+        return this.getKeyPersonsComparison(newData || [], oldData || []);
       }
 
       newData = isEmpty(newData) ? "" : newData;
@@ -104,7 +104,7 @@ const ProjectChangeComparision = hh(
       return div({ className: "row" }, [...headers, ...rows]);
     };
 
-    getKeyPersonnelComparison = (newData, oldData) => {
+    getKeyPersonsComparison = (newData, oldData) => {
       const headers = [
           div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [label({ className: "inputFieldLabel" }, ["Name"])]),
           div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [label({ className: "inputFieldLabel" }, ["Role"])]),
@@ -124,8 +124,8 @@ const ProjectChangeComparision = hh(
           const oldRole = oldItem.current && oldItem.current.role ? oldItem.current.role.label : "";
           const newRole = newItem.future && newItem.future.role ? newItem.future.role.label : "";
   
-          const oldRoleOther = oldItem.current && oldItem.current.roleOther ? oldItem.current.roleOther : "";
-          const newRoleOther = newItem.future && newItem.future.roleOther ? newItem.future.roleOther : "";
+          const oldOtherRole = oldItem.current && oldItem.current.otherRole ? oldItem.current.otherRole : "";
+          const newOtherRole = newItem.future && newItem.future.otherRole ? newItem.future.otherRole : "";
   
           // Determine if "Role (Other)" should be shown (if either old or new role is "other")
           const showRoleOther = (oldItem.current && oldItem.current.role && oldItem.current.role.value === "other") ||
@@ -146,9 +146,9 @@ const ProjectChangeComparision = hh(
                 className: "col-lg-4 col-md-4 col-sm-4 col-12",
                 isRendered: showRoleOther
               }, [
-                  oldRoleOther && !newRoleOther ? del([oldRoleOther]) : 
-                  !oldRoleOther && newRoleOther ? ins([newRoleOther]) : 
-                  oldRoleOther !== newRoleOther ? [del([oldRoleOther]), ins([newRoleOther])] : (newRoleOther || "--")
+                  oldOtherRole && !newOtherRole ? del([oldOtherRole]) : 
+                  !oldOtherRole && newOtherRole ? ins([newOtherRole]) : 
+                  oldOtherRole !== newOtherRole ? [del([oldOtherRole]), ins([newOtherRole])] : (newOtherRole || "--")
               ]),
           ]);
       });
@@ -202,12 +202,16 @@ const ProjectChangeComparision = hh(
 
           div({ 
             id: "keyPersonnel",
-            isRendered: (this.props.formData.keyPersonnel && this.props.formData.keyPersonnel.length > 0) ||
-                        (this.props.versionedData.keyPersonnel && this.props.versionedData.keyPersonnel.length > 0)
+            isRendered: ((this.props.formData.keyPersons || this.props.formData.keyPersonnel) && (this.props.formData.keyPersons || this.props.formData.keyPersonnel).length > 0) ||
+                        ((this.props.versionedData.keyPersons || this.props.versionedData.keyPersonnel) && (this.props.versionedData.keyPersons || this.props.versionedData.keyPersonnel).length > 0)
           }, [
             Panel({ title: "Key Personnel" }, [
               div([
-                this.compareData(this.props.formData.keyPersonnel, this.props.versionedData.keyPersonnel, "keyPersonnel")
+                this.compareData(
+                  (this.props.formData.keyPersons || this.props.formData.keyPersonnel),
+                  (this.props.versionedData.keyPersons || this.props.versionedData.keyPersonnel),
+                  "keyPersons"
+                )
               ]),
             ])
           ]),

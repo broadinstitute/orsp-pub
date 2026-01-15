@@ -27,7 +27,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
 
     this.state = {
       future: [],
-      keyPersonnel: []
+      keyPersons: []
     };
   }
 
@@ -49,30 +49,30 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
   addKeyPersonnel() {
     if (!this.props.edit) {
       // For new Projects
-      if (this.props.keyPersonnel[0].name !== null || (this.props.keyPersonnel[0].role && this.props.keyPersonnel[0].role.value !== '')) {
+      if (this.props.keyPersons[0].name !== null || (this.props.keyPersons[0].role && this.props.keyPersons[0].role.value !== '')) {
         this.setState(prev => {
-          let keyPersonnel = this.props.keyPersonnel;
-          keyPersonnel.splice(0, 0, { name: null, role: '', roleOther: '' });
-          prev.keyPersonnel = keyPersonnel;
+          let keyPersons = this.props.keyPersons;
+          keyPersons.splice(0, 0, { name: null, role: '', otherRole: '' });
+          prev.keyPersons = keyPersons;
           prev.error = false;
           return prev
-        }, () => this.props.updateKeyPersonnel(this.state.keyPersonnel));
+        }, () => this.props.updateKeyPersons(this.state.keyPersons));
       }
     } else {
       // Only for edit / review
-      if (this.props.keyPersonnel[0] === undefined || 
-          this.props.keyPersonnel[0].future.name !== null || 
-          (this.props.keyPersonnel[0].future.role && this.props.keyPersonnel[0].future.role.value !== '')) {
+      if (this.props.keyPersons[0] === undefined || 
+          this.props.keyPersons[0].future.name !== null || 
+          (this.props.keyPersons[0].future.role && this.props.keyPersons[0].future.role.value !== '')) {
         this.setState(prev => {
-          let future = this.props.keyPersonnel;
+          let future = this.props.keyPersons;
           future.splice(0, 0, {
-            current: { name: null, role: '', roleOther: '' },
-            future: { name: null, role: '', roleOther: '' }
+            current: { name: null, role: '', otherRole: '' },
+            future: { name: null, role: '', otherRole: '' }
           });
           prev.future = future;
           this.props.error && this.props.edit ? this.props.setError() : prev.error = false;
           return prev;
-        }, () => this.props.updateKeyPersonnel(this.state.future));
+        }, () => this.props.updateKeyPersons(this.state.future));
       }
     }
   }
@@ -81,116 +81,116 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
     if (!this.props.edit) {
       // For new Projects
       this.setState(prev => {
-        if (this.props.keyPersonnel.length > 1) {
-          let keyPersonnel = this.props.keyPersonnel;
-          keyPersonnel.splice(index, 1);
-          prev.keyPersonnel = keyPersonnel;
+        if (this.props.keyPersons.length > 1) {
+          let keyPersons = this.props.keyPersons;
+          keyPersons.splice(index, 1);
+          prev.keyPersons = keyPersons;
           return prev;
         }
-      }, () => this.props.updateKeyPersonnel(this.state.keyPersonnel));
+      }, () => this.props.updateKeyPersons(this.state.keyPersons));
 
     } else {
       // Only for edit / review
       this.setState(prev => {
-        let future = this.props.keyPersonnel;
+        let future = this.props.keyPersons;
         if (future[index].current.name === null) {
           future.splice(index, 1);
         } else {
-          future[index].future = { name: null, role: '', roleOther: '' }
+          future[index].future = { name: null, role: '', otherRole: '' }
         }
         prev.future = future;
         return prev
-      }, () => this.props.updateKeyPersonnel(this.state.future));
+      }, () => this.props.updateKeyPersons(this.state.future));
     }
   };
 
   handleKeyPersonnelChange = (e) => {
     if (!this.props.edit) {
-      let keyPersonnel = [...this.props.keyPersonnel];
+      let keyPersons = [...this.props.keyPersons];
       const field = e.target.name;
       const value = e.target.value;
       const index = parseInt(e.target.getAttribute('index'));
-      keyPersonnel[index] = { ...keyPersonnel[index] };
-      keyPersonnel[index][field] = value;
+      keyPersons[index] = { ...keyPersons[index] };
+      keyPersons[index][field] = value;
       this.setState(prev => {
-        prev.keyPersonnel = keyPersonnel;
+        prev.keyPersons = keyPersons;
         return prev;
       }, () => {
-        this.props.updateKeyPersonnel(this.state.keyPersonnel)
+        this.props.updateKeyPersons(this.state.keyPersons)
       });
     } else {
-      let keyPersonnel = [...this.props.keyPersonnel];
+      let keyPersons = [...this.props.keyPersons];
       const field = e.target.name;
       const value = e.target.value;
       const index = parseInt(e.target.getAttribute('index'));
-      keyPersonnel[index] = { 
-        ...keyPersonnel[index],
-        future: { ...keyPersonnel[index].future }
+      keyPersons[index] = { 
+        ...keyPersons[index],
+        future: { ...keyPersons[index].future }
       };
-      keyPersonnel[index].future[field] = value;
+      keyPersons[index].future[field] = value;
       this.setState(prev => {
-        prev.future = keyPersonnel;
+        prev.future = keyPersons;
         return prev;
-      }, () => this.props.updateKeyPersonnel(this.state.future));
+      }, () => this.props.updateKeyPersons(this.state.future));
     }
   };
 
   handleNameChange = (index) => (data, action) => {
     if (!this.props.edit) {
-      let keyPersonnel = [...this.props.keyPersonnel];
-      keyPersonnel[index] = { ...keyPersonnel[index] };
-      keyPersonnel[index].name = data;
+      let keyPersons = [...this.props.keyPersons];
+      keyPersons[index] = { ...keyPersons[index] };
+      keyPersons[index].name = data;
       this.setState(prev => {
-        prev.keyPersonnel = keyPersonnel;
+        prev.keyPersons = keyPersons;
         return prev;
       }, () => {
-        this.props.updateKeyPersonnel(this.state.keyPersonnel)
+        this.props.updateKeyPersons(this.state.keyPersons)
       });
     } else {
-      let keyPersonnel = [...this.props.keyPersonnel];
-      keyPersonnel[index] = { 
-        ...keyPersonnel[index],
-        future: { ...keyPersonnel[index].future }
+      let keyPersons = [...this.props.keyPersons];
+      keyPersons[index] = { 
+        ...keyPersons[index],
+        future: { ...keyPersons[index].future }
       };
-      keyPersonnel[index].future.name = data;
+      keyPersons[index].future.name = data;
       this.setState(prev => {
-        prev.future = keyPersonnel;
+        prev.future = keyPersons;
         if (this.props.error && this.props.setError) this.props.setError();
         return prev;
-      }, () => this.props.updateKeyPersonnel(this.state.future));
+      }, () => this.props.updateKeyPersons(this.state.future));
     }
   };
 
   handleRoleSelect = (index) => (selectedOption) => {
     if (!this.props.edit) {
-      let keyPersonnel = [...this.props.keyPersonnel];
-      keyPersonnel[index] = { ...keyPersonnel[index] };
-      keyPersonnel[index].role = selectedOption;
-      // Clear roleOther if not "other"
+      let keyPersons = [...this.props.keyPersons];
+      keyPersons[index] = { ...keyPersons[index] };
+      keyPersons[index].role = selectedOption;
+      // Clear otherRole if not "other"
       if (!selectedOption || selectedOption.value !== "other") {
-        keyPersonnel[index].roleOther = '';
+        keyPersons[index].otherRole = '';
       }
       this.setState(prev => {
-        prev.keyPersonnel = keyPersonnel;
+        prev.keyPersons = keyPersons;
         return prev;
-      }, () => this.props.updateKeyPersonnel(this.state.keyPersonnel)
+      }, () => this.props.updateKeyPersons(this.state.keyPersons)
       )
     } else {
-      let keyPersonnel = [...this.props.keyPersonnel];
-      keyPersonnel[index] = { 
-        ...keyPersonnel[index],
-        future: { ...keyPersonnel[index].future }
+      let keyPersons = [...this.props.keyPersons];
+      keyPersons[index] = { 
+        ...keyPersons[index],
+        future: { ...keyPersons[index].future }
       };
-      keyPersonnel[index].future.role = selectedOption;
-      // Clear roleOther if not "other"
+      keyPersons[index].future.role = selectedOption;
+      // Clear otherRole if not "other"
       if (!selectedOption || selectedOption.value !== "other") {
-        keyPersonnel[index].future.roleOther = '';
+        keyPersons[index].future.otherRole = '';
       }
       this.setState(prev => {
-        prev.future = keyPersonnel;
+        prev.future = keyPersons;
         if (this.props.error && this.props.setError) this.props.setError();
         return prev;
-      }, () => this.props.updateKeyPersonnel(this.state.future)
+      }, () => this.props.updateKeyPersons(this.state.future)
       )
     }
   };
@@ -218,7 +218,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
   // this.props.error is used to hide error highlights on change, and validating again on submit.
   getNameError = (index) => {
     let hasError = false;
-    const kp = this.props.keyPersonnel[index];
+    const kp = this.props.keyPersons[index];
     if (!kp) return false;
     
     const name = this.props.edit ? kp.future.name : kp.name;
@@ -234,7 +234,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
 
   getRoleError = (index) => {
     let hasError = false;
-    const kp = this.props.keyPersonnel[index];
+    const kp = this.props.keyPersons[index];
     if (!kp) return false;
     
     const role = this.props.edit ? kp.future.role : kp.role;
@@ -250,17 +250,17 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
 
   getRoleOtherError = (index) => {
     let hasError = false;
-    const kp = this.props.keyPersonnel[index];
+    const kp = this.props.keyPersons[index];
     const isOther = this.props.edit 
       ? (kp.future.role && kp.future.role.value === "other")
       : (kp.role && kp.role.value === "other");
     
     if (isOther) {
-      const roleOther = this.props.edit ? kp.future.roleOther : kp.roleOther;
+      const otherRole = this.props.edit ? kp.future.otherRole : kp.otherRole;
       if (this.props.edit === true) {
-        hasError = this.props.error && this.props.errorIndex && this.props.errorIndex.includes(index) && isEmpty(roleOther);
+        hasError = this.props.error && this.props.errorIndex && this.props.errorIndex.includes(index) && isEmpty(otherRole);
       } else {
-        hasError = this.props.error && index === 0 && isEmpty(roleOther);
+        hasError = this.props.error && index === 0 && isEmpty(otherRole);
       }
     }
     return hasError
@@ -268,7 +268,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
 
   render() {
     let {
-      keyPersonnel = [],
+      keyPersons = [],
       current = []
     } = this.props;
     
@@ -298,7 +298,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
         ]),
 
         hr({ className: "fullWidth" }),
-        keyPersonnel.map((kp, idx) => {
+        keyPersons.map((kp, idx) => {
           const isOther = this.props.edit 
             ? (kp.future.role && kp.future.role.value === "other")
             : (kp.role && kp.role.value === "other");
@@ -342,12 +342,12 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                   ]),
                   div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
                     InputFieldText({
-                      id: idx + "-roleOther",
+                      id: idx + "-otherRole",
                       index: idx,
-                      name: "roleOther",
+                      name: "otherRole",
                       label: "",
-                      value: this.props.edit ? kp.future.roleOther : kp.roleOther,
-                      currentValue: this.props.edit ? current[idx] && current[idx].current.roleOther : kp.roleOther,
+                      value: this.props.edit ? kp.future.otherRole : kp.otherRole,
+                      currentValue: this.props.edit ? current[idx] && current[idx].current.otherRole : kp.otherRole,
                       disabled: !isOther,
                       required: false,
                       onChange: this.handleKeyPersonnelChange,
@@ -362,7 +362,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
                 Btn({
                   action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeKeyPersonnel(idx) },
-                  disabled: keyPersonnel.length === 1,
+                  disabled: keyPersons.length === 1,
                   isRendered: !this.props.readOnly
                 }),
               ])
