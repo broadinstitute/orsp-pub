@@ -226,9 +226,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         current.pmList = this.getUsersArray(issue.data.pms);
         current.collaborators = this.getUsersArray(issue.data.collaborators);
         current.fundings = this.getFundingsArray(issue.data.fundings);
-        const keyPersonsData = (issue.data.keyPersons !== undefined && issue.data.keyPersons !== null)
-          ? issue.data.keyPersons
-          : issue.data.keyPersonnel;
+        const keyPersonsData = issue.data.keyPersons;
         const hasKeyPersonsData = keyPersonsData !== undefined && keyPersonsData !== null && keyPersonsData.length > 0;
         if (hasKeyPersonsData) {
           current.keyPersons = this.getKeyPersonsArray(keyPersonsData);
@@ -253,7 +251,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
             if (this._isMounted) {
               if (data.data !== '') {
                 formData = JSON.parse(data.data.suggestions);
-                // Ensure keyPersons exists in formData if it existed in original (fallback for legacy keyPersonnel)
+                // Ensure keyPersons exists in formData if it existed in original
                 if (hasKeyPersonsData && (!formData.keyPersons || formData.keyPersons.length === 0)) {
                   formData.keyPersons = current.keyPersons;
                 }
@@ -1091,13 +1089,24 @@ const ProjectReview = hh(class ProjectReview extends Component {
     }).length > 0;
     if (fundingError) generalError = true;
     
-    // Validate keyPersonnel if it exists
+    // Validate keyPersons if it exists
     if (this.state.hasKeyPersonnel && this.state.formData.keyPersons) {
-      if (this.state.formData.keyPersons === undefined || this.state.formData.keyPersons.length === 0) {
-        keyPersonnelError = true;
-        generalError = true;
-      } else {
-        this.state.formData.keyPersons.forEach((kp, idx) => {
+      const isFutureEmpty = (kp) => {
+        if (!kp || !kp.future) return true;
+        const nameEmpty =
+          kp.future.name === null ||
+          kp.future.name === undefined ||
+          (Array.isArray(kp.future.name) && kp.future.name.length === 0);
+        const roleEmpty = !kp.future.role || isEmpty(kp.future.role.value);
+        const otherEmpty = isEmpty(kp.future.otherRole);
+        return nameEmpty && roleEmpty && otherEmpty;
+      };
+
+      const activeRows = (this.state.formData.keyPersons || []).filter((kp) => !isFutureEmpty(kp));
+
+      // If all rows are cleared in the "future" state, treat it as a valid delete (like Fundings)
+      if (activeRows.length > 0) {
+        activeRows.forEach((kp, idx) => {
           let hasError = false;
           if (kp.future.name === null || kp.future.name === undefined || (Array.isArray(kp.future.name) && kp.future.name.length === 0)) {
             hasError = true;
@@ -1115,7 +1124,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
             generalError = true;
           }
           if (hasError) {
-            keyPersonnelErrorIndex.push(idx);
+            // Map back to the real index in the underlying array (so UI highlights correct row)
+            const realIdx = (this.state.formData.keyPersons || []).indexOf(kp);
+            keyPersonnelErrorIndex.push(realIdx >= 0 ? realIdx : idx);
           }
         });
       }
@@ -1244,9 +1255,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       versionedIssue.pmList = this.getUsersArray(versionedIssue.pms);
       versionedIssue.collaborators = this.getUsersArray(versionedIssue.collaborators);
       versionedIssue.fundings = this.getFundingsArray(versionedIssue.fundings);
-      const versionedKeyPersons = (versionedIssue.keyPersons !== undefined && versionedIssue.keyPersons !== null)
-        ? versionedIssue.keyPersons
-        : versionedIssue.keyPersonnel;
+      const versionedKeyPersons = versionedIssue.keyPersons;
       if (versionedKeyPersons !== undefined && versionedKeyPersons !== null && versionedKeyPersons.length > 0) {
         versionedIssue.keyPersons = this.getKeyPersonsArray(versionedKeyPersons);
       }
@@ -1486,7 +1495,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     ])
                   ]),
 
-                  div({ id: "keyPersonnel", isRendered: this.state.hasKeyPersonnel && this.state.formData.keyPersons && this.state.formData.keyPersons.length > 0 }, [
+                  div({ id: "keyPersons", isRendered: this.state.hasKeyPersonnel && this.state.formData.keyPersons && this.state.formData.keyPersons.length > 0 }, [
                     Panel({ title: "Key Personnel" }, [
                       KeyPersonnel({
                         keyPersons: this.state.formData.keyPersons,

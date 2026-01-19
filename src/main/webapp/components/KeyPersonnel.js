@@ -24,11 +24,23 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
     this.removeKeyPersonnel = this.removeKeyPersonnel.bind(this);
     this.handleRoleSelect = this.handleRoleSelect.bind(this);
     this.loadUsersOptions = this.loadUsersOptions.bind(this);
+    this.createUiKey = this.createUiKey.bind(this);
+    this.ensureUiKey = this.ensureUiKey.bind(this);
 
     this.state = {
       future: [],
       keyPersons: []
     };
+  }
+
+  createUiKey() {
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
+  ensureUiKey(item) {
+    if (!item) return this.createUiKey();
+    if (!item._uiKey) item._uiKey = this.createUiKey();
+    return item._uiKey;
   }
 
   componentDidMount() {
@@ -52,7 +64,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
       if (this.props.keyPersons[0].name !== null || (this.props.keyPersons[0].role && this.props.keyPersons[0].role.value !== '')) {
         this.setState(prev => {
           let keyPersons = this.props.keyPersons;
-          keyPersons.splice(0, 0, { name: null, role: '', otherRole: '' });
+          keyPersons.splice(0, 0, { _uiKey: this.createUiKey(), name: null, role: '', otherRole: '' });
           prev.keyPersons = keyPersons;
           prev.error = false;
           return prev
@@ -66,6 +78,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
         this.setState(prev => {
           let future = this.props.keyPersons;
           future.splice(0, 0, {
+            _uiKey: this.createUiKey(),
             current: { name: null, role: '', otherRole: '' },
             future: { name: null, role: '', otherRole: '' }
           });
@@ -303,7 +316,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
             ? (kp.future.role && kp.future.role.value === "other")
             : (kp.role && kp.role.value === "other");
           
-          return h(Fragment, { key: idx }, [
+          return h(Fragment, { key: this.ensureUiKey(kp) }, [
             div({ className: "row", style: { 'marginBottom': '15px' } }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
