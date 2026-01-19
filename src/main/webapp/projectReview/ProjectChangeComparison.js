@@ -10,23 +10,18 @@ const ProjectChangeComparision = hh(
       this.state = {};
     }
 
-    getUsersArray(array) {
-    let usersArray = [];
-    if (array !== undefined && array !== null && array.length > 0) {
-      array.map(element => {
-        usersArray.push({
-          key: element.userName,
-          label: element.displayName + " (" + element.emailAddress + ") ",
-          value: element.displayName
-        });
-      });
+    getUsersArray(KeyPersonObject) {
+      if (KeyPersonObject && Object.keys(KeyPersonObject).length > 0) {
+        return {
+          key: KeyPersonObject.userName,
+          label: KeyPersonObject.displayName + " (" + KeyPersonObject.emailAddress + ") ",
+          value: KeyPersonObject.displayName
+          };
+      }
     }
-    return usersArray;
-  }
 
-  getVersionedKeyPersonArray(keyPersons) {
+    getVersionedKeyPersonArray = (keyPersons) => {
         if (!keyPersons || !keyPersons.length) return [];
-
         return keyPersons.map(keyPerson => ({
           current:{
             name: this.getUsersArray(keyPerson),
@@ -240,7 +235,7 @@ const ProjectChangeComparision = hh(
               div([
                 this.compareData(
                   (this.props.formData.keyPersons || this.props.formData.keyPersonnel),
-                  (this.getVersionedKeyPersonArray(this.props.versionedData.keyPersons || this.props.versionedData.keyPersonnel)),
+                  (this.getVersionedKeyPersonArray(this.props.versionedData.keypersons || this.props.versionedData.keyPersonnel)),
                   "keyPersons"
                 )
               ]),
