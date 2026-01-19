@@ -10,6 +10,37 @@ const ProjectChangeComparision = hh(
       this.state = {};
     }
 
+    getUsersArray(array) {
+    let usersArray = [];
+    if (array !== undefined && array !== null && array.length > 0) {
+      array.map(element => {
+        usersArray.push({
+          key: element.userName,
+          label: element.displayName + " (" + element.emailAddress + ") ",
+          value: element.displayName
+        });
+      });
+    }
+    return usersArray;
+  }
+
+  getVersionedKeyPersonArray(keyPersons) {
+        if (!keyPersons || !keyPersons.length) return [];
+
+        return keyPersons.map(keyPerson => ({
+          current:{
+            name: this.getUsersArray(keyPerson),
+            role: keyPerson.role ? { label: keyPerson.role, value: keyPerson.role.split(" ").join("_").toLowerCase() } : '',
+            otherRole: keyPerson.otherRole || ''
+          },
+          future:{
+            name: this.getUsersArray(keyPerson),
+            role:keyPerson.role ? { label: keyPerson.role, value: keyPerson.role.split(" ").join("_").toLowerCase() } : '',
+            otherRole: keyPerson.otherRole || ''
+          }
+        }));
+      } 
+
     compareData = (newData, oldData, dataType="") => {
       // Handle array types before converting to empty string
       if (dataType === "fundings") {
@@ -209,7 +240,7 @@ const ProjectChangeComparision = hh(
               div([
                 this.compareData(
                   (this.props.formData.keyPersons || this.props.formData.keyPersonnel),
-                  (this.props.versionedData.keyPersons || this.props.versionedData.keyPersonnel),
+                  (this.getVersionedKeyPersonArray(this.props.versionedData.keyPersons || this.props.versionedData.keyPersonnel)),
                   "keyPersons"
                 )
               ]),

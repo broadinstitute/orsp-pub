@@ -200,6 +200,44 @@ class IssueService implements UserInfo {
             it.delete(hard: true)
         }
         
+        //KeyPerson update
+        def keyPersonParams = input.get('keyPersons')
+
+        def newKeyPersonList = keyPersonParams.collect { p ->
+
+            Long kpId = Long.valueOf(p.getOrDefault("id", "0").toString())
+            KeyPerson kp = (kpId > 0) ? KeyPerson.findById(kpId) : new KeyPerson()
+
+            kp.role = p.get("role")?.toString()
+            kp.name = p.get("name")?.toString()
+            kp.otherRole = p.get("otherRole")?.toString()
+
+            kp.projectKey = issue.projectKey
+            kp.sequenceNumber = issue.sequenceNumber + 1
+            kp.updateUser = getUser()?.userName
+            kp.updateDate = new Date()
+
+            kp.issue = issue
+
+            kp
+        }
+
+        newKeyPersonList.each {
+            issue.addToKeyPersons(it)
+            it.save()
+        }
+
+        def newKeyPersonIdList = newKeyPersonList*.id
+        def oldKeyPersonList = KeyPerson.findAllByProjectKey(issue.projectKey)
+
+        def deletableKeyPersons =
+                oldKeyPersonList.findAll { !newKeyPersonIdList.contains(it.id) }
+
+        deletableKeyPersons.each {
+            issue.removeFromKeyPersons(it)
+            it.delete(hard: true)
+        }
+
         // Remaining properties are IssueExtraProperty associations
         Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
         Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, input)
@@ -546,6 +584,7 @@ class IssueService implements UserInfo {
         issue.setUpdateUser(getUser()?.userName)
         List<IssueExtraProperty> extraProperties = issue.getNonEmptyExtraProperties()
         Collection<Funding> fundings = issue.getFundings()
+        Collection<KeyPerson> keyPersons = issue.getKeyPersons()
         Issue newIssue = initIssue(issue, type)
         if (newIssue.hasErrors()) {
             throw new DomainException(newIssue.getErrors())
@@ -556,6 +595,7 @@ class IssueService implements UserInfo {
         newIssue.save(flush: true)
         saveExtraProperties(newIssue, extraProperties)
         saveFundings(newIssue, fundings)
+        saveKeyPersons(newIssue, keyPersons)
         newIssue.save(flush: true)
         newIssue.extraProperties = extraProperties
         newIssue
@@ -567,6 +607,19 @@ class IssueService implements UserInfo {
             it.projectKey = issue.projectKey
             it.sequenceNumber = issue.sequenceNumber
             it.save(flush: true)
+        }
+    }
+
+    void saveKeyPersons(Issue issue, Collection<KeyPerson> keyPersons) {
+
+        keyPersons?.each { KeyPerson kp ->
+
+            kp.issue = issue
+            kp.projectKey = issue.projectKey
+            kp.sequenceNumber = issue.sequenceNumber
+            kp.updateUser = getUser()?.userName
+            kp.updateDate = new Date()
+            kp.save(flush: true)
         }
     }
 
@@ -630,6 +683,7 @@ class IssueService implements UserInfo {
         newIssue.status = IssueStatus.Open.name
         newIssue.extraProperties = null
         newIssue.fundings = null
+        newIssue.keyPersons = null
         newIssue
     }
 
@@ -805,6 +859,24 @@ class IssueService implements UserInfo {
             ).save(flush: true)
         }
     }
+
+    def saveVersionedKeyPerson(Issue issue) {
+
+        VersionedIssue verIss = VersionedIssue.findByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)
+        List<KeyPerson> keyPersons = KeyPerson.findAllByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)
+
+        keyPersons.each { kp ->
+            new VersionedKeyPerson(
+                    projectKey: issue.projectKey,
+                    role: kp.role,
+                    name: kp.name,
+                    otherRole: kp.otherRole,
+                    sequenceNumber: issue.sequenceNumber,
+                    versionedIssue: verIss
+            ).save(flush: true)
+        }
+    }
+
 
     def saveVersionedIssueExtraProperties(Issue issue) {
         VersionedIssue verIss = VersionedIssue.findByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)

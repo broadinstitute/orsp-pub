@@ -14,12 +14,14 @@ import org.broadinstitute.orsp.Issue
 import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
+import org.broadinstitute.orsp.KeyPerson
 import org.broadinstitute.orsp.ProjectExtraProperties
 import org.broadinstitute.orsp.SupplementalRole
 import org.broadinstitute.orsp.User
 import org.broadinstitute.orsp.VersionedFunding
 import org.broadinstitute.orsp.VersionedIssue
 import org.broadinstitute.orsp.VersionedIssueExtraProperty
+import org.broadinstitute.orsp.VersionedKeyPerson
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
 
@@ -107,6 +109,7 @@ class ProjectController extends AuthenticatedController {
                 Issue issue = queryService.findByKey(projectKey)
                 if (issue != null && !issueIsForbidden(issue)) {
                     Collection<Funding> fundingList = issue.getFundings()
+                    Collection<KeyPerson> keyPersonList = issue.getKeyPersons()
                     ProjectExtraProperties projectExtraProperties = new ProjectExtraProperties(issue)
                     Collection<User> colls = getCollaborators(projectExtraProperties.collaborators)
                     if (issue.updateUser) {
@@ -119,7 +122,8 @@ class ProjectController extends AuthenticatedController {
                             fundings          : fundingList,
                             extraProperties   : projectExtraProperties,
                             collaborators     : colls,
-                            attachmentsApproved: issue.attachmentsApproved()
+                            attachmentsApproved: issue.attachmentsApproved(),
+                            keyPersons         : getKeyPersonsForIssueMerged(issue)
                     ] as JSON)
                 } else if (issue != null) {
                     response.status = 403
@@ -133,6 +137,36 @@ class ProjectController extends AuthenticatedController {
             handleException(e)
         }
     }
+
+    protected Collection<Map> getKeyPersonsForIssueMerged(Issue issue) {
+
+        Collection<KeyPerson> keyPersons = issue.getKeyPersons()
+        if (!keyPersons) {
+            return []
+        }
+        Collection<String> usernames = keyPersons*.name.findAll { it }.unique()
+        Collection<User> users = userService.findUsers(usernames)
+        Map<String, User> userMap =
+                users.collectEntries { [(it.userName): it] }
+        keyPersons.collect { kp ->
+            User user = userMap[kp.name]
+
+            [
+                    id            : user?.id,
+                    createdDate   : user?.createdDate,
+                    emailAddress  : user?.emailAddress,
+                    userName      : user?.userName,
+                    updatedDate   : user?.updatedDate,
+                    lastLoginDate : user?.lastLoginDate,
+                    roles         : user?.roles,
+                    displayName   : user?.displayName,
+                    name          : kp.name,
+                    role          : kp.role,
+                    otherRole     : kp.otherRole
+            ]
+        }
+    }
+
 
     def delete() {
         Issue issue = queryService.findByKey(params.projectKey)
@@ -153,6 +187,7 @@ class ProjectController extends AuthenticatedController {
             issueService.saveVersionedIssue(issue)
             issueService.saveVersionedFunding(issue)
             issueService.saveVersionedIssueExtraProperties(issue)
+            issueService.saveVersionedKeyPerson(issue)
             issueService.updateIssue(issue, project)
             response.status = 200
             render([message: 'Project was updated'] as JSON)
@@ -210,6 +245,7 @@ class ProjectController extends AuthenticatedController {
         def versionedIssue = VersionedIssue.findAllByProjectKeyAndSequenceNumber(projectKey, sequenceNumber)
         def versionedIssueExtraProp = VersionedIssueExtraProperty.findAllByProjectKeyAndSequenceNumber(projectKey, sequenceNumber)
         def versionedIssueFunding = VersionedFunding.findAllByProjectKeyAndSequenceNumber(projectKey, sequenceNumber)
+        def versionedKeyPersons = VersionedKeyPerson.findAllByProjectKeyAndSequenceNumber(projectKey, sequenceNumber)
         Collection<User> colls = getCollaborators(
                 versionedIssueExtraProp.findAll {it.name == IssueExtraProperty.COLLABORATOR }.collect {it.value}
         )
@@ -222,7 +258,44 @@ class ProjectController extends AuthenticatedController {
                 pms: getProjectManagersForVersionedIssue(versionedIssue[0]),
                 pis: getPIsForVersionedIssue(versionedIssue[0]),
                 collaborators: colls,
-                requestor: userService.findUser(versionedIssue.reporter)
+                requestor: userService.findUser(versionedIssue.reporter),
+                keypersons:getKeyPersonsForVersionedIssueMerged(versionedKeyPersons)
         ] as JSON)
     }
+
+    protected Collection<Map> getKeyPersonsForVersionedIssueMerged(Collection<VersionedKeyPerson> versionedKeyPersons) {
+
+        if (!versionedKeyPersons) {
+            return []
+        }
+        Collection<VersionedKeyPerson> activeKeyPersons =
+                versionedKeyPersons.findAll { !it.deleted }
+        if (!activeKeyPersons) {
+            return []
+        }
+        Collection<String> usernames = activeKeyPersons*.name.findAll { it }.unique()
+        Collection<User> users = userService.findUsers(usernames)
+        Map<String, User> userMap = users.collectEntries { [(it.userName): it] }
+        activeKeyPersons
+                .sort { it.sequenceNumber }
+                .collect { vkp ->
+                    User user = userMap[vkp.name]
+
+                    [
+                            id            : user?.id,
+                            createdDate   : user?.createdDate,
+                            emailAddress  : user?.emailAddress,
+                            userName      : user?.userName,
+                            updatedDate   : user?.updatedDate,
+                            lastLoginDate : user?.lastLoginDate,
+                            roles         : user?.roles,
+                            displayName   : user?.displayName,
+                            name          : vkp.name,
+                            role          : vkp.role,
+                            otherRole     : vkp.otherRole,
+                            sequence      : vkp.sequenceNumber
+                    ]
+                }
+    }
+
 }

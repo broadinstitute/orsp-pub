@@ -382,12 +382,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
       keyPersons.map(kp => {
         keyPersonsArray.push({
           current: {
-            name: kp.name ? this.getUsersArray([kp.name])[0] : null,
+            name: kp.name ? this.getUsersArray([kp])[0] : null,
             role: kp.role ? { label: kp.role, value: kp.role.split(" ").join("_").toLowerCase() } : '',
             otherRole: kp.otherRole || kp.roleOther || ''
           },
           future: {
-            name: kp.name ? this.getUsersArray([kp.name])[0] : null,
+            name: kp.name ? this.getUsersArray([kp])[0] : null,
             role: kp.role ? { label: kp.role, value: kp.role.split(" ").join("_").toLowerCase() } : '',
             otherRole: kp.otherRole || kp.roleOther || ''
           }
