@@ -11,15 +11,31 @@ function ChangeHighlighter({
   currentValue,
   currentValueStr,
 }) {
+  const toDisplayString = (data) => {
+    if (data === null || data === undefined) return "";
+    if (Array.isArray(data)) {
+      return data
+        .map((item) => {
+          if (item === null || item === undefined) return "";
+          if (typeof item === "string") return item.trim();
+          if (typeof item === "object" && typeof item.label === "string")
+            return item.label.trim();
+          return String(item).trim();
+        })
+        .filter(Boolean)
+        .join(", ");
+    }
+    if (typeof data === "object") {
+      if (typeof data.label === "string") return data.label.trim();
+      if (typeof data.value === "string") return data.value.trim();
+      return "";
+    }
+    return String(data);
+  };
+
   const compareData = (currentValue, value) => {
-    let currentVal = currentValue || "";
-    let val = value || "";
-    val = Array.isArray(val)
-      ? val.map((item) => item.label.trim()).join(", ")
-      : val;
-    currentVal = Array.isArray(currentVal)
-      ? currentVal.map((item) => item.label.trim()).join(", ")
-      : currentVal;
+    const currentVal = toDisplayString(currentValue);
+    const val = toDisplayString(value);
     const TEXT_DIFF = diffWords(currentVal, val);
     let result = "";
     TEXT_DIFF.forEach((part) => {
@@ -32,8 +48,7 @@ function ChangeHighlighter({
     return result;
   };
 
-  const getStringDataFromObjArr = (data) =>
-    Array.isArray(data) ? data.map((item) => item.label).join(", ") : data;
+  const getStringDataFromObjArr = (data) => toDisplayString(data);
 
   const getConditionalStyles = () => {
     return {
@@ -62,11 +77,17 @@ function ChangeHighlighter({
             ></div>
           )}
           <div className="inputFieldCurrent" style={getConditionalStyles()}>
-            {!isEmpty(currentValueStr)
-              ? currentValueStr
-              : (!isEmpty(currentValue) && currentValue !== value)
-              ? getStringDataFromObjArr(currentValue)
-              : getStringDataFromObjArr(value)}
+            {edited
+              ? (!isEmpty(currentValueStr)
+                  ? currentValueStr
+                  : !isEmpty(getStringDataFromObjArr(currentValue))
+                  ? getStringDataFromObjArr(currentValue)
+                  : "--")
+              : (!isEmpty(currentValueStr)
+                  ? currentValueStr
+                  : (!isEmpty(currentValue) && currentValue !== value)
+                  ? getStringDataFromObjArr(currentValue)
+                  : getStringDataFromObjArr(value))}
           </div>
         </div>
       ) : null}

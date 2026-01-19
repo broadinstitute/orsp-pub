@@ -5,6 +5,7 @@ import './ProjectReview.css'
 import { InputYesNo } from "../components/InputYesNo";
 import { InputFieldRadio } from "../components/InputFieldRadio";
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
+import { KeyPersonnel } from "../components/KeyPersonnel"
 
 class ProjectVersionDetailedView extends Component {
   constructor(props) {
@@ -49,8 +50,18 @@ class ProjectVersionDetailedView extends Component {
     return fundingsArray;
   }
 
+  getKeyPersonArray(keyPersons) {
+  if (!keyPersons || !keyPersons.length) return [];
+
+  return keyPersons.map(keyPerson => ({
+    name: `${keyPerson.displayName} (${keyPerson.emailAddress})`,
+    role: keyPerson.role,
+    otherRole: keyPerson.otherRole
+  }));
+}
+
   render() {
-    const {issue, fundings, requestor, pis, pms, collaborators } = this.state.formData;
+    const {issue, fundings, requestor, pis, pms, collaborators, keypersons } = this.state.formData;
     return (
       <React.Fragment>
         <div className="project-container">
@@ -108,6 +119,12 @@ class ProjectVersionDetailedView extends Component {
                 fundings={this.getFundingsArray(fundings)}
                 readOnly={true}
               ></Fundings>
+            </Panel>
+            <Panel title="Key Personnel" id="Key Personnel">
+              <KeyPersonnel
+                keyPersons={this.getKeyPersonArray(keypersons)}
+                readOnly={true}>
+              </KeyPersonnel>
             </Panel>
             <Panel title="Project Summary" id="project-summary">
               <div className="mb-15">

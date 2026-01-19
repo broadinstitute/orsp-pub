@@ -21,12 +21,13 @@ class Issue implements LogicalDelete<Issue> {
     Date expirationDate
     Integer sequenceNumber
 
-    static hasMany = [extraProperties: IssueExtraProperty, fundings: Funding]
+    static hasMany = [extraProperties: IssueExtraProperty, fundings: Funding, keyPersons: KeyPerson]
 
     // Eagerly fetch associations
     static mapping = {
         extraProperties fetch: 'join'
         fundings fetch: 'join'
+        keyPersons fetch: 'join'
     }
 
     static constraints = {

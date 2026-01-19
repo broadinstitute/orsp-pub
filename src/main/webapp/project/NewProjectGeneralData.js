@@ -9,6 +9,7 @@ import { AsyncMultiSelect } from '../components/AsyncMultiSelect';
 import { Search } from '../util/ajax';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
+import { KeyPersonnel } from '../components/KeyPersonnel';
 
 const fundingTooltip =
   ul({}, [
@@ -40,6 +41,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         irbProtocolId: '',
         irb: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
+        keyPersons: [{ name: null, role: '', otherRole: '' }],
         collaborators: []
       },
       formerData: {
@@ -52,6 +54,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         irbProtocolId: '',
         irb: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
+        keyPersons: [{ name: null, role: '', otherRole: '' }],
         collaborators: []
       },
       errors: {
@@ -76,6 +79,14 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       prev.formData.fundings = updated;
       return prev;
     }, () => this.props.updateForm(this.state.formData, 'fundings'));
+    this.props.removeErrorMessage();
+  };
+
+  handleUpdateKeyPersons = (updated) => {
+    this.setState(prev => {
+      prev.formData.keyPersons = updated;
+      return prev;
+    }, () => this.props.updateForm(this.state.formData, 'keyPersons'));
     this.props.removeErrorMessage();
   };
 
@@ -240,6 +251,18 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             error: this.props.errors.KeyStudyContact
           }),
           small({ isRendered: this.props.errors.KeyStudyContact, className: "errorMessage" }, ['Required field']),
+        ]),
+
+        Panel({ title: "Key Personnel*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [
+          KeyPersonnel({
+            readOnly: false,
+            keyPersons: this.state.formData.keyPersons,
+            updateKeyPersons: this.handleUpdateKeyPersons,
+            error: this.props.errors.keyPersons,
+            errorIndex: this.props.errors.keyPersonsErrorIndex || [],
+            errorMessage: "Required field",
+            edit: false
+          })
         ]),
 
         Panel({ title: "Funding*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [
