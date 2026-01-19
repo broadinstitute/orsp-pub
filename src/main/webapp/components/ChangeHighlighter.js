@@ -77,11 +77,17 @@ function ChangeHighlighter({
             ></div>
           )}
           <div className="inputFieldCurrent" style={getConditionalStyles()}>
-            {!isEmpty(currentValueStr)
-              ? currentValueStr
-              : (!isEmpty(currentValue) && currentValue !== value)
-              ? getStringDataFromObjArr(currentValue)
-              : getStringDataFromObjArr(value)}
+            {edited
+              ? (!isEmpty(currentValueStr)
+                  ? currentValueStr
+                  : !isEmpty(getStringDataFromObjArr(currentValue))
+                  ? getStringDataFromObjArr(currentValue)
+                  : "--")
+              : (!isEmpty(currentValueStr)
+                  ? currentValueStr
+                  : (!isEmpty(currentValue) && currentValue !== value)
+                  ? getStringDataFromObjArr(currentValue)
+                  : getStringDataFromObjArr(value))}
           </div>
         </div>
       ) : null}
