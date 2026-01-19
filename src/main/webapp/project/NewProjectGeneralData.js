@@ -253,7 +253,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           small({ isRendered: this.props.errors.KeyStudyContact, className: "errorMessage" }, ['Required field']),
         ]),
 
-        Panel({ title: "Key Personnel*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [
+        Panel({ title: "Key Personnel*"}, [
           KeyPersonnel({
             readOnly: false,
             keyPersons: this.state.formData.keyPersons,
