@@ -26,10 +26,11 @@ export const AsyncMultiSelect = hh(class AsyncMultiSelect extends Component {
   isEdited = (current, future) => {
     let edited = false;
     if (this.props.edit || this.props.edit === undefined) {
-      if (current.length !== future.length) {
-        return true;
-      }
-      if (Array.isArray(current)) {
+      // Multi-select comparison (array of options)
+      if (this.props.isMulti) {
+        if (current.length !== future.length) {
+          return true;
+        }
         current.forEach((element, index) => {
           if (future[index] !== undefined) {
             if (element.key !== future[index].key) {
@@ -37,42 +38,48 @@ export const AsyncMultiSelect = hh(class AsyncMultiSelect extends Component {
             }
           }
         });
+        return edited;
       }
+
+      // Single-select comparison (single option object)
+      const currentOpt = current[0];
+      const futureOpt = future[0];
+      const currentKey = currentOpt ? currentOpt.key : undefined;
+      const futureKey = futureOpt ? futureOpt.key : undefined;
+      const currentLabel = currentOpt ? currentOpt.label : undefined;
+      const futureLabel = futureOpt ? futureOpt.label : undefined;
+      edited = currentKey !== futureKey || currentLabel !== futureLabel;
     }
     return edited;
   };
 
+  normalizeToArray = (val) => {
+    if (val === null || val === undefined) return [];
+    if (Array.isArray(val)) return val.filter(Boolean);
+    if (typeof val === 'string') return [];
+    return [val];
+  };
+
   render() {
-    let currentValue  = [];
-    let value = [];
-
-    let currentValues = [];
-
-    if (this.props.currentValue === undefined) {
-      currentValue.push("");
-    } else if (this.props.currentValue.length === 0){
-      currentValue.push("");
-    } else {
-      currentValue = this.props.currentValue;
-    }
-
-    if (this.props.value === null || this.props.value.length === 0) {
-      value.push("");
-    } else {
-      value = this.props.value;
-    }
-
-    currentValue.forEach(item => {
-      currentValues.push(item.label);
-    });
+    // Normalize values for comparison/diff (react-select single value is an object, multi is an array)
+    let currentValue = this.normalizeToArray(this.props.currentValue);
+    let value = this.normalizeToArray(this.props.value);
 
     let currentKeys = this.sortByKey(currentValue, 'key');
     let keys = this.sortByKey(value, 'key');
 
-    let currentValueStr = currentValues.join(', ');
+    let currentValueStr = currentKeys
+      .map(item => item && item.label ? item.label : '')
+      .filter(Boolean)
+      .join(', ');
 
     // verified if edited ...
     const edited = this.isEdited(currentKeys, keys);
+
+    // react-select expects a single option object when isMulti=false; some callers pass [option]
+    const normalizedSelectValue = this.props.isMulti
+      ? this.props.value
+      : (Array.isArray(this.props.value) ? this.props.value[0] : this.props.value);
 
     return (
       div([
@@ -94,7 +101,7 @@ export const AsyncMultiSelect = hh(class AsyncMultiSelect extends Component {
               isClearable: true,
               loadOptions: (query, callback) => this.props.loadOptions(query, callback),
               onChange: (option) => this.props.handleChange(option),
-              value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : this.props.value,
+              value: this.props.readOnly && (this.props.value === undefined || this.props.value === '') ? '--' : normalizedSelectValue,
               placeholder: !this.props.readOnly && this.props.placeholder !== undefined ? this.props.placeholder : '--',
               className: "inputFieldSelect",
               classNamePrefix: "select",

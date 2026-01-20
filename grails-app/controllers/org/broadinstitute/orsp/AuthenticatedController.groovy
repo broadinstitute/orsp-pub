@@ -72,6 +72,13 @@ class AuthenticatedController implements Interceptor, UserInfo, ExceptionHandler
         pisForUsers
     }
 
+    protected Collection<User> getKeyPersonsForIssue(Issue issue) {
+        Collection<String> keyPersonUsernames = KeyPerson.findAllByIssue(issue)*.name
+        Collection<User> keyPersonUsers = new ArrayList<>()
+        keyPersonUsers.addAll(userService.findUsers(keyPersonUsernames))
+        keyPersonUsers
+    }
+
     protected User getRequestorForIssue(Issue issue) {
         userService.findUser(issue.reporter)
     }

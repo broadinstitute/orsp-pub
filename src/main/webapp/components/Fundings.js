@@ -26,11 +26,23 @@ export const Fundings = hh(class Fundings extends Component {
     this.addFundings = this.addFundings.bind(this);
     this.removeFundings = this.removeFundings.bind(this);
     this.handleFundingSelect = this.handleFundingSelect.bind(this);
+    this.createUiKey = this.createUiKey.bind(this);
+    this.ensureUiKey = this.ensureUiKey.bind(this);
 
     this.state = {
       future: [],
       fundings: []
     };
+  }
+
+  createUiKey() {
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
+  ensureUiKey(item) {
+    if (!item) return this.createUiKey();
+    if (!item._uiKey) item._uiKey = this.createUiKey();
+    return item._uiKey;
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -46,7 +58,7 @@ export const Fundings = hh(class Fundings extends Component {
       if (this.props.fundings[0].source !== '') {
         this.setState(prev => {
           let fundings = this.props.fundings;
-          fundings.splice(0, 0, {source: '', sponsor: '', identifier: ''});
+          fundings.splice(0, 0, { _uiKey: this.createUiKey(), source: '', sponsor: '', identifier: '' });
           prev.fundings = fundings;
           prev.error = false;
           return prev
@@ -58,6 +70,7 @@ export const Fundings = hh(class Fundings extends Component {
         this.setState(prev => {
           let future = this.props.fundings;
           future.splice(0, 0, {
+            _uiKey: this.createUiKey(),
             current: { source: '', sponsor: null, identifier: null },
             future: { source: '', sponsor: '', identifier: '' }
           });
@@ -216,7 +229,7 @@ export const Fundings = hh(class Fundings extends Component {
 
         hr({ className: "fullWidth" }),
         fundings.map((rd, idx) => {
-          return h(Fragment, { key: idx }, [
+          return h(Fragment, { key: this.ensureUiKey(rd) }, [
             div({ className: "row", style: {'marginBottom': '15px'} }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
