@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, div, h, h2, hh, p, b, span, i, em } from 'react-hyperscript-helpers';
+import { button, div, h, h2, hh, p, b, span, i, em, label, br } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { AsyncMultiSelect } from '../components/AsyncMultiSelect';
@@ -1425,10 +1425,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 div({isRendered: !this.state.isCompareChanges}, [
         
                   div({ id: "principalInvestigator" }, [
-                    Panel({ title: "Principal Investigator" }, [
+                    Panel({ title: "Key Personnel" }, [
+                      br(),
+          label({className:'inputFieldLabel'},["Principal Investigator (PI) Responsible for Project Conduct and Oversight",span({ className: 'errorMessage' }, ' *')]),
                       AsyncMultiSelect({
                         id: "pi_select",
-                        label: "Broad PIs",
+                      //  label: "Broad PIs",
                         name: 'piList',
                         readOnly: this.state.readOnly,
                         loadOptions: this.loadUsersOptions,
@@ -1437,9 +1439,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         currentValue: this.state.current.piList,
                         isMulti: true
                       }),
-        
+        br(),
+          label({className:'inputFieldLabel'},["PI’s Primary Institutional Affiliation",span({ className: 'errorMessage' }, ' *')]),
                       InputFieldSelect({
-                        label: "Primary Investigator Affiliation",
+                  //      label: "Primary Investigator Affiliation",
                         id: "affiliations",
                         name: "affiliations",
                         options: PI_AFFILIATION,
@@ -1463,10 +1466,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         onChange: this.handleProjectExtraPropsChange,
                         edit: true
                       }),
-        
+        br(),
+          label({className:'inputFieldLabel'},["Key Study Contact (will receive email notifications about this project)",span({ className: 'errorMessage' }, ' *')]),
                       AsyncMultiSelect({
                         id: "inputProjectManager",
-                        label: "Broad Project Managers",
+                    //    label: "Broad Project Managers",
                         name: 'pmList',
                         readOnly: this.state.readOnly,
                         loadOptions: this.loadUsersOptions,
@@ -1495,8 +1499,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     ])
                   ]),
 
-                  div({ id: "keyPersons", isRendered: this.state.hasKeyPersonnel && this.state.formData.keyPersons && this.state.formData.keyPersons.length > 0 }, [
-                    Panel({ title: "Key Personnel" }, [
+                  div({ id: "keyPersonnel", isRendered: this.state.hasKeyPersonnel && this.state.formData.keyPersonnel && this.state.formData.keyPersonnel.length > 0 }, [
+                    Panel({ title: "Study Staff" }, [
                       KeyPersonnel({
                         keyPersons: this.state.formData.keyPersons,
                         current: this.state.formData.keyPersons,
@@ -1539,18 +1543,18 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         ])
                       ]),
         
-                      AsyncMultiSelect({
-                        id: "collaborator_select",
-                        label: "Broad individuals who require access to this project record",
-                        isDisabled: false,
-                        readOnly: this.state.readOnly,
-                        loadOptions: this.loadUsersOptions,
-                        handleChange: this.handleProjectCollaboratorChange,
-                        value: this.state.formData.collaborators,
-                        currentValue: this.state.current.collaborators,
-                        placeholder: "Start typing names for project access",
-                        isMulti: true
-                      }),
+                      // AsyncMultiSelect({
+                      //   id: "collaborator_select",
+                      //   label: "Broad individuals who require access to this project record",
+                      //   isDisabled: false,
+                      //   readOnly: this.state.readOnly,
+                      //   loadOptions: this.loadUsersOptions,
+                      //   handleChange: this.handleProjectCollaboratorChange,
+                      //   value: this.state.formData.collaborators,
+                      //   currentValue: this.state.current.collaborators,
+                      //   placeholder: "Start typing names for project access",
+                      //   isMulti: true
+                      // }),
                       InputFieldText({
                         id: "inputPTitle",
                         name: "projectTitle",
