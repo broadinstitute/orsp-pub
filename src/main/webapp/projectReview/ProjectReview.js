@@ -1499,8 +1499,14 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     ])
                   ]),
 
-                  div({ id: "keyPersonnel", isRendered: this.state.hasKeyPersonnel && this.state.formData.keyPersonnel && this.state.formData.keyPersonnel.length > 0 }, [
-                    Panel({ title: "Study Staff" }, [
+                  div({ classNames: 'panel-group', id: "studyAccordion", isRendered: this.state.hasKeyPersonnel && this.state.formData.keyPersonnel && this.state.formData.keyPersonnel.length > 0 }, [
+                    Panel({
+                      title: "Study Staff",
+                      collapsible: true,
+                      defaultOpen: true,
+                      panelId: "studyStaffPanel",
+                      accordionParentId: "studyAccordion"
+                    }, [
                       KeyPersonnel({
                         keyPersons: this.state.formData.keyPersons,
                         current: this.state.formData.keyPersons,

@@ -1,5 +1,5 @@
 import { Component, Fragment } from 'react'
-import { input, hh, h, div, p, hr, small, label } from 'react-hyperscript-helpers';
+import { input, hh, h, div, p, hr, small, label, span } from 'react-hyperscript-helpers';
 import { InputFieldText } from './InputFieldText';
 import { InputFieldSelect } from './InputFieldSelect';
 import { Btn } from './Btn';
@@ -157,7 +157,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
         prev.keyPersons = keyPersons;
         return prev;
       }, () => {
-        this.props.updateKeyPersons(this.state.keyPersons)
+        this.props.updateKeyPersons(this.state.keyPersons, index)
       });
     } else {
       let keyPersons = [...this.props.keyPersons];
@@ -289,23 +289,12 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
       h(Fragment, {}, [
         div({ className: "row" }, [
           div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
-            div({ className: "row " + (this.props.readOnly ? 'inputFieldReadOnly' : '') }, [
-              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                label({ className: "inputFieldLabel noMargin" }, ["Name"])
-              ]),
-              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                label({ className: "inputFieldLabel noMargin" }, ["Role"])
-              ]),
-              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                label({ className: "inputFieldLabel noMargin" }, ["Role (Other)"])
-              ])
-            ])
           ]),
-          div({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [
+          div({ className: "col-lg-1 col-md-2 col-sm-2 col-3 floatRight" }, [
             Btn({
               action: { labelClass: "glyphicon glyphicon-plus", handler: this.addKeyPersonnel },
               disabled: false,
-              isRendered: !this.props.readOnly
+              isRendered: !this.props.readOnly,
             }),
           ])
         ]),
@@ -315,15 +304,23 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
           const isOther = this.props.edit 
             ? (kp.future.role && kp.future.role.value === "other")
             : (kp.role && kp.role.value === "other");
-          
+          const kpState = this.state.keyPersons[idx];
+          const isOtherRole =
+            kpState &&
+            kpState.role &&
+            kpState.role.value === 'other'
+          const colClass = !isOtherRole
+            ? 'col-lg-4 col-md-4 col-sm-4 col-12'
+            : 'col-lg-3 col-md-3 col-sm-3 col-12';
           return h(Fragment, { key: this.ensureUiKey(kp) }, [
             div({ className: "row", style: { 'marginBottom': '15px' } }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
-                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                  div({ className: colClass }, [
                     AsyncMultiSelect({
                       id: idx + "-name",
                       index: idx,
+                      label:'Name',
                       isDisabled: false,
                       loadOptions: this.loadUsersOptions,
                       handleChange: this.handleNameChange(idx),
@@ -335,12 +332,13 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       readOnly: this.props.readOnly
                     })
                   ]),
-                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                  div({ className: colClass }, [
                     InputFieldSelect({
                       label: "",
                       id: idx + "-role",
                       index: idx,
                       name: "role",
+                      label:'Role',
                       options: roleOptions,
                       value: this.props.edit ? kp.future.role : kp.role,
                       currentValue: this.props.edit ? current[idx] && current[idx].current.role : kp.role,
@@ -353,15 +351,17 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       placeholder: "Choose a role..."
                     })
                   ]),
-                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                  div({ className: colClass,
+                     isRendered: !!this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other'}, 
+                     [
                     InputFieldText({
+                      isRendered: !!this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other',
                       id: idx + "-otherRole",
                       index: idx,
                       name: "otherRole",
-                      label: "",
+                      label: "Role (Other)",
                       value: this.props.edit ? kp.future.otherRole : kp.otherRole,
                       currentValue: this.props.edit ? current[idx] && current[idx].current.otherRole : kp.otherRole,
-                      disabled: !isOther,
                       required: false,
                       onChange: this.handleKeyPersonnelChange,
                       readOnly: this.props.readOnly,
@@ -369,10 +369,16 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       error: isOther && this.getRoleOtherError(idx),
                       errorMessage: this.props.errorMessage
                     })
-                  ])
+                  ]),
+                  // div({classNames:'col-lg-3 col-md-3 col-sm-3 col-12'},[
+                  //   div({style:{display:"inline-block", "padding-left":"5px"}},[
+                  //     label({className: 'inputFieldLabel'}, ["Added Date"]),
+                  //     p({style:{margin:'10px 0 0 0'}},["27-dec-2025"])
+                  //   ])
+                  // ]),
                 ])
               ]),
-              div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
+              div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style:{padding:'30px 0 0 5px'} }, [
                 Btn({
                   action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeKeyPersonnel(idx) },
                   disabled: keyPersons.length === 1,

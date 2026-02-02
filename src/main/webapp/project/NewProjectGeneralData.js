@@ -1,5 +1,5 @@
 import { Component, React } from 'react';
-import { h1, hh, li, small, span, ul } from 'react-hyperscript-helpers';
+import { h1, hh, li, small, span, ul, label, br, div } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -61,7 +61,15 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         studyDescription: false,
         pTitle: false,
         fundings: false
+      },
+      allKeyPersons: {
+        pi:[],
+        pm:[],
+        additionalPis:[],
+        additionalPms:[],
+        KeyPersons:[]
       }
+
     };
     this.handleSelectChange = this.handleSelectChange.bind(this);
   }
@@ -82,13 +90,26 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.props.removeErrorMessage();
   };
 
-  handleUpdateKeyPersons = (updated) => {
+  handleUpdateKeyPersons = (updated, index) => {
+    if(this.hasDuplicateNameKey(updated)){
+      updated.splice(index, 1);
+    }
     this.setState(prev => {
       prev.formData.keyPersons = updated;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'keyPersons'));
+    }, () => {
+      this.props.updateForm(this.state.formData, 'keyPersons')
+      this.checkDuplicateKeyPersons(updated,'keyPersons')}
+    );
     this.props.removeErrorMessage();
   };
+
+  hasDuplicateNameKey = (arr) => {
+  const keys = arr
+    .map(item => item.name && item.name.key)
+    .filter(Boolean);
+  return keys.length !== new Set(keys).size;
+};
 
   handleInputChange = (e) => {
     const field = e.target.name;
@@ -150,7 +171,11 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.setState(prev => {
       prev.formData.piNames = data;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'piNames'));
+    }, () => {
+      this.props.updateForm(this.state.formData, 'piNames'),
+      // check if duplicate exist
+      this.checkDuplicateKeyPersons(data, 'piNames')
+    });
   };
 
   handlePMChange = (data, action) => {
@@ -160,9 +185,92 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     this.setState(prev => {
       prev.formData.projectManagers = data;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'projectManagers')
+    }, () => {
+      this.props.updateForm(this.state.formData, 'projectManagers')
+      // check if duplicate exist
+      this.checkDuplicateKeyPersons(data,'projectManagers')
+    }
     );
   };
+
+  checkDuplicateKeyPersons = (data, field) => {
+    // What happens if Data is null
+
+    if (field === 'piNames' && !data) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pi: [] } }))
+      return;
+    }
+
+    if (field === 'projectManagers' && !data) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [] } }))
+      return;
+    }
+
+    if (field === 'keyPersons' && data.length === 1 && !data[0].name) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, KeyPersons: [] } }))
+      return;
+    }
+
+    const KEYPERSONS = Object.values(this.state.allKeyPersons).flat();
+    const IS_EMPTY = !!KEYPERSONS.length;
+
+    if (field === 'piNames') {
+      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data[0].key)
+      if (!DUPLICATE_EXIST) {
+        this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pi: [data[0].key] } }))
+      } else {
+        this.setState(prev => {
+          prev.formData.piNames = null;
+          return prev;
+        }, () => {
+          this.props.updateForm(this.state.formData, 'piNames')
+        });
+      }
+    }
+
+    if (field === 'projectManagers') {
+      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data[0].key)
+      if (!DUPLICATE_EXIST) {
+        this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [data[0].key] } }))
+      } else {
+        this.setState(prev => {
+          prev.formData.projectManagers = null;
+          return prev;
+        }, () => {
+          this.props.updateForm(this.state.formData, 'projectManagers')
+        });
+      }
+    }
+
+    if (field === 'keyPersons') {
+      // Compare the 2 keypersons arrays and modify the orginal array 
+      this.checkAndRemoveDuplicate(KEYPERSONS, data)
+      if (data.length === 0) {
+        this.setState(prev => {
+          prev.formData.keyPersons = [{ name: null, role: '', otherRole: '' }];
+          return prev;
+        }, () => this.props.updateForm(this.state.formData, 'keyPersons'));
+      } else {
+        this.setState(prev => {
+          prev.formData.keyPersons = data;
+          return prev;
+        }, () => this.props.updateForm(this.state.formData, 'keyPersons'));
+      }
+    }
+  } 
+  
+  checkAndRemoveDuplicate = (keyPersons, updatedArray) => {
+    for (let i = 0; i < updatedArray.length; i++) {
+      for (let j = 0; j < keyPersons.length; j++) {
+        if (updatedArray[i] && updatedArray[i].name && 
+            updatedArray[i].name.key === keyPersons[j]) {
+          updatedArray.splice(i, 1);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
   render() {
 
@@ -173,12 +281,13 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
     return (
       WizardStep({
+        warningMessage:'Keypersons mentioned in Key Personnel and Study Staff cannot be similar.',
         title: this.props.title, step: 0, currentStep: this.props.currentStep,
         error: this.props.errors.fundings || this.props.errors.fundingAwardNumber ||
                this.props.errors.fundingSponsor || this.props.errors.studyDescription ||
                this.props.errors.pTitle || this.props.errors.piName ||
                this.props.errors.piAffiliations || this.props.errors.KeyStudyContact,
-        errorMessage: 'Please complete all required fields'}, [
+        errorMessage: 'Please complete all required fields.'}, [
         Panel({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?", tooltipMsg: "Future correspondence regarding this project will be directed to this individual" }, [
           InputFieldText({
             id: "inputRequestorName",
@@ -202,31 +311,35 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           })
         ]),
 
-        Panel({ title: "Study Staff/Key Personnel"}, [
+        Panel({ title: "Key Personnel"}, [
+          label({className:'inputFieldLabel'},["Principal Investigator (PI) Responsible for Project Conduct and Oversight",span({ className: 'errorMessage' }, ' *')]),
           AsyncMultiSelect({
             id: "pi_select",
-            label: "Principal Investigator (PI) Responsible for Project Conduct and Oversight (required)",
             isDisabled: false,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handlePIChange,
             value: this.state.formData.piNames,
             placeholder: "Start typing the PI Names",
             isMulti: false,
-            error: this.props.errors.piName
+            error: this.props.errors.piName,
+            isWarning: false
           }),
           small({ isRendered: this.props.errors.piName, className: "errorMessage" }, ['Required field']),
-          InputFieldSelect({
-            label: "PI’s Primary Institutional Affiliation (required)",
-            id: "affiliations",
-            name: "affiliations",
-            options: PI_AFFILIATION,
-            value: this.state.formData.affiliations,
-            onChange: this.handleSelectChange("affiliations"),
-            placeholder: "Choose an affiliation...",
-            readOnly: false,
-            edit: false,
-            error: this.props.errors.piAffiliations
-          }),
+          br(),
+          label({className:'inputFieldLabel'},["PI’s Primary Institutional Affiliation",span({ className: 'errorMessage' }, ' *')]),
+          div({},[
+            InputFieldSelect({
+              id: "affiliations",
+              name: "affiliations",
+              options: PI_AFFILIATION,
+              value: this.state.formData.affiliations,
+              onChange: this.handleSelectChange("affiliations"),
+              placeholder: "Choose an affiliation...",
+              readOnly: false,
+              edit: false,
+              error: this.props.errors.piAffiliations,
+            }),
+          ]),
           small({ isRendered: this.props.errors.piAffiliations, className: "errorMessage" }, ['Required field']),
           InputFieldText({
             isRendered: this.state.formData.affiliations.value === "other",
@@ -239,21 +352,23 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             onChange: this.handleInputChange,
             edit: false
           }),
+          br(),
+          label({className:'inputFieldLabel'},["Key Study Contact (will receive email notifications about this project)",span({ className: 'errorMessage' }, ' *')]),
           AsyncMultiSelect({
             id: "inputProjectManager",
-            label: "Key Study Contact (will receive email notifications about this project) (required)",
             isDisabled: false,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handlePMChange,
             value: this.state.formData.projectManagers,
             placeholder: "Start typing the Project Manager Name",
             isMulti: false,
-            error: this.props.errors.KeyStudyContact
+            error: this.props.errors.KeyStudyContact,
+            isWarning: false
           }),
           small({ isRendered: this.props.errors.KeyStudyContact, className: "errorMessage" }, ['Required field']),
         ]),
 
-        Panel({ title: "Key Personnel*"}, [
+        Panel({ title: "Study Staff"}, [
           KeyPersonnel({
             readOnly: false,
             keyPersons: this.state.formData.keyPersons,
