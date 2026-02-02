@@ -153,6 +153,15 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
       let keyPersons = [...this.props.keyPersons];
       keyPersons[index] = { ...keyPersons[index] };
       keyPersons[index].name = data;
+      // If Name is cleared, also clear Role + otherRole to avoid stale selections.
+      const isNameCleared =
+        data === null ||
+        data === undefined ||
+        (Array.isArray(data) && data.length === 0);
+      if (isNameCleared) {
+        keyPersons[index].role = '';
+        keyPersons[index].otherRole = '';
+      }
       this.setState(prev => {
         prev.keyPersons = keyPersons;
         return prev;
@@ -166,6 +175,15 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
         future: { ...keyPersons[index].future }
       };
       keyPersons[index].future.name = data;
+      // If Name is cleared, also clear Role + otherRole to avoid stale selections.
+      const isNameCleared =
+        data === null ||
+        data === undefined ||
+        (Array.isArray(data) && data.length === 0);
+      if (isNameCleared) {
+        keyPersons[index].future.role = '';
+        keyPersons[index].future.otherRole = '';
+      }
       this.setState(prev => {
         prev.future = keyPersons;
         if (this.props.error && this.props.setError) this.props.setError();

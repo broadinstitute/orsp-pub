@@ -626,14 +626,24 @@ const ProjectReview = hh(class ProjectReview extends Component {
     let keyPersonsList = [];
     if (keyPersons !== null && keyPersons.length > 0) {
       keyPersons.map((kp, idx) => {
-        let kpItem = {};
-        if (kp.future.name !== null && kp.future.name !== undefined) {
-          kpItem.name = kp.future.name.key || kp.future.name.value;
-          kpItem.role = kp.future.role && kp.future.role.label ? kp.future.role.label : '';
-          kpItem.otherRole = kp.future.otherRole || '';
-          if (kpItem.name) {
-            keyPersonsList.push(kpItem);
-          }
+        // Only include entries that have both a name and a role
+        const name = kp && kp.future ? kp.future.name : null;
+        const role = kp && kp.future ? kp.future.role : null;
+        const nameEmpty =
+          name === null ||
+          name === undefined ||
+          (Array.isArray(name) && name.length === 0);
+        const roleEmpty = !role || isEmpty(role.value);
+
+        if (!nameEmpty && !roleEmpty) {
+          let kpItem = {};
+          // Use key (userName) or value as fallback
+          kpItem.name = name.key || name.value;
+          // Use label or value
+          kpItem.role = role.label || role.value;
+          // Only include otherRole when role is "other"
+          kpItem.otherRole = role.value === "other" ? (kp.future.otherRole || '') : '';
+          if (kpItem.name) keyPersonsList.push(kpItem);
         }
       });
     }
