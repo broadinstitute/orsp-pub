@@ -79,8 +79,8 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
           let future = this.props.keyPersons;
           future.splice(0, 0, {
             _uiKey: this.createUiKey(),
-            current: { name: null, role: '', otherRole: '' },
-            future: { name: null, role: '', otherRole: '' }
+            current: { name: null, role: '', otherRole: '', createdDate:'' },
+            future: { name: null, role: '', otherRole: '', createdDate:'' }
           });
           prev.future = future;
           this.props.error && this.props.edit ? this.props.setError() : prev.error = false;
@@ -297,7 +297,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
     return hasError
   };
 
-  render() {
+  render() {    
     let {
       keyPersons = [],
       current = []
@@ -388,12 +388,13 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       errorMessage: this.props.errorMessage
                     })
                   ]),
-                  // div({classNames:'col-lg-3 col-md-3 col-sm-3 col-12'},[
-                  //   div({style:{display:"inline-block", "padding-left":"5px"}},[
-                  //     label({className: 'inputFieldLabel'}, ["Added Date"]),
-                  //     p({style:{margin:'10px 0 0 0'}},["27-dec-2025"])
-                  //   ])
-                  // ]),
+                  div({classNames:'col-lg-3 col-md-3 col-sm-3 col-12',
+                    isRendered: this.props.readOnly || this.props.edit },[
+                    div({style:{display:"inline-block", "padding-left":"5px"}},[
+                      label({className: 'inputFieldLabel'}, ["Added Date"]),
+                      p({style:{margin:'10px 0 0 0'}},[this.props.edit || this.props.readOnly ? kp.future.updatedDate : kp.updatedDate])
+                    ])
+                  ]),
                 ])
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style:{padding:'30px 0 0 5px'} }, [

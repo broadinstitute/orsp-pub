@@ -105,8 +105,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
           future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
         }],
         keyPersons: [{
-          current: { name: null, role: '', otherRole: '' },
-          future: { name: null, role: '', otherRole: '' }
+          current: { name: null, role: '', otherRole: '', updatedDate:'' },
+          future: { name: null, role: '', otherRole: '', updatedDate:'' }
         }],
         requestor: {
           displayName: '',
@@ -136,8 +136,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
           future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
         }],
         keyPersons: [{
-          current: { name: null, role: '', otherRole: '' },
-          future: { name: null, role: '', otherRole: '' }
+          current: { name: null, role: '', otherRole: '', updatedDate:'' },
+          future: { name: null, role: '', otherRole: '', updatedDate:'' }
         }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
@@ -382,12 +382,14 @@ const ProjectReview = hh(class ProjectReview extends Component {
           current: {
             name: kp.name ? this.getUsersArray([kp])[0] : null,
             role: kp.role ? { label: kp.role, value: kp.role.split(" ").join("_").toLowerCase() } : '',
-            otherRole: kp.otherRole || kp.roleOther || ''
+            otherRole: kp.otherRole || kp.roleOther || '',
+            updatedDate: kp.updatedDate || kp.updatedDate || ''
           },
           future: {
             name: kp.name ? this.getUsersArray([kp])[0] : null,
             role: kp.role ? { label: kp.role, value: kp.role.split(" ").join("_").toLowerCase() } : '',
-            otherRole: kp.otherRole || kp.roleOther || ''
+            otherRole: kp.otherRole || kp.roleOther || '',
+            updatedDate: kp.updatedDate || kp.updatedDate || ''
           }
         });
       });
