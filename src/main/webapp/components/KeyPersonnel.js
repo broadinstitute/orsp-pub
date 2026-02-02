@@ -79,8 +79,8 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
           let future = this.props.keyPersons;
           future.splice(0, 0, {
             _uiKey: this.createUiKey(),
-            current: { name: null, role: '', otherRole: '', createdDate:'' },
-            future: { name: null, role: '', otherRole: '', createdDate:'' }
+            current: { name: null, role: '', otherRole: '', updatedDate:'' },
+            future: { name: null, role: '', otherRole: '', updatedDate:'' }
           });
           prev.future = future;
           this.props.error && this.props.edit ? this.props.setError() : prev.error = false;
