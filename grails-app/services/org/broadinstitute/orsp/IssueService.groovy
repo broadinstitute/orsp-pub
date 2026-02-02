@@ -707,6 +707,11 @@ class IssueService implements UserInfo {
 
             Collection<IssueExtraProperty> issueExtraProperties = issue.getExtraProperties()
             issueExtraProperties?.each { it.delete(flush: true) }
+
+            issue.setApprovalStatus(IssueStatus.Withdrawn.getName())
+            issue.setUpdateUser(getUser()?.userName)
+            issue.setUpdateDate(new Date())
+            issue.save(flush: true)
         }
         issue.delete(flush: true)
         notifyService.sendRejectionProjectNotification(issue, getUser()?.displayName)
