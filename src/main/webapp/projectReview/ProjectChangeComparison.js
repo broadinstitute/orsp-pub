@@ -308,12 +308,12 @@ const ProjectChangeComparision = hh(
                 ]),
               ]),
 
-              div([
-                label({className: 'inputFieldLabel'}, ["Broad individuals who require access to this project record"]),
-                p({}, [
-                  this.compareData(this.props.formData.collaborators, this.props.versionedData.collaborators, "jsonArray"),
-                ]),
-              ]),
+              // div([
+              //   label({className: 'inputFieldLabel'}, ["Broad individuals who require access to this project record"]),
+              //   p({}, [
+              //     this.compareData(this.props.formData.collaborators, this.props.versionedData.collaborators, "jsonArray"),
+              //   ]),
+              // ]),
 
               div([
                 label({className: 'inputFieldLabel'}, ["Title of project/protocol"]),

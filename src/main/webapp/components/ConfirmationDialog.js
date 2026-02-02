@@ -29,7 +29,7 @@ import './ConfirmationDialog.css';
            h(ModalBody, { className: "dialogBody" }, [this.props.bodyText]),
 
            h(ModalFooter, {}, [
-            button({ className: "btn buttonSecondary", onClick: this.handleClose }, ["Cancel"]),
+            button({ className: "btn buttonSecondary", onClick: this.handleClose, isRendered:!this.props.hideCancel }, ["Cancel"]),
             button({ className: "btn buttonPrimary", onClick: this.handleOkAction }, [this.props.actionLabel]),
           ])
         ])

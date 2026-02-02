@@ -132,16 +132,6 @@ class ProjectVersionDetailedView extends Component {
                 <p className="answer-fields">{issue.description}</p>
               </div>
               <div className="mb-15">
-                <label>Broad individuals who require access to this project record</label>
-                <p className="answer-fields">
-                  {collaborators.length 
-                    ? collaborators.map((collab, idx) => (
-                        collab.displayName + "(" + collab.emailAddress + ")"
-                      )).join(", ") 
-                    : "--"}
-                </p>
-              </div>
-              <div className="mb-15">
                 <label>Title of project/protocol</label>
                 <p className="answer-fields">{issue.summary}</p>
               </div>

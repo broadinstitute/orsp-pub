@@ -10,6 +10,7 @@ import { Search } from '../util/ajax';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
 import { KeyPersonnel } from '../components/KeyPersonnel';
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
 
 const fundingTooltip =
   ul({}, [
@@ -68,7 +69,9 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         additionalPis:[],
         additionalPms:[],
         KeyPersons:[]
-      }
+      },
+      showModal:false,
+      modalMessage: ''
 
     };
     this.handleSelectChange = this.handleSelectChange.bind(this);
@@ -92,6 +95,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
   handleUpdateKeyPersons = (updated, index) => {
     if(this.hasDuplicateNameKey(updated)){
+      this.showDuplicateModal("User already exists. Please choose another one.")
       updated.splice(index, 1);
     }
     this.setState(prev => {
@@ -219,6 +223,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       if (!DUPLICATE_EXIST) {
         this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pi: [data[0].key] } }))
       } else {
+        this.showDuplicateModal("User already exists. Please choose another one")
         this.setState(prev => {
           prev.formData.piNames = null;
           return prev;
@@ -233,6 +238,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       if (!DUPLICATE_EXIST) {
         this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [data[0].key] } }))
       } else {
+        this.showDuplicateModal("User already exists. Please choose another one")
         this.setState(prev => {
           prev.formData.projectManagers = null;
           return prev;
@@ -243,18 +249,34 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     }
 
     if (field === 'keyPersons') {
-      // Compare the 2 keypersons arrays and modify the orginal array 
-      this.checkAndRemoveDuplicate(KEYPERSONS, data)
+      // Here Keyperson(Study Staff) is not spred because data in keyperson cannot have duplicate value
+      // handles in handleUpdateKeyPersons function
+      const KEYPERSONS = [...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,]
+      const IS_DUPLICATE_PRESENT = this.checkAndRemoveDuplicate(KEYPERSONS, data);
+      if(IS_DUPLICATE_PRESENT){
+        this.showDuplicateModal("User already exists. Please choose another one")
+      }
       if (data.length === 0) {
         this.setState(prev => {
           prev.formData.keyPersons = [{ name: null, role: '', otherRole: '' }];
           return prev;
         }, () => this.props.updateForm(this.state.formData, 'keyPersons'));
       } else {
-        this.setState(prev => {
-          prev.formData.keyPersons = data;
-          return prev;
-        }, () => this.props.updateForm(this.state.formData, 'keyPersons'));
+        this.setState((prevState) => ({
+          formData: {
+            ...prevState.formData,
+            keyPersons: data
+          }
+        }), () => {
+          this.props.updateForm(this.state.formData, 'keyPersons')
+          this.setState((prev) => ({
+            allKeyPersons: {
+              ...prev.allKeyPersons, KeyPersons: this.state.formData.keyPersons
+                .filter(x => x && x.name && x.name.key)
+                .map(x => x.name.key)
+            }
+          }))
+        });
       }
     }
   } 
@@ -270,6 +292,13 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       }
     }
     return false;
+  }
+
+  showDuplicateModal = (message) => {
+    this.setState({
+      showModal:true,
+      modalMessage:message
+    })
   }
 
   render() {
@@ -408,17 +437,17 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             errorMessage: "Required field",
             edit: false
           }),
-          AsyncMultiSelect({
-            id: "collaborator_select",
-            label: "Broad individuals who require access to this project record",
-            isDisabled: false,
-            loadOptions: this.loadUsersOptions,
-            handleChange: this.handleProjectCollaboratorChange,
-            value: this.state.formData.collaborators,
-            placeholder: "Start typing names for project access",
-            isMulti: true,
-            currentValue: this.state.formData.collaborators
-          }),
+          // AsyncMultiSelect({
+          //   id: "collaborator_select",
+          //   label: "Broad individuals who require access to this project record",
+          //   isDisabled: false,
+          //   loadOptions: this.loadUsersOptions,
+          //   handleChange: this.handleProjectCollaboratorChange,
+          //   value: this.state.formData.collaborators,
+          //   placeholder: "Start typing names for project access",
+          //   isMulti: true,
+          //   currentValue: this.state.formData.collaborators
+          // }),
           InputFieldText({
             id: "inputPTitle",
             name: "pTitle",
@@ -453,7 +482,16 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             edit: false,
             isClearable: true
           })
-        ])
+        ]),
+        ConfirmationDialog({
+          closeModal: this.state.showModal,
+          show: this.state.showModal,
+          handleOkAction: () => this.setState({showModal:false}),
+          bodyText: this.state.modalMessage,
+          actionLabel: 'close',
+          title: 'Duplicate Entry',
+          hideCancel:true
+        }, []),
       ])
     );
   }
