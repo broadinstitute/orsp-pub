@@ -52,11 +52,13 @@ class ProjectVersionDetailedView extends Component {
 
   getKeyPersonArray(keyPersons) {
   if (!keyPersons || !keyPersons.length) return [];
-
+  console.log(keyPersons,'keyPersons');
   return keyPersons.map(keyPerson => ({
     name: `${keyPerson.displayName} (${keyPerson.emailAddress})`,
     role: keyPerson.role,
-    otherRole: keyPerson.otherRole
+    otherRole: keyPerson.otherRole,
+    updatedDate: keyPerson.updatedDate
+
   }));
 }
 
@@ -123,7 +125,8 @@ class ProjectVersionDetailedView extends Component {
             <Panel title="Key Personnel" id="Key Personnel">
               <KeyPersonnel
                 keyPersons={this.getKeyPersonArray(keypersons)}
-                readOnly={true}>
+                readOnly={true}
+                comparisonView = {true} >
               </KeyPersonnel>
             </Panel>
             <Panel title="Project Summary" id="project-summary">

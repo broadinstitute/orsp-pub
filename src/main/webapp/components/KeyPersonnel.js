@@ -5,7 +5,7 @@ import { InputFieldSelect } from './InputFieldSelect';
 import { Btn } from './Btn';
 import { AsyncMultiSelect } from './AsyncMultiSelect';
 import { Search } from '../util/ajax';
-import { isEmpty } from "../util/Utils";
+import { isEmpty, getDateString } from "../util/Utils";
 
 const roleOptions = [
   { value: 'co_investigaator', label: 'Co-Investigator' },
@@ -297,6 +297,29 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
     return hasError
   };
 
+  handleKeypersonFieldAlignment = (isOtherRole, kp) => {
+    if (!this.props.edit && !this.props.readOnly) {
+      // creation
+      return isOtherRole ? 'col-lg-4 col-md-4 col-sm-4 col-12' : 'col-lg-6 col-md-6 col-sm-6 col-12'
+    }
+
+    if(this.props.edit && !this.props.readOnly){
+      const isOtherRole = kp.future && kp.future.role && kp.future.role.value === "other"
+      return isOtherRole ? 'col-lg-4 col-md-4 col-sm-4 col-12' : 'col-lg-6 col-md-6 col-sm-6 col-12'
+    }
+
+    if(this.props.edit && this.props.readOnly){
+      const isOtherRole = kp.future && kp.future.role && kp.future.role.value === "other"
+      return isOtherRole ? 'col-lg-3 col-md- col-sm-3 col-12' : 'col-lg-4 col-md-4 col-sm-4 col-12'
+    }
+
+    if(this.props.comparisonView){
+      const isOtherRole = kp && kp.role === "Other"
+      return isOtherRole ? 'col-lg-3 col-md- col-sm-3 col-12' : 'col-lg-4 col-md-4 col-sm-4 col-12'
+    }
+
+  }
+
   render() {    
     let {
       keyPersons = [],
@@ -319,6 +342,9 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
 
         hr({ className: "fullWidth" }),
         keyPersons.map((kp, idx) => {
+          console.log(kp)
+          console.log(this.props.edit,'this.props.edit')
+          console.log( this.props.readOnly,'this.props.read')
           const isOther = this.props.edit 
             ? (kp.future.role && kp.future.role.value === "other")
             : (kp.role && kp.role.value === "other");
@@ -327,9 +353,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
             kpState &&
             kpState.role &&
             kpState.role.value === 'other'
-          const colClass = !isOtherRole
-            ? 'col-lg-4 col-md-4 col-sm-4 col-12'
-            : 'col-lg-3 col-md-3 col-sm-3 col-12';
+          const colClass = this.handleKeypersonFieldAlignment(isOtherRole, kp)
           return h(Fragment, { key: this.ensureUiKey(kp) }, [
             div({ className: "row", style: { 'marginBottom': '15px' } }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
@@ -370,10 +394,11 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                     })
                   ]),
                   div({ className: colClass,
-                     isRendered: !!this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other'}, 
+                     isRendered: !!((this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| 
+                     (kp.future && kp.future.role && kp.future.role.value === "other") || (kp.role === "Other"))}, 
                      [
                     InputFieldText({
-                      isRendered: !!this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other',
+                      isRendered: !!((this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| (kp.future && kp.future.role && kp.future.role.value === "other") || (kp.role === "Other")),
                       id: idx + "-otherRole",
                       index: idx,
                       name: "otherRole",
@@ -388,11 +413,16 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       errorMessage: this.props.errorMessage
                     })
                   ]),
-                  div({classNames:'col-lg-3 col-md-3 col-sm-3 col-12',
-                    isRendered: this.props.readOnly || this.props.edit },[
+                  div({classNames:colClass,
+                    isRendered: this.props.readOnly && !!(kp.future && kp.future.updatedDate|| this.props.comparisonView) },[
                     div({style:{display:"inline-block", "padding-left":"5px"}},[
                       label({className: 'inputFieldLabel'}, ["Added Date"]),
-                      p({style:{margin:'10px 0 0 0'}},[this.props.edit || this.props.readOnly ? kp.future.updatedDate : kp.updatedDate])
+                      // p({style:{margin:'10px 0 0 0'}},[this.props.edit || this.props.readOnly ? getDateString(kp.future.updatedDate,'mmddyyyy') : getDateString(kp.updatedDate,'mmddyyyy')])
+                      p({ style: { margin: '10px 0 0 0' } }, [(this.props.readOnly && this.props.comparisonView)
+                        ? getDateString(kp.updatedDate, 'mmddyyyy')
+                        : (this.props.edit || this.props.readOnly)
+                          ? getDateString(kp.future.updatedDate, 'mmddyyyy')
+                          : getDateString(kp.updatedDate, 'mmddyyyy')])
                     ])
                   ]),
                 ])
