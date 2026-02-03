@@ -342,9 +342,6 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
 
         hr({ className: "fullWidth" }),
         keyPersons.map((kp, idx) => {
-          console.log(kp)
-          console.log(this.props.edit,'this.props.edit')
-          console.log( this.props.readOnly,'this.props.read')
           const isOther = this.props.edit 
             ? (kp.future.role && kp.future.role.value === "other")
             : (kp.role && kp.role.value === "other");
