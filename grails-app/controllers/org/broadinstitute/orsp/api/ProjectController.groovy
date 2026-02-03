@@ -284,7 +284,7 @@ class ProjectController extends AuthenticatedController {
                             createdDate   : user?.createdDate,
                             emailAddress  : user?.emailAddress,
                             userName      : user?.userName,
-                            updatedDate   : user?.updatedDate,
+                            updatedDate   : vkp?.updateDate,
                             lastLoginDate : user?.lastLoginDate,
                             roles         : user?.roles,
                             displayName   : user?.displayName,

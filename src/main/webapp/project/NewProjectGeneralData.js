@@ -223,7 +223,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       if (!DUPLICATE_EXIST) {
         this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pi: [data[0].key] } }))
       } else {
-        this.showDuplicateModal("User already exists. Please choose another one")
+        this.showDuplicateModal("User already exists. Please choose another one.")
         this.setState(prev => {
           prev.formData.piNames = null;
           return prev;
@@ -238,7 +238,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       if (!DUPLICATE_EXIST) {
         this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [data[0].key] } }))
       } else {
-        this.showDuplicateModal("User already exists. Please choose another one")
+        this.showDuplicateModal("User already exists. Please choose another one.")
         this.setState(prev => {
           prev.formData.projectManagers = null;
           return prev;
@@ -254,7 +254,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       const KEYPERSONS = [...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,]
       const IS_DUPLICATE_PRESENT = this.checkAndRemoveDuplicate(KEYPERSONS, data);
       if(IS_DUPLICATE_PRESENT){
-        this.showDuplicateModal("User already exists. Please choose another one")
+        this.showDuplicateModal("User already exists. Please choose another one.")
       }
       if (data.length === 0) {
         this.setState(prev => {

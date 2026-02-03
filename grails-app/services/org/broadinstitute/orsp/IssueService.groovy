@@ -883,7 +883,8 @@ class IssueService implements UserInfo {
                     name: kp.name,
                     otherRole: kp.otherRole,
                     sequenceNumber: issue.sequenceNumber,
-                    versionedIssue: verIss
+                    versionedIssue: verIss,
+                    updateDate: new Date()
             ).save(flush: true)
         }
     }

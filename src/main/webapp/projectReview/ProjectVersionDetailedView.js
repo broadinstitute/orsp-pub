@@ -118,10 +118,6 @@ class ProjectVersionDetailedView extends Component {
                 <label>Requestor Name</label>
                 <p className="answer-fields">{requestor.displayName}</p>
               </div>
-              <div className="mb-15">
-                <label>Requestor Email Address</label>
-                <p className="answer-fields">{requestor.emailAddress}</p>
-              </div>
             </Panel>
             <Panel title="Funding" id="fundings">
               <Fundings
