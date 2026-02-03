@@ -1,11 +1,11 @@
 import { Component, Fragment } from 'react'
-import { input, hh, h, div, p, hr, small, label } from 'react-hyperscript-helpers';
+import { input, hh, h, div, p, hr, small, label, span } from 'react-hyperscript-helpers';
 import { InputFieldText } from './InputFieldText';
 import { InputFieldSelect } from './InputFieldSelect';
 import { Btn } from './Btn';
 import { AsyncMultiSelect } from './AsyncMultiSelect';
 import { Search } from '../util/ajax';
-import { isEmpty } from "../util/Utils";
+import { isEmpty, getDateString } from "../util/Utils";
 
 const roleOptions = [
   { value: 'co_investigaator', label: 'Co-Investigator' },
@@ -79,8 +79,8 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
           let future = this.props.keyPersons;
           future.splice(0, 0, {
             _uiKey: this.createUiKey(),
-            current: { name: null, role: '', otherRole: '' },
-            future: { name: null, role: '', otherRole: '' }
+            current: { name: null, role: '', otherRole: '', updatedDate:'' },
+            future: { name: null, role: '', otherRole: '', updatedDate:'' }
           });
           prev.future = future;
           this.props.error && this.props.edit ? this.props.setError() : prev.error = false;
@@ -153,11 +153,20 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
       let keyPersons = [...this.props.keyPersons];
       keyPersons[index] = { ...keyPersons[index] };
       keyPersons[index].name = data;
+      // If Name is cleared, also clear Role + otherRole to avoid stale selections.
+      const isNameCleared =
+        data === null ||
+        data === undefined ||
+        (Array.isArray(data) && data.length === 0);
+      if (isNameCleared) {
+        keyPersons[index].role = '';
+        keyPersons[index].otherRole = '';
+      }
       this.setState(prev => {
         prev.keyPersons = keyPersons;
         return prev;
       }, () => {
-        this.props.updateKeyPersons(this.state.keyPersons)
+        this.props.updateKeyPersons(this.state.keyPersons, index)
       });
     } else {
       let keyPersons = [...this.props.keyPersons];
@@ -166,6 +175,15 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
         future: { ...keyPersons[index].future }
       };
       keyPersons[index].future.name = data;
+      // If Name is cleared, also clear Role + otherRole to avoid stale selections.
+      const isNameCleared =
+        data === null ||
+        data === undefined ||
+        (Array.isArray(data) && data.length === 0);
+      if (isNameCleared) {
+        keyPersons[index].future.role = '';
+        keyPersons[index].future.otherRole = '';
+      }
       this.setState(prev => {
         prev.future = keyPersons;
         if (this.props.error && this.props.setError) this.props.setError();
@@ -279,7 +297,30 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
     return hasError
   };
 
-  render() {
+  handleKeypersonFieldAlignment = (isOtherRole, kp) => {
+    if (!this.props.edit && !this.props.readOnly) {
+      // creation
+      return isOtherRole ? 'col-lg-4 col-md-4 col-sm-4 col-12' : 'col-lg-6 col-md-6 col-sm-6 col-12'
+    }
+
+    if(this.props.edit && !this.props.readOnly){
+      const isOtherRole = kp.future && kp.future.role && kp.future.role.value === "other"
+      return isOtherRole ? 'col-lg-4 col-md-4 col-sm-4 col-12' : 'col-lg-6 col-md-6 col-sm-6 col-12'
+    }
+
+    if(this.props.edit && this.props.readOnly){
+      const isOtherRole = kp.future && kp.future.role && kp.future.role.value === "other"
+      return isOtherRole ? 'col-lg-3 col-md- col-sm-3 col-12' : 'col-lg-4 col-md-4 col-sm-4 col-12'
+    }
+
+    if(this.props.comparisonView){
+      const isOtherRole = kp && kp.role === "Other"
+      return isOtherRole ? 'col-lg-3 col-md- col-sm-3 col-12' : 'col-lg-4 col-md-4 col-sm-4 col-12'
+    }
+
+  }
+
+  render() {    
     let {
       keyPersons = [],
       current = []
@@ -289,23 +330,12 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
       h(Fragment, {}, [
         div({ className: "row" }, [
           div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
-            div({ className: "row " + (this.props.readOnly ? 'inputFieldReadOnly' : '') }, [
-              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                label({ className: "inputFieldLabel noMargin" }, ["Name"])
-              ]),
-              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                label({ className: "inputFieldLabel noMargin" }, ["Role"])
-              ]),
-              div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
-                label({ className: "inputFieldLabel noMargin" }, ["Role (Other)"])
-              ])
-            ])
           ]),
-          div({ className: "col-lg-1 col-md-2 col-sm-2 col-3" }, [
+          div({ className: "col-lg-1 col-md-2 col-sm-2 col-3 floatRight" }, [
             Btn({
               action: { labelClass: "glyphicon glyphicon-plus", handler: this.addKeyPersonnel },
               disabled: false,
-              isRendered: !this.props.readOnly
+              isRendered: !this.props.readOnly,
             }),
           ])
         ]),
@@ -315,15 +345,21 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
           const isOther = this.props.edit 
             ? (kp.future.role && kp.future.role.value === "other")
             : (kp.role && kp.role.value === "other");
-          
+          const kpState = this.state.keyPersons[idx];
+          const isOtherRole =
+            kpState &&
+            kpState.role &&
+            kpState.role.value === 'other'
+          const colClass = this.handleKeypersonFieldAlignment(isOtherRole, kp)
           return h(Fragment, { key: this.ensureUiKey(kp) }, [
             div({ className: "row", style: { 'marginBottom': '15px' } }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
-                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                  div({ className: colClass }, [
                     AsyncMultiSelect({
                       id: idx + "-name",
                       index: idx,
+                      label:'Name',
                       isDisabled: false,
                       loadOptions: this.loadUsersOptions,
                       handleChange: this.handleNameChange(idx),
@@ -335,12 +371,13 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       readOnly: this.props.readOnly
                     })
                   ]),
-                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                  div({ className: colClass }, [
                     InputFieldSelect({
                       label: "",
                       id: idx + "-role",
                       index: idx,
                       name: "role",
+                      label:'Role',
                       options: roleOptions,
                       value: this.props.edit ? kp.future.role : kp.role,
                       currentValue: this.props.edit ? current[idx] && current[idx].current.role : kp.role,
@@ -353,15 +390,18 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       placeholder: "Choose a role..."
                     })
                   ]),
-                  div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+                  div({ className: colClass,
+                     isRendered: !!((this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| 
+                     (kp.future && kp.future.role && kp.future.role.value === "other") || (kp.role === "Other"))}, 
+                     [
                     InputFieldText({
+                      isRendered: !!((this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| (kp.future && kp.future.role && kp.future.role.value === "other") || (kp.role === "Other")),
                       id: idx + "-otherRole",
                       index: idx,
                       name: "otherRole",
-                      label: "",
+                      label: "Role (Other)",
                       value: this.props.edit ? kp.future.otherRole : kp.otherRole,
                       currentValue: this.props.edit ? current[idx] && current[idx].current.otherRole : kp.otherRole,
-                      disabled: !isOther,
                       required: false,
                       onChange: this.handleKeyPersonnelChange,
                       readOnly: this.props.readOnly,
@@ -369,10 +409,22 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       error: isOther && this.getRoleOtherError(idx),
                       errorMessage: this.props.errorMessage
                     })
-                  ])
+                  ]),
+                  div({classNames:colClass,
+                    isRendered: this.props.readOnly && !!(kp.future && kp.future.updatedDate|| this.props.comparisonView) },[
+                    div({style:{display:"inline-block", "padding-left":"5px"}},[
+                      label({className: 'inputFieldLabel'}, ["Added Date"]),
+                      // p({style:{margin:'10px 0 0 0'}},[this.props.edit || this.props.readOnly ? getDateString(kp.future.updatedDate,'mmddyyyy') : getDateString(kp.updatedDate,'mmddyyyy')])
+                      p({ style: { margin: '10px 0 0 0' } }, [(this.props.readOnly && this.props.comparisonView)
+                        ? getDateString(kp.updatedDate, 'mmddyyyy')
+                        : (this.props.edit || this.props.readOnly)
+                          ? getDateString(kp.future.updatedDate, 'mmddyyyy')
+                          : getDateString(kp.updatedDate, 'mmddyyyy')])
+                    ])
+                  ]),
                 ])
               ]),
-              div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { "paddingTop": "12px" } }, [
+              div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style:{padding:'30px 0 0 5px'} }, [
                 Btn({
                   action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeKeyPersonnel(idx) },
                   disabled: keyPersons.length === 1,

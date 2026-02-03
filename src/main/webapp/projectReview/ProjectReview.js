@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { button, div, h, h2, hh, p, b, span, i, em } from 'react-hyperscript-helpers';
+import { button, div, h, h2, hh, p, b, span, i, em, label, br } from 'react-hyperscript-helpers';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
 import { AsyncMultiSelect } from '../components/AsyncMultiSelect';
@@ -105,8 +105,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
           future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
         }],
         keyPersons: [{
-          current: { name: null, role: '', otherRole: '' },
-          future: { name: null, role: '', otherRole: '' }
+          current: { name: null, role: '', otherRole: '', updatedDate:'' },
+          future: { name: null, role: '', otherRole: '', updatedDate:'' }
         }],
         requestor: {
           displayName: '',
@@ -136,8 +136,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
           future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
         }],
         keyPersons: [{
-          current: { name: null, role: '', otherRole: '' },
-          future: { name: null, role: '', otherRole: '' }
+          current: { name: null, role: '', otherRole: '', updatedDate:'' },
+          future: { name: null, role: '', otherRole: '', updatedDate:'' }
         }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
@@ -382,12 +382,14 @@ const ProjectReview = hh(class ProjectReview extends Component {
           current: {
             name: kp.name ? this.getUsersArray([kp])[0] : null,
             role: kp.role ? { label: kp.role, value: kp.role.split(" ").join("_").toLowerCase() } : '',
-            otherRole: kp.otherRole || kp.roleOther || ''
+            otherRole: kp.otherRole || kp.roleOther || '',
+            updatedDate: kp.updatedDate || kp.updatedDate || ''
           },
           future: {
             name: kp.name ? this.getUsersArray([kp])[0] : null,
             role: kp.role ? { label: kp.role, value: kp.role.split(" ").join("_").toLowerCase() } : '',
-            otherRole: kp.otherRole || kp.roleOther || ''
+            otherRole: kp.otherRole || kp.roleOther || '',
+            updatedDate: kp.updatedDate || kp.updatedDate || ''
           }
         });
       });
@@ -626,14 +628,24 @@ const ProjectReview = hh(class ProjectReview extends Component {
     let keyPersonsList = [];
     if (keyPersons !== null && keyPersons.length > 0) {
       keyPersons.map((kp, idx) => {
-        let kpItem = {};
-        if (kp.future.name !== null && kp.future.name !== undefined) {
-          kpItem.name = kp.future.name.key || kp.future.name.value;
-          kpItem.role = kp.future.role && kp.future.role.label ? kp.future.role.label : '';
-          kpItem.otherRole = kp.future.otherRole || '';
-          if (kpItem.name) {
-            keyPersonsList.push(kpItem);
-          }
+        // Only include entries that have both a name and a role
+        const name = kp && kp.future ? kp.future.name : null;
+        const role = kp && kp.future ? kp.future.role : null;
+        const nameEmpty =
+          name === null ||
+          name === undefined ||
+          (Array.isArray(name) && name.length === 0);
+        const roleEmpty = !role || isEmpty(role.value);
+
+        if (!nameEmpty && !roleEmpty) {
+          let kpItem = {};
+          // Use key (userName) or value as fallback
+          kpItem.name = name.key || name.value;
+          // Use label or value
+          kpItem.role = role.label || role.value;
+          // Only include otherRole when role is "other"
+          kpItem.otherRole = role.value === "other" ? (kp.future.otherRole || '') : '';
+          if (kpItem.name) keyPersonsList.push(kpItem);
         }
       });
     }
@@ -1397,38 +1409,17 @@ const ProjectReview = hh(class ProjectReview extends Component {
                   span({className: "pr-2"}, ["on"]),
                   em({className: "text-bold"}, [getDateString(this.state.current.updateDate, 'mmddyyyy')]),
                 ]),
-                div({ id: "requestor" }, [
-                    Panel({ title: "Requestor" }, [
-                      InputFieldText({
-                        id: "inputRequestorName",
-                        name: "requestorName",
-                        label: "Requestor Name",
-                        value: this.state.formData.requestor.displayName,
-                        currentValue: this.state.current.requestor.displayName,
-                        readOnly: true,
-                        required: true,
-                        onChange: () => { }
-                      }),
-                      InputFieldText({
-                        id: "inputRequestorEmail",
-                        name: "requestorEmail",
-                        label: "Requestor Email Address",
-                        value: this.state.formData.requestor.emailAddress,
-                        currentValue: this.state.current.requestor.emailAddress,
-                        readOnly: true,
-                        required: true,
-                        onChange: () => { }
-                      })
-                    ])
-                ]),
-        
+
                 div({isRendered: !this.state.isCompareChanges}, [
-        
                   div({ id: "principalInvestigator" }, [
-                    Panel({ title: "Principal Investigator" }, [
+                    Panel({ title: "Key Personnel" }, [
+                      br(),
+                      label({className:'inputFieldLabel'},
+                        ["Principal Investigator (PI) Responsible for Project Conduct and Oversight",
+                          span({ className: 'errorMessage' }, ' *')]
+                      ),
                       AsyncMultiSelect({
                         id: "pi_select",
-                        label: "Broad PIs",
                         name: 'piList',
                         readOnly: this.state.readOnly,
                         loadOptions: this.loadUsersOptions,
@@ -1437,9 +1428,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         currentValue: this.state.current.piList,
                         isMulti: true
                       }),
-        
+                      br(),
+                      label({ className:'inputFieldLabel' },
+                        ["PI’s Primary Institutional Affiliation",span({ className: 'errorMessage' }, ' *')]
+                      ),
                       InputFieldSelect({
-                        label: "Primary Investigator Affiliation",
                         id: "affiliations",
                         name: "affiliations",
                         options: PI_AFFILIATION,
@@ -1463,10 +1456,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         onChange: this.handleProjectExtraPropsChange,
                         edit: true
                       }),
-        
+                      br(),
+                      label({className:'inputFieldLabel'},
+                        ["Key Study Contact (will receive email notifications about this project)",span({ className: 'errorMessage' }, ' *')]
+                      ),
                       AsyncMultiSelect({
                         id: "inputProjectManager",
-                        label: "Broad Project Managers",
                         name: 'pmList',
                         readOnly: this.state.readOnly,
                         loadOptions: this.loadUsersOptions,
@@ -1477,7 +1472,44 @@ const ProjectReview = hh(class ProjectReview extends Component {
                       })
                     ])
                   ]),
-        
+
+                  div({ classNames: 'panel-group', id: "studyAccordion", isRendered: this.state.hasKeyPersonnel && this.state.formData.keyPersonnel && this.state.formData.keyPersonnel.length > 0 }, [
+                    Panel({
+                      title: "Study Staff",
+                      collapsible: true,
+                      defaultOpen: true,
+                      panelId: "studyStaffPanel",
+                      accordionParentId: "studyAccordion"
+                    }, [
+                      KeyPersonnel({
+                        keyPersons: this.state.formData.keyPersons,
+                        current: this.state.formData.keyPersons,
+                        updateKeyPersons: this.handleUpdateKeyPersonnel,
+                        readOnly: this.state.readOnly,
+                        error: this.state.keyPersonnelError,
+                        errorIndex: this.state.keyPersonnelErrorIndex,
+                        setError: () => this.setState(prev => { prev.keyPersonnelError = false; return prev; }),
+                        errorMessage: "Required field",
+                        edit: true
+                      })
+                    ])
+                  ]),
+
+                  div({ id: "requestor" }, [
+                    Panel({ title: "Requestor" }, [
+                      InputFieldText({
+                        id: "inputRequestorName",
+                        name: "requestorName",
+                        label: "Requestor Name",
+                        value: this.state.formData.requestor.displayName,
+                        currentValue: this.state.current.requestor.displayName,
+                        readOnly: true,
+                        required: true,
+                        onChange: () => { }
+                      })
+                    ])
+                  ]),
+                
                   div({ id: "funding" }, [
                     Panel({ title: "Funding" }, [
                       Fundings({
@@ -1495,22 +1527,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     ])
                   ]),
 
-                  div({ id: "keyPersons", isRendered: this.state.hasKeyPersonnel && this.state.formData.keyPersons && this.state.formData.keyPersons.length > 0 }, [
-                    Panel({ title: "Key Personnel" }, [
-                      KeyPersonnel({
-                        keyPersons: this.state.formData.keyPersons,
-                        current: this.state.formData.keyPersons,
-                        updateKeyPersons: this.handleUpdateKeyPersonnel,
-                        readOnly: this.state.readOnly,
-                        error: this.state.keyPersonnelError,
-                        errorIndex: this.state.keyPersonnelErrorIndex,
-                        setError: () => this.setState(prev => { prev.keyPersonnelError = false; return prev; }),
-                        errorMessage: "Required field",
-                        edit: true
-                      })
-                    ])
-                  ]),
-        
                   div({ id: "projectSummary" }, [
                     Panel({ title: "Project Summary" }, [
                       div({ id: "projectSummaryInputTextArea" }, [
@@ -1539,18 +1555,18 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         ])
                       ]),
         
-                      AsyncMultiSelect({
-                        id: "collaborator_select",
-                        label: "Broad individuals who require access to this project record",
-                        isDisabled: false,
-                        readOnly: this.state.readOnly,
-                        loadOptions: this.loadUsersOptions,
-                        handleChange: this.handleProjectCollaboratorChange,
-                        value: this.state.formData.collaborators,
-                        currentValue: this.state.current.collaborators,
-                        placeholder: "Start typing names for project access",
-                        isMulti: true
-                      }),
+                      // AsyncMultiSelect({
+                      //   id: "collaborator_select",
+                      //   label: "Broad individuals who require access to this project record",
+                      //   isDisabled: false,
+                      //   readOnly: this.state.readOnly,
+                      //   loadOptions: this.loadUsersOptions,
+                      //   handleChange: this.handleProjectCollaboratorChange,
+                      //   value: this.state.formData.collaborators,
+                      //   currentValue: this.state.current.collaborators,
+                      //   placeholder: "Start typing names for project access",
+                      //   isMulti: true
+                      // }),
                       InputFieldText({
                         id: "inputPTitle",
                         name: "projectTitle",

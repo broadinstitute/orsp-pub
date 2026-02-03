@@ -52,11 +52,13 @@ class ProjectVersionDetailedView extends Component {
 
   getKeyPersonArray(keyPersons) {
   if (!keyPersons || !keyPersons.length) return [];
-
+  console.log(keyPersons,'keyPersons');
   return keyPersons.map(keyPerson => ({
     name: `${keyPerson.displayName} (${keyPerson.emailAddress})`,
     role: keyPerson.role,
-    otherRole: keyPerson.otherRole
+    otherRole: keyPerson.otherRole,
+    updatedDate: keyPerson.updatedDate
+
   }));
 }
 
@@ -78,19 +80,9 @@ class ProjectVersionDetailedView extends Component {
             )}
           </div>
           <div className="" id="project-details">
-            <Panel title="Requestor" id="requestor">
+            <Panel title="Key Personnel" id="principal-investigator">
               <div className="mb-15">
-                <label>Requestor Name</label>
-                <p className="answer-fields">{requestor.displayName}</p>
-              </div>
-              <div className="mb-15">
-                <label>Requestor Email Address</label>
-                <p className="answer-fields">{requestor.emailAddress}</p>
-              </div>
-            </Panel>
-            <Panel title="Principal Investigator" id="principal-investigator">
-              <div className="mb-15">
-                <label>Broad PIs</label>
+                <label>Principal Investigator (PI) Responsible for Project Conduct and Oversight</label>
                 <p className="answer-fields">
                   {pis.length 
                     ? pis.map((pi, idx) => (
@@ -100,11 +92,11 @@ class ProjectVersionDetailedView extends Component {
                 </p>
               </div>
               <div className="mb-15">
-                <label>Primary Investigator Affiliation</label>
+                <label>PI’s Primary Institutional Affiliation</label>
                 <p className="answer-fields">{this.getExtraPropertyValueFromJSON("affiliations")}</p>
               </div>
               <div className="mb-15">
-                <label>Broad Project Managers</label>
+                <label>Key Study Contact (will receive email notifications about this project)</label>
                 <p className="answer-fields">
                   {pms.length 
                     ? pms.map((pm, idx) => (
@@ -114,32 +106,29 @@ class ProjectVersionDetailedView extends Component {
                 </p>
               </div>
             </Panel>
-            <Panel title="Fundings" id="fundings">
+            <Panel title="Study Staff" id="study-staff">
+              <KeyPersonnel
+                keyPersons={this.getKeyPersonArray(keypersons)}
+                readOnly={true}
+                comparisonView = {true} >
+              </KeyPersonnel>
+            </Panel>
+            <Panel title="Requestor" id="requestor">
+              <div className="mb-15">
+                <label>Requestor Name</label>
+                <p className="answer-fields">{requestor.displayName}</p>
+              </div>
+            </Panel>
+            <Panel title="Funding" id="fundings">
               <Fundings
                 fundings={this.getFundingsArray(fundings)}
                 readOnly={true}
               ></Fundings>
             </Panel>
-            <Panel title="Key Personnel" id="Key Personnel">
-              <KeyPersonnel
-                keyPersons={this.getKeyPersonArray(keypersons)}
-                readOnly={true}>
-              </KeyPersonnel>
-            </Panel>
             <Panel title="Project Summary" id="project-summary">
               <div className="mb-15">
                 <label>Broad Study Activities</label>
                 <p className="answer-fields">{issue.description}</p>
-              </div>
-              <div className="mb-15">
-                <label>Broad individuals who require access to this project record</label>
-                <p className="answer-fields">
-                  {collaborators.length 
-                    ? collaborators.map((collab, idx) => (
-                        collab.displayName + "(" + collab.emailAddress + ")"
-                      )).join(", ") 
-                    : "--"}
-                </p>
               </div>
               <div className="mb-15">
                 <label>Title of project/protocol</label>
