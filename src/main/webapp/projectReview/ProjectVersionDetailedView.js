@@ -80,6 +80,39 @@ class ProjectVersionDetailedView extends Component {
             )}
           </div>
           <div className="" id="project-details">
+            <Panel title="Key Personnel" id="principal-investigator">
+              <div className="mb-15">
+                <label>Principal Investigator (PI) Responsible for Project Conduct and Oversight</label>
+                <p className="answer-fields">
+                  {pis.length 
+                    ? pis.map((pi, idx) => (
+                        pi.displayName + "(" + pi.emailAddress + ")"
+                      )).join(", ") 
+                    : "--"}
+                </p>
+              </div>
+              <div className="mb-15">
+                <label>PI’s Primary Institutional Affiliation</label>
+                <p className="answer-fields">{this.getExtraPropertyValueFromJSON("affiliations")}</p>
+              </div>
+              <div className="mb-15">
+                <label>Key Study Contact (will receive email notifications about this project)</label>
+                <p className="answer-fields">
+                  {pms.length 
+                    ? pms.map((pm, idx) => (
+                        pm.displayName + "(" + pm.emailAddress + ")"
+                      )).join(", ") 
+                    : "--"}
+                </p>
+              </div>
+            </Panel>
+            <Panel title="Study Staff" id="study-staff">
+              <KeyPersonnel
+                keyPersons={this.getKeyPersonArray(keypersons)}
+                readOnly={true}
+                comparisonView = {true} >
+              </KeyPersonnel>
+            </Panel>
             <Panel title="Requestor" id="requestor">
               <div className="mb-15">
                 <label>Requestor Name</label>
@@ -90,44 +123,11 @@ class ProjectVersionDetailedView extends Component {
                 <p className="answer-fields">{requestor.emailAddress}</p>
               </div>
             </Panel>
-            <Panel title="Principal Investigator" id="principal-investigator">
-              <div className="mb-15">
-                <label>Broad PIs</label>
-                <p className="answer-fields">
-                  {pis.length 
-                    ? pis.map((pi, idx) => (
-                        pi.displayName + "(" + pi.emailAddress + ")"
-                      )).join(", ") 
-                    : "--"}
-                </p>
-              </div>
-              <div className="mb-15">
-                <label>Primary Investigator Affiliation</label>
-                <p className="answer-fields">{this.getExtraPropertyValueFromJSON("affiliations")}</p>
-              </div>
-              <div className="mb-15">
-                <label>Broad Project Managers</label>
-                <p className="answer-fields">
-                  {pms.length 
-                    ? pms.map((pm, idx) => (
-                        pm.displayName + "(" + pm.emailAddress + ")"
-                      )).join(", ") 
-                    : "--"}
-                </p>
-              </div>
-            </Panel>
-            <Panel title="Fundings" id="fundings">
+            <Panel title="Funding" id="fundings">
               <Fundings
                 fundings={this.getFundingsArray(fundings)}
                 readOnly={true}
               ></Fundings>
-            </Panel>
-            <Panel title="Key Personnel" id="Key Personnel">
-              <KeyPersonnel
-                keyPersons={this.getKeyPersonArray(keypersons)}
-                readOnly={true}
-                comparisonView = {true} >
-              </KeyPersonnel>
             </Panel>
             <Panel title="Project Summary" id="project-summary">
               <div className="mb-15">

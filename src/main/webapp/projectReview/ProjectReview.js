@@ -1409,40 +1409,17 @@ const ProjectReview = hh(class ProjectReview extends Component {
                   span({className: "pr-2"}, ["on"]),
                   em({className: "text-bold"}, [getDateString(this.state.current.updateDate, 'mmddyyyy')]),
                 ]),
-                div({ id: "requestor" }, [
-                    Panel({ title: "Requestor" }, [
-                      InputFieldText({
-                        id: "inputRequestorName",
-                        name: "requestorName",
-                        label: "Requestor Name",
-                        value: this.state.formData.requestor.displayName,
-                        currentValue: this.state.current.requestor.displayName,
-                        readOnly: true,
-                        required: true,
-                        onChange: () => { }
-                      }),
-                      InputFieldText({
-                        id: "inputRequestorEmail",
-                        name: "requestorEmail",
-                        label: "Requestor Email Address",
-                        value: this.state.formData.requestor.emailAddress,
-                        currentValue: this.state.current.requestor.emailAddress,
-                        readOnly: true,
-                        required: true,
-                        onChange: () => { }
-                      })
-                    ])
-                ]),
-        
+
                 div({isRendered: !this.state.isCompareChanges}, [
-        
                   div({ id: "principalInvestigator" }, [
                     Panel({ title: "Key Personnel" }, [
                       br(),
-          label({className:'inputFieldLabel'},["Principal Investigator (PI) Responsible for Project Conduct and Oversight",span({ className: 'errorMessage' }, ' *')]),
+                      label({className:'inputFieldLabel'},
+                        ["Principal Investigator (PI) Responsible for Project Conduct and Oversight",
+                          span({ className: 'errorMessage' }, ' *')]
+                      ),
                       AsyncMultiSelect({
                         id: "pi_select",
-                      //  label: "Broad PIs",
                         name: 'piList',
                         readOnly: this.state.readOnly,
                         loadOptions: this.loadUsersOptions,
@@ -1451,10 +1428,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         currentValue: this.state.current.piList,
                         isMulti: true
                       }),
-        br(),
-          label({className:'inputFieldLabel'},["PI’s Primary Institutional Affiliation",span({ className: 'errorMessage' }, ' *')]),
+                      br(),
+                      label({ className:'inputFieldLabel' },
+                        ["PI’s Primary Institutional Affiliation",span({ className: 'errorMessage' }, ' *')]
+                      ),
                       InputFieldSelect({
-                  //      label: "Primary Investigator Affiliation",
                         id: "affiliations",
                         name: "affiliations",
                         options: PI_AFFILIATION,
@@ -1478,11 +1456,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         onChange: this.handleProjectExtraPropsChange,
                         edit: true
                       }),
-        br(),
-          label({className:'inputFieldLabel'},["Key Study Contact (will receive email notifications about this project)",span({ className: 'errorMessage' }, ' *')]),
+                      br(),
+                      label({className:'inputFieldLabel'},
+                        ["Key Study Contact (will receive email notifications about this project)",span({ className: 'errorMessage' }, ' *')]
+                      ),
                       AsyncMultiSelect({
                         id: "inputProjectManager",
-                    //    label: "Broad Project Managers",
                         name: 'pmList',
                         readOnly: this.state.readOnly,
                         loadOptions: this.loadUsersOptions,
@@ -1490,23 +1469,6 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         value: this.state.formData.pmList,
                         currentValue: this.state.current.pmList,
                         isMulti: true
-                      })
-                    ])
-                  ]),
-        
-                  div({ id: "funding" }, [
-                    Panel({ title: "Funding" }, [
-                      Fundings({
-                        fundings: this.state.formData.fundings,
-                        current: this.state.formData.fundings,
-                        updateFundings: this.handleUpdateFundings,
-                        readOnly: this.state.readOnly,
-                        error: this.state.fundingError,
-                        errorIndex: this.state.fundingErrorIndex,
-                        fundingAwardNumberError: this.state.fundingAwardNumberError,
-                        setError: this.changeFundingError,
-                        errorMessage: "Required field",
-                        edit: true
                       })
                     ])
                   ]),
@@ -1532,7 +1494,39 @@ const ProjectReview = hh(class ProjectReview extends Component {
                       })
                     ])
                   ]),
-        
+
+                  div({ id: "requestor" }, [
+                    Panel({ title: "Requestor" }, [
+                      InputFieldText({
+                        id: "inputRequestorName",
+                        name: "requestorName",
+                        label: "Requestor Name",
+                        value: this.state.formData.requestor.displayName,
+                        currentValue: this.state.current.requestor.displayName,
+                        readOnly: true,
+                        required: true,
+                        onChange: () => { }
+                      })
+                    ])
+                  ]),
+                
+                  div({ id: "funding" }, [
+                    Panel({ title: "Funding" }, [
+                      Fundings({
+                        fundings: this.state.formData.fundings,
+                        current: this.state.formData.fundings,
+                        updateFundings: this.handleUpdateFundings,
+                        readOnly: this.state.readOnly,
+                        error: this.state.fundingError,
+                        errorIndex: this.state.fundingErrorIndex,
+                        fundingAwardNumberError: this.state.fundingAwardNumberError,
+                        setError: this.changeFundingError,
+                        errorMessage: "Required field",
+                        edit: true
+                      })
+                    ])
+                  ]),
+
                   div({ id: "projectSummary" }, [
                     Panel({ title: "Project Summary" }, [
                       div({ id: "projectSummaryInputTextArea" }, [
