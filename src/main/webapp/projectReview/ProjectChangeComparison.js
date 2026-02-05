@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { hh, div, ins, del, label, p, span, i } from "react-hyperscript-helpers";
 import { Panel } from "../components/Panel";
-import { isEmpty } from "../util/Utils";
+import { isEmpty, getDateString } from "../util/Utils";
 
 const ProjectChangeComparision = hh(
   class ProjectChangeComparison extends Component {
@@ -161,10 +161,11 @@ const ProjectChangeComparision = hh(
 
     getKeyPersonsComparison = (newData, oldData) => {
       const headers = [
-          div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [label({ className: "inputFieldLabel" }, ["Name"])]),
-          div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [label({ className: "inputFieldLabel" }, ["Role"])]),
-          div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [label({ className: "inputFieldLabel" }, ["Role (Other)"])]),
-      ];
+          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [label({ className: "inputFieldLabel" }, ["Name"])]),
+          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [label({ className: "inputFieldLabel" }, ["Role"])]),
+          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [label({ className: "inputFieldLabel" }, ["Role (Other)"])]),
+          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [label({ className: "inputFieldLabel" }, ["Added Date"])]),
+      ]
 
       const newArr = Array.isArray(newData) ? newData : [];
       const oldArr = Array.isArray(oldData) ? oldData : [];
@@ -218,20 +219,24 @@ const ProjectChangeComparision = hh(
         const newRoleIsOther = newSnap.role && newSnap.role.value === "other";
         const showRoleOther =
           oldRoleIsOther || newRoleIsOther || !isEmpty(oldOtherRole) || !isEmpty(newOtherRole);
-
+        const addedDate = newItem && newItem.current && newItem.current.updatedDate;
         return div({ className: "row", key: k }, [
-          div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [
             showDiff(oldName, newName)
           ]),
-          div({ className: "col-lg-4 col-md-4 col-sm-4 col-12" }, [
+          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [
             showDiff(oldRole, newRole)
           ]),
           div({
-            className: "col-lg-4 col-md-4 col-sm-4 col-12",
-            isRendered: showRoleOther
+            className: "col-lg-3 col-md-3 col-sm-3 col-12",
           }, [
             showDiff(oldOtherRole, newOtherRole)
           ]),
+          div({
+            className: "col-lg-3 col-md-3 col-sm-3 col-12",
+          }, [
+             getDateString(addedDate, 'mmddyyyy')
+          ])
         ]);
       });
 
@@ -241,16 +246,16 @@ const ProjectChangeComparision = hh(
     render() {
       return div({}, [
         div({ id: "principalInvestigator" }, [
-          Panel({ title: "Principal Investigator" }, [
+          Panel({ title: "Key Personnel" }, [
             div([
-              label({className: 'inputFieldLabel'}, ["Broad PIs"]),
+              label({className: 'inputFieldLabel'}, ["Principal Investigator (PI) Responsible for Project Conduct and Oversight"]),
               p({}, [
                 this.compareData(this.props.formData.piList, this.props.versionedData.piList, "jsonArray"),
               ]),
             ]),
 
             div([
-              label({className: 'inputFieldLabel'}, ["Primary Investigator Affiliation"]),
+              label({className: 'inputFieldLabel'}, [" PI’s Primary Institutional Affiliation"]),
               p({}, [
                 this.compareData(this.props.formData.projectExtraProps.affiliations, this.props.versionedData.projectExtraProps.affiliations, "json"),
               ]),
@@ -267,7 +272,7 @@ const ProjectChangeComparision = hh(
             ]),
 
             div([
-              label({className: 'inputFieldLabel'}, ["Broad Project Managers"]),
+              label({className: 'inputFieldLabel'}, ["Key Study Contact (will receive email notifications about this project)"]),
               p({}, [
                 this.compareData(this.props.formData.pmList, this.props.versionedData.pmList, "jsonArray"),
               ]),
@@ -287,7 +292,7 @@ const ProjectChangeComparision = hh(
             isRendered: (this.props.formData.keyPersons && this.props.formData.keyPersons.length > 0) ||
                         (this.props.versionedData.keypersons && this.props.versionedData.keypersons.length > 0)
           }, [
-            Panel({ title: "Key Personnel" }, [
+            Panel({ title: "Study Staff" }, [
               div([
                 this.compareData(
                   this.props.formData.keyPersons,
@@ -308,12 +313,12 @@ const ProjectChangeComparision = hh(
                 ]),
               ]),
 
-              div([
-                label({className: 'inputFieldLabel'}, ["Broad individuals who require access to this project record"]),
-                p({}, [
-                  this.compareData(this.props.formData.collaborators, this.props.versionedData.collaborators, "jsonArray"),
-                ]),
-              ]),
+              // div([
+              //   label({className: 'inputFieldLabel'}, ["Broad individuals who require access to this project record"]),
+              //   p({}, [
+              //     this.compareData(this.props.formData.collaborators, this.props.versionedData.collaborators, "jsonArray"),
+              //   ]),
+              // ]),
 
               div([
                 label({className: 'inputFieldLabel'}, ["Title of project/protocol"]),

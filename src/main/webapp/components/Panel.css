@@ -35,7 +35,29 @@
   padding: 15px;
 }
 
-.panelContent>.radioContainer:first-child,
+.panelContent > .radioContainer:first-child,
 .panelContent .firstRadioGroup .radioContainer {
   margin: 0 0 20px 0;
+}
+
+.panelTitle a {
+  display: inline-block;
+  width: 100%;
+  color: inherit;
+}
+
+.panelChevron {
+  float: right;
+}
+
+.panelChevron .glyphicon {
+  transition: transform 0.2s ease;
+}
+
+.panel-title a:not(.collapsed) .glyphicon {
+  transform: rotate(180deg);
+}
+
+.panelTitle a:hover {
+  text-decoration: none;
 }

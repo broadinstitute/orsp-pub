@@ -614,9 +614,15 @@ class IssueService implements UserInfo {
 
         keyPersons?.each { KeyPerson kp ->
 
+            boolean isNew = kp.id == null
+
             kp.issue = issue
             kp.projectKey = issue.projectKey
             kp.sequenceNumber = issue.sequenceNumber
+            if (isNew) {
+                kp.createdUser = getUser()?.userName
+                kp.createdTimestamp = new Date()
+            }
             kp.updateUser = getUser()?.userName
             kp.updateDate = new Date()
             kp.save(flush: true)
@@ -707,6 +713,11 @@ class IssueService implements UserInfo {
 
             Collection<IssueExtraProperty> issueExtraProperties = issue.getExtraProperties()
             issueExtraProperties?.each { it.delete(flush: true) }
+
+            issue.setApprovalStatus(IssueStatus.Withdrawn.getName())
+            issue.setUpdateUser(getUser()?.userName)
+            issue.setUpdateDate(new Date())
+            issue.save(flush: true)
         }
         issue.delete(flush: true)
         notifyService.sendRejectionProjectNotification(issue, getUser()?.displayName)
@@ -872,7 +883,8 @@ class IssueService implements UserInfo {
                     name: kp.name,
                     otherRole: kp.otherRole,
                     sequenceNumber: issue.sequenceNumber,
-                    versionedIssue: verIss
+                    versionedIssue: verIss,
+                    updateDate: new Date()
             ).save(flush: true)
         }
     }

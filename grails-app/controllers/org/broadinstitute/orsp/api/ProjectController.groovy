@@ -153,12 +153,10 @@ class ProjectController extends AuthenticatedController {
 
             [
                     id            : user?.id,
-                    createdDate   : user?.createdDate,
+                    createdDate   : kp?.createdTimestamp,
                     emailAddress  : user?.emailAddress,
                     userName      : user?.userName,
-                    updatedDate   : user?.updatedDate,
-                    lastLoginDate : user?.lastLoginDate,
-                    roles         : user?.roles,
+                    updatedDate   : kp?.updateDate,
                     displayName   : user?.displayName,
                     name          : kp.name,
                     role          : kp.role,
@@ -286,7 +284,7 @@ class ProjectController extends AuthenticatedController {
                             createdDate   : user?.createdDate,
                             emailAddress  : user?.emailAddress,
                             userName      : user?.userName,
-                            updatedDate   : user?.updatedDate,
+                            updatedDate   : vkp?.updateDate,
                             lastLoginDate : user?.lastLoginDate,
                             roles         : user?.roles,
                             displayName   : user?.displayName,
