@@ -461,18 +461,18 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       errorMessage: this.props.errorMessage
                     })
                   ]),
-                  // div({classNames:colClass,
-                  //   isRendered: this.props.readOnly && !!(kp.future && kp.future.updatedDate|| this.props.comparisonView) },[
-                  //   div({style:{display:"inline-block", "padding-left":"5px"}},[
-                  //     label({className: 'inputFieldLabel'}, ["Added Date"]),
-                  //     // p({style:{margin:'10px 0 0 0'}},[this.props.edit || this.props.readOnly ? getDateString(kp.future.updatedDate,'mmddyyyy') : getDateString(kp.updatedDate,'mmddyyyy')])
-                  //     p({ style: { margin: '10px 0 0 0' } }, [(this.props.readOnly && this.props.comparisonView)
-                  //       ? getDateString(kp.updatedDate, 'mmddyyyy')
-                  //       : (this.props.edit || this.props.readOnly)
-                  //         ? getDateString(kp.future.updatedDate, 'mmddyyyy')
-                  //         : getDateString(kp.updatedDate, 'mmddyyyy')])
-                  //   ])
-                  // ]),
+                  div({classNames:colClass,
+                    isRendered: !this.props.readOnly && !!(kp.future && kp.future.updatedDate|| this.props.comparisonView) },[
+                    div({style:{display:"inline-block", "padding-left":"5px"}},[
+                      label({className: 'inputFieldLabel'}, ["Added Date"]),
+                      // p({style:{margin:'10px 0 0 0'}},[this.props.edit || this.props.readOnly ? getDateString(kp.future.updatedDate,'mmddyyyy') : getDateString(kp.updatedDate,'mmddyyyy')])
+                      p({ style: { margin: '10px 0 0 0' } }, [(this.props.readOnly && this.props.comparisonView)
+                        ? getDateString(kp.updatedDate, 'mmddyyyy')
+                        : (this.props.edit || this.props.readOnly)
+                          ? getDateString(kp.future.updatedDate, 'mmddyyyy')
+                          : getDateString(kp.updatedDate, 'mmddyyyy')])
+                    ])
+                  ]),
                 ])
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style:{padding:'30px 0 0 5px'} }, [
