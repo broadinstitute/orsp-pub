@@ -6,6 +6,7 @@ import { Btn } from './Btn';
 import { AsyncMultiSelect } from './AsyncMultiSelect';
 import { Search } from '../util/ajax';
 import { isEmpty, getDateString } from "../util/Utils";
+import { TableComponent } from './TableComponent';
 
 const roleOptions = [
   { value: 'co_investigaator', label: 'Co-Investigator' },
@@ -17,6 +18,41 @@ const roleOptions = [
   { value: 'other', label: 'Other' }
 ]
 
+const defaultSorted = [{
+  dataField: 'date',
+  order: 'desc',
+  editable: false
+}];
+
+const columns = [
+  {
+    dataField: 'name',
+    text: 'Name',
+    sort: true,
+    editable: false
+  //  formatter: (cell) => cell?.value || '-'
+  },
+  {
+    dataField: 'role',
+    text: 'Role',
+    sort: true,
+    editable: false
+ //   formatter: (cell) => cell?.label || '-'
+  }, 
+  {
+    dataField: 'dateAdded',
+    text: 'Updated Date',
+    sort: true,
+    editable: false
+ //   formatter: (cell) =>
+ //     cell ? new Date(cell).toLocaleString() : '-'
+  }
+];
+const data=[{"id":1,"name": "Akhil Pampana","role": "post-doc","dateAdded": "02/06/2026"},
+            {"id":2,"name": "Binu","role": "post-doc","dateAdded": "02/07/2026"},
+            {"id":3,"name": "Canon","role": "post-doc","dateAdded": "02/08/2026"},
+            {"id":4,"name": "Diana","role": "post-doc","dateAdded": "02/09/2026"}
+];
 export const KeyPersonnel = hh(class KeyPersonnel extends Component {
   constructor(props) {
     super(props);
@@ -320,13 +356,28 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
 
   }
 
-  render() {    
+  formatKeyPersons = (keyPersons) => {
+  return keyPersons.map((kp,index) => {
+    const roleValue =
+      kp.future.role.value.toLowerCase() === 'other'
+        ? kp.future.otherRole
+        : kp.future.role.value;
+ 
+    return {
+      id:index,
+      name: kp.future.name.value,
+      role: roleValue,
+      dateAdded: getDateString(kp.future.updatedDate, 'mmddyyyy'),
+    };
+  });
+}
+  render() {  console.log([this.props.keyPersons[0].future],'keyPersons');  
     let {
       keyPersons = [],
       current = []
     } = this.props;
     
-    return (
+    return ( 
       h(Fragment, {}, [
         div({ className: "row" }, [
           div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
@@ -355,7 +406,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
             div({ className: "row", style: { 'marginBottom': '15px' } }, [
               div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
-                  div({ className: colClass }, [
+                  div({ className: colClass,isRendered: !this.props.readOnly }, [
                     AsyncMultiSelect({
                       id: idx + "-name",
                       index: idx,
@@ -371,7 +422,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       readOnly: this.props.readOnly
                     })
                   ]),
-                  div({ className: colClass }, [
+                  div({ className: colClass,isRendered: !this.props.readOnly }, [
                     InputFieldSelect({
                       label: "",
                       id: idx + "-role",
@@ -391,7 +442,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                     })
                   ]),
                   div({ className: colClass,
-                     isRendered: !!((this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| 
+                     isRendered: !!((this.props.readOnly && this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| 
                      (kp.future && kp.future.role && kp.future.role.value === "other") || (kp.role === "Other"))}, 
                      [
                     InputFieldText({
@@ -410,18 +461,18 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       errorMessage: this.props.errorMessage
                     })
                   ]),
-                  div({classNames:colClass,
-                    isRendered: this.props.readOnly && !!(kp.future && kp.future.updatedDate|| this.props.comparisonView) },[
-                    div({style:{display:"inline-block", "padding-left":"5px"}},[
-                      label({className: 'inputFieldLabel'}, ["Added Date"]),
-                      // p({style:{margin:'10px 0 0 0'}},[this.props.edit || this.props.readOnly ? getDateString(kp.future.updatedDate,'mmddyyyy') : getDateString(kp.updatedDate,'mmddyyyy')])
-                      p({ style: { margin: '10px 0 0 0' } }, [(this.props.readOnly && this.props.comparisonView)
-                        ? getDateString(kp.updatedDate, 'mmddyyyy')
-                        : (this.props.edit || this.props.readOnly)
-                          ? getDateString(kp.future.updatedDate, 'mmddyyyy')
-                          : getDateString(kp.updatedDate, 'mmddyyyy')])
-                    ])
-                  ]),
+                  // div({classNames:colClass,
+                  //   isRendered: this.props.readOnly && !!(kp.future && kp.future.updatedDate|| this.props.comparisonView) },[
+                  //   div({style:{display:"inline-block", "padding-left":"5px"}},[
+                  //     label({className: 'inputFieldLabel'}, ["Added Date"]),
+                  //     // p({style:{margin:'10px 0 0 0'}},[this.props.edit || this.props.readOnly ? getDateString(kp.future.updatedDate,'mmddyyyy') : getDateString(kp.updatedDate,'mmddyyyy')])
+                  //     p({ style: { margin: '10px 0 0 0' } }, [(this.props.readOnly && this.props.comparisonView)
+                  //       ? getDateString(kp.updatedDate, 'mmddyyyy')
+                  //       : (this.props.edit || this.props.readOnly)
+                  //         ? getDateString(kp.future.updatedDate, 'mmddyyyy')
+                  //         : getDateString(kp.updatedDate, 'mmddyyyy')])
+                  //   ])
+                  // ]),
                 ])
               ]),
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style:{padding:'30px 0 0 5px'} }, [
@@ -430,10 +481,26 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                   disabled: keyPersons.length === 1,
                   isRendered: !this.props.readOnly
                 }),
-              ])
-            ]),
+              ]),
+          h(Fragment, {}, [
+                TableComponent({
+             //     remoteProp: false,
+                  isRendered:this.props.readOnly,
+                  data: data, 
+                  columns: columns,
+                  keyField: 'dateAdded',
+              //    search: true,
+                  fileName: 'ORSP'
+              //    showPrintButton: false,
+              //    printComments: this.printHistory,
+              //    defaultSorted: defaultSorted,
+              //    showSearchBar: true,
+              //    pagination: true
+                })
+              ])    
+            ]),          
           ]);
-        })
+        })        
       ])
     )
   }
