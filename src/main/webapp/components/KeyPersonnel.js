@@ -44,6 +44,7 @@ const columns = [
     editable: false 
   }
 ];
+
 export const KeyPersonnel = hh(class KeyPersonnel extends Component {
   constructor(props) {
     super(props);
@@ -394,8 +395,8 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
             kpState.role.value === 'other'
           const colClass = this.handleKeypersonFieldAlignment(isOtherRole, kp)
           return h(Fragment, { key: this.ensureUiKey(kp) }, [
-            div({ className: "row", style: { 'marginBottom': '15px' } }, [
-              div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
+            div({ className: "row", style: { 'marginBottom': '15px' },isRendered: !this.props.readOnly }, [
+              div({ className: "col-lg-11 col-md-10 col-sm-10 col-9",isRendered: !this.props.readOnly }, [
                 div({ className: "row" }, [
                   div({ className: colClass,isRendered: !this.props.readOnly }, [
                     AsyncMultiSelect({
@@ -433,11 +434,11 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                     })
                   ]),
                   div({ className: colClass,
-                     isRendered: !!((this.props.readOnly && this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| 
+                     isRendered: !this.props.readOnly && !!((this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| 
                      (kp.future && kp.future.role && kp.future.role.value === "other") || (kp.role === "Other"))}, 
                      [
                     InputFieldText({
-                      isRendered: !!((this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| (kp.future && kp.future.role && kp.future.role.value === "other") || (kp.role === "Other")),
+                      isRendered: !this.props.readOnly && !!((this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| (kp.future && kp.future.role && kp.future.role.value === "other") || (kp.role === "Other") && !this.props.readOnly),
                       id: idx + "-otherRole",
                       index: idx,
                       name: "otherRole",
@@ -472,8 +473,11 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                   disabled: keyPersons.length === 1,
                   isRendered: !this.props.readOnly
                 }),
-              ]),
-          h(Fragment, {}, [
+              ]),              
+            ]),          
+          ]);
+        }),
+        h(Fragment, {}, [
                 TableComponent({             
                   isRendered:this.props.readOnly,
                   data: this.formatKeyPersons(this.props.keyPersons), 
@@ -481,10 +485,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                   keyField: 'dateAdded',              
                   fileName: 'ORSP'              
                 })
-              ])    
-            ]),          
-          ]);
-        })        
+              ])        
       ])
     )
   }
