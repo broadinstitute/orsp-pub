@@ -29,29 +29,20 @@ const columns = [
     dataField: 'name',
     text: 'Name',
     sort: true,
-    editable: false
-  //  formatter: (cell) => cell?.value || '-'
+    editable: false  
   },
   {
     dataField: 'role',
     text: 'Role',
     sort: true,
-    editable: false
- //   formatter: (cell) => cell?.label || '-'
+    editable: false 
   }, 
   {
     dataField: 'dateAdded',
     text: 'Updated Date',
     sort: true,
-    editable: false
- //   formatter: (cell) =>
- //     cell ? new Date(cell).toLocaleString() : '-'
+    editable: false 
   }
-];
-const data=[{"id":1,"name": "Akhil Pampana","role": "post-doc","dateAdded": "02/06/2026"},
-            {"id":2,"name": "Binu","role": "post-doc","dateAdded": "02/07/2026"},
-            {"id":3,"name": "Canon","role": "post-doc","dateAdded": "02/08/2026"},
-            {"id":4,"name": "Diana","role": "post-doc","dateAdded": "02/09/2026"}
 ];
 export const KeyPersonnel = hh(class KeyPersonnel extends Component {
   constructor(props) {
@@ -483,19 +474,12 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                 }),
               ]),
           h(Fragment, {}, [
-                TableComponent({
-             //     remoteProp: false,
+                TableComponent({             
                   isRendered:this.props.readOnly,
-                  data: data, 
+                  data: this.formatKeyPersons(this.props.keyPersons), 
                   columns: columns,
-                  keyField: 'dateAdded',
-              //    search: true,
-                  fileName: 'ORSP'
-              //    showPrintButton: false,
-              //    printComments: this.printHistory,
-              //    defaultSorted: defaultSorted,
-              //    showSearchBar: true,
-              //    pagination: true
+                  keyField: 'dateAdded',              
+                  fileName: 'ORSP'              
                 })
               ])    
             ]),          
