@@ -164,7 +164,7 @@ const ProjectChangeComparision = hh(
           div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [label({ className: "inputFieldLabel" }, ["Name"])]),
           div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [label({ className: "inputFieldLabel" }, ["Role"])]),
           div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [label({ className: "inputFieldLabel" }, ["Role (Other)"])]),
-          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [label({ className: "inputFieldLabel" }, ["Added Date"])]),
+          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [label({ className: "inputFieldLabel" }, ["Date Added"])]),
       ]
 
       const newArr = Array.isArray(newData) ? newData : [];
@@ -220,7 +220,7 @@ const ProjectChangeComparision = hh(
         const showRoleOther =
           oldRoleIsOther || newRoleIsOther || !isEmpty(oldOtherRole) || !isEmpty(newOtherRole);
         const addedDate = newItem && newItem.current && newItem.current.updatedDate;
-        return div({ className: "row", key: k }, [
+        return div({ className: "row",style: {paddingBottom: '10px'}, key: k }, [
           div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [
             showDiff(oldName, newName)
           ]),

@@ -4,6 +4,7 @@ export const UrlConstants = {
   // Project
   createProjectUrl: context + '/api/project',
   projectInfoUrl: context + '/api/project/get-info',
+  projectStudyStaffInfoUrl: context + '/api/project/get-info-kp',
   projectTypeUrl: context + '/api/project/get-type',
   rejectProjectUrl: context + '/api/project/reject',
   updateProjectUrl: context + '/api/project/update',

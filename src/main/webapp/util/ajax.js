@@ -261,6 +261,10 @@ export const Project = {
     return axios.get(UrlConstants.projectInfoUrl + '?id=' + projectKey);
   },
 
+  getKeyPersons(projectKey) {
+    return axios.get(UrlConstants.projectStudyStaffInfoUrl + '?id=' + projectKey);
+  },
+
   addExtraProperties(projectKey, data) {
     return axios.post(UrlConstants.addExtraPropertiesUrl + '?id=' + projectKey, data);
   },

@@ -39,7 +39,7 @@ const columns = [
   }, 
   {
     dataField: 'dateAdded',
-    text: 'Updated Date',
+    text: 'Date Added',
     sort: true,
     editable: false 
   }
@@ -349,27 +349,78 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
   }
 
   formatKeyPersons = (keyPersons) => {
+  
+  if(this.props.comparisonView){
+    return keyPersons.map((keyperson, index)=>{
+      const roleValue = keyperson.role && keyperson.role.toLowerCase() === 'other'?
+       keyperson.otherRole : keyperson.role;
+      return {
+      id:index,
+      name: keyperson.name,
+      role: roleValue,
+      dateAdded: getDateString(keyperson.updatedDate, 'mmddyyyy'),}
+    })
+  }  
   return keyPersons.map((kp,index) => {
+    
     const roleValue =
-      kp.future.role.value.toLowerCase() === 'other'
-        ? kp.future.otherRole
-        : kp.future.role.value;
+      kp.future && kp.future.role && kp.future.role.value.toLowerCase() === 'other'
+        ? kp.future && kp.future.otherRole
+        : kp.future && kp.future.role && kp.future.role.label;
  
     return {
       id:index,
-      name: kp.future.name.value,
+      name: kp.future && kp.future.name && kp.future.name.value,
       role: roleValue,
-      dateAdded: getDateString(kp.future.updatedDate, 'mmddyyyy'),
+      dateAdded: getDateString(kp.future && kp.future.updatedDate, 'mmddyyyy'),
     };
   });
 }
-  render() {  console.log([this.props.keyPersons[0].future],'keyPersons');  
+
+normalize = (kp) => {
+  if (!kp) {
+    return { name: null, role: null, otherRole: "" };
+  }
+
+  return {
+    name: kp.name && kp.name.value ? kp.name.value : null,
+    role: kp.role && kp.role.value ? kp.role.value : null,
+    otherRole: kp.otherRole ? kp.otherRole : ""
+  };
+};
+
+isSameKeyPerson = (kp) => {
+  if (!kp || !kp.current || !kp.future) return true;
+
+  const current = this.normalize(kp.current);
+  const future = this.normalize(kp.future);
+
+  return (
+    current.name === future.name &&
+    current.role === future.role &&
+    current.otherRole === future.otherRole
+  );
+};
+
+isCurrentAndFuctureSame = (arr) => {
+  if (!arr || arr.length === 0) return true;
+
+  for (let i = 0; i < arr.length; i++) {
+    if (!this.isSameKeyPerson(arr[i])) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+  render() {    
     let {
       keyPersons = [],
       current = []
     } = this.props;
-    
-    return ( 
+    const showTable = this.isCurrentAndFuctureSame(this.props.current);
+    return (
       h(Fragment, {}, [
         div({ className: "row" }, [
           div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
@@ -395,15 +446,17 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
             kpState.role.value === 'other'
           const colClass = this.handleKeypersonFieldAlignment(isOtherRole, kp)
           return h(Fragment, { key: this.ensureUiKey(kp) }, [
-            div({ className: "row", style: { 'marginBottom': '15px' },isRendered: !this.props.readOnly }, [
-              div({ className: "col-lg-11 col-md-10 col-sm-10 col-9",isRendered: !this.props.readOnly }, [
+            div({ className: "row", style: { 'marginBottom': '15px' }, 
+              isRendered: !((this.props.readOnly === true && this.props.edit === true && showTable) || this.props.comparisonView) 
+            }, [
+              div({ className: "col-lg-11 col-md-10 col-sm-10 col-9" }, [
                 div({ className: "row" }, [
-                  div({ className: colClass,isRendered: !this.props.readOnly }, [
+                  div({ className: colClass }, [
                     AsyncMultiSelect({
                       id: idx + "-name",
                       index: idx,
                       label:'Name',
-                      isDisabled: false,
+                      isDisabled: kp && kp.future && kp.future.role && kp.future.role.value === 'legacy',
                       loadOptions: this.loadUsersOptions,
                       handleChange: this.handleNameChange(idx),
                       value: this.props.edit ? kp.future.name : kp.name,
@@ -411,10 +464,11 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       placeholder: "Start typing the Name",
                       isMulti: false,
                       error: this.getNameError(idx),
-                      readOnly: this.props.readOnly
+                      readOnly: this.props.readOnly,
+                      showCurrentValueOnEdit: this.props.edit ? true : false
                     })
                   ]),
-                  div({ className: colClass,isRendered: !this.props.readOnly }, [
+                  div({ className: colClass }, [
                     InputFieldSelect({
                       label: "",
                       id: idx + "-role",
@@ -427,18 +481,18 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                       onChange: this.handleRoleSelect,
                       error: this.getRoleError(idx),
                       errorMessage: this.props.errorMessage,
-                      readOnly: this.props.readOnly,
+                      readOnly: this.props.readOnly || !!(kp && kp.future && kp.future.role && kp.future.role.value === 'legacy'),
                       edited: this.props.readOnly,
                       edit: this.props.edit,
                       placeholder: "Choose a role..."
                     })
                   ]),
                   div({ className: colClass,
-                     isRendered: !this.props.readOnly && !!((this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| 
+                     isRendered: !!((this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| 
                      (kp.future && kp.future.role && kp.future.role.value === "other") || (kp.role === "Other"))}, 
                      [
                     InputFieldText({
-                      isRendered: !this.props.readOnly && !!((this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| (kp.future && kp.future.role && kp.future.role.value === "other") || (kp.role === "Other") && !this.props.readOnly),
+                      isRendered: !!((this.state.keyPersons[idx] && this.state.keyPersons[idx].role && this.state.keyPersons[idx].role.value === 'other')|| (kp.future && kp.future.role && kp.future.role.value === "other") || (kp.role === "Other")),
                       id: idx + "-otherRole",
                       index: idx,
                       name: "otherRole",
@@ -454,7 +508,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
                     })
                   ]),
                   div({classNames:colClass,
-                    isRendered: !this.props.readOnly && !!(kp.future && kp.future.updatedDate|| this.props.comparisonView) },[
+                    isRendered: this.props.readOnly && !!(kp.future && kp.future.updatedDate|| this.props.comparisonView) },[
                     div({style:{display:"inline-block", "padding-left":"5px"}},[
                       label({className: 'inputFieldLabel'}, ["Added Date"]),
                       // p({style:{margin:'10px 0 0 0'}},[this.props.edit || this.props.readOnly ? getDateString(kp.future.updatedDate,'mmddyyyy') : getDateString(kp.updatedDate,'mmddyyyy')])
@@ -470,22 +524,22 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style:{padding:'30px 0 0 5px'} }, [
                 Btn({
                   action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeKeyPersonnel(idx) },
-                  disabled: keyPersons.length === 1,
+                  disabled: keyPersons.length === 1 || kp && kp.future && kp.future.role && kp.future.role.value === 'legacy',
                   isRendered: !this.props.readOnly
                 }),
-              ]),              
-            ]),          
-          ]);
+              ])
+            ]),
+          ],);
         }),
         h(Fragment, {}, [
                 TableComponent({             
-                  isRendered:this.props.readOnly,
-                  data: this.formatKeyPersons(this.props.keyPersons), 
+                  isRendered: ((this.props.readOnly === true && this.props.edit === true && showTable)|| this.props.comparisonView),
+                  data: this.props.readOnly ? this.formatKeyPersons(this.props.keyPersons) : [], 
                   columns: columns,
                   keyField: 'dateAdded',              
                   fileName: 'ORSP'              
                 })
-              ])        
+              ])
       ])
     )
   }
