@@ -39,7 +39,7 @@ const columns = [
   }, 
   {
     dataField: 'dateAdded',
-    text: 'Date Added',
+    text: 'Date',
     sort: true,
     editable: false 
   }
