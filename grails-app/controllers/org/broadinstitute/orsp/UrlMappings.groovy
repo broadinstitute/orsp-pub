@@ -25,6 +25,7 @@ class UrlMappings {
         '/api/project'(resource: 'project')
         '/api/project'(controller:'project', action: 'save', method: 'POST')
         '/api/project/get-info'(controller: 'project', action: 'getProject', method: 'GET')
+        '/api/project/get-info-kp'(controller: 'project', action: 'migrateCollaborators', method: 'GET')
         '/api/project/get-type'(controller: 'project', action: 'getProjectType', method: 'GET')
         '/api/project/reject'(controller: 'project', action: 'delete', method: 'DELETE')
         '/api/project/update'(controller: 'project', action: 'update', method: 'PUT')

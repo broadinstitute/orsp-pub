@@ -91,7 +91,8 @@ export const AsyncMultiSelect = hh(class AsyncMultiSelect extends Component {
           readOnly: this.props.readOnly,
           value: this.props.value,
           currentValue: currentValue,
-          currentValueStr: currentValueStr
+          currentValueStr: currentValueStr,
+          edited : this.props.showCurrentValueOnEdit? edited: undefined
         }, [
           div({ className: "inputFieldSelectWrapper" }, [
             h(AsyncSelect, {
