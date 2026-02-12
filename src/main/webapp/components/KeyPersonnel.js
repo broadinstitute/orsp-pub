@@ -456,6 +456,7 @@ isCurrentAndFuctureSame = (arr) => {
                       id: idx + "-name",
                       index: idx,
                       label:'Name',
+                      isDisabled: kp && kp.future && kp.future.role && kp.future.role.value === 'legacy',
                       loadOptions: this.loadUsersOptions,
                       handleChange: this.handleNameChange(idx),
                       value: this.props.edit ? kp.future.name : kp.name,
@@ -480,7 +481,7 @@ isCurrentAndFuctureSame = (arr) => {
                       onChange: this.handleRoleSelect,
                       error: this.getRoleError(idx),
                       errorMessage: this.props.errorMessage,
-                      readOnly: this.props.readOnly,
+                      readOnly: this.props.readOnly || !!(kp && kp.future && kp.future.role && kp.future.role.value === 'legacy'),
                       edited: this.props.readOnly,
                       edit: this.props.edit,
                       placeholder: "Choose a role..."
@@ -523,7 +524,7 @@ isCurrentAndFuctureSame = (arr) => {
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style:{padding:'30px 0 0 5px'} }, [
                 Btn({
                   action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeKeyPersonnel(idx) },
-                  disabled: keyPersons.length === 1,
+                  disabled: keyPersons.length === 1 || kp && kp.future && kp.future.role && kp.future.role.value === 'legacy',
                   isRendered: !this.props.readOnly
                 }),
               ])
