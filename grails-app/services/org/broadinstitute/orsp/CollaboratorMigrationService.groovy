@@ -7,18 +7,18 @@ class CollaboratorMigrationService {
 
     void migrateIfRequired(Issue issue) {
 
-        if (!issue?.projectKey) {
+        if (!issue?.id) {
             return
         }
 
-        // Guard: migration already happened
-        boolean legacyExists = KeyPerson.findByProjectKeyAndRoleAndDeleted(
-                issue.projectKey,
-                'Legacy',
-                false
-        ) != null
+        // Check migration log table
+        boolean alreadyMigrated =
+                IssueExtraPropertyMigrationLog.findByIssueAndMigrationType(
+                        issue,
+                        'COLLABORATOR'
+                ) != null
 
-        if (legacyExists) {
+        if (alreadyMigrated) {
             return
         }
 
@@ -33,6 +33,7 @@ class CollaboratorMigrationService {
             return
         }
 
+        //  Migrate to KeyPerson
         collaboratorProps.each { IssueExtraProperty prop ->
 
             String collaboratorName = prop.value?.trim()
@@ -57,5 +58,13 @@ class CollaboratorMigrationService {
                 ).save(failOnError: true)
             }
         }
+
+        //  Insert migration log entry
+        new IssueExtraPropertyMigrationLog(
+                issue        : issue,
+                projectKey   : issue.projectKey,
+                migrationType: 'COLLABORATOR',
+                updatedAt    : new Date()
+        ).save(failOnError: true)
     }
 }
