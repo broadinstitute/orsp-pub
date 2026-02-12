@@ -333,7 +333,6 @@ const NewProject = hh(class NewProject extends Component {
           kpItem.name = kp.name.key || kp.name.value; // Use key (userName) or value as fallback
           kpItem.role = kp.role.label || kp.role.value; // Use label or value
           kpItem.otherRole = kp.otherRole || '';
-          kpItem.otherRole = kp.updatedDate || '';
           keyPersonsList.push(kpItem);
         }
       });

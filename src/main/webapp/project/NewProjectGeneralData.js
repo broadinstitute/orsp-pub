@@ -219,23 +219,33 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     const IS_EMPTY = !!KEYPERSONS.length;
 
     if (field === 'piNames') {
-      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data[0].key)
-      if (!DUPLICATE_EXIST) {
-        this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pi: [data[0].key] } }))
+      // PI and PM can can have Dulicates  entires
+      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data[0].key);
+      let isPmDuplicate = false;
+      if (DUPLICATE_EXIST) {
+        if(data[0].key === (this.state.formData.projectManagers && this.state.formData.projectManagers[0] && this.state.formData.projectManagers[0].key)) isPmDuplicate = true;
+      }
+      if (!DUPLICATE_EXIST || isPmDuplicate) {
+        this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pi: [data[0].key] } }));
       } else {
-        this.showDuplicateModal("User already exists. Please choose another one.")
+        this.showDuplicateModal("User already exists. Please choose another one.");
         this.setState(prev => {
           prev.formData.piNames = null;
           return prev;
         }, () => {
-          this.props.updateForm(this.state.formData, 'piNames')
+          this.props.updateForm(this.state.formData, 'piNames');
         });
       }
     }
 
     if (field === 'projectManagers') {
-      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data[0].key)
-      if (!DUPLICATE_EXIST) {
+      // PI and PM can can have Dulicates  entires
+      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data[0].key);
+      let isPiDuplicate = false;
+      if (DUPLICATE_EXIST) {
+        if(data[0].key === (this.state.formData.piNames && this.state.formData.piNames[0] && this.state.formData.piNames[0].key)) isPiDuplicate = true;
+      }
+      if (!DUPLICATE_EXIST || isPiDuplicate) {
         this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [data[0].key] } }))
       } else {
         this.showDuplicateModal("User already exists. Please choose another one.")
@@ -405,7 +415,8 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             error: this.props.errors.keyPersons,
             errorIndex: this.props.errors.keyPersonsErrorIndex || [],
             errorMessage: "Required field",
-            edit: false
+            edit: false,
+            comparisonView: false
           })
         ]),
 

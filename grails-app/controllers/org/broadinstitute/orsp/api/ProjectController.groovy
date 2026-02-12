@@ -24,10 +24,12 @@ import org.broadinstitute.orsp.VersionedIssueExtraProperty
 import org.broadinstitute.orsp.VersionedKeyPerson
 import org.broadinstitute.orsp.utils.IssueUtils
 import org.springframework.web.multipart.MultipartFile
+import org.broadinstitute.orsp.CollaboratorMigrationService
 
 @Slf4j
 @Resource(readOnly = false, formats = ['JSON', 'APPLICATION-MULTIPART'])
 class ProjectController extends AuthenticatedController {
+    CollaboratorMigrationService collaboratorMigrationService
 
     @Override
     def show() {
@@ -108,8 +110,9 @@ class ProjectController extends AuthenticatedController {
             if (!StringUtils.isEmpty(projectKey)) {
                 Issue issue = queryService.findByKey(projectKey)
                 if (issue != null && !issueIsForbidden(issue)) {
+//                    collaboratorMigrationService.migrateIfRequired(issue)
                     Collection<Funding> fundingList = issue.getFundings()
-                    Collection<KeyPerson> keyPersonList = issue.getKeyPersons()
+//                    Collection<KeyPerson> keyPersonList = issue.getKeyPersons()
                     ProjectExtraProperties projectExtraProperties = new ProjectExtraProperties(issue)
                     Collection<User> colls = getCollaborators(projectExtraProperties.collaborators)
                     if (issue.updateUser) {
@@ -123,7 +126,7 @@ class ProjectController extends AuthenticatedController {
                             extraProperties   : projectExtraProperties,
                             collaborators     : colls,
                             attachmentsApproved: issue.attachmentsApproved(),
-                            keyPersons         : getKeyPersonsForIssueMerged(issue)
+                            keyPersons         : []
                     ] as JSON)
                 } else if (issue != null) {
                     response.status = 403
@@ -138,32 +141,84 @@ class ProjectController extends AuthenticatedController {
         }
     }
 
-    protected Collection<Map> getKeyPersonsForIssueMerged(Issue issue) {
+    def migrateCollaborators() {
+        String projectKey = params.id
+        Issue issue = queryService.findByKey(projectKey)
 
-        Collection<KeyPerson> keyPersons = issue.getKeyPersons()
+        if (!issue || issueIsForbidden(issue)) {
+            handleNotFound('Project not found')
+            return
+        }
+
+        collaboratorMigrationService.migrateIfRequired(issue)
+
+        Collection<KeyPerson> keyPersons =
+                KeyPerson.findAllByProjectKeyAndDeleted(projectKey, false)
+
+        render([
+                projectKey : projectKey,
+                keyPersons : getKeyPersonsForIssueMergedFromList(keyPersons)
+        ] as JSON)
+    }
+
+    protected Collection<Map> getKeyPersonsForIssueMergedFromList(
+            Collection<KeyPerson> keyPersons) {
+
         if (!keyPersons) {
             return []
         }
-        Collection<String> usernames = keyPersons*.name.findAll { it }.unique()
+
+        Collection<String> usernames =
+                keyPersons*.name.findAll { it }.unique()
+
         Collection<User> users = userService.findUsers(usernames)
+
         Map<String, User> userMap =
                 users.collectEntries { [(it.userName): it] }
+
         keyPersons.collect { kp ->
             User user = userMap[kp.name]
 
             [
-                    id            : user?.id,
-                    createdDate   : kp?.createdTimestamp,
-                    emailAddress  : user?.emailAddress,
-                    userName      : user?.userName,
-                    updatedDate   : kp?.updateDate,
-                    displayName   : user?.displayName,
-                    name          : kp.name,
-                    role          : kp.role,
-                    otherRole     : kp.otherRole
+                    id           : user?.id,
+                    createdDate  : kp?.createdTimestamp,
+                    emailAddress : user?.emailAddress,
+                    userName     : user?.userName,
+                    updatedDate  : kp?.updateDate,
+                    displayName  : user?.displayName,
+                    name         : kp.name,
+                    role         : kp.role,
+                    otherRole    : kp.otherRole
             ]
         }
     }
+
+//    protected Collection<Map> getKeyPersonsForIssueMerged(Issue issue) {
+//
+//        Collection<KeyPerson> keyPersons = issue.getKeyPersons()
+//        if (!keyPersons) {
+//            return []
+//        }
+//        Collection<String> usernames = keyPersons*.name.findAll { it }.unique()
+//        Collection<User> users = userService.findUsers(usernames)
+//        Map<String, User> userMap =
+//                users.collectEntries { [(it.userName): it] }
+//        keyPersons.collect { kp ->
+//            User user = userMap[kp.name]
+//
+//            [
+//                    id            : user?.id,
+//                    createdDate   : kp?.createdTimestamp,
+//                    emailAddress  : user?.emailAddress,
+//                    userName      : user?.userName,
+//                    updatedDate   : kp?.updateDate,
+//                    displayName   : user?.displayName,
+//                    name          : kp.name,
+//                    role          : kp.role,
+//                    otherRole     : kp.otherRole
+//            ]
+//        }
+//    }
 
 
     def delete() {

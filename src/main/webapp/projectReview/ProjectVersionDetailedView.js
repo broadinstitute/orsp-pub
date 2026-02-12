@@ -54,7 +54,7 @@ class ProjectVersionDetailedView extends Component {
   if (!keyPersons || !keyPersons.length) return [];
   console.log(keyPersons,'keyPersons');
   return keyPersons.map(keyPerson => ({
-    name: `${keyPerson.displayName} (${keyPerson.emailAddress})`,
+    name: keyPerson.displayName,
     role: keyPerson.role,
     otherRole: keyPerson.otherRole,
     updatedDate: keyPerson.updatedDate

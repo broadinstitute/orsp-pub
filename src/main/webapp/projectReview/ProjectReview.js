@@ -206,92 +206,104 @@ const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   init() {
-    scrollToTop();
-    let current = {};
-    let currentStr = {};
-    let future = {};
-    let futureCopy = {};
-    let formData = {};
-    Project.getProject(this.props.projectKey).then(
-      issue => {
-        // store current issue info here ....
-        this.props.initStatusBoxInfo(issue.data);
-        current.approvalStatus = issue.data.issue.approvalStatus;
-        current.description = isEmpty(issue.data.issue.description) ? '' : he.decode(sanitizeHtml(issue.data.issue.description, { allowedTags: [] }));
-        current.affiliationOther = issue.data.issue.affiliationOther;
-        current.projectExtraProps = issue.data.extraProperties;
-        current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb);
-        current.projectExtraProps.affiliations = this.getAffiliation(current.projectExtraProps.affiliations);
-        current.piList = this.getUsersArray(issue.data.pis);
-        current.pmList = this.getUsersArray(issue.data.pms);
-        current.collaborators = this.getUsersArray(issue.data.collaborators);
-        current.fundings = this.getFundingsArray(issue.data.fundings);
-        const keyPersonsData = issue.data.keyPersons;
-        const hasKeyPersonsData = keyPersonsData !== undefined && keyPersonsData !== null && keyPersonsData.length > 0;
-        if (hasKeyPersonsData) {
-          current.keyPersons = this.getKeyPersonsArray(keyPersonsData);
-        }
-        current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
-        current.sequenceNumber = issue.data.issue.sequenceNumber;
-        current.updateUser = issue.data.issue.updateUser;
-        current.updateDate = issue.data.issue.updateDate;
-        currentStr = JSON.stringify(current);
-        future = JSON.parse((currentStr));
-        futureCopy = JSON.parse(currentStr);
-        this.projectType = issue.data.issue.type;
-        this.updateCoiAttestation(issue.data.extraProperties);
-        Review.getSuggestions(this.props.projectKey).then(
-          data => {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('new') && urlParams.get('tab') === 'review') {
-              // next line should be temporary, its function is to remove the 'new' flag from the url
-              history.pushState({}, null, window.location.href.split('&')[0]);
-              this.handleProjectSubmittedDialog();
-            }
-            if (this._isMounted) {
-              if (data.data !== '') {
-                formData = JSON.parse(data.data.suggestions);
-                // Ensure keyPersons exists in formData if it existed in original
-                if (hasKeyPersonsData && (!formData.keyPersons || formData.keyPersons.length === 0)) {
-                  formData.keyPersons = current.keyPersons;
-                }
-                this.props.hideSpinner();
-                this.setState(prev => {
-                  prev.formData = formData;
-                  prev.current = current;
-                  prev.future = future;
-                  prev.futureCopy = futureCopy;
-                  prev.editedForm = JSON.parse(data.data.suggestions);
-                  prev.reviewSuggestion = true;
-                  prev.isAdmin = component.isAdmin;
-                  prev.hasKeyPersonnel = hasKeyPersonsData;
-                  return prev;
-                });
-                this.props.changeInfoStatus(false);
-              } else {
-                this.props.hideSpinner();
-                formData = JSON.parse(currentStr);
-                this.setState(prev => {
-                  prev.formData = formData;
-                  prev.current = current;
-                  prev.future = future;
-                  prev.futureCopy = futureCopy;
-                  prev.reviewSuggestion = false;
-                  prev.isAdmin = component.isAdmin;
-                  prev.hasKeyPersonnel = hasKeyPersonsData;
-                  return prev;
-                });
+  scrollToTop();
+  let current = {};
+  let currentStr = {};
+  let future = {};
+  let futureCopy = {};
+  let formData = {};
+  Project.getProject(this.props.projectKey).then(
+    issue => {
+      this.props.initStatusBoxInfo(issue.data);
+      current.approvalStatus = issue.data.issue.approvalStatus;
+      current.description = isEmpty(issue.data.issue.description) ? '' : he.decode(sanitizeHtml(issue.data.issue.description, { allowedTags: [] }));
+      current.affiliationOther = issue.data.issue.affiliationOther;
+      current.projectExtraProps = issue.data.extraProperties;
+      current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb);
+      current.projectExtraProps.affiliations = this.getAffiliation(current.projectExtraProps.affiliations);
+      current.piList = this.getUsersArray(issue.data.pis);
+      current.pmList = this.getUsersArray(issue.data.pms);
+      current.collaborators = this.getUsersArray(issue.data.collaborators);
+      current.fundings = this.getFundingsArray(issue.data.fundings);
+
+      current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
+      current.sequenceNumber = issue.data.issue.sequenceNumber;
+      current.updateUser = issue.data.issue.updateUser;
+      current.updateDate = issue.data.issue.updateDate;
+      this.projectType = issue.data.issue.type;
+      this.updateCoiAttestation(issue.data.extraProperties);
+
+      Project.getKeyPersons(this.props.projectKey).then(
+        kpResponse => {
+
+          const keyPersonsData = kpResponse.data.keyPersons || [];
+          const hasKeyPersonsData =
+            Array.isArray(keyPersonsData) && keyPersonsData.length > 0;
+
+          if (hasKeyPersonsData) {
+            current.keyPersons =
+              this.getKeyPersonsArray(keyPersonsData);
+          }
+          currentStr = JSON.stringify(current);
+          future = JSON.parse(currentStr);
+          futureCopy = JSON.parse(currentStr);
+          Review.getSuggestions(this.props.projectKey).then(
+            data => {
+              const urlParams = new URLSearchParams(window.location.search);
+              if (urlParams.has('new') && urlParams.get('tab') === 'review') {
+                history.pushState({}, null, window.location.href.split('&')[0]);
+                this.handleProjectSubmittedDialog();
               }
-            }
-          }).catch(() => {});
-      }).catch((error) => {
-        if(error.response.status === 403) {
-          this.props.history.push("/index")
-        }
-        this.props.hideSpinner();
+              if (this._isMounted) {
+                if (data.data !== '') {
+                  formData = JSON.parse(data.data.suggestions);
+                  if (hasKeyPersonsData && (!formData.keyPersons || formData.keyPersons.length === 0)) {
+                    formData.keyPersons = current.keyPersons;
+                  }
+                  this.props.hideSpinner();
+                  this.setState(prev => {
+                    prev.formData = formData;
+                    prev.current = current;
+                    prev.future = future;
+                    prev.futureCopy = futureCopy;
+                    prev.editedForm = JSON.parse(data.data.suggestions);
+                    prev.reviewSuggestion = true;
+                    prev.isAdmin = component.isAdmin;
+                    prev.hasKeyPersonnel = hasKeyPersonsData;
+                    return prev;
+                  });
+                  this.props.changeInfoStatus(false);
+                } else {
+                  this.props.hideSpinner();
+                  formData = JSON.parse(currentStr);
+                  this.setState(prev => {
+                    prev.formData = formData;
+                    prev.current = current;
+                    prev.future = future;
+                    prev.futureCopy = futureCopy;
+                    prev.reviewSuggestion = false;
+                    prev.isAdmin = component.isAdmin;
+                    prev.hasKeyPersonnel = hasKeyPersonsData;
+                    return prev;
+                  });
+                }
+              }
+            }).catch(() => {});
+        }).catch(() => {
+        // If KeyPersons fail, continue safely without them
+        currentStr = JSON.stringify(current);
+        future = JSON.parse(currentStr);
+        futureCopy = JSON.parse(currentStr);
       });
-    this.getIssueVersionList();
-  }
+    }
+  ).catch((error) => {
+    if(error.response.status === 403) {
+      this.props.history.push("/index");
+    }
+    this.props.hideSpinner();
+  });
+  this.getIssueVersionList();
+}
 
   getIssueVersionList() {
     Project.getIssueVersionList(this.props.projectKey).then(
@@ -1490,7 +1502,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         errorIndex: this.state.keyPersonnelErrorIndex,
                         setError: () => this.setState(prev => { prev.keyPersonnelError = false; return prev; }),
                         errorMessage: "Required field",
-                        edit: true
+                        edit: true,
+                        editedForm:this.state.editedForm,
+                        isCompareChanges:this.state.isCompareChanges,
+                        isProjectReviewApproved:this.state.formData.projectExtraProps,
+                        comparisonView:false
                       })
                     ])
                   ]),
