@@ -509,7 +509,7 @@ isCurrentAndFuctureSame = (arr) => {
                   div({classNames:colClass,
                     isRendered: this.props.readOnly && !!(kp.future && kp.future.updatedDate|| this.props.comparisonView) },[
                     div({style:{display:"inline-block", "padding-left":"5px"}},[
-                      label({className: 'inputFieldLabel'}, ["Added Date"]),
+                      label({className: 'inputFieldLabel'}, ["Date Added"]),
                       // p({style:{margin:'10px 0 0 0'}},[this.props.edit || this.props.readOnly ? getDateString(kp.future.updatedDate,'mmddyyyy') : getDateString(kp.updatedDate,'mmddyyyy')])
                       p({ style: { margin: '10px 0 0 0' } }, [(this.props.readOnly && this.props.comparisonView)
                         ? getDateString(kp.updatedDate, 'mmddyyyy')
