@@ -998,6 +998,17 @@ const ProjectReview = hh(class ProjectReview extends Component {
       return prev;
     });
   };
+  handleaddtnPIChange = (data, action) => {
+    this.setState(prev => {
+      if (data !== null) {
+        prev.formData.additionalPi = data;
+        prev.formData.projectExtraProps.piaddtn = data.key;
+      } else {
+        prev.formData.additionalPi = [];
+      }
+      return prev;
+    });
+  };
 
   handleProjectManagerChange = (data, action) => {
     this.setState(prev => {
@@ -1010,7 +1021,17 @@ const ProjectReview = hh(class ProjectReview extends Component {
       return prev;
     });
   };
-
+ handleaddtnProjectManagerChange = (data, action) => {
+    this.setState(prev => {
+      if (data !== null) {
+        prev.formData.additionalPi = data;
+        prev.formData.projectExtraProps.pmaddtn = data.key;
+      } else {
+        prev.formData.additionalPi = [];
+      }
+      return prev;
+    });
+  };
   handleInputChange = (e) => {
     const field = e.target.name;
     const value = e.target.value;
@@ -1438,6 +1459,21 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         handleChange: this.handlePIChange,
                         value: this.state.formData.piList,
                         currentValue: this.state.current.piList,
+                        isMulti: false
+                      }),
+                      br(),
+                      label({className:'inputFieldLabel'},
+                        ["Additional Broad Co-Investigators",
+                          span({ className: 'errorMessage' }, ' *')]
+                      ),
+                      AsyncMultiSelect({
+                        id: "pi_select_add",
+                        name: 'additionalPi',
+                        readOnly: this.state.readOnly,
+                        loadOptions: this.loadUsersOptions,
+                        handleChange: this.handleaddtnPIChange,
+                        value: this.state.formData.additionalPi,
+                        currentValue: this.state.current.additionalPi,
                         isMulti: true
                       }),
                       br(),
@@ -1480,6 +1516,20 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         handleChange: this.handleProjectManagerChange,
                         value: this.state.formData.pmList,
                         currentValue: this.state.current.pmList,
+                        isMulti: false
+                      }),
+                      br(),
+                      label({className:'inputFieldLabel'},
+                        ["Additional Broad Study Staff &/or Broad individuals)",span({ className: 'errorMessage' }, ' *')]
+                      ),
+                      AsyncMultiSelect({
+                        id: "ProjectManager_add",
+                        name: 'additionalPi',
+                        readOnly: this.state.readOnly,
+                        loadOptions: this.loadUsersOptions,
+                        handleChange: this.handleProjectManagerChange,
+                        value: this.state.formData.additionalPi,
+                        currentValue: this.state.current.additionalPi,
                         isMulti: true
                       })
                     ])
