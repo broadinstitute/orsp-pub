@@ -1024,10 +1024,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
  handleaddtnProjectManagerChange = (data, action) => {
     this.setState(prev => {
       if (data !== null) {
-        prev.formData.additionalPi = data;
+        prev.formData.additionalPm = data;
         prev.formData.projectExtraProps.pmaddtn = data.key;
       } else {
-        prev.formData.additionalPi = [];
+        prev.formData.additionalPm = [];
       }
       return prev;
     });
@@ -1524,12 +1524,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
                       ),
                       AsyncMultiSelect({
                         id: "ProjectManager_add",
-                        name: 'additionalPi',
+                        name: 'additionalPm',
                         readOnly: this.state.readOnly,
                         loadOptions: this.loadUsersOptions,
-                        handleChange: this.handleProjectManagerChange,
-                        value: this.state.formData.additionalPi,
-                        currentValue: this.state.current.additionalPi,
+                        handleChange: this.handleaddtnProjectManagerChange,
+                        value: this.state.formData.additionalPm,
+                        currentValue: this.state.current.additionalPm,
                         isMulti: true
                       })
                     ])
