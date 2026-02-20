@@ -92,6 +92,16 @@ class ProjectVersionDetailedView extends Component {
                 </p>
               </div>
               <div className="mb-15">
+                <label>Additional Broad Co-Investigators</label>
+                <p className="answer-fields">
+                  {pis.length 
+                    ? pis.map((pi, idx) => (
+                        pi.additionalPi
+                      )).join(", ") 
+                    : "--"}
+                </p>
+              </div>
+              <div className="mb-15">
                 <label>PI’s Primary Institutional Affiliation</label>
                 <p className="answer-fields">{this.getExtraPropertyValueFromJSON("affiliations")}</p>
               </div>
@@ -101,6 +111,16 @@ class ProjectVersionDetailedView extends Component {
                   {pms.length 
                     ? pms.map((pm, idx) => (
                         pm.displayName + "(" + pm.emailAddress + ")"
+                      )).join(", ") 
+                    : "--"}
+                </p>
+              </div>
+              <div className="mb-15">
+                <label>Additional Broad Study Staff &/or Broad individuals</label>
+                <p className="answer-fields">
+                  {pms.length 
+                    ? pms.map((pm, idx) => (
+                        pm.additionalPm
                       )).join(", ") 
                     : "--"}
                 </p>
