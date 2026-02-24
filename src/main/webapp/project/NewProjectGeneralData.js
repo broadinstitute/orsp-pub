@@ -43,7 +43,9 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         irb: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
         keyPersons: [{ name: null, role: '', otherRole: '' }],
-        collaborators: []
+        collaborators: [],
+        additionalPis: [],
+        additionalPms: [],
       },
       formerData: {
         projectManager: [],
@@ -215,17 +217,27 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       return;
     }
 
+    if (field === 'additionalPis' && data.length === 0) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, additionalPis: [] } }))
+      return;
+    }
+
+    if (field === 'additionalPms' && data.length === 0) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, additionalPms: [] } }))
+      return;
+    }
+
     const KEYPERSONS = Object.values(this.state.allKeyPersons).flat();
-    const IS_EMPTY = !!KEYPERSONS.length;
 
     if (field === 'piNames') {
       // PI and PM can can have Dulicates  entires
       const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data[0].key);
-      let isPmDuplicate = false;
+      let iskeyPersonDuplicate = false;
       if (DUPLICATE_EXIST) {
-        if(data[0].key === (this.state.formData.projectManagers && this.state.formData.projectManagers[0] && this.state.formData.projectManagers[0].key)) isPmDuplicate = true;
+        // if(data[0].key === (this.state.formData.projectManagers && this.state.formData.projectManagers[0] && this.state.formData.projectManagers[0].key)) iskeyPersonDuplicate = true;
+        if([...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms].includes(data[0].key)) iskeyPersonDuplicate = true;
       }
-      if (!DUPLICATE_EXIST || isPmDuplicate) {
+      if (!DUPLICATE_EXIST || iskeyPersonDuplicate) {
         this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pi: [data[0].key] } }));
       } else {
         this.showDuplicateModal("User already exists. Please choose another one.");
@@ -241,11 +253,12 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     if (field === 'projectManagers') {
       // PI and PM can can have Dulicates  entires
       const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data[0].key);
-      let isPiDuplicate = false;
+      let iskeyPersonDuplicate = false;
       if (DUPLICATE_EXIST) {
-        if(data[0].key === (this.state.formData.piNames && this.state.formData.piNames[0] && this.state.formData.piNames[0].key)) isPiDuplicate = true;
+        // if(data[0].key === (this.state.formData.piNames && this.state.formData.piNames[0] && this.state.formData.piNames[0].key)) isPiDuplicate = true;
+        if([...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms].includes(data[0].key)) iskeyPersonDuplicate = true;
       }
-      if (!DUPLICATE_EXIST || isPiDuplicate) {
+      if (!DUPLICATE_EXIST || iskeyPersonDuplicate) {
         this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [data[0].key] } }))
       } else {
         this.showDuplicateModal("User already exists. Please choose another one.")
@@ -261,7 +274,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     if (field === 'keyPersons') {
       // Here Keyperson(Study Staff) is not spred because data in keyperson cannot have duplicate value
       // handles in handleUpdateKeyPersons function
-      const KEYPERSONS = [...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,]
+      const KEYPERSONS = [...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms];
       const IS_DUPLICATE_PRESENT = this.checkAndRemoveDuplicate(KEYPERSONS, data);
       if(IS_DUPLICATE_PRESENT){
         this.showDuplicateModal("User already exists. Please choose another one.")
@@ -289,7 +302,67 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         });
       }
     }
+
+    if (field === 'additionalPis') {
+      // additional Pis allows duplicate with projectManagers,additionalPms,piNames.
+      const KEYPERSONS = [...this.state.allKeyPersons.KeyPersons];
+      if (this.removeIfKeyExists(data, KEYPERSONS)) {
+        this.showDuplicateModal("User already exists. Please choose another one.");
+        this.setState((prev) => ({
+          allKeyPersons: {
+            ...prev.allKeyPersons, additionalPis: data.map(x => x.key)
+          }
+        }), () => {
+          this.props.updateForm(this.state.formData, 'additionalPis')
+        })
+      } else {
+        this.setState((prev) => ({
+          allKeyPersons: {
+            ...prev.allKeyPersons, additionalPis: data.map(x => x.key)
+          }
+        }))
+      }
+    }
+
+    if (field === 'additionalPms') {
+      // additionalPms allows duplicate with projectManagers,additionalPis,piNames.
+      const KEYPERSONS = [...this.state.allKeyPersons.KeyPersons];
+      if (this.removeIfKeyExists(data, KEYPERSONS)) {
+        this.showDuplicateModal("User already exists. Please choose another one.");
+        this.setState((prev) => ({
+          allKeyPersons: {
+            ...prev.allKeyPersons, additionalPms: data.map(x => x.key)
+          }
+        }), () => {
+          this.props.updateForm(this.state.formData, 'additionalPms')
+        })
+      } else {
+        this.setState((prev) => ({
+          allKeyPersons: {
+            ...prev.allKeyPersons, additionalPms: data.map(x => x.key)
+          }
+        }))
+      }
+    }
+
   } 
+
+  removeIfKeyExists = (a, b) => {
+  if (!Array.isArray(a) || !Array.isArray(b)) {
+    return false;
+  }
+
+  const keySet = new Set(b);
+  const originalLength = a.length;
+
+  for (let i = a.length - 1; i >= 0; i--) {
+    if (keySet.has(a[i].key)) {
+      a.splice(i, 1);
+    }
+  }
+
+  return a.length !== originalLength;
+}
   
   checkAndRemoveDuplicate = (keyPersons, updatedArray) => {
     for (let i = 0; i < updatedArray.length; i++) {
@@ -309,6 +382,32 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       showModal:true,
       modalMessage:message
     })
+  }
+
+  handleAdditionalPiChange = (newAdditionalPisArray) => {
+    console.log(newAdditionalPisArray)
+    this.setState((prevState) => ({
+      formData: {
+        ...prevState.formData,
+        additionalPis: newAdditionalPisArray
+      }
+    }),()=>{
+      this.props.updateForm(this.state.formData, 'additionalPis')
+      this.checkDuplicateKeyPersons(newAdditionalPisArray, 'additionalPis');
+    });
+  }
+
+    handleAdditionalPmChange = (newAdditionalPmsArray) => {
+    console.log(newAdditionalPmsArray)
+    this.setState((prevState) => ({
+      formData: {
+        ...prevState.formData,
+        additionalPms: newAdditionalPmsArray
+      }
+    }),()=>{
+      this.props.updateForm(this.state.formData, 'additionalPms');
+      this.checkDuplicateKeyPersons(newAdditionalPmsArray, 'additionalPms');
+    });
   }
 
   render() {
@@ -365,6 +464,17 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           }),
           small({ isRendered: this.props.errors.piName, className: "errorMessage" }, ['Required field']),
           br(),
+          label({className:'inputFieldLabel'},["Additional Broad Co-Investigators"]),
+          AsyncMultiSelect({
+            id: "co_pi_select",
+            isDisabled: false,
+            loadOptions: this.loadUsersOptions,
+            handleChange: this.handleAdditionalPiChange,
+            value: this.state.formData.additionalPis,
+            placeholder: "Start typing the Co-Investigator Names",
+            isMulti: true,
+          }),
+          br(),
           label({className:'inputFieldLabel'},["PI’s Primary Institutional Affiliation",span({ className: 'errorMessage' }, ' *')]),
           div({},[
             InputFieldSelect({
@@ -405,6 +515,17 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             isWarning: false
           }),
           small({ isRendered: this.props.errors.KeyStudyContact, className: "errorMessage" }, ['Required field']),
+          br(),
+          label({ className: 'inputFieldLabel' }, ["Additional Broad Study Staff &/or Broad individuals"]),
+          AsyncMultiSelect({
+            id: "additional_pm_select",
+            isDisabled: false,
+            loadOptions: this.loadUsersOptions,
+            handleChange: this.handleAdditionalPmChange,
+            value: this.state.formData.additionalPms,
+            placeholder: "Start typing the additional Broad Study Staff &/or Broad individuals Names",
+            isMulti: true,
+          }),
         ]),
 
         Panel({ title: "Study Staff"}, [
