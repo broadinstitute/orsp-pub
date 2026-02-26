@@ -253,7 +253,12 @@ const ProjectChangeComparision = hh(
                 this.compareData(this.props.formData.piList, this.props.versionedData.piList, "jsonArray"),
               ]),
             ]),
-
+            div([
+              label({className: 'inputFieldLabel'}, ["Additional Broad Co-Investigators"]),
+              p({}, [
+                this.compareData(this.props.formData.additionalPi, this.props.versionedData.additionalPi, "jsonArray"),
+              ]),
+            ]),
             div([
               label({className: 'inputFieldLabel'}, [" PI’s Primary Institutional Affiliation"]),
               p({}, [
@@ -275,6 +280,12 @@ const ProjectChangeComparision = hh(
               label({className: 'inputFieldLabel'}, ["Key Study Contact (will receive email notifications about this project)"]),
               p({}, [
                 this.compareData(this.props.formData.pmList, this.props.versionedData.pmList, "jsonArray"),
+              ]),
+            ]),
+            div([
+              label({className: 'inputFieldLabel'}, ["Additional Broad Study Staff &/or Broad individuals"]),
+              p({}, [
+                this.compareData(this.props.formData.additionalPm, this.props.versionedData.additionalPm, "jsonArray"),
               ]),
             ]),
           ]),

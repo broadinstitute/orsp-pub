@@ -19,12 +19,17 @@ const roleOptions = [
 ]
 
 const defaultSorted = [{
-  dataField: 'date',
-  order: 'desc',
+  dataField: 'name',
+  order: 'asc',
   editable: false
 }];
 
 const columns = [
+  {
+    dataField: 'id',
+    text: 'Id',
+    hidden: true,
+  },
   {
     dataField: 'name',
     text: 'Name',
@@ -216,7 +221,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
         prev.future = keyPersons;
         if (this.props.error && this.props.setError) this.props.setError();
         return prev;
-      }, () => this.props.updateKeyPersons(this.state.future));
+      }, () => this.props.updateKeyPersons(this.state.future, index));
     }
   };
 
@@ -535,8 +540,9 @@ isCurrentAndFuctureSame = (arr) => {
                   isRendered: ((this.props.readOnly === true && this.props.edit === true && showTable)|| this.props.comparisonView),
                   data: this.props.readOnly ? this.formatKeyPersons(this.props.keyPersons) : [], 
                   columns: columns,
-                  keyField: 'dateAdded',              
-                  fileName: 'ORSP'              
+                  keyField: 'id',              
+                  fileName: 'ORSP',
+                  defaultSorted: defaultSorted             
                 })
               ])
       ])

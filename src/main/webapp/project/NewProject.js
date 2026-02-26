@@ -264,16 +264,20 @@ const NewProject = hh(class NewProject extends Component {
       extraProperties.push({name: 'irb', value: isEmpty(this.state.generalDataFormData.irb.value) ? null : JSON.stringify(this.state.generalDataFormData.irb)});
     }
     let pis = this.state.generalDataFormData.piNames;
+    project.primaryPi = []
     if (pis !== null && pis.length > 0) {
       pis.map((pi, idx) => {
         extraProperties.push({ name: 'pi', value: pi.key });
+        project.primaryPi.push(pi.key) 
       });
     }
 
     let pms = this.state.generalDataFormData.projectManagers;
     if (pms !== null && pms.length > 0) {
+      project.primaryPm = []
       pms.map((pi, idx) => {
         extraProperties.push({ name: 'pm', value: pi.key });
+        project.primaryPm.push(pi.key)
       });
     }
 
@@ -306,6 +310,12 @@ const NewProject = hh(class NewProject extends Component {
     }
 
     project.extraProperties = extraProperties;
+  
+    project.additionalPis = 
+    Array.isArray(this.state.generalDataFormData.additionalPis) ? this.state.generalDataFormData.additionalPis.map(x => x.key): []
+
+    project.additionalPms = 
+    Array.isArray(this.state.generalDataFormData.additionalPms) ? this.state.generalDataFormData.additionalPms.map(x => x.key): []
     return project;
   }
 
