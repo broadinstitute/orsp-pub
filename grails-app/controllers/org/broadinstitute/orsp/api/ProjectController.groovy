@@ -2,6 +2,7 @@ package org.broadinstitute.orsp.api
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import grails.converters.JSON
 import grails.rest.Resource
@@ -15,6 +16,8 @@ import org.broadinstitute.orsp.IssueExtraProperty
 import org.broadinstitute.orsp.IssueStatus
 import org.broadinstitute.orsp.IssueType
 import org.broadinstitute.orsp.KeyPerson
+import org.broadinstitute.orsp.PiStudyStaff
+import org.broadinstitute.orsp.PmStudyStaff
 import org.broadinstitute.orsp.ProjectExtraProperties
 import org.broadinstitute.orsp.SupplementalRole
 import org.broadinstitute.orsp.User
@@ -56,6 +59,19 @@ class ProjectController extends AuthenticatedController {
         }
         try {
             Issue parsedIssue = IssueUtils.getJson(Issue.class, projectDataJson[0])
+            JsonObject jsonObject = projectDataJson[0]?.asJsonObject
+
+            parsedIssue.primaryPi =
+                    jsonObject?.get("primaryPi")?.asJsonArray?.collect { it.asString } ?: []
+
+            parsedIssue.additionalPis =
+                    jsonObject?.get("additionalPis")?.asJsonArray?.collect { it.asString } ?: []
+
+            parsedIssue.primaryPm =
+                    jsonObject?.get("primaryPm")?.asJsonArray?.collect { it.asString } ?: []
+
+            parsedIssue.additionalPms =
+                    jsonObject?.get("additionalPms")?.asJsonArray?.collect { it.asString } ?: []
             Issue issue = issueService.createIssue(IssueType.valueOfPrefix(parsedIssue.type), parsedIssue)
             handleIntake(issue.projectKey)
             persistenceService.saveEvent(issue.projectKey, user?.displayName, "New Project Added", EventType.SUBMIT_PROJECT)
@@ -118,15 +134,15 @@ class ProjectController extends AuthenticatedController {
                     if (issue.updateUser) {
                         issue.updateUser = userService.findUser(issue.updateUser).displayName
                     }
-                    render([issue             : issue,
-                            requestor         : getRequestorForIssue(issue),
-                            pms               : getProjectManagersForIssue(issue),
-                            pis               : getPIsForIssue(issue),
-                            fundings          : fundingList,
-                            extraProperties   : projectExtraProperties,
-                            collaborators     : colls,
+                    render([issue              : issue,
+                            requestor          : getRequestorForIssue(issue),
+                            fundings           : fundingList,
+                            extraProperties    : projectExtraProperties,
+                            collaborators      : colls,
                             attachmentsApproved: issue.attachmentsApproved(),
-                            keyPersons         : []
+                            keyPersons         : [],
+                            allPis             : getAllPisForIssue(issue),
+                            allPms             : getAllPmsForIssue(issue)
                     ] as JSON)
                 } else if (issue != null) {
                     response.status = 403
@@ -140,6 +156,85 @@ class ProjectController extends AuthenticatedController {
             handleException(e)
         }
     }
+
+    protected Collection<Map> getAllPisForIssue(Issue issue) {
+
+        if (!issue) {
+            return []
+        }
+
+        Collection<PiStudyStaff> piList =
+                PiStudyStaff.findAllByIssue(issue) ?: []
+
+        if (!piList) {
+            return []
+        }
+
+        Collection<String> usernames =
+                piList*.pi?.findAll { it }?.unique() ?: []
+
+        if (!usernames) {
+            return []
+        }
+
+        Collection<User> users =
+                userService.findUsers(usernames) ?: []
+
+        Map<String, User> userMap =
+                users.collectEntries { [(it.userName): it] }
+
+        return piList.collect { piStaff ->
+
+            User user = userMap[piStaff.pi]
+
+            [
+                    emailAddress : user?.emailAddress,
+                    userName     : user?.userName,
+                    displayName  : user?.displayName,
+                    piType       : piStaff?.piType
+            ]
+        }
+    }
+
+    protected Collection<Map> getAllPmsForIssue(Issue issue) {
+
+    if (!issue) {
+        return []
+    }
+
+    Collection<PmStudyStaff> pmList =
+            PmStudyStaff.findAllByIssue(issue) ?: []
+
+    if (!pmList) {
+        return []
+    }
+
+    Collection<String> usernames =
+            pmList*.pm?.findAll { it }?.unique() ?: []
+
+    if (!usernames) {
+        return []
+    }
+
+    Collection<User> users =
+            userService.findUsers(usernames) ?: []
+
+    Map<String, User> userMap =
+            users.collectEntries { [(it.userName): it] }
+
+    return pmList.collect { pmStaff ->
+
+        User user = userMap[pmStaff.pm]
+
+        [
+                emailAddress : user?.emailAddress,
+                userName     : user?.userName,
+                displayName  : user?.displayName,
+                pmType       : pmStaff?.pmType
+        ]
+    }
+}
+
 
     def migrateCollaborators() {
         String projectKey = params.id
@@ -241,6 +336,8 @@ class ProjectController extends AuthenticatedController {
             issueService.saveVersionedFunding(issue)
             issueService.saveVersionedIssueExtraProperties(issue)
             issueService.saveVersionedKeyPerson(issue)
+            issueService.saveVersionedPiStudyStaff(issue)
+            issueService.saveVersionedPmStudyStaff(issue)
             issueService.updateIssue(issue, project)
             response.status = 200
             render([message: 'Project was updated'] as JSON)

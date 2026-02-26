@@ -13,7 +13,7 @@ import { InputFieldTextArea } from '../components/InputFieldTextArea';
 import { InputFieldRadio } from '../components/InputFieldRadio';
 import { InputFieldCheckbox } from '../components/InputFieldCheckbox';
 import { ConfirmationDialog } from '../components/ConfirmationDialog';
-import { Project, Review, Search, User } from '../util/ajax';
+import { Issues, Project, Review, Search, User } from '../util/ajax';
 import get from 'lodash/get';
 import head from 'lodash/head';
 import orderBy from 'lodash/orderBy';
@@ -79,6 +79,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
         projectType: '',
         piList: [{ key: '', label: '', value: '' }],
         pmList: [{ key: '', label: '', value: '' }],
+        additionalPm:[{ key: '', label: '', value: '' }],
+        additionalPi:[{ key: '', label: '', value: '' }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
           irb: '',
@@ -131,6 +133,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
         studyDescription: '',
         piList: [{ key: '', label: '', value: '' }],
         pmList: [{ key: '', label: '', value: '' }],
+        additionalPm:[{ key: '', label: '', value: '' }],
+        additionalPi:[{ key: '', label: '', value: '' }],
         fundings: [{
           current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
           future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
@@ -186,7 +190,16 @@ const ProjectReview = hh(class ProjectReview extends Component {
         dataSharingConfirmed: false,
         financialConfirmed: false,
         financialNotApplicable: false
-      }
+      },
+      allKeyPersons: {
+        pi:[],
+        pm:[],
+        additionalPis:[],
+        additionalPms:[],
+        KeyPersons:[]
+      },
+      showModal:false,
+      modalMessage: ''
     };
     this.state.questions = initQuestions();
     this.rejectProject = this.rejectProject.bind(this);
@@ -221,11 +234,17 @@ const ProjectReview = hh(class ProjectReview extends Component {
       current.projectExtraProps = issue.data.extraProperties;
       current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb);
       current.projectExtraProps.affiliations = this.getAffiliation(current.projectExtraProps.affiliations);
-      current.piList = this.getUsersArray(issue.data.pis);
-      current.pmList = this.getUsersArray(issue.data.pms);
+      const PRIMARY_PI = issue.data.allPis.filter((x) => x.piType === "PRIMARY");
+      const SECONDARY_PI = issue.data.allPis.filter((x) => x.piType === "SECONDARY");
+      current.piList = this.getUsersArray(PRIMARY_PI);
+      current.additionalPi = this.getUsersArray(SECONDARY_PI);
+      const PRIMARY_PM = issue.data.allPms.filter((x) => x.pmType === "PRIMARY");
+      const SECONDARY_PM = issue.data.allPms.filter((x) => x.pmType === "SECONDARY");
+      current.pmList = this.getUsersArray(PRIMARY_PM);
+      current.additionalPm = this.getUsersArray(SECONDARY_PM);
       current.collaborators = this.getUsersArray(issue.data.collaborators);
       current.fundings = this.getFundingsArray(issue.data.fundings);
-
+      this.updatePiPmValidationArray({PRIMARY_PI,SECONDARY_PI,PRIMARY_PM,SECONDARY_PM})
       current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
       current.sequenceNumber = issue.data.issue.sequenceNumber;
       current.updateUser = issue.data.issue.updateUser;
@@ -243,6 +262,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
           if (hasKeyPersonsData) {
             current.keyPersons =
               this.getKeyPersonsArray(keyPersonsData);
+              this.updateKeyPersonValidationArray(keyPersonsData)
           }
           currentStr = JSON.stringify(current);
           future = JSON.parse(currentStr);
@@ -272,6 +292,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     prev.hasKeyPersonnel = hasKeyPersonsData;
                     return prev;
                   });
+                  this.loadReviewFieldValidation(formData)
                   this.props.changeInfoStatus(false);
                 } else {
                   this.props.hideSpinner();
@@ -304,6 +325,44 @@ const ProjectReview = hh(class ProjectReview extends Component {
   });
   this.getIssueVersionList();
 }
+
+  loadReviewFieldValidation = (data) => {
+    const { additionalPi, additionalPm, piList, pmList, keyPersons } = data;
+    this.setState(prevState => ({
+      allKeyPersons: {
+        ...prevState.allKeyPersons,
+        pi: Array.isArray(piList) ? piList.map(x => x.key) : [piList].map(x => x.key),
+        additionalPis: additionalPi ? additionalPi.map(x => x.key) : [],
+        pm: Array.isArray(pmList) ? pmList.map(x => x.key) : [pmList].map(x => x.key),
+        additionalPms: additionalPm ? additionalPm.map(x => x.key) : [],
+        KeyPersons: keyPersons ? keyPersons.filter(x => x && x.future && x.future.name && x.future.name.key).map(x => x.future.name.key) : []
+      }
+    }))
+  }
+
+  updatePiPmValidationArray = (fields) => {
+    const { PRIMARY_PI, SECONDARY_PI, PRIMARY_PM, SECONDARY_PM } = fields
+
+    this.setState(prevState => ({
+      allKeyPersons: {
+        ...prevState.allKeyPersons,
+        pi: PRIMARY_PI.map(x => x.userName),
+        additionalPis: SECONDARY_PI.map(x => x.userName),
+        pm: PRIMARY_PM.map(x => x.userName),
+        additionalPms: SECONDARY_PM.map(x => x.userName)
+      }
+    }));
+  }
+
+  updateKeyPersonValidationArray = (fields) => {
+    this.setState(prevState => ({
+      allKeyPersons:{
+        ...prevState.allKeyPersons,
+        KeyPersons: fields.map(x => x.userName)
+      }
+    }))
+  }
+
 
   getIssueVersionList() {
     Project.getIssueVersionList(this.props.projectKey).then(
@@ -582,22 +641,62 @@ const ProjectReview = hh(class ProjectReview extends Component {
       project.textCompliance = "";
     }
 
-    let collaborators = this.state.formData.collaborators;
-    let pmList = [];
-    if (this.state.formData.pmList !== null && this.state.formData.pmList.length > 0) {
-      this.state.formData.pmList.map((pm, idx) => {
-        pmList.push(pm.key);
+    // let pmList = [];
+    // if (this.state.formData.pmList !== null && this.state.formData.pmList.length > 0) {
+    //   this.state.formData.pmList.map((pm, idx) => {
+    //     pmList.push(pm.key);
+    //   });
+    //   project.pm = pmList;
+    // }
+
+    const pmListFromForm = this.state.formData.pmList;
+
+    const normalizedPmList = Array.isArray(pmListFromForm)
+      ? pmListFromForm
+      : pmListFromForm
+        ? [pmListFromForm]
+        : [];
+
+    project.pm = normalizedPmList.map(pm => pm.key);
+
+    // if (this.state.formData.piList !== null && this.state.formData.piList.length > 0) {
+    //   let piList = [];
+    //   this.state.formData.piList.map((pi, idx) => {
+    //     piList.push(pi.key);
+    //   });
+    //   project.pi = piList;
+    // }
+
+    const piListFromForm = this.state.formData.piList;
+
+    const normalizedPiList = Array.isArray(piListFromForm)
+      ? piListFromForm
+      : piListFromForm
+        ? [piListFromForm]
+        : [];
+
+    project.pi = normalizedPiList.map(pi => pi.key);
+
+    project.additionalPms = [];
+    project.additionalPis = [];
+
+    if (this.state.formData && this.state.formData.additionalPm && Array.isArray(this.state.formData.additionalPm) && this.state.formData.additionalPm.length > 0) {
+      let additionalPm = [];
+      this.state.formData.additionalPm.map((pi, idx) => {
+        additionalPm.push(pi.key);
       });
-      project.pm = pmList;
+      project.additionalPms = additionalPm;
     }
 
-    if (this.state.formData.piList !== null && this.state.formData.piList.length > 0) {
-      let piList = [];
-      this.state.formData.piList.map((pi, idx) => {
-        piList.push(pi.key);
+    if (this.state.formData && this.state.formData.additionalPi && Array.isArray(this.state.formData.additionalPi) && this.state.formData.additionalPi.length > 0) {
+      let additionalPi = [];
+      this.state.formData.additionalPi.map((pi, idx) => {
+        additionalPi.push(pi.key);
       });
-      project.pi = piList;
+      project.additionalPis = additionalPi;
     }
+
+    let collaborators = this.state.formData.collaborators;
 
     if (collaborators !== null && collaborators.length > 0) {
       let collaboratorList = [];
@@ -970,14 +1069,27 @@ const ProjectReview = hh(class ProjectReview extends Component {
     });
   };
 
-  handleUpdateKeyPersonnel = (updated) => {
+  handleUpdateKeyPersonnel = (updated, index) => {
+    if(this.hasDuplicateNameKey(updated)){
+      this.showDuplicateModal("User already exists. Please choose another one.")
+      updated.splice(index, 1);
+    }
     this.setState(prev => {
       prev.formData.keyPersons = updated;
       prev.keyPersonnelError = false;
       prev.keyPersonnelErrorIndex = [];
       prev.generalError = false;
       return prev;
+    }, () => {
+      this.checkDuplicateKeyPersons(updated, 'keyPersons')
     });
+  };
+
+  hasDuplicateNameKey = (arr) => {
+    const keys = arr
+      .map(item => item.future.name && item.future.name.key)
+      .filter(Boolean);
+    return keys.length !== new Set(keys).size;
   };
 
   handleProjectCollaboratorChange = (data, action) => {
@@ -996,6 +1108,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
         prev.formData.piList = [];
       }
       return prev;
+    }, () => {
+      this.checkDuplicateKeyPersons(data,'piNames')
     });
   };
   handleaddtnPIChange = (data, action) => {
@@ -1007,6 +1121,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
         prev.formData.additionalPi = [];
       }
       return prev;
+    },()=>{
+      this.checkDuplicateKeyPersons(data,'additionalPis')
     });
   };
 
@@ -1019,8 +1135,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
         prev.formData.pmList = [];
       }
       return prev;
+    }, () =>{
+      this.checkDuplicateKeyPersons(data,'projectManagers')
     });
   };
+
  handleaddtnProjectManagerChange = (data, action) => {
     this.setState(prev => {
       if (data !== null) {
@@ -1030,6 +1149,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
         prev.formData.additionalPm = [];
       }
       return prev;
+    },()=>{
+      this.checkDuplicateKeyPersons(data,'additionalPms')
     });
   };
   handleInputChange = (e) => {
@@ -1296,8 +1417,14 @@ const ProjectReview = hh(class ProjectReview extends Component {
       });
       versionedIssue.projectExtraProps.irb = isEmpty(versionedIssue.projectExtraProps.irb) ? '' : JSON.parse(versionedIssue.projectExtraProps.irb);
       versionedIssue.projectExtraProps.affiliations = !versionedIssue.projectExtraProps.affiliations ? [] : this.getAffiliation([versionedIssue.projectExtraProps.affiliations]);
-      versionedIssue.piList = this.getUsersArray(versionedIssue.pis);
-      versionedIssue.pmList = this.getUsersArray(versionedIssue.pms);
+      const additionalPis = Array.isArray(versionedIssue.pis) ? versionedIssue.pis.filter(pi => pi.piType === "SECONDARY") : []
+      const primaryPis = Array.isArray(versionedIssue.pis) ? versionedIssue.pis.filter(pi => pi.piType === "PRIMARY") : []
+      const additionalPms = Array.isArray(versionedIssue.pms) ? versionedIssue.pms.filter(pm => pm.pmType === "SECONDARY") : []
+      const primaryPms = Array.isArray(versionedIssue.pms) ? versionedIssue.pms.filter(pm => pm.pmType === "PRIMARY") : []
+      versionedIssue.piList = this.getUsersArray(primaryPis);
+      versionedIssue.pmList = this.getUsersArray(primaryPms);
+      versionedIssue.additionalPi = this.getUsersArray(additionalPis);
+      versionedIssue.additionalPm = this.getUsersArray(additionalPms);
       versionedIssue.collaborators = this.getUsersArray(versionedIssue.collaborators);
       versionedIssue.fundings = this.getFundingsArray(versionedIssue.fundings);
       const versionedKeyPersons = versionedIssue.keyPersons;
@@ -1329,6 +1456,190 @@ const ProjectReview = hh(class ProjectReview extends Component {
     }))
   }
 
+  checkDuplicateKeyPersons = (data, field) => {
+
+    if (field === 'piNames' && !data) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pi: [] } }))
+      return;
+    }
+
+    if (field === 'projectManagers' && !data) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [] } }))
+      return;
+    }
+
+    if (field === 'keyPersons' && data.length === 1 && !data[0].name) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, KeyPersons: [] } }))
+      return;
+    }
+
+    if (field === 'additionalPis' && data.length === 0) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, additionalPis: [] } }))
+      return;
+    }
+
+    if (field === 'additionalPms' && data.length === 0) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, additionalPms: [] } }))
+      return;
+    }
+
+    const KEYPERSONS = Object.values(this.state.allKeyPersons).flat();
+
+    if (field === 'piNames') {
+      // PI and PM can can have Dulicates  entires
+      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data.key);
+      let iskeyPersonDuplicate = false;
+      if (DUPLICATE_EXIST) {
+        // if(data[0].key === (this.state.formData.projectManagers && this.state.formData.projectManagers[0] && this.state.formData.projectManagers[0].key)) iskeyPersonDuplicate = true;
+        if([...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms].includes(data.key)) iskeyPersonDuplicate = true;
+      }
+      if (!DUPLICATE_EXIST || iskeyPersonDuplicate) {
+        this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pi: [data.key] } }));
+      } else {
+        this.showDuplicateModal("User already exists. Please choose another one.");
+        this.setState(prev => {
+          prev.formData.piList = [{ key: '', label: '', value: '' }];
+          return prev;
+        });
+      }
+    }
+
+    if (field === 'projectManagers') {
+      // PI and PM can can have Dulicates  entires
+      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data.key);
+      let iskeyPersonDuplicate = false;
+      if (DUPLICATE_EXIST) {
+        // if(data[0].key === (this.state.formData.piNames && this.state.formData.piNames[0] && this.state.formData.piNames[0].key)) isPiDuplicate = true;
+        if([...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms].includes(data.key)) iskeyPersonDuplicate = true;
+      }
+      if (!DUPLICATE_EXIST || iskeyPersonDuplicate) {
+        this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [data.key] } }))
+      } else {
+        this.showDuplicateModal("User already exists. Please choose another one.")
+        this.setState(prev => {
+          prev.formData.pmList = [{ key: '', label: '', value: '' }];
+          return prev;
+        });
+      }
+    }
+
+    if (field === 'additionalPis') {
+      // additional Pis allows duplicate with projectManagers,additionalPms,piNames.
+      const KEYPERSONS = [...this.state.allKeyPersons.KeyPersons];
+      if (this.removeIfKeyExists(data, KEYPERSONS)) {
+        this.showDuplicateModal("User already exists. Please choose another one.");
+        this.setState((prev) => ({
+          allKeyPersons: {
+            ...prev.allKeyPersons, additionalPis: data.map(x => x.key)
+          }
+        }), () => {
+          this.setState(prev => {
+          prev.formData.additionalPi = data;
+          return prev;
+        });
+        })
+      } else {
+        this.setState((prev) => ({
+          allKeyPersons: {
+            ...prev.allKeyPersons, additionalPis: data.map(x => x.key)
+          }
+        }))
+      }
+    }
+
+    if (field === 'additionalPms') {
+      // additional Pis allows duplicate with projectManagers,additionalPms,piNames.
+      const KEYPERSONS = [...this.state.allKeyPersons.KeyPersons];
+      if (this.removeIfKeyExists(data, KEYPERSONS)) {
+        this.showDuplicateModal("User already exists. Please choose another one.");
+        this.setState((prev) => ({
+          allKeyPersons: {
+            ...prev.allKeyPersons, additionalPms: data.map(x => x.key)
+          }
+        }), () => {
+          this.setState(prev => {
+          prev.formData.additionalPm = data;
+          return prev;
+        });
+        })
+      } else {
+        this.setState((prev) => ({
+          allKeyPersons: {
+            ...prev.allKeyPersons, additionalPms: data.map(x => x.key)
+          }
+        }))
+      }
+    }
+
+    if (field === 'keyPersons') {
+      // Here Keyperson(Study Staff) is not spred because data in keyperson cannot have duplicate value
+      // handles in handleUpdateKeyPersons function
+      const KEYPERSONS = [...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms];
+      const IS_DUPLICATE_PRESENT = this.checkAndRemoveDuplicate(KEYPERSONS, data);
+      if(IS_DUPLICATE_PRESENT){
+        this.showDuplicateModal("User already exists. Please choose another one.")
+      }
+      if (data.length === 0) {
+        this.setState(prev => {
+          prev.formData.keyPersons = [];
+          return prev;
+        });
+      } else {
+        this.setState((prevState) => ({
+          formData: {
+            ...prevState.formData,
+            keyPersons: data
+          }
+        }), () => {
+          this.setState((prev) => ({
+            allKeyPersons: {
+              ...prev.allKeyPersons, KeyPersons: this.state.formData.keyPersons
+                .filter(x => x && x.future && x.future.name && x.future.name.key)
+                .map(x => x.future.name.key)
+            }
+          }))
+        });
+      }
+    }
+
+  }
+
+   showDuplicateModal = (message) => {
+    this.setState({
+      showModal:true,
+      modalMessage:message
+    })
+  }
+
+  removeIfKeyExists = (a, b) => {
+    if (!Array.isArray(a) || !Array.isArray(b)) {
+      return false;
+    }
+
+    const keySet = new Set(b);
+    const originalLength = a.length;
+
+    for (let i = a.length - 1; i >= 0; i--) {
+      if (keySet.has(a[i].key)) {
+        a.splice(i, 1);
+      }
+    }
+
+    return a.length !== originalLength;
+  }
+
+  checkAndRemoveDuplicate = (keyPersons, updatedArray) => {
+    for (let i = 0; i < updatedArray.length; i++) {
+      for (let j = 0; j < keyPersons.length; j++) {
+        if (updatedArray[i] && updatedArray[i].future && updatedArray[i].future.name && 
+            updatedArray[i].future.name.key === keyPersons[j]) {
+          updatedArray.splice(i, 1);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
   render() {
     const { projectReviewApproved } = this.state.formData.projectExtraProps;
@@ -1459,12 +1770,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         handleChange: this.handlePIChange,
                         value: this.state.formData.piList,
                         currentValue: this.state.current.piList,
-                        isMulti: false
+                        isMulti: false,
+                        showCurrentValueOnEdit:true
                       }),
                       br(),
                       label({className:'inputFieldLabel'},
-                        ["Additional Broad Co-Investigators",
-                          span({ className: 'errorMessage' }, ' *')]
+                        ["Additional Broad Co-Investigators"]
                       ),
                       AsyncMultiSelect({
                         id: "pi_select_add",
@@ -1474,7 +1785,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         handleChange: this.handleaddtnPIChange,
                         value: this.state.formData.additionalPi,
                         currentValue: this.state.current.additionalPi,
-                        isMulti: true
+                        isMulti: true,
+                        showCurrentValueOnEdit:true
                       }),
                       br(),
                       label({ className:'inputFieldLabel' },
@@ -1516,11 +1828,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         handleChange: this.handleProjectManagerChange,
                         value: this.state.formData.pmList,
                         currentValue: this.state.current.pmList,
-                        isMulti: false
+                        isMulti: false,
+                        showCurrentValueOnEdit:true
                       }),
                       br(),
                       label({className:'inputFieldLabel'},
-                        ["Additional Broad Study Staff &/or Broad individuals)",span({ className: 'errorMessage' }, ' *')]
+                        ["Additional Broad Study Staff &/or Broad individuals"]
                       ),
                       AsyncMultiSelect({
                         id: "ProjectManager_add",
@@ -1530,7 +1843,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         handleChange: this.handleaddtnProjectManagerChange,
                         value: this.state.formData.additionalPm,
                         currentValue: this.state.current.additionalPm,
-                        isMulti: true
+                        isMulti: true,
+                        showCurrentValueOnEdit:true
                       })
                     ])
                   ]),
@@ -1960,7 +2274,16 @@ const ProjectReview = hh(class ProjectReview extends Component {
               })
             ]),
           ])
-        ])
+        ]),
+        ConfirmationDialog({
+          closeModal: this.state.showModal,
+          show: this.state.showModal,
+          handleOkAction: () => this.setState({showModal:false}),
+          bodyText: this.state.modalMessage,
+          actionLabel: 'close',
+          title: 'Duplicate Entry',
+          hideCancel:true
+        }, [])
       ])
       
     )
