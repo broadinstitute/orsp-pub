@@ -103,8 +103,8 @@ class QueryService implements Status {
                         " irb.value as 'irb', f.name, f.source, protocol.value as 'protocol' " +
                         " from issue i " +
                         " left outer join funding f on f.issue_id = i.id " +
-                        " left outer join issue_extra_property pi on pi.issue_id = i.id and pi.name = 'pi' " +
-                        " left outer join user u on u.user_name = pi.value " +
+                        " left outer join pi_study_staff ps on ps.issue_id = i.id " +
+                        " left outer join user u on u.user_name = ps.pi " +
                         " left outer join issue_extra_property irb on irb.issue_id = i.id and irb.name = 'irb' " +
                         " left outer join issue_extra_property rc on rc.issue_id = i.id and rc.name = 'review-category' " +
                         " left outer join issue_extra_property protocol on protocol.issue_id = i.id and protocol.name = 'protocol' " +
@@ -854,9 +854,12 @@ class QueryService implements Status {
                 params.put("statusName" + (index + 1), it)
             }
         }
-        if (options.getIrbsOfRecord()) {
-            def or = orIfyCollection("p.value = :irbOfRecord", options.getIrbsOfRecord())
-            def q = ' ( p.name = "irb" AND ( ' + or + ') ) '
+        if (options.getIrbsOfRecord() && !options.getIrbsOfRecord().empty) {
+            def or = orIfyCollection(
+                    'JSON_UNQUOTE(JSON_EXTRACT(p.value, \'$.label\')) = :irbOfRecord',
+                    options.getIrbsOfRecord()
+            )
+            def q = " ( p.name = 'irb' AND ( ${or} ) ) "
             query = andIfyQstring(query, q, params)
             options.getIrbsOfRecord().eachWithIndex { it, index ->
                 params.put("irbOfRecord" + (index + 1), it)
@@ -2159,11 +2162,11 @@ class QueryService implements Status {
         query.append("u.user_name, ")
         query.append("u.display_name, ")
         query.append("u.email_address ")
-        query.append("FROM issue_extra_property iep ")
+        query.append("FROM pi_study_staff iep ")
         query.append("JOIN user u ")
-        query.append("ON iep.value = u.user_name ")
-        query.append("WHERE iep.deleted = 0 ")
-        query.append("AND iep.name = 'pi';")
+        query.append("ON iep.pi = u.user_name ")
+//        query.append("WHERE iep.deleted = 0 ")
+//        query.append("AND iep.name = 'pi';")
         def queryString = query.toString()
         final SQLQuery sqlQuery = session.createSQLQuery(queryString)
         final result = sqlQuery.list().collect {row ->
