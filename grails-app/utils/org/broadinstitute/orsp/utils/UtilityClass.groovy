@@ -13,6 +13,7 @@ import org.broadinstitute.orsp.QueryService
 import org.broadinstitute.orsp.SampleCollection
 import org.broadinstitute.orsp.StatusEventDTO
 import org.broadinstitute.orsp.User
+import org.broadinstitute.orsp.PiStudyStaff
 import java.text.SimpleDateFormat
 
 import java.util.concurrent.atomic.AtomicInteger
@@ -203,12 +204,22 @@ class UtilityClass {
     }
 
     private List<String> getPIsDisplayName(Issue issue) {
-        List<String> piUserNames = issue?.getPIs()?.unique()
-        if (!piUserNames?.isEmpty()) {
-            queryService.findUsersInUserNameList(piUserNames).collect { it.displayName }
-        } else {
-            Collections.emptyList()
+
+        if (!issue) {
+            return Collections.emptyList()
         }
+
+        List<String> piUserNames = PiStudyStaff.findAllByIssue(issue)
+                ?.collect { it.pi }
+                ?.findAll { it }
+                ?.unique()
+
+        if (!piUserNames?.isEmpty()) {
+            return queryService
+                    .findUsersInUserNameList(piUserNames)
+                    ?.collect { it.displayName }
+        }
+        return Collections.emptyList()
     }
 
 }

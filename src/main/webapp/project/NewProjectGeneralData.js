@@ -385,7 +385,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   }
 
   handleAdditionalPiChange = (newAdditionalPisArray) => {
-    console.log(newAdditionalPisArray)
     this.setState((prevState) => ({
       formData: {
         ...prevState.formData,
@@ -398,7 +397,6 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   }
 
     handleAdditionalPmChange = (newAdditionalPmsArray) => {
-    console.log(newAdditionalPmsArray)
     this.setState((prevState) => ({
       formData: {
         ...prevState.formData,
