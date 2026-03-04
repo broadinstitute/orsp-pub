@@ -1,4 +1,4 @@
-FROM openjdk:8 as builder
+FROM eclipse-temurin:8-jdk as builder
 
 RUN apt-get update
 
@@ -56,7 +56,7 @@ RUN webpack --mode=development --config webpack.config.js
 
 RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh; grails -Dgrails.env=$build_env war"
 
-FROM openjdk:8-alpine
+FROM eclipse-temurin:8-jre-alpine
 WORKDIR /
 COPY --from=builder /app/build/libs/orsp.war .
 

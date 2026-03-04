@@ -145,7 +145,7 @@ class SearchController implements UserInfo {
         if (params.funding) options.setFundingInstitute(params.funding)
         if (params.type) options.getIssueTypeNames().addAll(params.type)
         if (params.status) options.getIssueStatusNames().addAll(params.status)
-        if (params.irb) options.getIrbsOfRecord().addAll(params.irb)
+        if (params.irb) options.setIrbsOfRecord(params.list('irb') as Set)
         if (params.collection) options.setCollection(params.collection)      
         if (params.matchExactUser) options.setMatchExactUser(params.matchExactUser)
       

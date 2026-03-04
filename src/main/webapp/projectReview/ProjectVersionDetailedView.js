@@ -5,6 +5,7 @@ import './ProjectReview.css'
 import { InputYesNo } from "../components/InputYesNo";
 import { InputFieldRadio } from "../components/InputFieldRadio";
 import { InputFieldTextArea } from "../components/InputFieldTextArea";
+import { KeyPersonnel } from "../components/KeyPersonnel"
 
 class ProjectVersionDetailedView extends Component {
   constructor(props) {
@@ -49,8 +50,23 @@ class ProjectVersionDetailedView extends Component {
     return fundingsArray;
   }
 
+  getKeyPersonArray(keyPersons) {
+  if (!keyPersons || !keyPersons.length) return [];
+  return keyPersons.map(keyPerson => ({
+    name: keyPerson.displayName,
+    role: keyPerson.role,
+    otherRole: keyPerson.otherRole,
+    updatedDate: keyPerson.updatedDate
+
+  }));
+}
+
   render() {
-    const {issue, fundings, requestor, pis, pms, collaborators } = this.state.formData;
+    const {issue, fundings, requestor, pis, pms, collaborators, keypersons } = this.state.formData;
+    const additionalPis = Array.isArray(pis) ? pis.filter(pi => pi.piType === "SECONDARY") : []
+    const primaryPis = Array.isArray(pis) ? pis.filter(pi => pi.piType === "PRIMARY") : []
+    const additionalPms = Array.isArray(pms) ? pms.filter(pm => pm.pmType === "SECONDARY") : []
+    const primaryPms = Array.isArray(pms) ? pms.filter(pm => pm.pmType === "PRIMARY") : []
     return (
       <React.Fragment>
         <div className="project-container">
@@ -67,43 +83,66 @@ class ProjectVersionDetailedView extends Component {
             )}
           </div>
           <div className="" id="project-details">
-            <Panel title="Requestor" id="requestor">
+            <Panel title="Key Personnel" id="principal-investigator">
               <div className="mb-15">
-                <label>Requestor Name</label>
-                <p className="answer-fields">{requestor.displayName}</p>
-              </div>
-              <div className="mb-15">
-                <label>Requestor Email Address</label>
-                <p className="answer-fields">{requestor.emailAddress}</p>
-              </div>
-            </Panel>
-            <Panel title="Principal Investigator" id="principal-investigator">
-              <div className="mb-15">
-                <label>Broad PIs</label>
+                <label>Principal Investigator (PI) Responsible for Project Conduct and Oversight</label>
                 <p className="answer-fields">
-                  {pis.length 
-                    ? pis.map((pi, idx) => (
+                  {primaryPis.length 
+                    ? primaryPis.map((pi, idx) => (
                         pi.displayName + "(" + pi.emailAddress + ")"
                       )).join(", ") 
                     : "--"}
                 </p>
               </div>
               <div className="mb-15">
-                <label>Primary Investigator Affiliation</label>
+                <label>Additional Broad Co-Investigators</label>
+                <p className="answer-fields">
+                  {additionalPis.length
+                    ? additionalPis.map((pi, idx) => (
+                      pi.displayName + "(" + pi.emailAddress + ")"
+                    )).join(", ")
+                    : "--"}
+                </p>
+              </div>
+              <div className="mb-15">
+                <label>PI’s Primary Institutional Affiliation</label>
                 <p className="answer-fields">{this.getExtraPropertyValueFromJSON("affiliations")}</p>
               </div>
               <div className="mb-15">
-                <label>Broad Project Managers</label>
+                <label>Key Study Contact (will receive email notifications about this project)</label>
                 <p className="answer-fields">
-                  {pms.length 
-                    ? pms.map((pm, idx) => (
+                  {primaryPms.length 
+                    ? primaryPms.map((pm, idx) => (
                         pm.displayName + "(" + pm.emailAddress + ")"
                       )).join(", ") 
                     : "--"}
                 </p>
               </div>
+              <div className="mb-15">
+                <label>Additional Broad Study Staff &/or Broad individuals</label>
+                <p className="answer-fields">
+                  {additionalPms.length
+                    ? additionalPms.map((pi, idx) => (
+                      pi.displayName + "(" + pi.emailAddress + ")"
+                    )).join(", ")
+                    : "--"}
+                </p>
+              </div>
             </Panel>
-            <Panel title="Fundings" id="fundings">
+            <Panel title="Study Staff" id="study-staff">
+              <KeyPersonnel
+                keyPersons={this.getKeyPersonArray(keypersons)}
+                readOnly={true}
+                comparisonView = {true} >
+              </KeyPersonnel>
+            </Panel>
+            <Panel title="Requestor" id="requestor">
+              <div className="mb-15">
+                <label>Requestor Name</label>
+                <p className="answer-fields">{requestor.displayName}</p>
+              </div>
+            </Panel>
+            <Panel title="Funding" id="fundings">
               <Fundings
                 fundings={this.getFundingsArray(fundings)}
                 readOnly={true}
@@ -113,16 +152,6 @@ class ProjectVersionDetailedView extends Component {
               <div className="mb-15">
                 <label>Broad Study Activities</label>
                 <p className="answer-fields">{issue.description}</p>
-              </div>
-              <div className="mb-15">
-                <label>Broad individuals who require access to this project record</label>
-                <p className="answer-fields">
-                  {collaborators.length 
-                    ? collaborators.map((collab, idx) => (
-                        collab.displayName + "(" + collab.emailAddress + ")"
-                      )).join(", ") 
-                    : "--"}
-                </p>
               </div>
               <div className="mb-15">
                 <label>Title of project/protocol</label>

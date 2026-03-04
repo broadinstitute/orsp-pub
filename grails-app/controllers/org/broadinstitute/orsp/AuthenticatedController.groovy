@@ -72,6 +72,13 @@ class AuthenticatedController implements Interceptor, UserInfo, ExceptionHandler
         pisForUsers
     }
 
+    protected Collection<User> getKeyPersonsForIssue(Issue issue) {
+        Collection<String> keyPersonUsernames = KeyPerson.findAllByIssue(issue)*.name
+        Collection<User> keyPersonUsers = new ArrayList<>()
+        keyPersonUsers.addAll(userService.findUsers(keyPersonUsernames))
+        keyPersonUsers
+    }
+
     protected User getRequestorForIssue(Issue issue) {
         userService.findUser(issue.reporter)
     }
@@ -340,21 +347,103 @@ class AuthenticatedController implements Interceptor, UserInfo, ExceptionHandler
         getUser() ? permissionService.issueIsForbidden(issue, getUser().userName, isAdmin(), isViewer()) : false
     }
 
-    protected Collection<User> getProjectManagersForVersionedIssue(VersionedIssue verIssue) {
-        Collection<String> pmUsernames = VersionedIssueExtraProperty.findAllByProjectKeyAndNameAndSequenceNumber(verIssue.projectKey, IssueExtraProperty.PM, verIssue.sequenceNumber)*.value
-        Collection<User> pms = userService.findUsers(pmUsernames) ?: new ArrayList<>()
-        if (pms.isEmpty()) {
-            User reporter = userService.findUser(verIssue.reporter)
-            if (reporter) { pms.add(reporter) }
+//    protected Collection<User> getProjectManagersForVersionedIssue(VersionedIssue verIssue) {
+//        Collection<String> pmUsernames = VersionedIssueExtraProperty.findAllByProjectKeyAndNameAndSequenceNumber(verIssue.projectKey, IssueExtraProperty.PM, verIssue.sequenceNumber)*.value
+//        Collection<User> pms = userService.findUsers(pmUsernames) ?: new ArrayList<>()
+//        if (pms.isEmpty()) {
+//            User reporter = userService.findUser(verIssue.reporter)
+//            if (reporter) { pms.add(reporter) }
+//        }
+//        pms
+//    }
+//
+//    protected Collection<User> getPIsForVersionedIssue(VersionedIssue verIssue) {
+//        Collection<String> pis = VersionedIssueExtraProperty.findAllByProjectKeyAndNameAndSequenceNumber(verIssue.projectKey, IssueExtraProperty.PI, verIssue.sequenceNumber)*.value
+//        Collection<User> pisForUsers = new ArrayList<>()
+//        pisForUsers.addAll(userService.findUsers(pis))
+//        pisForUsers
+//    }
+
+    protected Collection<Map> getProjectManagersForVersionedIssue(VersionedIssue verIssue) {
+
+        if (!verIssue?.id || verIssue.sequenceNumber == null) {
+            return []
         }
-        pms
+
+        List<VersionedPmStudyStaff> staffList =
+                VersionedPmStudyStaff
+                        .findAllByVersionedIssueAndSequenceNumber(
+                                verIssue,
+                                verIssue.sequenceNumber
+                        )
+
+        if (!staffList) {
+            return []
+        }
+
+        List<String> usernames = staffList
+                .collect { it.pm }
+                .findAll { it }
+                .unique()
+
+        List<User> users = usernames
+                ? (userService.findUsers(usernames) ?: [])
+                : []
+
+        Map<String, User> userMap =
+                users.collectEntries { [(it.userName): it] }
+
+        return staffList.collect { staff ->
+            User user = userMap[staff.pm]
+            [
+                    emailAddress : user?.emailAddress,
+                    userName     : user?.userName,
+                    displayName  : user?.displayName,
+                    pmType       : staff.pmType
+            ]
+        }
     }
 
-    protected Collection<User> getPIsForVersionedIssue(VersionedIssue verIssue) {
-        Collection<String> pis = VersionedIssueExtraProperty.findAllByProjectKeyAndNameAndSequenceNumber(verIssue.projectKey, IssueExtraProperty.PI, verIssue.sequenceNumber)*.value
-        Collection<User> pisForUsers = new ArrayList<>()
-        pisForUsers.addAll(userService.findUsers(pis))
-        pisForUsers
+    protected Collection<Map> getPIsForVersionedIssue(VersionedIssue verIssue) {
+
+        if (!verIssue?.id || verIssue.sequenceNumber == null) {
+            return []
+        }
+
+        List<VersionedPiStudyStaff> staffList =
+                VersionedPiStudyStaff
+                        .findAllByVersionedIssueAndSequenceNumber(
+                                verIssue,
+                                verIssue.sequenceNumber
+                        )
+
+        if (!staffList) {
+            return []
+        }
+
+        List<String> usernames = staffList
+                .collect { it.pi }
+                .findAll { it }
+                .unique()
+
+        List<User> users = usernames
+                ? (userService.findUsers(usernames) ?: [])
+                : []
+
+        Map<String, User> userMap =
+                users.collectEntries { [(it.userName): it] }
+
+        return staffList.collect { staff ->
+
+            User user = userMap[staff.pi]
+
+            [
+                    emailAddress : user?.emailAddress,
+                    userName     : user?.userName,
+                    displayName  : user?.displayName,
+                    piType       : staff.piType
+            ]
+        }
     }
 
 }

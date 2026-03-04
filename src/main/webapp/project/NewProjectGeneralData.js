@@ -1,5 +1,5 @@
 import { Component, React } from 'react';
-import { h1, hh, li, span, ul } from 'react-hyperscript-helpers';
+import { h1, hh, li, small, span, ul, label, br, div } from 'react-hyperscript-helpers';
 import { WizardStep } from '../components/WizardStep';
 import { Panel } from '../components/Panel';
 import { InputFieldText } from '../components/InputFieldText';
@@ -9,6 +9,8 @@ import { AsyncMultiSelect } from '../components/AsyncMultiSelect';
 import { Search } from '../util/ajax';
 import { InputFieldSelect } from '../components/InputFieldSelect';
 import { PI_AFFILIATION, PREFERRED_IRB } from '../util/TypeDescription';
+import { KeyPersonnel } from '../components/KeyPersonnel';
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
 
 const fundingTooltip =
   ul({}, [
@@ -40,7 +42,10 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         irbProtocolId: '',
         irb: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
-        collaborators: []
+        keyPersons: [{ name: null, role: '', otherRole: '' }],
+        collaborators: [],
+        additionalPis: [],
+        additionalPms: [],
       },
       formerData: {
         projectManager: [],
@@ -52,13 +57,24 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         irbProtocolId: '',
         irb: '',
         fundings: [{ source: '', sponsor: '', identifier: '' }],
+        keyPersons: [{ name: null, role: '', otherRole: '' }],
         collaborators: []
       },
       errors: {
         studyDescription: false,
         pTitle: false,
         fundings: false
-      }
+      },
+      allKeyPersons: {
+        pi:[],
+        pm:[],
+        additionalPis:[],
+        additionalPms:[],
+        KeyPersons:[]
+      },
+      showModal:false,
+      modalMessage: ''
+
     };
     this.handleSelectChange = this.handleSelectChange.bind(this);
   }
@@ -78,6 +94,28 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     }, () => this.props.updateForm(this.state.formData, 'fundings'));
     this.props.removeErrorMessage();
   };
+
+  handleUpdateKeyPersons = (updated, index) => {
+    if(this.hasDuplicateNameKey(updated)){
+      this.showDuplicateModal("User already exists. Please choose another one.")
+      updated.splice(index, 1);
+    }
+    this.setState(prev => {
+      prev.formData.keyPersons = updated;
+      return prev;
+    }, () => {
+      this.props.updateForm(this.state.formData, 'keyPersons')
+      this.checkDuplicateKeyPersons(updated,'keyPersons')}
+    );
+    this.props.removeErrorMessage();
+  };
+
+  hasDuplicateNameKey = (arr) => {
+  const keys = arr
+    .map(item => item.name && item.name.key)
+    .filter(Boolean);
+  return keys.length !== new Set(keys).size;
+};
 
   handleInputChange = (e) => {
     const field = e.target.name;
@@ -133,19 +171,242 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   };
 
   handlePIChange = (data, action) => {
+    if (data !== null && !Array.isArray(data)) {
+      data = [data];
+    }
     this.setState(prev => {
       prev.formData.piNames = data;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'piNames'));
+    }, () => {
+      this.props.updateForm(this.state.formData, 'piNames'),
+      // check if duplicate exist
+      this.checkDuplicateKeyPersons(data, 'piNames')
+    });
   };
 
   handlePMChange = (data, action) => {
+    if (data !== null && !Array.isArray(data)) {
+      data = [data];
+    }
     this.setState(prev => {
       prev.formData.projectManagers = data;
       return prev;
-    }, () => this.props.updateForm(this.state.formData, 'projectManagers')
+    }, () => {
+      this.props.updateForm(this.state.formData, 'projectManagers')
+      // check if duplicate exist
+      this.checkDuplicateKeyPersons(data,'projectManagers')
+    }
     );
   };
+
+  checkDuplicateKeyPersons = (data, field) => {
+    // What happens if Data is null
+
+    if (field === 'piNames' && !data) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pi: [] } }))
+      return;
+    }
+
+    if (field === 'projectManagers' && !data) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [] } }))
+      return;
+    }
+
+    if (field === 'keyPersons' && data.length === 1 && !data[0].name) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, KeyPersons: [] } }))
+      return;
+    }
+
+    if (field === 'additionalPis' && data.length === 0) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, additionalPis: [] } }))
+      return;
+    }
+
+    if (field === 'additionalPms' && data.length === 0) {
+      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, additionalPms: [] } }))
+      return;
+    }
+
+    const KEYPERSONS = Object.values(this.state.allKeyPersons).flat();
+
+    if (field === 'piNames') {
+      // PI and PM can can have Dulicates  entires
+      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data[0].key);
+      let iskeyPersonDuplicate = false;
+      if (DUPLICATE_EXIST) {
+        // if(data[0].key === (this.state.formData.projectManagers && this.state.formData.projectManagers[0] && this.state.formData.projectManagers[0].key)) iskeyPersonDuplicate = true;
+        if([...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms].includes(data[0].key)) iskeyPersonDuplicate = true;
+      }
+      if (!DUPLICATE_EXIST || iskeyPersonDuplicate) {
+        this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pi: [data[0].key] } }));
+      } else {
+        this.showDuplicateModal("User already exists. Please choose another one.");
+        this.setState(prev => {
+          prev.formData.piNames = null;
+          return prev;
+        }, () => {
+          this.props.updateForm(this.state.formData, 'piNames');
+        });
+      }
+    }
+
+    if (field === 'projectManagers') {
+      // PI and PM can can have Dulicates  entires
+      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data[0].key);
+      let iskeyPersonDuplicate = false;
+      if (DUPLICATE_EXIST) {
+        // if(data[0].key === (this.state.formData.piNames && this.state.formData.piNames[0] && this.state.formData.piNames[0].key)) isPiDuplicate = true;
+        if([...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms].includes(data[0].key)) iskeyPersonDuplicate = true;
+      }
+      if (!DUPLICATE_EXIST || iskeyPersonDuplicate) {
+        this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [data[0].key] } }))
+      } else {
+        this.showDuplicateModal("User already exists. Please choose another one.")
+        this.setState(prev => {
+          prev.formData.projectManagers = null;
+          return prev;
+        }, () => {
+          this.props.updateForm(this.state.formData, 'projectManagers')
+        });
+      }
+    }
+
+    if (field === 'keyPersons') {
+      // Here Keyperson(Study Staff) is not spred because data in keyperson cannot have duplicate value
+      // handles in handleUpdateKeyPersons function
+      const KEYPERSONS = [...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms];
+      const IS_DUPLICATE_PRESENT = this.checkAndRemoveDuplicate(KEYPERSONS, data);
+      if(IS_DUPLICATE_PRESENT){
+        this.showDuplicateModal("User already exists. Please choose another one.")
+      }
+      if (data.length === 0) {
+        this.setState(prev => {
+          prev.formData.keyPersons = [{ name: null, role: '', otherRole: '' }];
+          return prev;
+        }, () => this.props.updateForm(this.state.formData, 'keyPersons'));
+      } else {
+        this.setState((prevState) => ({
+          formData: {
+            ...prevState.formData,
+            keyPersons: data
+          }
+        }), () => {
+          this.props.updateForm(this.state.formData, 'keyPersons')
+          this.setState((prev) => ({
+            allKeyPersons: {
+              ...prev.allKeyPersons, KeyPersons: this.state.formData.keyPersons
+                .filter(x => x && x.name && x.name.key)
+                .map(x => x.name.key)
+            }
+          }))
+        });
+      }
+    }
+
+    if (field === 'additionalPis') {
+      // additional Pis allows duplicate with projectManagers,additionalPms,piNames.
+      const KEYPERSONS = [...this.state.allKeyPersons.KeyPersons];
+      if (this.removeIfKeyExists(data, KEYPERSONS)) {
+        this.showDuplicateModal("User already exists. Please choose another one.");
+        this.setState((prev) => ({
+          allKeyPersons: {
+            ...prev.allKeyPersons, additionalPis: data.map(x => x.key)
+          }
+        }), () => {
+          this.props.updateForm(this.state.formData, 'additionalPis')
+        })
+      } else {
+        this.setState((prev) => ({
+          allKeyPersons: {
+            ...prev.allKeyPersons, additionalPis: data.map(x => x.key)
+          }
+        }))
+      }
+    }
+
+    if (field === 'additionalPms') {
+      // additionalPms allows duplicate with projectManagers,additionalPis,piNames.
+      const KEYPERSONS = [...this.state.allKeyPersons.KeyPersons];
+      if (this.removeIfKeyExists(data, KEYPERSONS)) {
+        this.showDuplicateModal("User already exists. Please choose another one.");
+        this.setState((prev) => ({
+          allKeyPersons: {
+            ...prev.allKeyPersons, additionalPms: data.map(x => x.key)
+          }
+        }), () => {
+          this.props.updateForm(this.state.formData, 'additionalPms')
+        })
+      } else {
+        this.setState((prev) => ({
+          allKeyPersons: {
+            ...prev.allKeyPersons, additionalPms: data.map(x => x.key)
+          }
+        }))
+      }
+    }
+
+  } 
+
+  removeIfKeyExists = (a, b) => {
+  if (!Array.isArray(a) || !Array.isArray(b)) {
+    return false;
+  }
+
+  const keySet = new Set(b);
+  const originalLength = a.length;
+
+  for (let i = a.length - 1; i >= 0; i--) {
+    if (keySet.has(a[i].key)) {
+      a.splice(i, 1);
+    }
+  }
+
+  return a.length !== originalLength;
+}
+  
+  checkAndRemoveDuplicate = (keyPersons, updatedArray) => {
+    for (let i = 0; i < updatedArray.length; i++) {
+      for (let j = 0; j < keyPersons.length; j++) {
+        if (updatedArray[i] && updatedArray[i].name && 
+            updatedArray[i].name.key === keyPersons[j]) {
+          updatedArray.splice(i, 1);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  showDuplicateModal = (message) => {
+    this.setState({
+      showModal:true,
+      modalMessage:message
+    })
+  }
+
+  handleAdditionalPiChange = (newAdditionalPisArray) => {
+    this.setState((prevState) => ({
+      formData: {
+        ...prevState.formData,
+        additionalPis: newAdditionalPisArray
+      }
+    }),()=>{
+      this.props.updateForm(this.state.formData, 'additionalPis')
+      this.checkDuplicateKeyPersons(newAdditionalPisArray, 'additionalPis');
+    });
+  }
+
+    handleAdditionalPmChange = (newAdditionalPmsArray) => {
+    this.setState((prevState) => ({
+      formData: {
+        ...prevState.formData,
+        additionalPms: newAdditionalPmsArray
+      }
+    }),()=>{
+      this.props.updateForm(this.state.formData, 'additionalPms');
+      this.checkDuplicateKeyPersons(newAdditionalPmsArray, 'additionalPms');
+    });
+  }
 
   render() {
 
@@ -156,9 +417,13 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
 
     return (
       WizardStep({
+        warningMessage:'Keypersons mentioned in Key Personnel and Study Staff cannot be similar.',
         title: this.props.title, step: 0, currentStep: this.props.currentStep,
-        error: this.props.errors.fundings || this.props.errors.fundingAwardNumber || this.props.errors.fundingSponsor || this.props.errors.studyDescription || this.props.errors.pTitle,
-        errorMessage: 'Please complete all required fields'}, [
+        error: this.props.errors.fundings || this.props.errors.fundingAwardNumber ||
+               this.props.errors.fundingSponsor || this.props.errors.studyDescription ||
+               this.props.errors.pTitle || this.props.errors.piName ||
+               this.props.errors.piAffiliations || this.props.errors.KeyStudyContact,
+        errorMessage: 'Please complete all required fields.'}, [
         Panel({ title: "Requestor Information ", moreInfo: "(person filling the form)", tooltipLabel: "?", tooltipMsg: "Future correspondence regarding this project will be directed to this individual" }, [
           InputFieldText({
             id: "inputRequestorName",
@@ -182,29 +447,47 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           })
         ]),
 
-        Panel({ title: "Principal Investigator ", moreInfo: "(if applicable)" }, [
+        Panel({ title: "Key Personnel"}, [
+          label({className:'inputFieldLabel'},["Principal Investigator (PI) Responsible for Project Conduct and Oversight",span({ className: 'errorMessage' }, ' *')]),
           AsyncMultiSelect({
             id: "pi_select",
-            label: "Broad PIs",
             isDisabled: false,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handlePIChange,
             value: this.state.formData.piNames,
             placeholder: "Start typing the PI Names",
+            isMulti: false,
+            error: this.props.errors.piName,
+            isWarning: false
+          }),
+          small({ isRendered: this.props.errors.piName, className: "errorMessage" }, ['Required field']),
+          br(),
+          label({className:'inputFieldLabel'},["Additional Broad Co-Investigators"]),
+          AsyncMultiSelect({
+            id: "co_pi_select",
+            isDisabled: false,
+            loadOptions: this.loadUsersOptions,
+            handleChange: this.handleAdditionalPiChange,
+            value: this.state.formData.additionalPis,
+            placeholder: "Start typing the Additional Broad Co-Investigator Names",
             isMulti: true,
-            edit: false
           }),
-          InputFieldSelect({
-            label: "Primary Investigator Affiliation ",
-            id: "affiliations",
-            name: "affiliations",
-            options: PI_AFFILIATION,
-            value: this.state.formData.affiliations,
-            onChange: this.handleSelectChange("affiliations"),
-            placeholder: "Choose an affiliation...",
-            readOnly: false,
-            edit: false
-          }),
+          br(),
+          label({className:'inputFieldLabel'},["PI’s Primary Institutional Affiliation",span({ className: 'errorMessage' }, ' *')]),
+          div({},[
+            InputFieldSelect({
+              id: "affiliations",
+              name: "affiliations",
+              options: PI_AFFILIATION,
+              value: this.state.formData.affiliations,
+              onChange: this.handleSelectChange("affiliations"),
+              placeholder: "Choose an affiliation...",
+              readOnly: false,
+              edit: false,
+              error: this.props.errors.piAffiliations,
+            }),
+          ]),
+          small({ isRendered: this.props.errors.piAffiliations, className: "errorMessage" }, ['Required field']),
           InputFieldText({
             isRendered: this.state.formData.affiliations.value === "other",
             id: "affiliationOther",
@@ -216,17 +499,44 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             onChange: this.handleInputChange,
             edit: false
           }),
+          br(),
+          label({className:'inputFieldLabel'},["Key Study Contact (will receive email notifications about this project)",span({ className: 'errorMessage' }, ' *')]),
           AsyncMultiSelect({
             id: "inputProjectManager",
-            label: "Broad Project Managers",
             isDisabled: false,
             loadOptions: this.loadUsersOptions,
             handleChange: this.handlePMChange,
             value: this.state.formData.projectManagers,
             placeholder: "Start typing the Project Manager Name",
-            isMulti: true,
-            edit: false
+            isMulti: false,
+            error: this.props.errors.KeyStudyContact,
+            isWarning: false
           }),
+          small({ isRendered: this.props.errors.KeyStudyContact, className: "errorMessage" }, ['Required field']),
+          br(),
+          label({ className: 'inputFieldLabel' }, ["Additional Broad Study Staff &/or Broad individuals"]),
+          AsyncMultiSelect({
+            id: "additional_pm_select",
+            isDisabled: false,
+            loadOptions: this.loadUsersOptions,
+            handleChange: this.handleAdditionalPmChange,
+            value: this.state.formData.additionalPms,
+            placeholder: "Start typing the Additional Broad Study Staff &/or Broad individuals Names",
+            isMulti: true,
+          }),
+        ]),
+
+        Panel({ title: "Study Staff"}, [
+          KeyPersonnel({
+            readOnly: false,
+            keyPersons: this.state.formData.keyPersons,
+            updateKeyPersons: this.handleUpdateKeyPersons,
+            error: this.props.errors.keyPersons,
+            errorIndex: this.props.errors.keyPersonsErrorIndex || [],
+            errorMessage: "Required field",
+            edit: false,
+            comparisonView: false
+          })
         ]),
 
         Panel({ title: "Funding*", tooltipLabel: "?", tooltipMsg: fundingTooltip }, [
@@ -245,8 +555,10 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           InputFieldTextArea({
             id: "inputStudyActivitiesDescription",
             name: "studyDescription",
-            label: "Describe Broad study activities* ",
-            moreInfo: "(briefly, in 1-2 paragraphs, with attention to whether or not protected health information will be accessed, and any future data sharing plans)",
+            label: "Briefly describe the study activities that will occur at the Broad. ",
+            moreInfo: `Indicate whether protected health information or other identifiable data will be accessed, 
+                        and summarize any planned data sharing. If applicable, please also note any planned use of 
+                        artificial intelligence or large language models (LLMs)`,
             value: this.state.formData.studyDescription,
             disabled: false,
             required: false,
@@ -255,17 +567,17 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             errorMessage: "Required field",
             edit: false
           }),
-          AsyncMultiSelect({
-            id: "collaborator_select",
-            label: "Broad individuals who require access to this project record",
-            isDisabled: false,
-            loadOptions: this.loadUsersOptions,
-            handleChange: this.handleProjectCollaboratorChange,
-            value: this.state.formData.collaborators,
-            placeholder: "Start typing names for project access",
-            isMulti: true,
-            currentValue: this.state.formData.collaborators
-          }),
+          // AsyncMultiSelect({
+          //   id: "collaborator_select",
+          //   label: "Broad individuals who require access to this project record",
+          //   isDisabled: false,
+          //   loadOptions: this.loadUsersOptions,
+          //   handleChange: this.handleProjectCollaboratorChange,
+          //   value: this.state.formData.collaborators,
+          //   placeholder: "Start typing names for project access",
+          //   isMulti: true,
+          //   currentValue: this.state.formData.collaborators
+          // }),
           InputFieldText({
             id: "inputPTitle",
             name: "pTitle",
@@ -300,7 +612,16 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
             edit: false,
             isClearable: true
           })
-        ])
+        ]),
+        ConfirmationDialog({
+          closeModal: this.state.showModal,
+          show: this.state.showModal,
+          handleOkAction: () => this.setState({showModal:false}),
+          bodyText: this.state.modalMessage,
+          actionLabel: 'close',
+          title: 'Duplicate Entry',
+          hideCancel:true
+        }, []),
       ])
     );
   }

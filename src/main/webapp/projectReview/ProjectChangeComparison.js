@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { hh, div, ins, del, label, p, span, i } from "react-hyperscript-helpers";
 import { Panel } from "../components/Panel";
-import { isEmpty } from "../util/Utils";
+import { isEmpty, getDateString } from "../util/Utils";
 
 const ProjectChangeComparision = hh(
   class ProjectChangeComparison extends Component {
@@ -10,7 +10,69 @@ const ProjectChangeComparision = hh(
       this.state = {};
     }
 
+    getUsersArray(array) {
+      let usersArray = [];
+      if (array !== undefined && array !== null && array.length > 0) {
+        array.map(element => {
+          usersArray.push({
+            key: element.userName,
+            label: element.displayName + " (" + element.emailAddress + ") ",
+            value: element.displayName
+          });
+        });
+      }
+      return usersArray;
+    }
+
+    getVersionedKeyPersonArray(keyPersons) {
+      if (!keyPersons || !keyPersons.length) return [];
+
+      return keyPersons.map(keyPerson => ({
+        current:{
+          name: this.getUsersArray([keyPerson])[0] || null,
+          role: keyPerson.role ? { label: keyPerson.role, value: keyPerson.role.split(" ").join("_").toLowerCase() } : '',
+          otherRole: keyPerson.otherRole || ''
+        },
+        future:{
+          name: this.getUsersArray([keyPerson])[0] || null,
+          role:keyPerson.role ? { label: keyPerson.role, value: keyPerson.role.split(" ").join("_").toLowerCase() } : '',
+          otherRole: keyPerson.otherRole || ''
+        }
+      }));
+    } 
+
+    ensureWrappedKeyPersons = (arr) => {
+      if (!Array.isArray(arr) || arr.length === 0) return [];
+      const first = arr[0];
+      if (first && (first.current || first.future)) return arr;
+      // Flat API shape -> wrapped shape
+      return this.getVersionedKeyPersonArray(arr);
+    };
+
+    normalizeNameOption = (nameField) => {
+      if (!nameField) return null;
+      if (Array.isArray(nameField)) return nameField[0] || null;
+      if (typeof nameField === 'object') return nameField;
+      return null;
+    };
+
+    getKeyPersonRowKey = (row, fallbackKey) => {
+      const snap = (row && row.future) ? row.future : (row && row.current) ? row.current : row;
+      const opt = this.normalizeNameOption(snap && snap.name);
+      return (opt && opt.key) || (opt && opt.label) || (row && row._uiKey) || fallbackKey;
+    };
+
     compareData = (newData, oldData, dataType="") => {
+      // Handle array types before converting to empty string
+      if (dataType === "fundings") {
+        return this.getFundingComparison(newData || [], oldData || []);
+      } else if (dataType === "keyPersons") {
+        return this.getKeyPersonsComparison(
+          this.ensureWrappedKeyPersons(newData || []),
+          this.ensureWrappedKeyPersons(oldData || [])
+        );
+      }
+
       newData = isEmpty(newData) ? "" : newData;
       oldData = isEmpty(oldData) ? "" : oldData;
 
@@ -20,8 +82,6 @@ const ProjectChangeComparision = hh(
       } else if (dataType === "json") {
         newData = !isEmpty(newData) ? newData.label : null;
         oldData = !isEmpty(oldData) ? oldData.label : null;
-      } else if (dataType === "fundings") {
-        return this.getFundingComparison(newData, oldData);
       } else if (dataType === "irbReviewedProtocol") {
         newData = this.getIrbReviewDescription(newData);
         oldData = this.getIrbReviewDescription(oldData);
@@ -99,19 +159,108 @@ const ProjectChangeComparision = hh(
       return div({ className: "row" }, [...headers, ...rows]);
     };
 
+    getKeyPersonsComparison = (newData, oldData) => {
+      const headers = [
+          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [label({ className: "inputFieldLabel" }, ["Name"])]),
+          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [label({ className: "inputFieldLabel" }, ["Role"])]),
+          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [label({ className: "inputFieldLabel" }, ["Role (Other)"])]),
+          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [label({ className: "inputFieldLabel" }, ["Date Added"])]),
+      ]
+
+      const newArr = Array.isArray(newData) ? newData : [];
+      const oldArr = Array.isArray(oldData) ? oldData : [];
+
+      const newKeyed = newArr.map((row, idx) => ({
+        key: this.getKeyPersonRowKey(row, `new-${idx}`),
+        row
+      }));
+      const oldKeyed = oldArr.map((row, idx) => ({
+        key: this.getKeyPersonRowKey(row, `old-${idx}`),
+        row
+      }));
+
+      const newMap = new Map(newKeyed.map(it => [it.key, it.row]));
+      const oldMap = new Map(oldKeyed.map(it => [it.key, it.row]));
+
+      const orderedKeys = [
+        ...newKeyed.map(it => it.key),
+        ...oldKeyed.map(it => it.key).filter(k => !newMap.has(k))
+      ];
+
+      const showDiff = (oldVal, newVal) => {
+        const o = oldVal || "";
+        const n = newVal || "";
+        if (o === n) return n || "--";
+        return [
+          del({ isRendered: !isEmpty(o) }, [o]),
+          ins({ isRendered: !isEmpty(n) }, [n]),
+        ];
+      };
+
+      const rows = orderedKeys.map((k) => {
+        const oldItem = oldMap.get(k) || null;
+        const newItem = newMap.get(k) || null;
+
+        const oldSnap = oldItem && (oldItem.current || oldItem.future) ? (oldItem.current || oldItem.future) : {};
+        const newSnap = newItem && (newItem.future || newItem.current) ? (newItem.future || newItem.current) : {};
+
+        const oldNameOpt = this.normalizeNameOption(oldSnap.name);
+        const newNameOpt = this.normalizeNameOption(newSnap.name);
+        const oldName = oldNameOpt && oldNameOpt.label ? oldNameOpt.label : "";
+        const newName = newNameOpt && newNameOpt.label ? newNameOpt.label : "";
+
+        const oldRole = oldSnap.role && oldSnap.role.label ? oldSnap.role.label : "";
+        const newRole = newSnap.role && newSnap.role.label ? newSnap.role.label : "";
+
+        const oldOtherRole = oldSnap.otherRole || "";
+        const newOtherRole = newSnap.otherRole || "";
+
+        const oldRoleIsOther = oldSnap.role && oldSnap.role.value === "other";
+        const newRoleIsOther = newSnap.role && newSnap.role.value === "other";
+        const showRoleOther =
+          oldRoleIsOther || newRoleIsOther || !isEmpty(oldOtherRole) || !isEmpty(newOtherRole);
+        const addedDate = newItem && newItem.current && newItem.current.updatedDate;
+        return div({ className: "row",style: {paddingBottom: '10px'}, key: k }, [
+          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [
+            showDiff(oldName, newName)
+          ]),
+          div({ className: "col-lg-3 col-md-3 col-sm-3 col-12" }, [
+            showDiff(oldRole, newRole)
+          ]),
+          div({
+            className: "col-lg-3 col-md-3 col-sm-3 col-12",
+          }, [
+            showDiff(oldOtherRole, newOtherRole)
+          ]),
+          div({
+            className: "col-lg-3 col-md-3 col-sm-3 col-12",
+          }, [
+             getDateString(addedDate, 'mmddyyyy')
+          ])
+        ]);
+      });
+
+      return div({ className: "row" }, [...headers, ...rows]);
+    };
+
     render() {
       return div({}, [
         div({ id: "principalInvestigator" }, [
-          Panel({ title: "Principal Investigator" }, [
+          Panel({ title: "Key Personnel" }, [
             div([
-              label({className: 'inputFieldLabel'}, ["Broad PIs"]),
+              label({className: 'inputFieldLabel'}, ["Principal Investigator (PI) Responsible for Project Conduct and Oversight"]),
               p({}, [
                 this.compareData(this.props.formData.piList, this.props.versionedData.piList, "jsonArray"),
               ]),
             ]),
-
             div([
-              label({className: 'inputFieldLabel'}, ["Primary Investigator Affiliation"]),
+              label({className: 'inputFieldLabel'}, ["Additional Broad Co-Investigators"]),
+              p({}, [
+                this.compareData(this.props.formData.additionalPi, this.props.versionedData.additionalPi, "jsonArray"),
+              ]),
+            ]),
+            div([
+              label({className: 'inputFieldLabel'}, [" PI’s Primary Institutional Affiliation"]),
               p({}, [
                 this.compareData(this.props.formData.projectExtraProps.affiliations, this.props.versionedData.projectExtraProps.affiliations, "json"),
               ]),
@@ -128,9 +277,15 @@ const ProjectChangeComparision = hh(
             ]),
 
             div([
-              label({className: 'inputFieldLabel'}, ["Broad Project Managers"]),
+              label({className: 'inputFieldLabel'}, ["Key Study Contact (will receive email notifications about this project)"]),
               p({}, [
                 this.compareData(this.props.formData.pmList, this.props.versionedData.pmList, "jsonArray"),
+              ]),
+            ]),
+            div([
+              label({className: 'inputFieldLabel'}, ["Additional Broad Study Staff &/or Broad individuals"]),
+              p({}, [
+                this.compareData(this.props.formData.additionalPm, this.props.versionedData.additionalPm, "jsonArray"),
               ]),
             ]),
           ]),
@@ -139,6 +294,22 @@ const ProjectChangeComparision = hh(
             Panel({ title: "Funding" }, [
               div([
                 this.compareData(this.props.formData.fundings, this.props.versionedData.fundings, "fundings")
+              ]),
+            ])
+          ]),
+
+          div({ 
+            id: "keyPersons",
+            isRendered: (this.props.formData.keyPersons && this.props.formData.keyPersons.length > 0) ||
+                        (this.props.versionedData.keypersons && this.props.versionedData.keypersons.length > 0)
+          }, [
+            Panel({ title: "Study Staff" }, [
+              div([
+                this.compareData(
+                  this.props.formData.keyPersons,
+                  this.getVersionedKeyPersonArray(this.props.versionedData.keypersons),
+                  "keyPersons"
+                )
               ]),
             ])
           ]),
@@ -153,12 +324,12 @@ const ProjectChangeComparision = hh(
                 ]),
               ]),
 
-              div([
-                label({className: 'inputFieldLabel'}, ["Broad individuals who require access to this project record"]),
-                p({}, [
-                  this.compareData(this.props.formData.collaborators, this.props.versionedData.collaborators, "jsonArray"),
-                ]),
-              ]),
+              // div([
+              //   label({className: 'inputFieldLabel'}, ["Broad individuals who require access to this project record"]),
+              //   p({}, [
+              //     this.compareData(this.props.formData.collaborators, this.props.versionedData.collaborators, "jsonArray"),
+              //   ]),
+              // ]),
 
               div([
                 label({className: 'inputFieldLabel'}, ["Title of project/protocol"]),

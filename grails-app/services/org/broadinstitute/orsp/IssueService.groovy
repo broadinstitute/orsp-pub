@@ -199,7 +199,118 @@ class IssueService implements UserInfo {
             issue.removeFromFundings(it)
             it.delete(hard: true)
         }
-        
+
+        //Additional Pis
+
+        def primaryPiList = input.get("pi") ?: []
+        def additionalPiList = input.get("additionalPis") ?: []
+
+        PiStudyStaff.findAllByIssue(issue).each {
+            it.delete(hard: true)
+        }
+
+        primaryPiList.each { username ->
+
+            def ps = new PiStudyStaff()
+            ps.pi = username
+            ps.piType = "PRIMARY"
+            ps.projectKey = issue.projectKey
+            ps.sequenceNumber = issue.sequenceNumber + 1
+            ps.updateUser = getUser()?.userName
+            ps.updateDate = new Date()
+            ps.issue = issue
+            ps.save()
+        }
+
+        additionalPiList.each { username ->
+
+            def ps = new PiStudyStaff()
+            ps.pi = username
+            ps.piType = "SECONDARY"
+            ps.projectKey = issue.projectKey
+            ps.sequenceNumber = issue.sequenceNumber + 1
+            ps.updateUser = getUser()?.userName
+            ps.updateDate = new Date()
+            ps.issue = issue
+            ps.save()
+        }
+
+        //Additional Pms
+        def primaryPmList = input.get("pm") ?: []
+        def additionalPmList = input.get("additionalPms") ?: []
+
+        PmStudyStaff.findAllByIssue(issue).each {
+            it.delete(hard: true)
+        }
+
+        primaryPmList.each { username ->
+
+            def ps = new PmStudyStaff()
+
+            ps.pm = username
+            ps.pmType = "PRIMARY"
+            ps.projectKey = issue.projectKey
+            ps.sequenceNumber = issue.sequenceNumber + 1
+            ps.updateUser = getUser()?.userName
+            ps.updateDate = new Date()
+            ps.issue = issue
+
+            ps.save()
+        }
+
+        additionalPmList.each { username ->
+
+            def ps = new PmStudyStaff()
+
+            ps.pm = username
+            ps.pmType = "SECONDARY"
+            ps.projectKey = issue.projectKey
+            ps.sequenceNumber = issue.sequenceNumber + 1
+            ps.updateUser = getUser()?.userName
+            ps.updateDate = new Date()
+            ps.issue = issue
+
+            ps.save()
+        }
+
+        //KeyPerson update
+        def keyPersonParams = input.get('keyPersons')
+
+        def newKeyPersonList = keyPersonParams.collect { p ->
+
+            Long kpId = Long.valueOf(p.getOrDefault("id", "0").toString())
+            KeyPerson kp = (kpId > 0) ? KeyPerson.findById(kpId) : new KeyPerson()
+
+            kp.role = p.get("role")?.toString()
+            kp.name = p.get("name")?.toString()
+            kp.otherRole = p.get("otherRole")?.toString()
+
+            kp.projectKey = issue.projectKey
+            kp.sequenceNumber = issue.sequenceNumber + 1
+            kp.updateUser = getUser()?.userName
+            kp.updateDate = new Date()
+
+            kp.issue = issue
+
+            kp
+        }
+
+        newKeyPersonList.each {
+            issue.addToKeyPersons(it)
+            it.save()
+        }
+
+        def newKeyPersonIdList = newKeyPersonList*.id
+        def oldKeyPersonList = KeyPerson.findAllByProjectKey(issue.projectKey)
+
+        def deletableKeyPersons =
+                oldKeyPersonList.findAll { !newKeyPersonIdList.contains(it.id) }
+
+        deletableKeyPersons.each {
+            issue.removeFromKeyPersons(it)
+            it.delete(hard: true)
+        }
+
         // Remaining properties are IssueExtraProperty associations
         Collection<IssueExtraProperty> propsToDelete = findPropsForDeleting(issue, input)
         Collection<IssueExtraProperty> propsToSave = getSingleValuedPropsForSaving(issue, input)
@@ -546,6 +657,7 @@ class IssueService implements UserInfo {
         issue.setUpdateUser(getUser()?.userName)
         List<IssueExtraProperty> extraProperties = issue.getNonEmptyExtraProperties()
         Collection<Funding> fundings = issue.getFundings()
+        Collection<KeyPerson> keyPersons = issue.getKeyPersons()
         Issue newIssue = initIssue(issue, type)
         if (newIssue.hasErrors()) {
             throw new DomainException(newIssue.getErrors())
@@ -555,11 +667,69 @@ class IssueService implements UserInfo {
         newIssue.setProjectKey(newIssue.projectKey + newIssue.id)
         newIssue.save(flush: true)
         saveExtraProperties(newIssue, extraProperties)
+        savePiStudyStaff(newIssue, issue)
+        savePmStudyStaff(newIssue, issue)
         saveFundings(newIssue, fundings)
+        saveKeyPersons(newIssue, keyPersons)
         newIssue.save(flush: true)
         newIssue.extraProperties = extraProperties
         newIssue
     }
+
+    private void savePiStudyStaff(Issue newIssue, Issue originalIssue) {
+
+        originalIssue.primaryPi?.eachWithIndex { piValue, index ->
+            new PiStudyStaff(
+                    issue: newIssue,
+                    projectKey: newIssue.projectKey,
+                    pi: piValue,
+                    piType: "PRIMARY",
+                    sequenceNumber: 0,
+                    updateUser: getUser()?.userName,
+                    updateDate: new Date()
+            ).save(failOnError: true)
+        }
+
+        originalIssue.additionalPis?.eachWithIndex { piValue, index ->
+            new PiStudyStaff(
+                    issue: newIssue,
+                    projectKey: newIssue.projectKey,
+                    pi: piValue,
+                    piType: "SECONDARY",
+                    sequenceNumber: 0,
+                    updateUser: getUser()?.userName,
+                    updateDate: new Date()
+            ).save(failOnError: true)
+        }
+    }
+
+    private void savePmStudyStaff(Issue newIssue, Issue originalIssue) {
+
+        originalIssue.primaryPm?.eachWithIndex { pmValue, index ->
+            new PmStudyStaff(
+                    issue: newIssue,
+                    projectKey: newIssue.projectKey,
+                    pm: pmValue,
+                    pmType: "PRIMARY",
+                    sequenceNumber: 0,
+                    updateUser: getUser()?.userName,
+                    updateDate: new Date()
+            ).save(failOnError: true)
+        }
+
+        originalIssue.additionalPms?.eachWithIndex { pmValue, index ->
+            new PmStudyStaff(
+                    issue: newIssue,
+                    projectKey: newIssue.projectKey,
+                    pm: pmValue,
+                    pmType: "SECONDARY",
+                    sequenceNumber: 0,
+                    updateUser: getUser()?.userName,
+                    updateDate: new Date()
+            ).save(failOnError: true)
+        }
+    }
+
 
     void saveExtraProperties(Issue issue, List<IssueExtraProperty> extraProperties) {
         extraProperties?.each {
@@ -567,6 +737,25 @@ class IssueService implements UserInfo {
             it.projectKey = issue.projectKey
             it.sequenceNumber = issue.sequenceNumber
             it.save(flush: true)
+        }
+    }
+
+    void saveKeyPersons(Issue issue, Collection<KeyPerson> keyPersons) {
+
+        keyPersons?.each { KeyPerson kp ->
+
+            boolean isNew = kp.id == null
+
+            kp.issue = issue
+            kp.projectKey = issue.projectKey
+            kp.sequenceNumber = issue.sequenceNumber
+            if (isNew) {
+                kp.createdUser = getUser()?.userName
+                kp.createdTimestamp = new Date()
+            }
+            kp.updateUser = getUser()?.userName
+            kp.updateDate = new Date()
+            kp.save(flush: true)
         }
     }
 
@@ -630,6 +819,7 @@ class IssueService implements UserInfo {
         newIssue.status = IssueStatus.Open.name
         newIssue.extraProperties = null
         newIssue.fundings = null
+        newIssue.keyPersons = null
         newIssue
     }
 
@@ -653,6 +843,11 @@ class IssueService implements UserInfo {
 
             Collection<IssueExtraProperty> issueExtraProperties = issue.getExtraProperties()
             issueExtraProperties?.each { it.delete(flush: true) }
+
+            issue.setApprovalStatus(IssueStatus.Withdrawn.getName())
+            issue.setUpdateUser(getUser()?.userName)
+            issue.setUpdateDate(new Date())
+            issue.save(flush: true)
         }
         issue.delete(flush: true)
         notifyService.sendRejectionProjectNotification(issue, getUser()?.displayName)
@@ -805,6 +1000,96 @@ class IssueService implements UserInfo {
             ).save(flush: true)
         }
     }
+
+    def saveVersionedKeyPerson(Issue issue) {
+
+        VersionedIssue verIss = VersionedIssue.findByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)
+        List<KeyPerson> keyPersons = KeyPerson.findAllByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)
+
+        keyPersons.each { kp ->
+            new VersionedKeyPerson(
+                    projectKey: issue.projectKey,
+                    role: kp.role,
+                    name: kp.name,
+                    otherRole: kp.otherRole,
+                    sequenceNumber: issue.sequenceNumber,
+                    versionedIssue: verIss,
+                    updateDate: new Date()
+            ).save(flush: true)
+        }
+    }
+
+    @Transactional
+    def saveVersionedPiStudyStaff(Issue issue) {
+
+        if (!issue?.projectKey || issue.sequenceNumber == null) {
+            throw new IllegalArgumentException("Invalid issue data for versioning PI staff")
+        }
+
+        VersionedIssue verIss = VersionedIssue
+                .findByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)
+
+        if (!verIss) {
+            throw new IllegalStateException("VersionedIssue not found for projectKey: ${issue.projectKey}, sequence: ${issue.sequenceNumber}")
+        }
+
+        List<PiStudyStaff> pis = PiStudyStaff
+                .findAllByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)
+
+        if (!pis) {
+            return
+        }
+        pis.each { piObj ->
+
+            new VersionedPiStudyStaff(
+                    projectKey     : issue.projectKey,
+                    pi             : piObj.pi,
+                    piType         : piObj.piType,
+                    sequenceNumber : piObj.sequenceNumber,
+                    updateUser     : getUser()?.userName,
+                    updateDate     : new Date(),
+                    versionedIssue : verIss
+            ).save(failOnError: true)
+        }
+
+    }
+
+    @Transactional
+    def saveVersionedPmStudyStaff(Issue issue) {
+
+        if (!issue?.projectKey || issue.sequenceNumber == null) {
+            throw new IllegalArgumentException("Invalid issue data for versioning PM staff")
+        }
+
+        VersionedIssue verIss = VersionedIssue
+                .findByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)
+
+        if (!verIss) {
+            throw new IllegalStateException("VersionedIssue not found for projectKey: ${issue.projectKey}, sequence: ${issue.sequenceNumber}")
+        }
+
+        List<PmStudyStaff> pms = PmStudyStaff
+                .findAllByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)
+
+        if (!pms) {
+            return
+        }
+
+        pms.each { pmObj ->
+
+            new VersionedPmStudyStaff(
+                    projectKey     : issue.projectKey,
+                    pm             : pmObj.pm,
+                    pmType         : pmObj.pmType,
+                    sequenceNumber : pmObj.sequenceNumber,
+                    updateUser     : getUser()?.userName,
+                    updateDate     : new Date(),
+                    versionedIssue : verIss
+            ).save(failOnError: true)
+        }
+
+    }
+
 
     def saveVersionedIssueExtraProperties(Issue issue) {
         VersionedIssue verIss = VersionedIssue.findByProjectKeyAndSequenceNumber(issue.projectKey, issue.sequenceNumber)
