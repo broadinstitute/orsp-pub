@@ -70,7 +70,7 @@ jobs:
         with:
           registry: ${{ inputs.registry_region }}-docker.pkg.dev
           username: oauth2accesstoken
-          password: ${{ steps.auth.outputs.access_token }}
+          password: ${{ steps.auth.outputs.auth_token }}
 
       - name: Extract Tag
         run: |
