@@ -1,0 +1,101 @@
+name: Build and deploy to GKE
+
+on:
+  workflow_call:
+    inputs:
+      project_id:
+        description: 'Google Cloud Project ID'
+        required: true
+        type: string
+      cluster:
+        description: 'GKE Cluster Name'
+        required: true
+        type: string
+      cluster_region:
+        description: 'GKE Cluster Region'
+        required: true
+        type: string
+      artifact_registry:
+        description: 'Artifact Registry Name'
+        required: true
+        type: string
+      registry_region:
+        description: 'Artifact Registry Region'
+        required: true
+        type: string
+      deployment:
+        description: 'Kubernetes Deployment Name'
+        required: true
+        type: string
+      image:
+        description: 'Docker Image Name'
+        required: true
+        type: string
+      project_number:
+        description: 'Google Cloud Project Number'
+        required: true
+        type: string
+      service_account:
+        description: 'Google Cloud Service Account Email'
+        required: true
+        type: string
+
+concurrency:
+  group: deploy-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/${{ inputs.project_number }}/locations/global/workloadIdentityPools/orsp-dev-workloadpool/providers/github
+          service_account: ${{ inputs.service_account }}
+      
+      - name: Setup Gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Docker Login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ inputs.registry_region }}-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.auth_token }}
+
+      - name: Extract Tag
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          echo "IMAGE_URI=${{ inputs.registry_region }}-docker.pkg.dev/${{ inputs.project_id }}/${{ inputs.artifact_registry }}/${{ inputs.image }}:$TAG" >> $GITHUB_ENV
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.IMAGE_URI }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Get GKE Credentials
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ inputs.cluster }}
+          location: ${{ inputs.cluster_region }}
+
+      - name: Deploy to Kubernetes
+        run: |
+          set -e
+          kubectl set image deployment/${{ inputs.deployment }} orsp-pub=$IMAGE_URI
+          kubectl rollout status deployment/${{ inputs.deployment }} --timeout=10m
+          kubectl get pods
+          kubectl describe deployment ${{ inputs.deployment }}
