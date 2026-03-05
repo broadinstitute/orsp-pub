@@ -17,4 +17,4 @@ jobs:
       deployment: orsp-pub-dev
       image: orsp-dev-img
       project_number: 18883205905
-      service_account: github-dev-deploy@orsp-dev.iam.gserviceaccount.com
+      service_account: circleci-deploy@orsp-dev.iam.gserviceaccount.com
