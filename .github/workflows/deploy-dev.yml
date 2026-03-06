@@ -13,7 +13,7 @@ jobs:
       cluster: orsp-pub-dev
       cluster_region: us-central1-a
       artifact_registry: orsp-repo
-      registry_region: us-central1-a
+      registry_region: us-central1
       deployment: orsp-pub
       image: orsp-dev-img
       project_number: 18883205905

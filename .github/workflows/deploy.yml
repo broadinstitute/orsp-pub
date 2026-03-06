@@ -106,7 +106,7 @@ jobs:
       - name: Deploy to Kubernetes
         run: |
           set -e
-          kubectl set image deployment/${{ inputs.deployment }} orsp-pub=$IMAGE_URI
-          kubectl rollout status deployment/${{ inputs.deployment }} --timeout=10m
-          kubectl get pods
-          kubectl describe deployment ${{ inputs.deployment }}
+          kubectl set image deployment/${{ inputs.deployment }} orsp-pub=$IMAGE_URI -n orsp
+          kubectl rollout status deployment/${{ inputs.deployment }} -n orsp --timeout=10m
+          kubectl get pods -n orsp
+          kubectl describe deployment ${{ inputs.deployment }} -n orsp
