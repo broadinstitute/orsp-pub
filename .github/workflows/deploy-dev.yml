@@ -14,7 +14,7 @@ jobs:
       cluster_region: us-central1-a
       artifact_registry: orsp-repo
       registry_region: us-central1-a
-      deployment: orsp-pub-dev
+      deployment: orsp-pub
       image: orsp-dev-img
       project_number: 18883205905
       service_account: circleci-deploy@orsp-dev.iam.gserviceaccount.com
