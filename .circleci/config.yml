@@ -189,19 +189,19 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - deploy-dev:
-          filters:
-            branches:
-              only: feature
-      - deploy-staging:
-          filters:
-            tags:
-              only: /^staging.*/
-            branches:
-              ignore: /.*/
-      - deploy-production:
-          filters:
-            tags:
-              only: /^production.*/
-            branches:
-              ignore: /.*/
+      # - deploy-dev:
+      #     filters:
+      #       branches:
+      #         only: feature
+      # - deploy-staging:
+      #     filters:
+      #       tags:
+      #         only: /^staging.*/
+      #       branches:
+      #         ignore: /.*/
+      # - deploy-production:
+      #     filters:
+      #       tags:
+      #         only: /^production.*/
+      #       branches:
+      #         ignore: /.*/
