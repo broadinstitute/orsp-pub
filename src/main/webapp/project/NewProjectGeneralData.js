@@ -514,16 +514,16 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           }),
           small({ isRendered: this.props.errors.KeyStudyContact, className: "errorMessage" }, ['Required field']),
           br(),
-          label({ className: 'inputFieldLabel' }, ["Additional Broad Study Staff &/or Broad individuals"]),
-          AsyncMultiSelect({
-            id: "additional_pm_select",
-            isDisabled: false,
-            loadOptions: this.loadUsersOptions,
-            handleChange: this.handleAdditionalPmChange,
-            value: this.state.formData.additionalPms,
-            placeholder: "Start typing the Additional Broad Study Staff &/or Broad individuals Names",
-            isMulti: true,
-          }),
+          // label({ className: 'inputFieldLabel' }, ["Additional Broad Study Staff &/or Broad individuals"]),
+          // AsyncMultiSelect({
+          //   id: "additional_pm_select",
+          //   isDisabled: false,
+          //   loadOptions: this.loadUsersOptions,
+          //   handleChange: this.handleAdditionalPmChange,
+          //   value: this.state.formData.additionalPms,
+          //   placeholder: "Start typing the Additional Broad Study Staff &/or Broad individuals Names",
+          //   isMulti: true,
+          // }),
         ]),
 
         Panel({ title: "Study Staff"}, [

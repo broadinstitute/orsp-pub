@@ -282,12 +282,12 @@ const ProjectChangeComparision = hh(
                 this.compareData(this.props.formData.pmList, this.props.versionedData.pmList, "jsonArray"),
               ]),
             ]),
-            div([
-              label({className: 'inputFieldLabel'}, ["Additional Broad Study Staff &/or Broad individuals"]),
-              p({}, [
-                this.compareData(this.props.formData.additionalPm, this.props.versionedData.additionalPm, "jsonArray"),
-              ]),
-            ]),
+            // div([
+            //   label({className: 'inputFieldLabel'}, ["Additional Broad Study Staff &/or Broad individuals"]),
+            //   p({}, [
+            //     this.compareData(this.props.formData.additionalPm, this.props.versionedData.additionalPm, "jsonArray"),
+            //   ]),
+            // ]),
           ]),
 
           div({ id: "funding" }, [
