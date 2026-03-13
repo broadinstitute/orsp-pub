@@ -5,7 +5,7 @@ import grails.gorm.transactions.Transactional
 @Transactional
 class CollaboratorMigrationService {
 
-    void migrateIfRequired(Issue issue) {
+    void migrateCollaborator(Issue issue) {
 
         if (!issue?.id) {
             return
@@ -24,8 +24,8 @@ class CollaboratorMigrationService {
 
         // Read collaborators from IssueExtraProperty
         List<IssueExtraProperty> collaboratorProps =
-                IssueExtraProperty.findAllByProjectKeyAndName(
-                        issue.projectKey,
+                IssueExtraProperty.findAllByIssueAndName(
+                        issue,
                         IssueExtraProperty.COLLABORATOR
                 )
 
@@ -33,7 +33,7 @@ class CollaboratorMigrationService {
             return
         }
 
-        //  Migrate to KeyPerson
+        // Migrate to KeyPerson
         collaboratorProps.each { IssueExtraProperty prop ->
 
             String collaboratorName = prop.value?.trim()
@@ -41,8 +41,8 @@ class CollaboratorMigrationService {
                 return
             }
 
-            boolean alreadyExists = KeyPerson.findByProjectKeyAndNameAndDeleted(
-                    issue.projectKey,
+            boolean alreadyExists = KeyPerson.findByIssueAndNameAndDeleted(
+                    issue,
                     collaboratorName,
                     false
             ) != null
@@ -53,13 +53,13 @@ class CollaboratorMigrationService {
                         projectKey     : issue.projectKey,
                         name           : collaboratorName,
                         role           : 'Legacy',
-                        sequenceNumber : 0,
+                        sequenceNumber : prop.sequenceNumber ?: 0,
                         updateDate     : new Date()
                 ).save(failOnError: true)
             }
         }
 
-        //  Insert migration log entry
+        // Insert migration log entry
         new IssueExtraPropertyMigrationLog(
                 issue        : issue,
                 projectKey   : issue.projectKey,

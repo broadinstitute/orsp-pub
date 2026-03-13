@@ -245,7 +245,7 @@ class ProjectController extends AuthenticatedController {
             return
         }
 
-        collaboratorMigrationService.migrateIfRequired(issue)
+        collaboratorMigrationService.migrateCollaborator(issue)
 
         Collection<KeyPerson> keyPersons =
                 KeyPerson.findAllByProjectKeyAndDeleted(projectKey, false)
