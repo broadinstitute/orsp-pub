@@ -1832,20 +1832,20 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         showCurrentValueOnEdit:true
                       }),
                       br(),
-                      label({className:'inputFieldLabel'},
-                        ["Additional Broad Study Staff &/or Broad individuals"]
-                      ),
-                      AsyncMultiSelect({
-                        id: "ProjectManager_add",
-                        name: 'additionalPm',
-                        readOnly: this.state.readOnly,
-                        loadOptions: this.loadUsersOptions,
-                        handleChange: this.handleaddtnProjectManagerChange,
-                        value: this.state.formData.additionalPm,
-                        currentValue: this.state.current.additionalPm,
-                        isMulti: true,
-                        showCurrentValueOnEdit:true
-                      })
+                      // label({className:'inputFieldLabel'},
+                      //   ["Additional Broad Study Staff &/or Broad individuals"]
+                      // ),
+                      // AsyncMultiSelect({
+                      //   id: "ProjectManager_add",
+                      //   name: 'additionalPm',
+                      //   readOnly: this.state.readOnly,
+                      //   loadOptions: this.loadUsersOptions,
+                      //   handleChange: this.handleaddtnProjectManagerChange,
+                      //   value: this.state.formData.additionalPm,
+                      //   currentValue: this.state.current.additionalPm,
+                      //   isMulti: true,
+                      //   showCurrentValueOnEdit:true
+                      // })
                     ])
                   ]),
 

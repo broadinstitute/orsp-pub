@@ -118,16 +118,6 @@ class ProjectVersionDetailedView extends Component {
                     : "--"}
                 </p>
               </div>
-              <div className="mb-15">
-                <label>Additional Broad Study Staff &/or Broad individuals</label>
-                <p className="answer-fields">
-                  {additionalPms.length
-                    ? additionalPms.map((pi, idx) => (
-                      pi.displayName + "(" + pi.emailAddress + ")"
-                    )).join(", ")
-                    : "--"}
-                </p>
-              </div>
             </Panel>
             <Panel title="Study Staff" id="study-staff">
               <KeyPersonnel
