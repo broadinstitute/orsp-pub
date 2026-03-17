@@ -9,6 +9,7 @@ jobs:
   deploy:
     uses: ./.github/workflows/deploy.yml
     with:
+      environment: staging
       project_id: orsp-dev
       cluster: orsp-pub-staging
       cluster_region: us-central1-a
