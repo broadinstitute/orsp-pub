@@ -448,7 +448,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
         ]),
 
         Panel({ title: "Key Personnel"}, [
-          label({className:'inputFieldLabel'},["Principal Investigator (PI) Responsible for Project Conduct and Oversight",span({ className: 'errorMessage' }, ' *')]),
+          label({className:'inputFieldLabel'},["Broad Principal Investigator (PI) Responsible for Project Conduct and Oversight",span({ className: 'errorMessage' }, ' *')]),
           AsyncMultiSelect({
             id: "pi_select",
             isDisabled: false,
@@ -526,7 +526,7 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           // }),
         ]),
 
-        Panel({ title: "Study Staff"}, [
+        Panel({ title: "Broad Study Staff"}, [
           KeyPersonnel({
             readOnly: false,
             keyPersons: this.state.formData.keyPersons,

@@ -248,17 +248,17 @@ const ProjectChangeComparision = hh(
         div({ id: "principalInvestigator" }, [
           Panel({ title: "Key Personnel" }, [
             div([
-              label({className: 'inputFieldLabel'}, ["Principal Investigator (PI) Responsible for Project Conduct and Oversight"]),
+              label({className: 'inputFieldLabel'}, ["Broad Principal Investigator (PI) Responsible for Project Conduct and Oversight"]),
               p({}, [
                 this.compareData(this.props.formData.piList, this.props.versionedData.piList, "jsonArray"),
               ]),
             ]),
-            div([
-              label({className: 'inputFieldLabel'}, ["Additional Broad Co-Investigators"]),
-              p({}, [
-                this.compareData(this.props.formData.additionalPi, this.props.versionedData.additionalPi, "jsonArray"),
-              ]),
-            ]),
+            // div([
+            //   label({className: 'inputFieldLabel'}, ["Additional Broad Co-Investigators"]),
+            //   p({}, [
+            //     this.compareData(this.props.formData.additionalPi, this.props.versionedData.additionalPi, "jsonArray"),
+            //   ]),
+            // ]),
             div([
               label({className: 'inputFieldLabel'}, [" PI’s Primary Institutional Affiliation"]),
               p({}, [
@@ -303,7 +303,7 @@ const ProjectChangeComparision = hh(
             isRendered: (this.props.formData.keyPersons && this.props.formData.keyPersons.length > 0) ||
                         (this.props.versionedData.keypersons && this.props.versionedData.keypersons.length > 0)
           }, [
-            Panel({ title: "Study Staff" }, [
+            Panel({ title: "Broad Study Staff" }, [
               div([
                 this.compareData(
                   this.props.formData.keyPersons,

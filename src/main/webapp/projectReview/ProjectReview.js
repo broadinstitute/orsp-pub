@@ -1759,7 +1759,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     Panel({ title: "Key Personnel" }, [
                       br(),
                       label({className:'inputFieldLabel'},
-                        ["Principal Investigator (PI) Responsible for Project Conduct and Oversight",
+                        ["Broad Principal Investigator (PI) Responsible for Project Conduct and Oversight",
                           span({ className: 'errorMessage' }, ' *')]
                       ),
                       AsyncMultiSelect({
@@ -1773,21 +1773,20 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         isMulti: false,
                         showCurrentValueOnEdit:true
                       }),
-                      br(),
-                      label({className:'inputFieldLabel'},
-                        ["Additional Broad Co-Investigators"]
-                      ),
-                      AsyncMultiSelect({
-                        id: "pi_select_add",
-                        name: 'additionalPi',
-                        readOnly: this.state.readOnly,
-                        loadOptions: this.loadUsersOptions,
-                        handleChange: this.handleaddtnPIChange,
-                        value: this.state.formData.additionalPi,
-                        currentValue: this.state.current.additionalPi,
-                        isMulti: true,
-                        showCurrentValueOnEdit:true
-                      }),
+                      // br(),
+                      // label({className:'inputFieldLabel'},
+                      //   ["Additional Broad Co-Investigators"]
+                      // ),
+                      // AsyncMultiSelect({
+                      //   id: "pi_select_add",
+                      //   name: 'additionalPi',
+                      //   readOnly: this.state.readOnly,
+                      //   loadOptions: this.loadUsersOptions,
+                      //   handleChange: this.handleaddtnPIChange,
+                      //   value: this.state.formData.additionalPi,
+                      //   currentValue: this.state.current.additionalPi,
+                      //   isMulti: true
+                      // }),
                       br(),
                       label({ className:'inputFieldLabel' },
                         ["PI’s Primary Institutional Affiliation",span({ className: 'errorMessage' }, ' *')]
@@ -1851,7 +1850,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
                   div({ classNames: 'panel-group', id: "studyAccordion", isRendered: this.state.hasKeyPersonnel && this.state.formData.keyPersonnel && this.state.formData.keyPersonnel.length > 0 }, [
                     Panel({
-                      title: "Study Staff",
+                      title: "Broad Study Staff",
                       collapsible: true,
                       defaultOpen: true,
                       panelId: "studyStaffPanel",
