@@ -462,17 +462,17 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
           }),
           small({ isRendered: this.props.errors.piName, className: "errorMessage" }, ['Required field']),
           br(),
-          label({className:'inputFieldLabel'},["Additional Broad Co-Investigators"]),
-          AsyncMultiSelect({
-            id: "co_pi_select",
-            isDisabled: false,
-            loadOptions: this.loadUsersOptions,
-            handleChange: this.handleAdditionalPiChange,
-            value: this.state.formData.additionalPis,
-            placeholder: "Start typing the Additional Broad Co-Investigator Names",
-            isMulti: true,
-          }),
-          br(),
+          // label({className:'inputFieldLabel'},["Additional Broad Co-Investigators"]),
+          // AsyncMultiSelect({
+          //   id: "co_pi_select",
+          //   isDisabled: false,
+          //   loadOptions: this.loadUsersOptions,
+          //   handleChange: this.handleAdditionalPiChange,
+          //   value: this.state.formData.additionalPis,
+          //   placeholder: "Start typing the Additional Broad Co-Investigator Names",
+          //   isMulti: true,
+          // }),
+          // br(),
           label({className:'inputFieldLabel'},["PI’s Primary Institutional Affiliation",span({ className: 'errorMessage' }, ' *')]),
           div({},[
             InputFieldSelect({
