@@ -85,7 +85,7 @@ class ProjectVersionDetailedView extends Component {
           <div className="" id="project-details">
             <Panel title="Key Personnel" id="principal-investigator">
               <div className="mb-15">
-                <label>Principal Investigator (PI) Responsible for Project Conduct and Oversight</label>
+                <label>Broad Principal Investigator (PI) Responsible for Project Conduct and Oversight</label>
                 <p className="answer-fields">
                   {primaryPis.length 
                     ? primaryPis.map((pi, idx) => (
@@ -94,7 +94,7 @@ class ProjectVersionDetailedView extends Component {
                     : "--"}
                 </p>
               </div>
-              <div className="mb-15">
+              {/* <div className="mb-15">
                 <label>Additional Broad Co-Investigators</label>
                 <p className="answer-fields">
                   {additionalPis.length
@@ -103,7 +103,7 @@ class ProjectVersionDetailedView extends Component {
                     )).join(", ")
                     : "--"}
                 </p>
-              </div>
+              </div> */}
               <div className="mb-15">
                 <label>PI’s Primary Institutional Affiliation</label>
                 <p className="answer-fields">{this.getExtraPropertyValueFromJSON("affiliations")}</p>
@@ -119,7 +119,7 @@ class ProjectVersionDetailedView extends Component {
                 </p>
               </div>
             </Panel>
-            <Panel title="Study Staff" id="study-staff">
+            <Panel title="Broad Study Staff" id="study-staff">
               <KeyPersonnel
                 keyPersons={this.getKeyPersonArray(keypersons)}
                 readOnly={true}
