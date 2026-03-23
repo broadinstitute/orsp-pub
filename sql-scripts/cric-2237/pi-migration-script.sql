@@ -77,7 +77,6 @@ FROM (
 ) t
 WHERE t.rn > 1
 
--- Prevent duplicates (idempotent)
 AND NOT EXISTS (
     SELECT 1
     FROM orsp_dev.key_person kp
