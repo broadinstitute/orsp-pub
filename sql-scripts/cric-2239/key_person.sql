@@ -6,6 +6,8 @@ CREATE TABLE key_person (
     name VARCHAR(150) NOT NULL,
     other_role TEXT,
     sequence_number INT DEFAULT 0,
+    created_user VARCHAR(50),
+    created_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_user VARCHAR(150),
     update_date DATETIME,
     deleted INT DEFAULT 0,
