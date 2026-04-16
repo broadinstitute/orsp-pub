@@ -5,10 +5,6 @@ on:
     tags:
       - 'dev_*'
 
-permissions:
-  contents: read
-  id-token: write      
-
 jobs:
   deploy:
     uses: ./.github/workflows/deploy.yml
