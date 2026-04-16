@@ -47,10 +47,14 @@ class Issue implements LogicalDelete<Issue> {
 
     // Transients
 
-    static transients = ["actors", "attachments", "samples"]
+    static transients = ["actors", "attachments", "samples","primaryPi", "additionalPis ", "primaryPm", "additionalPms"]
     Collection<String> actors
     Collection<StorageDocument> attachments
     Collection<String> samples
+    transient Collection<String> primaryPi
+    transient Collection<String> additionalPis
+    transient Collection<String> primaryPm
+    transient Collection<String> additionalPms
 
     transient Boolean isLocked() { isFlagSet(IssueExtraProperty.LOCKED) }
 

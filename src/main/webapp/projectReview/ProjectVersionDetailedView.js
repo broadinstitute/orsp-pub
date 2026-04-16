@@ -52,7 +52,6 @@ class ProjectVersionDetailedView extends Component {
 
   getKeyPersonArray(keyPersons) {
   if (!keyPersons || !keyPersons.length) return [];
-  console.log(keyPersons,'keyPersons');
   return keyPersons.map(keyPerson => ({
     name: keyPerson.displayName,
     role: keyPerson.role,
@@ -64,6 +63,10 @@ class ProjectVersionDetailedView extends Component {
 
   render() {
     const {issue, fundings, requestor, pis, pms, collaborators, keypersons } = this.state.formData;
+    const additionalPis = Array.isArray(pis) ? pis.filter(pi => pi.piType === "SECONDARY") : []
+    const primaryPis = Array.isArray(pis) ? pis.filter(pi => pi.piType === "PRIMARY") : []
+    const additionalPms = Array.isArray(pms) ? pms.filter(pm => pm.pmType === "SECONDARY") : []
+    const primaryPms = Array.isArray(pms) ? pms.filter(pm => pm.pmType === "PRIMARY") : []
     return (
       <React.Fragment>
         <div className="project-container">
@@ -82,15 +85,25 @@ class ProjectVersionDetailedView extends Component {
           <div className="" id="project-details">
             <Panel title="Key Personnel" id="principal-investigator">
               <div className="mb-15">
-                <label>Principal Investigator (PI) Responsible for Project Conduct and Oversight</label>
+                <label>Broad Principal Investigator (PI) Responsible for Project Conduct and Oversight</label>
                 <p className="answer-fields">
-                  {pis.length 
-                    ? pis.map((pi, idx) => (
+                  {primaryPis.length 
+                    ? primaryPis.map((pi, idx) => (
                         pi.displayName + "(" + pi.emailAddress + ")"
                       )).join(", ") 
                     : "--"}
                 </p>
               </div>
+              {/* <div className="mb-15">
+                <label>Additional Broad Co-Investigators</label>
+                <p className="answer-fields">
+                  {additionalPis.length
+                    ? additionalPis.map((pi, idx) => (
+                      pi.displayName + "(" + pi.emailAddress + ")"
+                    )).join(", ")
+                    : "--"}
+                </p>
+              </div> */}
               <div className="mb-15">
                 <label>PI’s Primary Institutional Affiliation</label>
                 <p className="answer-fields">{this.getExtraPropertyValueFromJSON("affiliations")}</p>
@@ -98,15 +111,15 @@ class ProjectVersionDetailedView extends Component {
               <div className="mb-15">
                 <label>Key Study Contact (will receive email notifications about this project)</label>
                 <p className="answer-fields">
-                  {pms.length 
-                    ? pms.map((pm, idx) => (
+                  {primaryPms.length 
+                    ? primaryPms.map((pm, idx) => (
                         pm.displayName + "(" + pm.emailAddress + ")"
                       )).join(", ") 
                     : "--"}
                 </p>
               </div>
             </Panel>
-            <Panel title="Study Staff" id="study-staff">
+            <Panel title="Broad Study Staff" id="study-staff">
               <KeyPersonnel
                 keyPersons={this.getKeyPersonArray(keypersons)}
                 readOnly={true}
