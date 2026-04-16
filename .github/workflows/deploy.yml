@@ -3,6 +3,10 @@ name: Build and deploy to GKE
 on:
   workflow_call:
     inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        type: string
       project_id:
         description: 'Google Cloud Project ID'
         required: true
@@ -107,6 +111,7 @@ jobs:
         run: |
           set -e
           kubectl set image deployment/${{ inputs.deployment }} orsp-pub=$IMAGE_URI -n orsp
+          kubectl set env deployment/${{ inputs.deployment }} GRAILS_ENV=${{ inputs.environment }} -n orsp
           kubectl rollout status deployment/${{ inputs.deployment }} -n orsp --timeout=10m
           kubectl get pods -n orsp
           kubectl describe deployment ${{ inputs.deployment }} -n orsp
