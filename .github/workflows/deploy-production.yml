@@ -1,0 +1,21 @@
+name: Deploy Production
+
+on:
+  push:
+    tags:
+      - 'production_*'
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: production
+      project_id: orspsamples
+      cluster: orsp-pub-prod-cluster
+      cluster_region: us-central1-a
+      artifact_registry: orsp-repo
+      registry_region: us-central1
+      deployment: orsp-pub
+      image: orsp-production-img
+      project_number: 237156683917
+      service_account: circleci-gke-deploy@orspsamples.iam.gserviceaccount.com
