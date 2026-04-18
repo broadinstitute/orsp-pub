@@ -23,3 +23,4 @@ jobs:
       image: orsp-dev-img
       project_number: 18883205905
       service_account: circleci-deploy@orsp-dev.iam.gserviceaccount.com
+      workloadIdentityPools: orsp-dev-workloadpool
