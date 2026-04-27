@@ -4,7 +4,11 @@ on:
   push:
     tags:
       - 'dev_*'
- 
+
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   deploy:
     uses: ./.github/workflows/deploy.yml
@@ -19,3 +23,4 @@ jobs:
       image: orsp-dev-img
       project_number: 18883205905
       service_account: circleci-deploy@orsp-dev.iam.gserviceaccount.com
+      workloadIdentityPools: orsp-dev-workloadpool
