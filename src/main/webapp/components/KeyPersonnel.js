@@ -289,8 +289,10 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
     const name = this.props.edit ? kp.future.name : kp.name;
     const isNameEmpty = name === null || name === undefined || (Array.isArray(name) && name.length === 0);
 
-    if (this.props.edit === true) {
-      hasError = this.props.error && this.props.errorIndex && this.props.errorIndex.includes(index) && isNameEmpty;
+    if (this.props.errorIndex !== undefined) {
+      hasError = this.props.error && this.props.errorIndex.includes(index) && isNameEmpty;
+    } else if (this.props.edit === true) {
+      hasError = this.props.error && isNameEmpty;
     } else {
       hasError = this.props.error && index === 0 && isNameEmpty;
     }
@@ -305,8 +307,10 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
     const role = this.props.edit ? kp.future.role : kp.role;
     const isRoleEmpty = !role || isEmpty(role.value);
 
-    if (this.props.edit === true) {
-      hasError = this.props.error && this.props.errorIndex && this.props.errorIndex.includes(index) && isRoleEmpty;
+    if (this.props.errorIndex !== undefined) {
+      hasError = this.props.error && this.props.errorIndex.includes(index) && isRoleEmpty;
+    } else if (this.props.edit === true) {
+      hasError = this.props.error && isRoleEmpty;
     } else {
       hasError = this.props.error && index === 0 && isRoleEmpty;
     }
@@ -322,8 +326,10 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
 
     if (isOther) {
       const otherRole = this.props.edit ? kp.future.otherRole : kp.otherRole;
-      if (this.props.edit === true) {
-        hasError = this.props.error && this.props.errorIndex && this.props.errorIndex.includes(index) && isEmpty(otherRole);
+      if (this.props.errorIndex !== undefined) {
+        hasError = this.props.error && this.props.errorIndex.includes(index) && isEmpty(otherRole);
+      } else if (this.props.edit === true) {
+        hasError = this.props.error && isEmpty(otherRole);
       } else {
         hasError = this.props.error && index === 0 && isEmpty(otherRole);
       }
