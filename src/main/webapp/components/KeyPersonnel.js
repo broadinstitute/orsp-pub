@@ -556,7 +556,7 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
           const tableData = this.props.readOnly ? this.formatKeyPersons(this.props.keyPersons) : [];
           const hasData = tableData && tableData.some(row => row.name);
           if (!hasData) {
-            return [p({ style: { color: '#888', fontStyle: 'italic', margin: '8px 0' } }, ['No data'])];
+            return [p({ style: { color: '#888', fontStyle: 'italic', margin: '8px 0', textAlign: 'center' } }, ['No data'])];
           }
           return [TableComponent({
             isRendered: true,
