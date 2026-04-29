@@ -79,8 +79,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
         projectType: '',
         piList: [{ key: '', label: '', value: '' }],
         pmList: [{ key: '', label: '', value: '' }],
-        additionalPm:[{ key: '', label: '', value: '' }],
-        additionalPi:[{ key: '', label: '', value: '' }],
+        additionalPm: [{ key: '', label: '', value: '' }],
+        additionalPi: [{ key: '', label: '', value: '' }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
           irb: '',
@@ -107,8 +107,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
           future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
         }],
         keyPersons: [{
-          current: { name: null, role: '', otherRole: '', updatedDate:'' },
-          future: { name: null, role: '', otherRole: '', updatedDate:'' }
+          current: { name: null, role: '', otherRole: '', updatedDate: '' },
+          future: { name: null, role: '', otherRole: '', updatedDate: '' }
         }],
         requestor: {
           displayName: '',
@@ -133,15 +133,15 @@ const ProjectReview = hh(class ProjectReview extends Component {
         studyDescription: '',
         piList: [{ key: '', label: '', value: '' }],
         pmList: [{ key: '', label: '', value: '' }],
-        additionalPm:[{ key: '', label: '', value: '' }],
-        additionalPi:[{ key: '', label: '', value: '' }],
+        additionalPm: [{ key: '', label: '', value: '' }],
+        additionalPi: [{ key: '', label: '', value: '' }],
         fundings: [{
           current: { source: { label: '', value: '' }, sponsor: '', identifier: '' },
           future: { source: { label: '', value: '' }, sponsor: '', identifier: '' }
         }],
         keyPersons: [{
-          current: { name: null, role: '', otherRole: '', updatedDate:'' },
-          future: { name: null, role: '', otherRole: '', updatedDate:'' }
+          current: { name: null, role: '', otherRole: '', updatedDate: '' },
+          future: { name: null, role: '', otherRole: '', updatedDate: '' }
         }],
         collaborators: [{ key: '', label: '', value: '' }],
         projectExtraProps: {
@@ -182,7 +182,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       versionedIssue: {},
       issueVersionList: [],
       activeTab: "current_version",
-      coiAttestation : {
+      coiAttestation: {
         accuracyConfirmed: false,
         authorizationConfirmed: false,
         codedConfirmed: false,
@@ -192,13 +192,13 @@ const ProjectReview = hh(class ProjectReview extends Component {
         financialNotApplicable: false
       },
       allKeyPersons: {
-        pi:[],
-        pm:[],
-        additionalPis:[],
-        additionalPms:[],
-        KeyPersons:[]
+        pi: [],
+        pm: [],
+        additionalPis: [],
+        additionalPms: [],
+        KeyPersons: []
       },
-      showModal:false,
+      showModal: false,
       modalMessage: ''
     };
     this.state.questions = initQuestions();
@@ -219,112 +219,112 @@ const ProjectReview = hh(class ProjectReview extends Component {
   }
 
   init() {
-  scrollToTop();
-  let current = {};
-  let currentStr = {};
-  let future = {};
-  let futureCopy = {};
-  let formData = {};
-  Project.getProject(this.props.projectKey).then(
-    issue => {
-      this.props.initStatusBoxInfo(issue.data);
-      current.approvalStatus = issue.data.issue.approvalStatus;
-      current.description = isEmpty(issue.data.issue.description) ? '' : he.decode(sanitizeHtml(issue.data.issue.description, { allowedTags: [] }));
-      current.affiliationOther = issue.data.issue.affiliationOther;
-      current.projectExtraProps = issue.data.extraProperties;
-      current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb);
-      current.projectExtraProps.affiliations = this.getAffiliation(current.projectExtraProps.affiliations);
-      const PRIMARY_PI = issue.data.allPis.filter((x) => x.piType === "PRIMARY");
-      const SECONDARY_PI = issue.data.allPis.filter((x) => x.piType === "SECONDARY");
-      current.piList = this.getUsersArray(PRIMARY_PI);
-      current.additionalPi = this.getUsersArray(SECONDARY_PI);
-      const PRIMARY_PM = issue.data.allPms.filter((x) => x.pmType === "PRIMARY");
-      const SECONDARY_PM = issue.data.allPms.filter((x) => x.pmType === "SECONDARY");
-      current.pmList = this.getUsersArray(PRIMARY_PM);
-      current.additionalPm = this.getUsersArray(SECONDARY_PM);
-      current.collaborators = this.getUsersArray(issue.data.collaborators);
-      current.fundings = this.getFundingsArray(issue.data.fundings);
-      this.updatePiPmValidationArray({PRIMARY_PI,SECONDARY_PI,PRIMARY_PM,SECONDARY_PM})
-      current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
-      current.sequenceNumber = issue.data.issue.sequenceNumber;
-      current.updateUser = issue.data.issue.updateUser;
-      current.updateDate = issue.data.issue.updateDate;
-      this.projectType = issue.data.issue.type;
-      this.updateCoiAttestation(issue.data.extraProperties);
+    scrollToTop();
+    let current = {};
+    let currentStr = {};
+    let future = {};
+    let futureCopy = {};
+    let formData = {};
+    Project.getProject(this.props.projectKey).then(
+      issue => {
+        this.props.initStatusBoxInfo(issue.data);
+        current.approvalStatus = issue.data.issue.approvalStatus;
+        current.description = isEmpty(issue.data.issue.description) ? '' : he.decode(sanitizeHtml(issue.data.issue.description, { allowedTags: [] }));
+        current.affiliationOther = issue.data.issue.affiliationOther;
+        current.projectExtraProps = issue.data.extraProperties;
+        current.projectExtraProps.irb = isEmpty(current.projectExtraProps.irb) ? '' : JSON.parse(current.projectExtraProps.irb);
+        current.projectExtraProps.affiliations = this.getAffiliation(current.projectExtraProps.affiliations);
+        const PRIMARY_PI = issue.data.allPis.filter((x) => x.piType === "PRIMARY");
+        const SECONDARY_PI = issue.data.allPis.filter((x) => x.piType === "SECONDARY");
+        current.piList = this.getUsersArray(PRIMARY_PI);
+        current.additionalPi = this.getUsersArray(SECONDARY_PI);
+        const PRIMARY_PM = issue.data.allPms.filter((x) => x.pmType === "PRIMARY");
+        const SECONDARY_PM = issue.data.allPms.filter((x) => x.pmType === "SECONDARY");
+        current.pmList = this.getUsersArray(PRIMARY_PM);
+        current.additionalPm = this.getUsersArray(SECONDARY_PM);
+        current.collaborators = this.getUsersArray(issue.data.collaborators);
+        current.fundings = this.getFundingsArray(issue.data.fundings);
+        this.updatePiPmValidationArray({ PRIMARY_PI, SECONDARY_PI, PRIMARY_PM, SECONDARY_PM })
+        current.requestor = issue.data.requestor !== null ? issue.data.requestor : this.state.requestor;
+        current.sequenceNumber = issue.data.issue.sequenceNumber;
+        current.updateUser = issue.data.issue.updateUser;
+        current.updateDate = issue.data.issue.updateDate;
+        this.projectType = issue.data.issue.type;
+        this.updateCoiAttestation(issue.data.extraProperties);
 
-      Project.getKeyPersons(this.props.projectKey).then(
-        kpResponse => {
+        Project.getKeyPersons(this.props.projectKey).then(
+          kpResponse => {
 
-          const keyPersonsData = kpResponse.data.keyPersons || [];
-          const hasKeyPersonsData =
-            Array.isArray(keyPersonsData) && keyPersonsData.length > 0;
+            const keyPersonsData = kpResponse.data.keyPersons || [];
+            const hasKeyPersonsData =
+              Array.isArray(keyPersonsData) && keyPersonsData.length > 0;
 
-          if (hasKeyPersonsData) {
-            current.keyPersons =
-              this.getKeyPersonsArray(keyPersonsData);
+            if (hasKeyPersonsData) {
+              current.keyPersons =
+                this.getKeyPersonsArray(keyPersonsData);
               this.updateKeyPersonValidationArray(keyPersonsData)
-          }
-          currentStr = JSON.stringify(current);
-          future = JSON.parse(currentStr);
-          futureCopy = JSON.parse(currentStr);
-          Review.getSuggestions(this.props.projectKey).then(
-            data => {
-              const urlParams = new URLSearchParams(window.location.search);
-              if (urlParams.has('new') && urlParams.get('tab') === 'review') {
-                history.pushState({}, null, window.location.href.split('&')[0]);
-                this.handleProjectSubmittedDialog();
-              }
-              if (this._isMounted) {
-                if (data.data !== '') {
-                  formData = JSON.parse(data.data.suggestions);
-                  if (hasKeyPersonsData && (!formData.keyPersons || formData.keyPersons.length === 0)) {
-                    formData.keyPersons = current.keyPersons;
-                  }
-                  this.props.hideSpinner();
-                  this.setState(prev => {
-                    prev.formData = formData;
-                    prev.current = current;
-                    prev.future = future;
-                    prev.futureCopy = futureCopy;
-                    prev.editedForm = JSON.parse(data.data.suggestions);
-                    prev.reviewSuggestion = true;
-                    prev.isAdmin = component.isAdmin;
-                    prev.hasKeyPersonnel = hasKeyPersonsData;
-                    return prev;
-                  });
-                  this.loadReviewFieldValidation(formData)
-                  this.props.changeInfoStatus(false);
-                } else {
-                  this.props.hideSpinner();
-                  formData = JSON.parse(currentStr);
-                  this.setState(prev => {
-                    prev.formData = formData;
-                    prev.current = current;
-                    prev.future = future;
-                    prev.futureCopy = futureCopy;
-                    prev.reviewSuggestion = false;
-                    prev.isAdmin = component.isAdmin;
-                    prev.hasKeyPersonnel = hasKeyPersonsData;
-                    return prev;
-                  });
+            }
+            currentStr = JSON.stringify(current);
+            future = JSON.parse(currentStr);
+            futureCopy = JSON.parse(currentStr);
+            Review.getSuggestions(this.props.projectKey).then(
+              data => {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('new') && urlParams.get('tab') === 'review') {
+                  history.pushState({}, null, window.location.href.split('&')[0]);
+                  this.handleProjectSubmittedDialog();
                 }
-              }
-            }).catch(() => {});
-        }).catch(() => {
-        // If KeyPersons fail, continue safely without them
-        currentStr = JSON.stringify(current);
-        future = JSON.parse(currentStr);
-        futureCopy = JSON.parse(currentStr);
-      });
-    }
-  ).catch((error) => {
-    if(error.response.status === 403) {
-      this.props.history.push("/index");
-    }
-    this.props.hideSpinner();
-  });
-  this.getIssueVersionList();
-}
+                if (this._isMounted) {
+                  if (data.data !== '') {
+                    formData = JSON.parse(data.data.suggestions);
+                    if (hasKeyPersonsData && (!formData.keyPersons || formData.keyPersons.length === 0)) {
+                      formData.keyPersons = current.keyPersons;
+                    }
+                    this.props.hideSpinner();
+                    this.setState(prev => {
+                      prev.formData = formData;
+                      prev.current = current;
+                      prev.future = future;
+                      prev.futureCopy = futureCopy;
+                      prev.editedForm = JSON.parse(data.data.suggestions);
+                      prev.reviewSuggestion = true;
+                      prev.isAdmin = component.isAdmin;
+                      prev.hasKeyPersonnel = hasKeyPersonsData;
+                      return prev;
+                    });
+                    this.loadReviewFieldValidation(formData)
+                    this.props.changeInfoStatus(false);
+                  } else {
+                    this.props.hideSpinner();
+                    formData = JSON.parse(currentStr);
+                    this.setState(prev => {
+                      prev.formData = formData;
+                      prev.current = current;
+                      prev.future = future;
+                      prev.futureCopy = futureCopy;
+                      prev.reviewSuggestion = false;
+                      prev.isAdmin = component.isAdmin;
+                      prev.hasKeyPersonnel = hasKeyPersonsData;
+                      return prev;
+                    });
+                  }
+                }
+              }).catch(() => { });
+          }).catch(() => {
+            // If KeyPersons fail, continue safely without them
+            currentStr = JSON.stringify(current);
+            future = JSON.parse(currentStr);
+            futureCopy = JSON.parse(currentStr);
+          });
+      }
+    ).catch((error) => {
+      if (error.response.status === 403) {
+        this.props.history.push("/index");
+      }
+      this.props.hideSpinner();
+    });
+    this.getIssueVersionList();
+  }
 
   loadReviewFieldValidation = (data) => {
     const { additionalPi, additionalPm, piList, pmList, keyPersons } = data;
@@ -356,7 +356,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
   updateKeyPersonValidationArray = (fields) => {
     this.setState(prevState => ({
-      allKeyPersons:{
+      allKeyPersons: {
         ...prevState.allKeyPersons,
         KeyPersons: fields.map(x => x.userName)
       }
@@ -371,12 +371,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
           prev.issueVersionList = data.data;
           return prev;
         });
-      }).catch(() => {});
+      }).catch(() => { });
   }
 
   getReviewSuggestions() {
     this.init();
-      Review.getSuggestions(this.props.projectKey).then(
+    Review.getSuggestions(this.props.projectKey).then(
       data => {
         if (this._isMounted) {
           if (data.data !== '') {
@@ -398,7 +398,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
             this.props.hideSpinner();
           }
         }
-      }).catch((error) =>{
+      }).catch((error) => {
         this.props.hideSpinner();
         this.setState(() => { throw error; });
       })
@@ -475,10 +475,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
       disableApproveButton: true,
       approveInfoDialog: false
     });
-    const data = { 
+    const data = {
       projectReviewApproved: true,
-      projectReviewDate: new Date().getFullYear() + '-' + (new Date().getMonth() + 1).toString().padStart(2, '0') 
-                          + '-' + new Date().getDate().toString().padStart(2, '0')
+      projectReviewDate: new Date().getFullYear() + '-' + (new Date().getMonth() + 1).toString().padStart(2, '0')
+        + '-' + new Date().getDate().toString().padStart(2, '0')
     };
     Project.addExtraProperties(this.props.projectKey, data).then(
       () => {
@@ -486,15 +486,15 @@ const ProjectReview = hh(class ProjectReview extends Component {
         this.setState(prev => {
           prev.formData.projectExtraProps.projectReviewApproved = true;
           return prev;
-        }, 
-        () => {
-          Project.getProject(this.props.projectKey).then(
-            issue => {
-              this.props.hideSpinner();
-              this.props.updateDetailsStatus(issue.data);
-            })
+        },
+          () => {
+            Project.getProject(this.props.projectKey).then(
+              issue => {
+                this.props.hideSpinner();
+                this.props.updateDetailsStatus(issue.data);
+              })
           });
-        }
+      }
     ).catch(error => {
       this.props.hideSpinner();
       this.setState(() => { throw error; });
@@ -540,20 +540,20 @@ const ProjectReview = hh(class ProjectReview extends Component {
     this.props.showSpinner();
     let project = this.getProject();
     project.editsApproved = true;
-    project.projectReviewDate = new Date().getFullYear() + '/' + (new Date().getMonth() + 1).toString().padStart(2, '0') 
-                                + '/' + new Date().getDate().toString().padStart(2, '0')
+    project.projectReviewDate = new Date().getFullYear() + '/' + (new Date().getMonth() + 1).toString().padStart(2, '0')
+      + '/' + new Date().getDate().toString().padStart(2, '0')
     Project.updateProject(project, this.props.projectKey).then(
       resp => {
         this.verifyProjectkeyChanged(project.type);
       }).catch(error => {
-      this.props.hideSpinner();
-      this.setState(() => { throw error; });
+        this.props.hideSpinner();
+        this.setState(() => { throw error; });
       })
   };
 
   verifyProjectkeyChanged(type) {
     const projectKey = this.props.projectKey.split('-');
-    const projectType = projectKey[projectKey.length-2];
+    const projectType = projectKey[projectKey.length - 2];
 
     if (!isEmpty(projectType) && !isEmpty(type) &&
       projectType !== type) {
@@ -622,7 +622,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     project.affiliationOther = this.state.formData.projectExtraProps.affiliationOther;
     project.sequenceNumber = this.state.formData.sequenceNumber;
     if (!this.state.formData.projectExtraProps.irb) {
-      project.irb = JSON.stringify({label: "--", value: "--"});
+      project.irb = JSON.stringify({ label: "--", value: "--" });
     } else {
       project.irb = isEmpty(this.state.formData.projectExtraProps.irb.value) ? null : JSON.stringify(this.state.formData.projectExtraProps.irb);
     }
@@ -807,103 +807,103 @@ const ProjectReview = hh(class ProjectReview extends Component {
     let totalHeight = 0;
     scrollToTop();
 
-        html2canvas(headerBox)
-        .then((canvas) => {  
-          var doc = new jsPDF();
+    html2canvas(headerBox)
+      .then((canvas) => {
+        var doc = new jsPDF();
+        doc = this.canvasToPdf(canvas, doc, totalHeight);
+        totalHeight += this.canvasHeight(canvas, doc);
+        return doc;
+      })
+      .then((doc) => {
+        html2canvas(requestor).then((canvas) => {
           doc = this.canvasToPdf(canvas, doc, totalHeight);
+          if ((totalHeight + canvas.height * this.canvasRatio(canvas, doc)) > doc.internal.pageSize.getHeight()) {
+            totalHeight = 0;
+          }
           totalHeight += this.canvasHeight(canvas, doc);
           return doc;
         })
           .then((doc) => {
-            html2canvas(requestor).then((canvas) => {
+            html2canvas(principalInvestigator).then((canvas) => {
               doc = this.canvasToPdf(canvas, doc, totalHeight);
-              if ((totalHeight + canvas.height * this.canvasRatio(canvas, doc)) > doc.internal.pageSize.getHeight() ) {
+              if ((totalHeight + canvas.height * this.canvasRatio(canvas, doc)) > doc.internal.pageSize.getHeight()) {
                 totalHeight = 0;
               }
               totalHeight += this.canvasHeight(canvas, doc);
               return doc;
             })
-            .then((doc) => {
-              html2canvas(principalInvestigator).then((canvas) => {
-                doc = this.canvasToPdf(canvas, doc, totalHeight);
-                if ((totalHeight + canvas.height * this.canvasRatio(canvas, doc)) > doc.internal.pageSize.getHeight() ) {
-                  totalHeight = 0;
-                } 
-                totalHeight += this.canvasHeight(canvas, doc);
-                return doc;
-              })
               .then((doc) => {
                 html2canvas(funding).then((canvas) => {
                   doc = this.canvasToPdf(canvas, doc, totalHeight);
-                  if ((totalHeight + canvas.height * this.canvasRatio(canvas, doc)) > doc.internal.pageSize.getHeight() ) {
+                  if ((totalHeight + canvas.height * this.canvasRatio(canvas, doc)) > doc.internal.pageSize.getHeight()) {
                     totalHeight = 0;
-                  } 
+                  }
                   totalHeight += this.canvasHeight(canvas, doc);
                   return doc;
                 })
-                .then((doc) => {
-                  html2canvas(projectSummary).then((canvas) => {
-                    doc = this.canvasToPdf(canvas, doc, totalHeight);
-                    if ((totalHeight + canvas.height * this.canvasRatio(canvas, doc)) > doc.internal.pageSize.getHeight() ) {
-                      totalHeight = 0;
-                    } 
-                    totalHeight += this.canvasHeight(canvas, doc);
-                    return doc;
-                  })
                   .then((doc) => {
-                    html2canvas(determinationQuestions).then((canvas) => {
-                      
+                    html2canvas(projectSummary).then((canvas) => {
                       doc = this.canvasToPdf(canvas, doc, totalHeight);
-                      doc.save(`${this.props.projectKey} Application.pdf`);
-                      this.props.hideSpinner();
-                      enableBodyScroll(main);
-                    }).catch(error => {
-                      this.props.hideSpinner();
-                      enableBodyScroll(main);
+                      if ((totalHeight + canvas.height * this.canvasRatio(canvas, doc)) > doc.internal.pageSize.getHeight()) {
+                        totalHeight = 0;
+                      }
+                      totalHeight += this.canvasHeight(canvas, doc);
+                      return doc;
                     })
+                      .then((doc) => {
+                        html2canvas(determinationQuestions).then((canvas) => {
+
+                          doc = this.canvasToPdf(canvas, doc, totalHeight);
+                          doc.save(`${this.props.projectKey} Application.pdf`);
+                          this.props.hideSpinner();
+                          enableBodyScroll(main);
+                        }).catch(error => {
+                          this.props.hideSpinner();
+                          enableBodyScroll(main);
+                        })
+                      }).catch(error => {
+                        this.props.hideSpinner();
+                        enableBodyScroll(main);
+                      })
                   }).catch(error => {
                     this.props.hideSpinner();
                     enableBodyScroll(main);
                   })
-                }).catch(error => {
-                  this.props.hideSpinner();
-                  enableBodyScroll(main);
-                })
               }).catch(error => {
                 this.props.hideSpinner();
                 enableBodyScroll(main);
               })
-            }).catch(error => {
-              this.props.hideSpinner();
-              enableBodyScroll(main);
-            })
-        });
-        
+          }).catch(error => {
+            this.props.hideSpinner();
+            enableBodyScroll(main);
+          })
+      });
+
   };
 
-  canvasToPdf(canvas, doc, totalHeight ) {
+  canvasToPdf(canvas, doc, totalHeight) {
     const imgData = canvas.toDataURL('image/png');
 
     var pageHeight = doc.internal.pageSize.getHeight() - 2;
     let ratio = this.canvasRatio(canvas, doc);
 
     if (canvas.height > 0) {
-      if ((totalHeight + (canvas.height * ratio)) > pageHeight ) {
+      if ((totalHeight + (canvas.height * ratio)) > pageHeight) {
         doc.addPage();
         doc.addImage(imgData, "PNG", 2, 2, canvas.width * ratio, canvas.height * ratio);
       } else {
         doc.addImage(imgData, "PNG", 2, totalHeight + 2, canvas.width * ratio, canvas.height * ratio);
       }
     }
-    
+
     return doc;
   };
 
-  canvasHeight(canvas, doc ) {
+  canvasHeight(canvas, doc) {
     return canvas.height * this.canvasRatio(canvas, doc) + 2;
   };
 
-  canvasRatio(canvas, doc ) {
+  canvasRatio(canvas, doc) {
     return (doc.internal.pageSize.getWidth() - 4) / canvas.width;
   };
 
@@ -932,10 +932,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
           } else {
             prev.formData.projectExtraProps[q.key] = '';
           }
-          if (q.textValue !== null  || q.textValue !== '') {
-            prev.formData.projectExtraProps[q.key+"TextValue"] = q.textValue;
+          if (q.textValue !== null || q.textValue !== '') {
+            prev.formData.projectExtraProps[q.key + "TextValue"] = q.textValue;
           } else {
-            prev.formData.projectExtraProps[q.key+"TextValue"] = '';
+            prev.formData.projectExtraProps[q.key + "TextValue"] = '';
           }
         });
       }
@@ -1010,14 +1010,14 @@ const ProjectReview = hh(class ProjectReview extends Component {
               });
             });
           }
-      }).catch( error => {
-        this.props.hideSpinner();
-        this.setState(() => { throw error; });
-      });
+        }).catch(error => {
+          this.props.hideSpinner();
+          this.setState(() => { throw error; });
+        });
     } else {
       this.setState({
         errorSubmit: true
-      },() => this.props.hideSpinner());
+      }, () => this.props.hideSpinner());
     }
   };
 
@@ -1042,9 +1042,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
   handleUpdateFundings = (updated) => {
     let fundings = updated;
     fundings.forEach(element => {
-      if(element.future.source.value ===  'federal_sub-award' || 
-          element.future.source.value === 'federal_prime' || 
-          element.future.source.value === 'cost_object'
+      if (element.future.source.value === 'federal_sub-award' ||
+        element.future.source.value === 'federal_prime' ||
+        element.future.source.value === 'cost_object'
       ) {
         element.future['identifierError'] = element.future.identifier ? false : true;
         this.setState({
@@ -1070,7 +1070,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   handleUpdateKeyPersonnel = (updated, index) => {
-    if(this.hasDuplicateNameKey(updated)){
+    if (this.hasDuplicateNameKey(updated)) {
       this.showDuplicateModal("User already exists. Please choose another one.")
       updated.splice(index, 1);
     }
@@ -1109,7 +1109,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       }
       return prev;
     }, () => {
-      this.checkDuplicateKeyPersons(data,'piNames')
+      this.checkDuplicateKeyPersons(data, 'piNames')
     });
   };
   handleaddtnPIChange = (data, action) => {
@@ -1121,8 +1121,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
         prev.formData.additionalPi = [];
       }
       return prev;
-    },()=>{
-      this.checkDuplicateKeyPersons(data,'additionalPis')
+    }, () => {
+      this.checkDuplicateKeyPersons(data, 'additionalPis')
     });
   };
 
@@ -1135,12 +1135,12 @@ const ProjectReview = hh(class ProjectReview extends Component {
         prev.formData.pmList = [];
       }
       return prev;
-    }, () =>{
-      this.checkDuplicateKeyPersons(data,'projectManagers')
+    }, () => {
+      this.checkDuplicateKeyPersons(data, 'projectManagers')
     });
   };
 
- handleaddtnProjectManagerChange = (data, action) => {
+  handleaddtnProjectManagerChange = (data, action) => {
     this.setState(prev => {
       if (data !== null) {
         prev.formData.additionalPm = data;
@@ -1149,8 +1149,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
         prev.formData.additionalPm = [];
       }
       return prev;
-    },()=>{
-      this.checkDuplicateKeyPersons(data,'additionalPms')
+    }, () => {
+      this.checkDuplicateKeyPersons(data, 'additionalPms')
     });
   };
   handleInputChange = (e) => {
@@ -1254,7 +1254,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       }
     }).length > 0;
     if (fundingError) generalError = true;
-    
+
     // Validate keyPersons if it exists
     if (this.state.hasKeyPersonnel && this.state.formData.keyPersons) {
       const isFutureEmpty = (kp) => {
@@ -1297,7 +1297,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
         });
       }
     }
-    
+
     if (this.state.projectType === "IRB Project" && isEmpty(this.state.formData.projectExtraProps.editDescription)) {
       editDescriptionError = true;
       generalError = true;
@@ -1468,10 +1468,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
       return;
     }
 
-    if (field === 'keyPersons' && data.length === 1 && !data[0].name) {
-      this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, KeyPersons: [] } }))
-      return;
-    }
+    // if (field === 'keyPersons' && data.length === 1 && !data[0].name) {
+    //   this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, KeyPersons: [] } }))
+    //   return;
+    // }
 
     if (field === 'additionalPis' && data.length === 0) {
       this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, additionalPis: [] } }))
@@ -1491,7 +1491,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       let iskeyPersonDuplicate = false;
       if (DUPLICATE_EXIST) {
         // if(data[0].key === (this.state.formData.projectManagers && this.state.formData.projectManagers[0] && this.state.formData.projectManagers[0].key)) iskeyPersonDuplicate = true;
-        if([...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms].includes(data.key)) iskeyPersonDuplicate = true;
+        if ([...this.state.allKeyPersons.pi, ...this.state.allKeyPersons.pm, ...this.state.allKeyPersons.additionalPis, ...this.state.allKeyPersons.additionalPms].includes(data.key)) iskeyPersonDuplicate = true;
       }
       if (!DUPLICATE_EXIST || iskeyPersonDuplicate) {
         this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pi: [data.key] } }));
@@ -1510,7 +1510,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
       let iskeyPersonDuplicate = false;
       if (DUPLICATE_EXIST) {
         // if(data[0].key === (this.state.formData.piNames && this.state.formData.piNames[0] && this.state.formData.piNames[0].key)) isPiDuplicate = true;
-        if([...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms].includes(data.key)) iskeyPersonDuplicate = true;
+        if ([...this.state.allKeyPersons.pi, ...this.state.allKeyPersons.pm, ...this.state.allKeyPersons.additionalPis, ...this.state.allKeyPersons.additionalPms].includes(data.key)) iskeyPersonDuplicate = true;
       }
       if (!DUPLICATE_EXIST || iskeyPersonDuplicate) {
         this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [data.key] } }))
@@ -1534,9 +1534,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
           }
         }), () => {
           this.setState(prev => {
-          prev.formData.additionalPi = data;
-          return prev;
-        });
+            prev.formData.additionalPi = data;
+            return prev;
+          });
         })
       } else {
         this.setState((prev) => ({
@@ -1558,9 +1558,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
           }
         }), () => {
           this.setState(prev => {
-          prev.formData.additionalPm = data;
-          return prev;
-        });
+            prev.formData.additionalPm = data;
+            return prev;
+          });
         })
       } else {
         this.setState((prev) => ({
@@ -1574,9 +1574,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
     if (field === 'keyPersons') {
       // Here Keyperson(Study Staff) is not spred because data in keyperson cannot have duplicate value
       // handles in handleUpdateKeyPersons function
-      const KEYPERSONS = [...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms];
+      const KEYPERSONS = [...this.state.allKeyPersons.pi, ...this.state.allKeyPersons.pm, ...this.state.allKeyPersons.additionalPis, ...this.state.allKeyPersons.additionalPms];
       const IS_DUPLICATE_PRESENT = this.checkAndRemoveDuplicate(KEYPERSONS, data);
-      if(IS_DUPLICATE_PRESENT){
+      if (IS_DUPLICATE_PRESENT) {
         this.showDuplicateModal("User already exists. Please choose another one.")
       }
       if (data.length === 0) {
@@ -1604,10 +1604,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
 
   }
 
-   showDuplicateModal = (message) => {
+  showDuplicateModal = (message) => {
     this.setState({
-      showModal:true,
-      modalMessage:message
+      showModal: true,
+      modalMessage: message
     })
   }
 
@@ -1631,8 +1631,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
   checkAndRemoveDuplicate = (keyPersons, updatedArray) => {
     for (let i = 0; i < updatedArray.length; i++) {
       for (let j = 0; j < keyPersons.length; j++) {
-        if (updatedArray[i] && updatedArray[i].future && updatedArray[i].future.name && 
-            updatedArray[i].future.name.key === keyPersons[j]) {
+        if (updatedArray[i] && updatedArray[i].future && updatedArray[i].future.name &&
+          updatedArray[i].future.name.key === keyPersons[j]) {
           updatedArray.splice(i, 1);
           return true;
         }
@@ -1644,13 +1644,13 @@ const ProjectReview = hh(class ProjectReview extends Component {
   render() {
     const { projectReviewApproved } = this.state.formData.projectExtraProps;
     return (
-      div({className: "headerBoxContainer" }, [
+      div({ className: "headerBoxContainer" }, [
         div({ className: "containerBox" }, [
-          div({className: "project-info-div"}, [
-            h2({style: {margin: 0}}, ["Project Information"]),
-            span({ 
+          div({ className: "project-info-div" }, [
+            h2({ style: { margin: 0 } }, ["Project Information"]),
+            span({
               isRendered: this.state.activeTab === "current_version",
-              className: "project-info-btns" 
+              className: "project-info-btns"
             }, [
               button({
                 className: "btn buttonSecondary",
@@ -1672,7 +1672,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 onClick: this.exportPdf(),
                 isRendered: this.state.readOnly === true && !component.isViewer && isEmpty(this.state.editedForm) && !this.state.isCompareChanges
               }, ["Print PDF"]),
-      
+
               button({
                 className: "btn buttonSecondary",
                 onClick: this.cancelEdit(),
@@ -1680,11 +1680,11 @@ const ProjectReview = hh(class ProjectReview extends Component {
               }, ["Cancel"]),
               button({
                 className: "btn buttonSecondary",
-                onClick: () => this.setState({isCompareChanges: false}),
+                onClick: () => this.setState({ isCompareChanges: false }),
                 isRendered: this.state.isCompareChanges
               }, ["Go Back"]),
             ]),
-    
+
             ConfirmationDialog({
               closeModal: this.toggleState('rejectProjectDialog'),
               show: this.state.rejectProjectDialog,
@@ -1733,32 +1733,32 @@ const ProjectReview = hh(class ProjectReview extends Component {
             activeTab: this.state.activeTab,
             handleSelect: this.handleTabChange,
           }, [
-            div({ 
+            div({
               key: "current_version",
               title: "Current Approved Version"
             }, [
               div({}, [
-                h(RequestClarificationDialog,{
+                h(RequestClarificationDialog, {
                   closeModal: this.toggleState('requestClarification'),
                   show: this.state.requestClarification,
                   issueKey: this.props.projectKey,
                   successClarification: this.successNotification,
                 }),
-                div({className: "modified-data"}, [
-                  span({className: "pr-2"}, ["Last Modified "]),
-                  span({isRendered: this.state.formData.editCreatorName || this.state.current.updateUser}, [
-                    span({className: "pr-2"}, ["by"]),
-                    em({className: "pr-2 text-bold"}, [this.state.formData.editCreatorName || this.state.current.updateUser]),
+                div({ className: "modified-data" }, [
+                  span({ className: "pr-2" }, ["Last Modified "]),
+                  span({ isRendered: this.state.formData.editCreatorName || this.state.current.updateUser }, [
+                    span({ className: "pr-2" }, ["by"]),
+                    em({ className: "pr-2 text-bold" }, [this.state.formData.editCreatorName || this.state.current.updateUser]),
                   ]),
-                  span({className: "pr-2"}, ["on"]),
-                  em({className: "text-bold"}, [getDateString(this.state.current.updateDate, 'mmddyyyy')]),
+                  span({ className: "pr-2" }, ["on"]),
+                  em({ className: "text-bold" }, [getDateString(this.state.current.updateDate, 'mmddyyyy')]),
                 ]),
 
-                div({isRendered: !this.state.isCompareChanges}, [
+                div({ isRendered: !this.state.isCompareChanges }, [
                   div({ id: "principalInvestigator" }, [
                     Panel({ title: "Key Personnel" }, [
                       br(),
-                      label({className:'inputFieldLabel'},
+                      label({ className: 'inputFieldLabel' },
                         ["Broad Principal Investigator (PI) Responsible for Project Conduct and Oversight",
                           span({ className: 'errorMessage' }, ' *')]
                       ),
@@ -1771,7 +1771,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         value: this.state.formData.piList,
                         currentValue: this.state.current.piList,
                         isMulti: false,
-                        showCurrentValueOnEdit:true
+                        showCurrentValueOnEdit: true
                       }),
                       // br(),
                       // label({className:'inputFieldLabel'},
@@ -1788,8 +1788,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
                       //   isMulti: true
                       // }),
                       br(),
-                      label({ className:'inputFieldLabel' },
-                        ["PI’s Primary Institutional Affiliation",span({ className: 'errorMessage' }, ' *')]
+                      label({ className: 'inputFieldLabel' },
+                        ["PI’s Primary Institutional Affiliation", span({ className: 'errorMessage' }, ' *')]
                       ),
                       InputFieldSelect({
                         id: "affiliations",
@@ -1802,9 +1802,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         placeholder: isEmptyArray(this.state.formData.projectExtraProps.affiliations) && this.state.readOnly ? "--" : "Choose an affiliation...",
                         edit: true
                       }),
-        
+
                       InputFieldText({
-                        isRendered: !isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.formData.projectExtraProps.affiliations.value === "other" ,
+                        isRendered: !isEmpty(this.state.formData.projectExtraProps.affiliations) && this.state.formData.projectExtraProps.affiliations.value === "other",
                         id: "affiliationOther",
                         name: "affiliationOther",
                         label: "Primary Investigator Other Affiliation",
@@ -1816,8 +1816,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         edit: true
                       }),
                       br(),
-                      label({className:'inputFieldLabel'},
-                        ["Key Study Contact (will receive email notifications about this project)",span({ className: 'errorMessage' }, ' *')]
+                      label({ className: 'inputFieldLabel' },
+                        ["Key Study Contact (will receive email notifications about this project)", span({ className: 'errorMessage' }, ' *')]
                       ),
                       AsyncMultiSelect({
                         id: "inputProjectManager",
@@ -1828,7 +1828,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         value: this.state.formData.pmList,
                         currentValue: this.state.current.pmList,
                         isMulti: false,
-                        showCurrentValueOnEdit:true
+                        showCurrentValueOnEdit: true
                       }),
                       br(),
                       // label({className:'inputFieldLabel'},
@@ -1848,7 +1848,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     ])
                   ]),
 
-                  div({ classNames: 'panel-group', id: "studyAccordion", isRendered: this.state.hasKeyPersonnel && this.state.formData.keyPersonnel && this.state.formData.keyPersonnel.length > 0 }, [
+                  div({ classNames: 'panel-group', id: "studyAccordion" }, [
                     Panel({
                       title: "Broad Study Staff",
                       collapsible: true,
@@ -1866,10 +1866,10 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         setError: () => this.setState(prev => { prev.keyPersonnelError = false; return prev; }),
                         errorMessage: "Required field",
                         edit: true,
-                        editedForm:this.state.editedForm,
-                        isCompareChanges:this.state.isCompareChanges,
-                        isProjectReviewApproved:this.state.formData.projectExtraProps,
-                        comparisonView:false
+                        editedForm: this.state.editedForm,
+                        isCompareChanges: this.state.isCompareChanges,
+                        isProjectReviewApproved: this.state.formData.projectExtraProps,
+                        comparisonView: false
                       })
                     ])
                   ]),
@@ -1888,7 +1888,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                       })
                     ])
                   ]),
-                
+
                   div({ id: "funding" }, [
                     Panel({ title: "Funding" }, [
                       Fundings({
@@ -1925,15 +1925,15 @@ const ProjectReview = hh(class ProjectReview extends Component {
                             errorMessage: "Required field"
                           })
                         ]),
-                        
+
                         div({ isRendered: this.state.readOnly && (this.state.formData.description === this.state.current.description) }, [
                           p({ className: "inputFieldLabel" }, "Broad study activities "),
                           div({ className: "inputFieldReadOnly" }, [
-                            div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' }}, this.state.current.description)
+                            div({ className: "inputFieldText", style: { 'whiteSpace': 'break-spaces' } }, this.state.current.description)
                           ])
                         ])
                       ]),
-        
+
                       // AsyncMultiSelect({
                       //   id: "collaborator_select",
                       //   label: "Broad individuals who require access to this project record",
@@ -1977,13 +1977,13 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         name: "irb",
                         options: PREFERRED_IRB,
                         value: (
-                            !isEmpty(this.state.formData.projectExtraProps.irb) && 
-                            this.state.formData.projectExtraProps.irb.label === 'Other' && this.state.readOnly && this.state.formData.projectExtraProps.irbReferralText
-                          ) ? {label: this.state.formData.projectExtraProps.irbReferralText} : this.state.formData.projectExtraProps.irb,
+                          !isEmpty(this.state.formData.projectExtraProps.irb) &&
+                          this.state.formData.projectExtraProps.irb.label === 'Other' && this.state.readOnly && this.state.formData.projectExtraProps.irbReferralText
+                        ) ? { label: this.state.formData.projectExtraProps.irbReferralText } : this.state.formData.projectExtraProps.irb,
                         currentValue: (
-                            !isEmpty(this.state.formData.projectExtraProps.irb) && 
-                            this.state.current.projectExtraProps.irb.label === 'Other' && this.state.readOnly && this.state.current.projectExtraProps.irbReferralText
-                          ) ? {label: this.state.current.projectExtraProps.irbReferralText} : this.state.current.projectExtraProps.irb,
+                          !isEmpty(this.state.formData.projectExtraProps.irb) &&
+                          this.state.current.projectExtraProps.irb.label === 'Other' && this.state.readOnly && this.state.current.projectExtraProps.irbReferralText
+                        ) ? { label: this.state.current.projectExtraProps.irbReferralText } : this.state.current.projectExtraProps.irb,
                         onChange: this.handleSelect("irb"),
                         readOnly: this.state.readOnly,
                         placeholder: isEmpty(this.state.formData.projectExtraProps.irb) && this.state.readOnly ? "--" : "Select...",
@@ -1992,7 +1992,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                       })
                     ])
                   ]),
-        
+
                   div({ id: "determinationQuestions" }, [
                     Panel({ isRendered: this.state.enabledQuestionsWizard === false, title: "Determination Questions" }, [
                       div({ isRendered: this.state.readOnly === false && this.state.formData.approvalStatus != 'Approved' && this.state.formData.approvalStatus != 'Completed', className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
@@ -2020,7 +2020,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                           name: "broadInvestigator",
                           value: this.state.formData.projectExtraProps.broadInvestigator,
                           currentValue: this.state.current.projectExtraProps.broadInvestigator,
-                          moreInfo: span({style: { 'display': 'block' }}, ['Examples of projects that ', b(['DO NOT ']), 'contribute to generalizable knowledge include small case studies and internal technology development/validation projects. ']),
+                          moreInfo: span({ style: { 'display': 'block' } }, ['Examples of projects that ', b(['DO NOT ']), 'contribute to generalizable knowledge include small case studies and internal technology development/validation projects. ']),
                           label: 'Is a Broad scientist(s) conducting research (generating or contributing to generalizable knowledge, with the intention to publish results)? ',
                           readOnly: true,
                           onChange: () => { }
@@ -2039,19 +2039,19 @@ const ProjectReview = hh(class ProjectReview extends Component {
                           edit: true
                         })
                       ]),
-        
+
                       div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.subjectsDeceased) }, [
                         InputFieldRadio({
-                          id:  "subjectsDeceased",
+                          id: "subjectsDeceased",
                           label: 'Does this project  involve only specimens or data from deceased individuals?',
                           value: this.state.formData.projectExtraProps.subjectsDeceased,
                           currentValue: this.state.current.projectExtraProps.subjectsDeceased,
                           onChange: () => { },
                           optionValues: ['true', 'false'],
                           optionLabels: [
-                            span(['Yes']), 
+                            span(['Yes']),
                             span(['No/Unknown'])
-                          ],  
+                          ],
                           required: false,
                           edit: false,
                           readOnly: true
@@ -2059,15 +2059,15 @@ const ProjectReview = hh(class ProjectReview extends Component {
                       ]),
                       div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.sensitiveInformationSource) }, [
                         InputFieldRadio({
-                          id:  "sensitiveInformationSource",
-                          label: span(['Will specimens or data be provided to the Broad ', i({style: { 'color': '#0A3356' }}, ['without ']), 'identifiable information? ']),
+                          id: "sensitiveInformationSource",
+                          label: span(['Will specimens or data be provided to the Broad ', i({ style: { 'color': '#0A3356' } }, ['without ']), 'identifiable information? ']),
                           value: this.state.formData.projectExtraProps.sensitiveInformationSource,
                           onChange: () => { },
                           optionValues: ['false', 'true'],
                           optionLabels: [
-                            span(['No']), 
+                            span(['No']),
                             span(['Yes'])
-                          ],  
+                          ],
                           required: false,
                           edit: false,
                           readOnly: true
@@ -2095,20 +2095,20 @@ const ProjectReview = hh(class ProjectReview extends Component {
                           onChange: () => { }
                         })
                       ]),
-                      
-                      div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.irbReviewedProtocol) && (this.state.formData.projectExtraProps.irbReviewedProtocol === 'secondaryResearch' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'sensitiveInformationSource' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'irbReviewedProtocol' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'privateInformation')}, [
+
+                      div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.irbReviewedProtocol) && (this.state.formData.projectExtraProps.irbReviewedProtocol === 'secondaryResearch' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'sensitiveInformationSource' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'irbReviewedProtocol' || this.state.formData.projectExtraProps.irbReviewedProtocol === 'privateInformation') }, [
                         InputFieldRadio({
-                          id:  "irbReviewedProtocol",
+                          id: "irbReviewedProtocol",
                           label: 'Please select the option which best describes your research ',
                           value: this.state.formData.projectExtraProps.irbReviewedProtocol,
                           onChange: () => { },
                           optionValues: ['irbReviewedProtocol', 'sensitiveInformationSource', 'secondaryResearch', 'privateInformation'],
                           optionLabels: [
-                            span(['This is a project that will be/has been reviewed by an IRB, with Broad listed as a study site.']), 
-                            span(['This project will include an intervention/interaction with subjects, or identifiable information or identifiable private biospecimens will be used.']), 
+                            span(['This is a project that will be/has been reviewed by an IRB, with Broad listed as a study site.']),
+                            span(['This project will include an intervention/interaction with subjects, or identifiable information or identifiable private biospecimens will be used.']),
                             span(['This project is secondary research using data or biospecimens not collected specifically for this study.']),
                             span(['This is not a secondary use study. The Broad scientist/team will obtain coded private information/biospecimens from another institution that retains a link to identifiers, ', b(['AND ']), ' be unable to readily ascertain the identity of subjects, ', b(['AND ']), 'will not receive a direct federal grant/award at Broad.'])
-                          ],              
+                          ],
                           required: false,
                           edit: false,
                           readOnly: true
@@ -2122,15 +2122,15 @@ const ProjectReview = hh(class ProjectReview extends Component {
                           currentValue: this.state.current.projectExtraProps.humanSubjects,
                           label: "",
                           moreInfo: span([
-                            span({style: { 'display': 'block' }}, ["Is this a project that only includes interactions involving ", span({style: {fontWeight: 'bold', textDecoration: 'underline'}}, ["surveys or interview procedures"]), " (including visual or auditory recording) ", b(["IF AT LEAST ONE OF THE FOLLOWING IS TRUE:"])]),
-                            span({style: { 'display': 'block' }}, ["(i) The information is recorded in such a manner that the identity of the subjects cannot readily be ascertained;"]), 
-                            span({style: { 'display': 'block' }}, [b(["OR"])]), 
-                            span({style: { 'display': 'block' }}, ["(ii) Any disclosure of the responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects' financial standing, employability, educational advancement, or reputation "])
+                            span({ style: { 'display': 'block' } }, ["Is this a project that only includes interactions involving ", span({ style: { fontWeight: 'bold', textDecoration: 'underline' } }, ["surveys or interview procedures"]), " (including visual or auditory recording) ", b(["IF AT LEAST ONE OF THE FOLLOWING IS TRUE:"])]),
+                            span({ style: { 'display': 'block' } }, ["(i) The information is recorded in such a manner that the identity of the subjects cannot readily be ascertained;"]),
+                            span({ style: { 'display': 'block' } }, [b(["OR"])]),
+                            span({ style: { 'display': 'block' } }, ["(ii) Any disclosure of the responses outside the research would not reasonably place the subjects at risk of criminal or civil liability or be damaging to the subjects' financial standing, employability, educational advancement, or reputation "])
                           ]),
                           readOnly: true,
                           onChange: () => { }
                         })
-                      ]), 
+                      ]),
                       div({ isRendered: !isEmpty(this.state.formData.projectExtraProps.interactionSource) }, [
                         InputYesNo({
                           id: "interactionSource",
@@ -2138,62 +2138,62 @@ const ProjectReview = hh(class ProjectReview extends Component {
                           value: this.state.formData.projectExtraProps.interactionSource,
                           currentValue: this.state.current.projectExtraProps.interactionSource,
                           label: "Does the statement below accurately describe your project?",
-                          moreInfo: span({style: { 'display': 'block' }}, ["I or another member of the project team (including a collaborator, sample/data contributor, or co-investigator) have recorded study data (including data about biospecimens) in such a way that the identity of the subjects cannot be readily ascertained ",
-                          b(["directly or indirectly "]), "through identifiers linked to the subjects; ", b([" AND "]), "no one on the research team will attempt to contact or re-identify subjects."]), 
+                          moreInfo: span({ style: { 'display': 'block' } }, ["I or another member of the project team (including a collaborator, sample/data contributor, or co-investigator) have recorded study data (including data about biospecimens) in such a way that the identity of the subjects cannot be readily ascertained ",
+                            b(["directly or indirectly "]), "through identifiers linked to the subjects; ", b([" AND "]), "no one on the research team will attempt to contact or re-identify subjects."]),
                           readOnly: true,
                           onChange: () => { }
                         })
                       ])
                     ])
                   ]),
-        
-                  Panel({ isRendered: this.state.enabledQuestionsWizard === true, title: "Determination Questions"}, [
-                    div({ style: { 'marginTop': '55px' }}, [
+
+                  Panel({ isRendered: this.state.enabledQuestionsWizard === true, title: "Determination Questions" }, [
+                    div({ style: { 'marginTop': '55px' } }, [
                       QuestionnaireWorkflow({ questions: this.state.questions, determination: this.state.determination, handler: this.determinationHandler, internationalCohorts: false }),
-                        div({ isRendered: this.state.readOnly === false, className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
-                          button({
-                            className: "btn buttonSecondary",
-                            onClick: this.cancelEditResponses(),
-                            isRendered: this.state.readOnly === false && !component.isViewer
-                          }, ["Cancel"]),
-                          button({
-                            className: "btn buttonPrimary floatRight",
-                            onClick: this.submitEditResponses(),
-                            disabled: !this.state.determination.endState,
-                            isRendered: this.state.readOnly === false && !component.isViewer
-                          }, ["Submit"])
-                        ]),
+                      div({ isRendered: this.state.readOnly === false, className: "buttonContainer", style: { 'margin': '0 0 0 0' } }, [
+                        button({
+                          className: "btn buttonSecondary",
+                          onClick: this.cancelEditResponses(),
+                          isRendered: this.state.readOnly === false && !component.isViewer
+                        }, ["Cancel"]),
+                        button({
+                          className: "btn buttonPrimary floatRight",
+                          onClick: this.submitEditResponses(),
+                          disabled: !this.state.determination.endState,
+                          isRendered: this.state.readOnly === false && !component.isViewer
+                        }, ["Submit"])
+                      ]),
                     ])
                   ]),
                 ]),
-        
+
                 ProjectChangeComparision({
                   isRendered: this.state.isCompareChanges,
                   formData: this.state.formData,
                   versionedData: this.state.versionedIssue
                 }),
-        
+
                 Panel({ title: "Broad Responsible Party (or Designee) Attestation*" }, [
-                    div({
-                      isRendered: getBoolIfString(this.state.formData.projectExtraProps.attestation)
-                    },[
-                      p({}, `I confirm that the information provided above is accurate and complete. The Broad researcher 
+                  div({
+                    isRendered: getBoolIfString(this.state.formData.projectExtraProps.attestation)
+                  }, [
+                    p({}, `I confirm that the information provided above is accurate and complete. The Broad researcher 
                         associated with the project is aware of this application, and I have the authority 
                         to submit it on his/her behalf.`),
-                      p({}, `[If obtaining coded specimens/data] I certify that no Broad staff or researchers working on 
+                    p({}, `[If obtaining coded specimens/data] I certify that no Broad staff or researchers working on 
                           this project will have access to information that would enable the identification of 
                           individuals from whom coded samples and/or data were derived. I also certify that Broad staff 
                           and researchers will make no attempt to ascertain information about these individuals.`),
-                      InputFieldCheckbox({
-                        id: "ckb_attestation",
-                        name: "attestation",
-                        onChange: this.handleAttestationCheck,
-                        label: "I confirm",
-                        checked: getBoolIfString(this.state.formData.projectExtraProps.attestation),
-                        readOnly: true,
-                        error: false,
-                      })
-                    ]),
+                    InputFieldCheckbox({
+                      id: "ckb_attestation",
+                      name: "attestation",
+                      onChange: this.handleAttestationCheck,
+                      label: "I confirm",
+                      checked: getBoolIfString(this.state.formData.projectExtraProps.attestation),
+                      readOnly: true,
+                      error: false,
+                    })
+                  ]),
                   CoiAttestation({
                     isRendered: String(this.state.formData.projectExtraProps.attestation) !== "true",
                     coiAttestation: this.state.coiAttestation,
@@ -2211,13 +2211,13 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     onClick: this.enableEdit(),
                     isRendered: this.state.readOnly === true && !component.isViewer
                   }, ["Edit Information"]),
-        
+
                   button({
                     className: "btn buttonSecondary",
                     onClick: this.cancelEdit(),
                     isRendered: this.state.readOnly === false
                   }, ["Cancel"]),
-        
+
                   /*visible for every user in edit mode and disabled until some edit has been made*/
                   button({
                     className: "btn buttonPrimary floatRight",
@@ -2227,7 +2227,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                       : this.compareObj("formData", "editedForm") || this.state.enabledQuestionsWizard,
                     isRendered: this.state.readOnly === false && !component.isViewer
                   }, ["Submit Edits"]),
-        
+
                   /*visible for Admin in readOnly mode and if the project is in "pending" status*/
                   button({
                     className: "btn buttonPrimary floatRight",
@@ -2235,21 +2235,21 @@ const ProjectReview = hh(class ProjectReview extends Component {
                     disabled: this.state.disableApproveButton,
                     isRendered: this.state.isAdmin && projectReviewApproved === false && this.state.readOnly === true
                   }, ["Approve"]),
-        
+
                   /*visible for Admin in readOnly mode and if there are changes to review*/
                   button({
                     className: "btn buttonPrimary floatRight",
                     onClick: this.handleApproveDialog,
                     isRendered: this.state.isAdmin && this.state.reviewSuggestion && this.state.readOnly === true && projectReviewApproved === true
                   }, ["Approve Edits"]),
-        
+
                   /*visible for Admin in readOnly mode and if the project is in "pending" status*/
                   button({
                     className: "btn buttonSecondary floatRight",
                     onClick: this.toggleState('rejectProjectDialog'),
                     isRendered: this.state.isAdmin && projectReviewApproved === false && this.state.readOnly === true
                   }, ["Reject"]),
-        
+
                   /*visible for every user in readOnly mode and if there are changes to review*/
                   button({
                     className: "btn buttonSecondary floatRight",
@@ -2264,7 +2264,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
                 ])
               ])
             ]),
-            div({ 
+            div({
               key: "approved_versions",
               title: "Previously Approved Versions",
             }, [
@@ -2277,14 +2277,14 @@ const ProjectReview = hh(class ProjectReview extends Component {
         ConfirmationDialog({
           closeModal: this.state.showModal,
           show: this.state.showModal,
-          handleOkAction: () => this.setState({showModal:false}),
+          handleOkAction: () => this.setState({ showModal: false }),
           bodyText: this.state.modalMessage,
           actionLabel: 'close',
           title: 'Duplicate Entry',
-          hideCancel:true
+          hideCancel: true
         }, [])
       ])
-      
+
     )
   }
 });
