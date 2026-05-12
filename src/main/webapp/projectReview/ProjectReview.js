@@ -1504,24 +1504,24 @@ const ProjectReview = hh(class ProjectReview extends Component {
       }
     }
 
-    if (field === 'projectManagers') {
-      // PI and PM can can have Dulicates  entires
-      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data.key);
-      let iskeyPersonDuplicate = false;
-      if (DUPLICATE_EXIST) {
-        // if(data[0].key === (this.state.formData.piNames && this.state.formData.piNames[0] && this.state.formData.piNames[0].key)) isPiDuplicate = true;
-        if ([...this.state.allKeyPersons.pi, ...this.state.allKeyPersons.pm, ...this.state.allKeyPersons.additionalPis, ...this.state.allKeyPersons.additionalPms].includes(data.key)) iskeyPersonDuplicate = true;
-      }
-      if (!DUPLICATE_EXIST || iskeyPersonDuplicate) {
-        this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [data.key] } }))
-      } else {
-        this.showDuplicateModal("User already exists. Please choose another one.")
-        this.setState(prev => {
-          prev.formData.pmList = [{ key: '', label: '', value: '' }];
-          return prev;
-        });
-      }
-    }
+//    if (field === 'projectManagers') {
+//      // PI and PM can can have Dulicates  entires
+//      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data.key);
+//      let iskeyPersonDuplicate = false;
+//      if (DUPLICATE_EXIST) {
+//        // if(data[0].key === (this.state.formData.piNames && this.state.formData.piNames[0] && this.state.formData.piNames[0].key)) isPiDuplicate = true;
+//        if ([...this.state.allKeyPersons.pi, ...this.state.allKeyPersons.pm, ...this.state.allKeyPersons.additionalPis, ...this.state.allKeyPersons.additionalPms].includes(data.key)) iskeyPersonDuplicate = true;
+//      }
+//      if (!DUPLICATE_EXIST || iskeyPersonDuplicate) {
+//        this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [data.key] } }))
+//      } else {
+//        this.showDuplicateModal("User already exists. Please choose another one.")
+//        this.setState(prev => {
+//          prev.formData.pmList = [{ key: '', label: '', value: '' }];
+//          return prev;
+//        });
+//      }
+//    }
 
     if (field === 'additionalPis') {
       // additional Pis allows duplicate with projectManagers,additionalPms,piNames.
@@ -1574,7 +1574,7 @@ const ProjectReview = hh(class ProjectReview extends Component {
     if (field === 'keyPersons') {
       // Here Keyperson(Study Staff) is not spred because data in keyperson cannot have duplicate value
       // handles in handleUpdateKeyPersons function
-      const KEYPERSONS = [...this.state.allKeyPersons.pi, ...this.state.allKeyPersons.pm, ...this.state.allKeyPersons.additionalPis, ...this.state.allKeyPersons.additionalPms];
+      const KEYPERSONS = [...this.state.allKeyPersons.pi,...this.state.allKeyPersons.additionalPis, ...this.state.allKeyPersons.additionalPms];
       const IS_DUPLICATE_PRESENT = this.checkAndRemoveDuplicate(KEYPERSONS, data);
       if (IS_DUPLICATE_PRESENT) {
         this.showDuplicateModal("User already exists. Please choose another one.")
