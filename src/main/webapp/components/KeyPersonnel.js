@@ -549,7 +549,6 @@ export const KeyPersonnel = hh(class KeyPersonnel extends Component {
               div({ className: "col-lg-1 col-md-2 col-sm-2 col-3", style: { padding: '30px 0 0 5px' } }, [
                 Btn({
                   action: { labelClass: "glyphicon glyphicon-remove", handler: (e) => this.removeKeyPersonnel(idx) },
-                  disabled: keyPersons.length === 1,
                   isRendered: !this.props.readOnly
                 }),
               ])
