@@ -250,31 +250,31 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
       }
     }
 
-    if (field === 'projectManagers') {
-      // PI and PM can can have Dulicates  entires
-      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data[0].key);
-      let iskeyPersonDuplicate = false;
-      if (DUPLICATE_EXIST) {
-        // if(data[0].key === (this.state.formData.piNames && this.state.formData.piNames[0] && this.state.formData.piNames[0].key)) isPiDuplicate = true;
-        if([...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms].includes(data[0].key)) iskeyPersonDuplicate = true;
-      }
-      if (!DUPLICATE_EXIST || iskeyPersonDuplicate) {
-        this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [data[0].key] } }))
-      } else {
-        this.showDuplicateModal("User already exists. Please choose another one.")
-        this.setState(prev => {
-          prev.formData.projectManagers = null;
-          return prev;
-        }, () => {
-          this.props.updateForm(this.state.formData, 'projectManagers')
-        });
-      }
-    }
+//    if (field === 'projectManagers') {
+//      // PI and PM can can have Dulicates  entires
+//      const DUPLICATE_EXIST = KEYPERSONS.find((kp) => kp === data[0].key);
+//      let iskeyPersonDuplicate = false;
+//      if (DUPLICATE_EXIST) {
+//        // if(data[0].key === (this.state.formData.piNames && this.state.formData.piNames[0] && this.state.formData.piNames[0].key)) isPiDuplicate = true;
+//        if([...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms].includes(data[0].key)) iskeyPersonDuplicate = true;
+//      }
+//      if (!DUPLICATE_EXIST || iskeyPersonDuplicate) {
+//        this.setState((prev) => ({ allKeyPersons: { ...prev.allKeyPersons, pm: [data[0].key] } }))
+//      } else {
+//        this.showDuplicateModal("User already exists. Please choose another one.")
+//        this.setState(prev => {
+//          prev.formData.projectManagers = null;
+//          return prev;
+//        }, () => {
+//          this.props.updateForm(this.state.formData, 'projectManagers')
+//        });
+//      }
+//    }
 
     if (field === 'keyPersons') {
       // Here Keyperson(Study Staff) is not spred because data in keyperson cannot have duplicate value
       // handles in handleUpdateKeyPersons function
-      const KEYPERSONS = [...this.state.allKeyPersons.pi,...this.state.allKeyPersons.pm,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms];
+      const KEYPERSONS = [...this.state.allKeyPersons.pi,...this.state.allKeyPersons.additionalPis,...this.state.allKeyPersons.additionalPms];
       const IS_DUPLICATE_PRESENT = this.checkAndRemoveDuplicate(KEYPERSONS, data);
       if(IS_DUPLICATE_PRESENT){
         this.showDuplicateModal("User already exists. Please choose another one.")
