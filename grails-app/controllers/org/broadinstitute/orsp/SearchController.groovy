@@ -68,7 +68,7 @@ class SearchController implements UserInfo {
                     value: it.projectKey,
                     url: link,
                     reporter: userService.findUser(it.reporter).displayName,
-                    linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer, isCollaborator),
+                    linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer, isCollaborator, it.id),
                     pm: it.pm,
                     actor: it.actor
             ]
@@ -172,7 +172,7 @@ class SearchController implements UserInfo {
                         link: link,
                         key: it.projectKey,
                         reporter: it.reporter,
-                        linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer, isCollaborator),
+                        linkDisabled: permissionService.userHasIssueAccess(it.reporter, it.extraProperties, userName, isAdmin, isViewer, isCollaborator, it.id),
                         title: it.summary,
                         type: it.type,
                         status: it.getApprovalStatus(),

@@ -473,29 +473,35 @@ const NewProject = hh(class NewProject extends Component {
         }
       });
     }
-    if (this.state.generalDataFormData.keyPersons === undefined || this.state.generalDataFormData.keyPersons.length === 0) {
-      keyPersons = true;
-      isValid = false;
-    } else {
+    if (this.state.generalDataFormData.keyPersons !== undefined && this.state.generalDataFormData.keyPersons.length > 0) {
       this.state.generalDataFormData.keyPersons.forEach((kp, idx) => {
         let hasError = false;
-        if (kp.name === null || kp.name === undefined || (Array.isArray(kp.name) && kp.name.length === 0)) {
-          hasError = true;
-          keyPersons = true;
-          isValid = false;
-        }
-        if (!kp.role || isEmpty(kp.role.value)) {
-          hasError = true;
-          keyPersons = true;
-          isValid = false;
-        }
-        if (kp.role && kp.role.value === "other" && isEmpty(kp.otherRole)) {
-          hasError = true;
-          keyPersons = true;
-          isValid = false;
-        }
-        if (hasError) {
-          keyPersonsErrorIndex.push(idx);
+        
+        const isNameEmpty = kp.name === null || kp.name === undefined || (Array.isArray(kp.name) && kp.name.length === 0);
+        const isRoleEmpty = !kp.role || isEmpty(kp.role.value);
+        const isOtherRoleEmpty = kp.role && kp.role.value === "other" && isEmpty(kp.otherRole);
+        
+        const isCompletelyEmpty = isNameEmpty && isRoleEmpty && isEmpty(kp.otherRole);
+        
+        if (!isCompletelyEmpty) {
+          if (isNameEmpty) {
+            hasError = true;
+            keyPersons = true;
+            isValid = false;
+          }
+          if (isRoleEmpty) {
+            hasError = true;
+            keyPersons = true;
+            isValid = false;
+          }
+          if (isOtherRoleEmpty) {
+            hasError = true;
+            keyPersons = true;
+            isValid = false;
+          }
+          if (hasError) {
+            keyPersonsErrorIndex.push(idx);
+          }
         }
       });
     }
