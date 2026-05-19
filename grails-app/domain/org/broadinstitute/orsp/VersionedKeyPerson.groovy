@@ -11,7 +11,8 @@ class VersionedKeyPerson implements LogicalDelete<VersionedKeyPerson> {
     String otherRole
     Integer sequenceNumber
     String updateUser
-    Date updateDate
+    Date createdDate
+    Date updatedTimestamp
     Boolean deleted = false
 
     VersionedIssue versionedIssue
@@ -25,7 +26,8 @@ class VersionedKeyPerson implements LogicalDelete<VersionedKeyPerson> {
         projectKey column: 'project_key'
         sequenceNumber column: 'sequence_number'
         updateUser column: 'update_user'
-        updateDate column: 'update_date'
+        createdDate column: 'created_date'
+        updatedTimestamp column: 'updated_timestamp'
         deleted column: 'deleted'
     }
 
@@ -38,7 +40,8 @@ class VersionedKeyPerson implements LogicalDelete<VersionedKeyPerson> {
         otherRole nullable: true
         sequenceNumber nullable: false, min: 0
         updateUser nullable: true, maxSize: 150
-        updateDate nullable: true
+        createdDate nullable: true
+        updatedTimestamp nullable: true
         versionedIssue nullable: false
         deleted nullable: false
     }

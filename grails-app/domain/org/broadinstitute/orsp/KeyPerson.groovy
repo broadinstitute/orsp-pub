@@ -10,9 +10,9 @@ class KeyPerson implements LogicalDelete<KeyPerson> {
     String otherRole
     Integer sequenceNumber = 0
     String createdUser
-    Date createdTimestamp
+    Date updatedTimestamp
     String updateUser
-    Date updateDate
+    Date createdDate
 
     Issue issue
 
@@ -20,7 +20,8 @@ class KeyPerson implements LogicalDelete<KeyPerson> {
         table 'key_person'
         id column: 'key_person_id'
         issue column: 'issue_id'
-        createdTimestamp insertable: true, updatable: false
+        updatedTimestamp column: 'updated_timestamp', insertable: true, updatable: true
+        createdDate column: 'created_date', insertable: true, updatable: false
         createdUser insertable: true, updatable: false
     }
 
@@ -30,8 +31,8 @@ class KeyPerson implements LogicalDelete<KeyPerson> {
         projectKey nullable: true, maxSize: 20
         otherRole nullable: true
         createdUser nullable: true, maxSize: 50
-        createdTimestamp nullable: true
+        updatedTimestamp nullable: true
         updateUser nullable: true, maxSize: 150
-        updateDate nullable: true
+        createdDate nullable: true
     }
 }

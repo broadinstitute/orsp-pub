@@ -454,13 +454,13 @@ const ProjectReview = hh(class ProjectReview extends Component {
             name: kp.name ? this.getUsersArray([kp])[0] : null,
             role: kp.role ? { label: kp.role, value: kp.role.split(" ").join("_").toLowerCase() } : '',
             otherRole: kp.otherRole || kp.roleOther || '',
-            updatedDate: kp.updatedDate || kp.updatedDate || ''
+            updatedDate: kp.keyPersonCreatedDate || kp.updatedDate || ''
           },
           future: {
             name: kp.name ? this.getUsersArray([kp])[0] : null,
             role: kp.role ? { label: kp.role, value: kp.role.split(" ").join("_").toLowerCase() } : '',
             otherRole: kp.otherRole || kp.roleOther || '',
-            updatedDate: kp.updatedDate || kp.updatedDate || ''
+            updatedDate: kp.keyPersonCreatedDate || kp.updatedDate || ''
           }
         });
       });

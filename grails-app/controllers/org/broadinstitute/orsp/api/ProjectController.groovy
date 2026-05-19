@@ -276,10 +276,10 @@ class ProjectController extends AuthenticatedController {
 
             [
                     id           : user?.id,
-                    createdDate  : kp?.createdTimestamp,
+                    keyPersonCreatedDate  : kp?.createdDate,
                     emailAddress : user?.emailAddress,
                     userName     : user?.userName,
-                    updatedDate  : kp?.updateDate,
+                    updatedDate  : kp?.updatedTimestamp,
                     displayName  : user?.displayName,
                     name         : kp.name,
                     role         : kp.role,
@@ -303,10 +303,10 @@ class ProjectController extends AuthenticatedController {
 //
 //            [
 //                    id            : user?.id,
-//                    createdDate   : kp?.createdTimestamp,
+//                    createdDate   : kp?.createdDate,
 //                    emailAddress  : user?.emailAddress,
 //                    userName      : user?.userName,
-//                    updatedDate   : kp?.updateDate,
+//                    updatedDate   : kp?.updatedTimestamp,
 //                    displayName   : user?.displayName,
 //                    name          : kp.name,
 //                    role          : kp.role,
@@ -434,9 +434,10 @@ class ProjectController extends AuthenticatedController {
                     [
                             id            : user?.id,
                             createdDate   : user?.createdDate,
+                            keyPersonCreatedDate: vkp?.createdDate,
                             emailAddress  : user?.emailAddress,
                             userName      : user?.userName,
-                            updatedDate   : vkp?.updateDate,
+                            updatedDate   : vkp?.updatedTimestamp,
                             lastLoginDate : user?.lastLoginDate,
                             roles         : user?.roles,
                             displayName   : user?.displayName,
