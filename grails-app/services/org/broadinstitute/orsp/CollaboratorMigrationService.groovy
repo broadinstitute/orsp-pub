@@ -54,7 +54,8 @@ class CollaboratorMigrationService {
                         name           : collaboratorName,
                         role           : 'Legacy',
                         sequenceNumber : prop.sequenceNumber ?: 0,
-                        updateDate     : new Date()
+                        createdDate    : Date.parse("yyyy-MM-dd HH:mm:ss", "2026-04-18 00:00:00"),
+                        updatedTimestamp: new Date()
                 ).save(failOnError: true)
             }
         }

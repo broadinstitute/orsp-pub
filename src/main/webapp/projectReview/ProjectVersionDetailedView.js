@@ -56,7 +56,7 @@ class ProjectVersionDetailedView extends Component {
     name: keyPerson.displayName,
     role: keyPerson.role,
     otherRole: keyPerson.otherRole,
-    updatedDate: keyPerson.updatedDate
+    updatedDate: keyPerson.keyPersonCreatedDate || keyPerson.updatedDate
 
   }));
 }

@@ -274,39 +274,56 @@ class IssueService implements UserInfo {
         }
 
         //KeyPerson update
-        def keyPersonParams = input.get('keyPersons')
+        def keyPersonParams = input.get('keyPersons') ?: []
+        def existingKeyPersons = KeyPerson.findAllByProjectKey(issue.projectKey)
+        def availableExistingKps = new ArrayList<>(existingKeyPersons)
 
         def newKeyPersonList = keyPersonParams.collect { p ->
+            String incomingName = p.get("name")?.toString()
+            String incomingRole = p.get("role")?.toString()
+            String incomingOtherRole = p.get("otherRole")?.toString()
 
-            Long kpId = Long.valueOf(p.getOrDefault("id", "0").toString())
-            KeyPerson kp = (kpId > 0) ? KeyPerson.findById(kpId) : new KeyPerson()
+            KeyPerson kp = availableExistingKps.find { it.name == incomingName }
 
-            kp.role = p.get("role")?.toString()
-            kp.name = p.get("name")?.toString()
-            kp.otherRole = p.get("otherRole")?.toString()
+            if (kp) {
+                // Remove from available pool so we don't match it again or delete it
+                availableExistingKps.remove(kp)
 
-            kp.projectKey = issue.projectKey
-            kp.sequenceNumber = issue.sequenceNumber + 1
-            kp.updateUser = getUser()?.userName
-            kp.updateDate = new Date()
-
-            kp.issue = issue
+                // If role or otherRole changed, we update the timestamp
+                if (kp.role != incomingRole || kp.otherRole != incomingOtherRole) {
+                    kp.role = incomingRole
+                    kp.otherRole = incomingOtherRole
+                    kp.updatedTimestamp = new Date()
+                    kp.updateUser = getUser()?.userName
+                }
+                kp.sequenceNumber = issue.sequenceNumber + 1
+            } else {
+                // Genuinely new entry
+                kp = new KeyPerson()
+                kp.name = incomingName
+                kp.role = incomingRole
+                kp.otherRole = incomingOtherRole
+                kp.projectKey = issue.projectKey
+                kp.sequenceNumber = issue.sequenceNumber + 1
+                kp.createdUser = getUser()?.userName
+                kp.updateUser = getUser()?.userName
+                kp.createdDate = new Date()
+                kp.updatedTimestamp = new Date()
+                kp.issue = issue
+            }
 
             kp
         }
 
         newKeyPersonList.each {
-            issue.addToKeyPersons(it)
+            if (it.id == null || !issue.keyPersons?.contains(it)) {
+                issue.addToKeyPersons(it)
+            }
             it.save()
         }
 
-        def newKeyPersonIdList = newKeyPersonList*.id
-        def oldKeyPersonList = KeyPerson.findAllByProjectKey(issue.projectKey)
-
-        def deletableKeyPersons =
-                oldKeyPersonList.findAll { !newKeyPersonIdList.contains(it.id) }
-
-        deletableKeyPersons.each {
+        // Any remaining KeyPersons were not in the incoming payload, so they should be deleted
+        availableExistingKps.each {
             issue.removeFromKeyPersons(it)
             it.delete(hard: true)
         }
@@ -751,10 +768,10 @@ class IssueService implements UserInfo {
             kp.sequenceNumber = issue.sequenceNumber
             if (isNew) {
                 kp.createdUser = getUser()?.userName
-                kp.createdTimestamp = new Date()
+                kp.createdDate = new Date()
             }
             kp.updateUser = getUser()?.userName
-            kp.updateDate = new Date()
+            kp.updatedTimestamp = new Date()
             kp.save(flush: true)
         }
     }
@@ -1014,7 +1031,8 @@ class IssueService implements UserInfo {
                     otherRole: kp.otherRole,
                     sequenceNumber: issue.sequenceNumber,
                     versionedIssue: verIss,
-                    updateDate: new Date()
+                    createdDate: kp.createdDate,
+                    updatedTimestamp: new Date()
             ).save(flush: true)
         }
     }
