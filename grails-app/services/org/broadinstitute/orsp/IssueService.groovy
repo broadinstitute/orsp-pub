@@ -294,6 +294,7 @@ class IssueService implements UserInfo {
                     kp.role = incomingRole
                     kp.otherRole = incomingOtherRole
                     kp.updatedTimestamp = new Date()
+                    kp.createdDate = new Date()
                     kp.updateUser = getUser()?.userName
                 }
                 kp.sequenceNumber = issue.sequenceNumber + 1

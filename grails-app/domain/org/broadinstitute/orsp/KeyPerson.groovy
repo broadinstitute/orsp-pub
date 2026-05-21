@@ -21,7 +21,7 @@ class KeyPerson implements LogicalDelete<KeyPerson> {
         id column: 'key_person_id'
         issue column: 'issue_id'
         updatedTimestamp column: 'updated_timestamp', insertable: true, updatable: true
-        createdDate column: 'created_date', insertable: true, updatable: false
+        createdDate column: 'created_date', insertable: true, updatable: true
         createdUser insertable: true, updatable: false
     }
 
