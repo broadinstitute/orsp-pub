@@ -290,7 +290,7 @@ class IssueService implements UserInfo {
                 availableExistingKps.remove(kp)
 
                 // If role or otherRole changed, we update the timestamp
-                if (kp.role != incomingRole || kp.otherRole != incomingOtherRole) {
+                if (kp.role != incomingRole || (kp.otherRole ?: '') != (incomingOtherRole ?: '')) {
                     kp.role = incomingRole
                     kp.otherRole = incomingOtherRole
                     kp.updatedTimestamp = new Date()
