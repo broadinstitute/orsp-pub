@@ -56,6 +56,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       fundingErrorIndex: [],
       keyPersonnelError: false,
       keyPersonnelErrorIndex: [],
+      piListError: false,
+      pmListError: false,
       hasKeyPersonnel: false,
       internationalCohortsError: false,
       fundingAwardNumberError: false,
@@ -1070,7 +1072,20 @@ const ProjectReview = hh(class ProjectReview extends Component {
   };
 
   handleUpdateKeyPersonnel = (updated, index) => {
-    if (this.hasDuplicateNameKey(updated)) {
+    const prev = (this.state.formData && Array.isArray(this.state.formData.keyPersons))
+      ? this.state.formData.keyPersons
+      : [];
+
+    // Only warn when the latest change INTRODUCES a duplicate.
+    // This allows cleanup of pre-existing (migrated) duplicates without showing the modal.
+    const editedKey = updated && updated[index] && updated[index].future && updated[index].future.name
+      ? updated[index].future.name.key
+      : null;
+
+    const editedWasCleared = !editedKey;
+    const introducedDuplicates = this.getIntroducedDuplicateKeys(prev, updated, (kp) => kp && kp.future && kp.future.name && kp.future.name.key);
+
+    if (!editedWasCleared && introducedDuplicates.has(editedKey)) {
       this.showDuplicateModal("User already exists. Please choose another one.")
       updated.splice(index, 1);
     }
@@ -1092,6 +1107,31 @@ const ProjectReview = hh(class ProjectReview extends Component {
     return keys.length !== new Set(keys).size;
   };
 
+  getDuplicateKeys = (keys) => {
+    const counts = new Map();
+    (keys || []).forEach((k) => {
+      if (!k) return;
+      counts.set(k, (counts.get(k) || 0) + 1);
+    });
+    const dupes = new Set();
+    counts.forEach((count, key) => {
+      if (count > 1) dupes.add(key);
+    });
+    return dupes;
+  };
+
+  getIntroducedDuplicateKeys = (prevArr, nextArr, getKey) => {
+    const prevKeys = (prevArr || []).map(getKey).filter(Boolean);
+    const nextKeys = (nextArr || []).map(getKey).filter(Boolean);
+    const prevDupes = this.getDuplicateKeys(prevKeys);
+    const nextDupes = this.getDuplicateKeys(nextKeys);
+    const introduced = new Set();
+    nextDupes.forEach((k) => {
+      if (!prevDupes.has(k)) introduced.add(k);
+    });
+    return introduced;
+  };
+
   handleProjectCollaboratorChange = (data, action) => {
     this.setState(prev => {
       prev.formData.collaborators = data;
@@ -1109,7 +1149,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       }
       return prev;
     }, () => {
-      this.checkDuplicateKeyPersons(data, 'piNames')
+      this.checkDuplicateKeyPersons(data, 'piNames');
+      if (this.state.errorSubmit === true) this.isValid();
     });
   };
   handleaddtnPIChange = (data, action) => {
@@ -1136,7 +1177,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       }
       return prev;
     }, () => {
-      this.checkDuplicateKeyPersons(data, 'projectManagers')
+      this.checkDuplicateKeyPersons(data, 'projectManagers');
+      if (this.state.errorSubmit === true) this.isValid();
     });
   };
 
@@ -1241,6 +1283,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
     let fundingAwardNumber = false;
     let fundingAdditionalFieldError = false;
     let keyPersonnelError = false;
+    let piListError = false;
+    let pmListError = false;
     let fundingError = this.state.formData.fundings.filter((obj, idx) => {
       if (isEmpty(obj.future.source.label) && (!isEmpty(obj.future.sponsor) || !isEmpty(obj.future.identifier))
         || (idx === 0 && isEmpty(obj.future.source.label) && isEmpty(obj.current.source.label))) {
@@ -1298,6 +1342,26 @@ const ProjectReview = hh(class ProjectReview extends Component {
       }
     }
 
+    const checkEmptyKeyPerson = (list) => {
+      if (!list) return true;
+      if (Array.isArray(list)) {
+        if (list.length === 0) return true;
+        if (list.length === 1 && isEmpty(list[0].key)) return true;
+        return false;
+      }
+      return isEmpty(list.key);
+    };
+
+    if (checkEmptyKeyPerson(this.state.formData.piList)) {
+      piListError = true;
+      generalError = true;
+    }
+
+    if (checkEmptyKeyPerson(this.state.formData.pmList)) {
+      pmListError = true;
+      generalError = true;
+    }
+
     if (this.state.projectType === "IRB Project" && isEmpty(this.state.formData.projectExtraProps.editDescription)) {
       editDescriptionError = true;
       generalError = true;
@@ -1328,6 +1392,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       prev.fundingErrorIndex = fundingErrorIndex;
       prev.keyPersonnelError = keyPersonnelError;
       prev.keyPersonnelErrorIndex = keyPersonnelErrorIndex;
+      prev.piListError = piListError;
+      prev.pmListError = pmListError;
       prev.generalError = generalError;
       prev.fundingAwardNumberError = fundingAwardNumber;
       return prev;
@@ -1340,6 +1406,8 @@ const ProjectReview = hh(class ProjectReview extends Component {
       !editDescriptionError &&
       !fundingError &&
       !keyPersonnelError &&
+      !piListError &&
+      !pmListError &&
       !questions &&
       !fundingAwardNumber &&
       !fundingAdditionalFieldError;
@@ -1771,7 +1839,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         value: this.state.formData.piList,
                         currentValue: this.state.current.piList,
                         isMulti: false,
-                        showCurrentValueOnEdit: true
+                        showCurrentValueOnEdit: true,
+                        error: this.state.piListError,
+                        errorMessage: "Required field"
                       }),
                       // br(),
                       // label({className:'inputFieldLabel'},
@@ -1828,7 +1898,9 @@ const ProjectReview = hh(class ProjectReview extends Component {
                         value: this.state.formData.pmList,
                         currentValue: this.state.current.pmList,
                         isMulti: false,
-                        showCurrentValueOnEdit: true
+                        showCurrentValueOnEdit: true,
+                        error: this.state.pmListError,
+                        errorMessage: "Required field"
                       }),
                       br(),
                       // label({className:'inputFieldLabel'},

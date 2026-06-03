@@ -96,7 +96,17 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
   };
 
   handleUpdateKeyPersons = (updated, index) => {
-    if(this.hasDuplicateNameKey(updated)){
+    const prev = (this.state.formData && Array.isArray(this.state.formData.keyPersons))
+      ? this.state.formData.keyPersons
+      : [];
+
+    // Only warn when the latest change INTRODUCES a duplicate.
+    // This allows cleanup of pre-existing (migrated) duplicates without showing the modal.
+    const editedKey = updated && updated[index] && updated[index].name ? updated[index].name.key : null;
+    const editedWasCleared = !editedKey;
+    const introducedDuplicates = this.getIntroducedDuplicateKeys(prev, updated, (kp) => kp && kp.name && kp.name.key);
+
+    if (!editedWasCleared && introducedDuplicates.has(editedKey)) {
       this.showDuplicateModal("User already exists. Please choose another one.")
       updated.splice(index, 1);
     }
@@ -116,6 +126,31 @@ export const NewProjectGeneralData = hh(class NewProjectGeneralData extends Comp
     .filter(Boolean);
   return keys.length !== new Set(keys).size;
 };
+
+  getDuplicateKeys = (keys) => {
+    const counts = new Map();
+    (keys || []).forEach((k) => {
+      if (!k) return;
+      counts.set(k, (counts.get(k) || 0) + 1);
+    });
+    const dupes = new Set();
+    counts.forEach((count, key) => {
+      if (count > 1) dupes.add(key);
+    });
+    return dupes;
+  };
+
+  getIntroducedDuplicateKeys = (prevArr, nextArr, getKey) => {
+    const prevKeys = (prevArr || []).map(getKey).filter(Boolean);
+    const nextKeys = (nextArr || []).map(getKey).filter(Boolean);
+    const prevDupes = this.getDuplicateKeys(prevKeys);
+    const nextDupes = this.getDuplicateKeys(nextKeys);
+    const introduced = new Set();
+    nextDupes.forEach((k) => {
+      if (!prevDupes.has(k)) introduced.add(k);
+    });
+    return introduced;
+  };
 
   handleInputChange = (e) => {
     const field = e.target.name;
