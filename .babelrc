@@ -5,6 +5,7 @@
     "react"
   ],
   "plugins": [
-     "transform-object-rest-spread"
+     "transform-object-rest-spread",
+     "@babel/plugin-proposal-optional-chaining"
   ]
 }
