@@ -18,6 +18,7 @@
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "babel-core": "6.26.3",
     "babel-jest": "29.0.2",
     "babel-loader": "7.1.5",
@@ -36,10 +37,11 @@
     "jsdom": "20.0.0",
     "react-test-renderer": "16.14.0",
     "style-loader": "0.23.1",
-    "webpack": "4.46.0",
-    "url-loader": "4.1.1"
+    "url-loader": "4.1.1",
+    "webpack": "4.46.0"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.6.0",
     "@tinymce/tinymce-react": "4.2.0",
     "axios": "0.27.2",
     "babel-plugin-transform-class-properties": "6.24.1",
@@ -65,22 +67,21 @@
     "react-bootstrap": "0.32.4",
     "react-bootstrap-table": "4.3.1",
     "react-bootstrap-table-next": "3.3.5",
+    "react-bootstrap-table2-editor": "^1.4.0",
     "react-bootstrap-table2-paginator": "2.1.2",
     "react-bootstrap-table2-toolkit": "2.1.2",
     "react-bootstrap-typeahead": "6.0.0",
-    "react-bootstrap-table2-editor": "^1.4.0",
     "react-datepicker": "2.8.0",
     "react-dom": "16.14.0",
     "react-google-login": "5.2.2",
     "react-hyperscript-helpers": "2.0.0",
     "react-moment": "^1.0.0",
+    "react-quill": "^2.0.0",
     "react-responsive-navbar": "1.0.11",
     "react-router-dom": "5.0.1",
     "react-select": "2.1.2",
     "regenerator-runtime": "0.13.9",
-    "react-quill": "^2.0.0",
     "rxjs": "7.5.6",
-    "sanitize-html": "^2.7.1",
-    "@react-oauth/google": "^0.6.0"
+    "sanitize-html": "^2.7.1"
   }
 }
