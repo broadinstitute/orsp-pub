@@ -13,8 +13,8 @@ RUN apt-get -qq -y install \
 
 RUN mkdir /root/.nvm
 ENV NVM_DIR /root/.nvm
-ENV NODE_VERSION 16.20.0
-ENV NPM_VERSION 8.19.4
+ENV NODE_VERSION 10.13.0
+ENV NPM_VERSION 6.4.1
 
 ARG build_env="dev"
 
@@ -51,7 +51,7 @@ RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh; sdk install groovy 2.
 COPY . /app
 WORKDIR /app
 
-RUN npm install 
+RUN npm install
 RUN webpack --mode=development --config webpack.config.js
 
 RUN /bin/bash -c "source $HOME/.sdkman/bin/sdkman-init.sh; grails -Dgrails.env=$build_env war"
