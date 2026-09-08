@@ -427,8 +427,7 @@ export const Security = hh(class Security extends Component {
         InputFieldRadio({
           id: "radioPII",
           name: "pii",
-          label: "1. Will your project involve receiving at or distributing from Broad any personally identifiable information (PII), protected health information (PHI), or genomic data? ",
-          moreInfo: span({}, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", className: "link", target: "_blank" }, ["visit this link"]), "."]),
+          label: "1. Will your project involve receiving at or distributing from Broad any personally identifiable information (PII), protected health information (PHI), or genomic data? ",       
           value: this.props.securityInfoData.pii,
           optionValues: ["true", "false", "uncertain"],
           optionLabels: [
