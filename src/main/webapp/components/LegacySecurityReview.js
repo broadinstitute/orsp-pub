@@ -73,8 +73,7 @@ export const LegacySecurityReview = hh(class LegacySecurityReview extends Compon
             }, [labelStore]),
           ]),
           div({ className: "answerWrapper" }, [
-            label({}, ["2. Will your project involve receiving at or distributing from Broad any personally identifiable information (PII), protected health information (PHI), or genomic data? ",
-              span({ className: "normal" }, ["For a list of what constitutes PII and PHI, ", a({ href: "https://intranet.broadinstitute.org/faq/storing-and-managing-phi", className: "link", target: "_blank" }, ["visit this link"]), "."])]),
+            label({}, ["2. Will your project involve receiving at or distributing from Broad any personally identifiable information (PII), protected health information (PHI), or genomic data? "]),
             div({
             }, [this.props.stringAnswer(pii)]),
           ]),
