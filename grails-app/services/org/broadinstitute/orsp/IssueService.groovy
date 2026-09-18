@@ -477,6 +477,13 @@ class IssueService implements UserInfo {
                     it.save(flush: true)
                 }
 
+                // update KeyPerson projectKey so they remain visible after the key change
+                List<KeyPerson> keyPersons = KeyPerson.findAllByProjectKey(oldProjectKey)
+                keyPersons?.each {
+                    it.setProjectKey(newProjectKey)
+                    it.save(flush: true)
+                }
+
                 // update Issue projectKey
                 issue.setType(issueType.getName())
                 issue.setProjectKey(newProjectKey)
