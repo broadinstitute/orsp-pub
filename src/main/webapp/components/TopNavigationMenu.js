@@ -201,7 +201,8 @@ const TopNavigationMenu = hh(class TopNavigationMenu extends Component {
           h(Link, { className: "navbar-brand", to: { pathname: Storage.userIsLogged() ? UrlConstants.index : '/' } }, [
             span({}, [
               "ORSP Portal ",
-              span({ isRendered: component.env === 'development', className: "label label-danger" }, ["Dev"])
+              span({ isRendered: component.env === 'development', className: "label label-danger" }, ["Dev"]),
+              span({ isRendered: component.env === 'staging', className: "label label-danger" }, ["Stage"])
             ])
           ]),
           h(ResponsiveMenu, {
