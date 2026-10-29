@@ -523,6 +523,7 @@ class NotifyService implements SendgridSupport, Status {
             Collection<String> emails = usersToNotify.emailAddress
             String reporterEmail = reporterToNotify.emailAddress
             emails.add(reporterEmail)
+            emails.add(getDefaultFromAddress())
             NotifyArguments arguments = new NotifyArguments(
                     toAddresses: Collections.singletonList(getSecurityRecipient()),
                     fromAddress: getDefaultFromAddress(),
