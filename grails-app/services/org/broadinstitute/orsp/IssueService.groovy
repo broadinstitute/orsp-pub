@@ -132,17 +132,20 @@ class IssueService implements UserInfo {
      * @param issue The new issue
      * @return Persisted issue
      */
+      /**
+      This function is deprecated, use createIssue instead.
+     */
     @Transactional
     @Deprecated
     Issue addIssue(Issue issue, GrailsParameterMap input) throws DomainException {
         IssueType type = IssueType.valueOfName(issue.type)
-        issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
+        issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-" + UUID.randomUUID().toString())
         if (issue.hasErrors()) {
             throw new DomainException(issue.getErrors())
         } else {
             issue.save(flush: true)
         }
-        issue.setProjectKey(issue.projectKey + issue.id)
+        issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-" + issue.id)
         updateIssue(issue, input)
     }
 
@@ -677,8 +680,9 @@ class IssueService implements UserInfo {
         type
     }
 
+    @Transactional
     Issue createIssue(IssueType type, Issue issue) throws DomainException {
-        issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-")
+        issue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-" + UUID.randomUUID().toString())
         issue.setSequenceNumber(0)
         issue.setUpdateUser(getUser()?.userName)
         List<IssueExtraProperty> extraProperties = issue.getNonEmptyExtraProperties()
@@ -690,8 +694,10 @@ class IssueService implements UserInfo {
         } else {
             newIssue.save(flush: true)
         }
-        newIssue.setProjectKey(newIssue.projectKey + newIssue.id)
-        newIssue.save(flush: true)
+        newIssue.setProjectKey(QueryService.PROJECT_KEY_PREFIX + type.prefix + "-" + newIssue.id)
+        if (newIssue.hasErrors() || newIssue.save(flush: true) == null) {
+            throw new DomainException(newIssue.getErrors())
+        }
         saveExtraProperties(newIssue, extraProperties)
         savePiStudyStaff(newIssue, issue)
         savePmStudyStaff(newIssue, issue)
