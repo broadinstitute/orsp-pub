@@ -21,7 +21,14 @@ class NotifyService implements SendgridSupport, Status {
     private static final String APPROVED ="Approved"
     private static final String CLOSED = "Closed"
     private static final String DISAPPROVED = "Disapproved"
-
+    private static final Set<String> NOTIFYABLE_DATA_STORES = [
+            "Google Drive",
+            "Google Cloud storage assets (e.g. Cloud Storage; BigQuery)",
+            "On prem storage",
+            "Broad-issued laptop",
+            "Other"
+    ] as Set<String>
+    
     PageRenderer groovyPageRenderer
     LinkGenerator grailsLinkGenerator
     UserService userService
@@ -514,21 +521,51 @@ class NotifyService implements SendgridSupport, Status {
      * @return Response is a map entry with true/false and a reason for failure, if failed.
      */
     Map<Boolean, String> sendSecurityInfo(Issue issue, User user, ConsentCollectionLink consentCollectionLink, String subjectDisplayName, Boolean notifyableDatalocationsFound) {
+        sendSecurityInfo(issue, user, consentCollectionLink, subjectDisplayName, notifyableDatalocationsFound, "added")
+    }
+
+    /**
+     * Send InfoSec follow-up when an edit changes a trigger answer and the saved
+     * cohort still has PII or PHI in a notifyable data store.
+     *
+     * PII and PHI count as changed only when the answer moves between Yes and not-Yes.
+     * Stores count as changed when the set of notifyable locations changes.
+     * Terra-only changes and free-text location details do not send.
+     */
+    Map<Boolean, String> sendSecurityInfoOnEdit(Issue issue, User editor, String previousPiiDt, String previousPhi, def previousLocations, ConsentCollectionLink updatedLink, def updatedLocations) {
+        Map<Boolean, String> result = new HashMap<>()
+        if (!issue || !updatedLink) {
+            return result
+        }
+        Set<String> updatedStores = notifyableStoreSet(updatedLocations)
+        boolean piiChanged = isYesAnswer(previousPiiDt) != isYesAnswer(updatedLink.piiDt)
+        boolean phiChanged = isYesAnswer(previousPhi) != isYesAnswer(updatedLink.phi)
+        boolean storesChanged = notifyableStoreSet(previousLocations) != updatedStores
+        boolean qualifies = (isYesAnswer(updatedLink.piiDt) || isYesAnswer(updatedLink.phi)) && !updatedStores.isEmpty()
+        if ((piiChanged || phiChanged || storesChanged) && qualifies) {
+            result = sendSecurityInfo(issue, editor, updatedLink, editor?.displayName, true, "edited")
+        }
+        result
+    }
+
+    Map<Boolean, String> sendSecurityInfo(Issue issue, User user, ConsentCollectionLink consentCollectionLink, String subjectDisplayName, Boolean notifyableDatalocationsFound, String action) {
         Map<Boolean, String> result = new HashMap<>()
         if (notifyableDatalocationsFound && (getValue(consentCollectionLink.getPiiDt()) == YES || getValue(consentCollectionLink.getPhi()) == YES)) {
             Collection<User> usersToNotify = userService.findUsers(issue.getPMs())
             Collection<String> reporter = new LinkedList<String>()
             reporter.add(issue.getReporter())
             Collection<User> reporterToNotify = userService.findUsers(reporter)
-            Collection<String> emails = usersToNotify.emailAddress
-            String reporterEmail = reporterToNotify.emailAddress
-            emails.add(reporterEmail)
+            List<String> emails = new ArrayList<String>(usersToNotify?.emailAddress ?: [])
+            String reporterEmail = (reporterToNotify?.emailAddress ?: [])[0]
+            if (reporterEmail) {
+                emails.add(reporterEmail)
+            }
             emails.add(getDefaultFromAddress())
             NotifyArguments arguments = new NotifyArguments(
                     toAddresses: Collections.singletonList(getSecurityRecipient()),
                     fromAddress: getDefaultFromAddress(),
                     ccAddresses: emails,
-                    subject: subjectDisplayName + " added " + issue.projectKey + " - Required InfoSec Follow-up",
+                    subject: subjectDisplayName + "  " + action + " " + issue.projectKey + " - Required InfoSec Follow-up",
                     user: user,
                     issue: issue)
             arguments.view = "/notify/generalInfo"
@@ -733,6 +770,30 @@ class NotifyService implements SendgridSupport, Status {
             result = "Yes"
         }
         result
+    }
+
+    private boolean isYesAnswer(String value) {
+        getValue(value) == YES
+    }
+
+    /**
+     * Notifyable store labels from location rows. Each row's dataStores value is a
+     * comma-separated list of labels. A raw store string is accepted as well.
+     */
+    private Set<String> notifyableStoreSet(def locations) {
+        Set<String> stores = new LinkedHashSet<>()
+        locations?.each { location ->
+            String dataStores = location instanceof String ? location : location?.dataStores
+            if (dataStores) {
+                dataStores.split(",").each { token ->
+                    String store = token?.trim()
+                    if (store && NOTIFYABLE_DATA_STORES.contains(store)) {
+                        stores.add(store)
+                    }
+                }
+            }
+        }
+        stores
     }
 
     Map<Boolean, String> sendEditsSubmissionNotification(Issue issue, User user) {
