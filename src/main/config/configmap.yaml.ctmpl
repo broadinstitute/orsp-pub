@@ -173,7 +173,7 @@ data:
           fromAddress: orsp-portal@broadinstitute.org
           defaultRecipient: orsp-portal@broadinstitute.org
           adminRecipient: orsp@broadinstitute.org
-          securityRecipient: infosec@broadinstitute.org
+          securityRecipient: orsp-security@broadinstitute.org
           agreementsRecipient: agreements@broadinstitute.org
           conflictOfInterestRecipient: [wdodds@broadinstitute.org, conflicts@broadinstitute.org]
           orspSpecialRecipients: [orsp-portal@broadinstitute.org]
