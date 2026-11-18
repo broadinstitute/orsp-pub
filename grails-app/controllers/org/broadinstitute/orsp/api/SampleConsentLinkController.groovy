@@ -93,6 +93,10 @@ class SampleConsentLinkController extends AuthenticatedController {
         }
         try {
             List<MultipartFile> files = request.multiFileMap.collect { it.value }.flatten()
+            ConsentCollectionLink existingLink = consentCollectionLink?.id ? ConsentCollectionLink.findById(consentCollectionLink.id) : null
+            String previousPiiDt = existingLink?.piiDt
+            String previousPhi = existingLink?.phi
+            List previousDataLocations = existingLink?.dataLocations?.collect { it.dataStores } ?: []
             consentCollectionLink.status = queryService.areLinksApproved(consentCollectionLink.projectKey, consentCollectionLink.consentKey) ? CollectionLinkStatus.APPROVED.name : CollectionLinkStatus.PENDING.name
             persistenceService.updateConsentCollectionLink(consentCollectionLink)
             ConsentCollectionLink newCCLData = persistenceService.saveConsentCollectionLink(extractConsentCollectionDataFromExisitingCCL(consentCollectionLink))
@@ -121,6 +125,12 @@ class SampleConsentLinkController extends AuthenticatedController {
                     String description = fileData.find {data -> data.fileName.value == it.originalFilename }.fileDescription.value
                     doc = storageProviderService.saveMultipartFile(user.displayName, user.userName, consentCollectionLink?.consentKey, it.name, it, consentCollectionLink, description)
                 }
+            }
+            try {
+                Issue consent = Issue.findByProjectKey(consentCollectionLink.consentKey)
+                notifyService.sendSecurityInfoOnEdit(consent, user, previousPiiDt, previousPhi, previousDataLocations, newCCLData, dataLocations)
+            } catch (Exception notifyError) {
+                log.error("InfoSec notification failed after security update for " + consentCollectionLink?.consentKey + ": " + notifyError.message)
             }
             response.status = 200
             render([
